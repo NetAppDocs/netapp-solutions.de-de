@@ -1,0 +1,41 @@
+---
+sidebar: sidebar 
+permalink: ai/ai-sent-videos-and-demos.html 
+keywords: video, demo, notebook 
+summary: In diesem Abschnitt werden die Jupyter Notebooks und andere für diese Lösung nützliche Ressourcen aufgeführt. 
+---
+= Videos und Demos
+:hardbreaks:
+:allow-uri-read: 
+:nofooter: 
+:icons: font
+:linkattrs: 
+:imagesdir: ./../media/
+
+
+link:ai-sent-validation-results.html["Zurück: Validierungsergebnisse."]
+
+Es gibt zwei Notizbücher, die die Pipeline für die Sentiment-Analyse enthalten: https://nbviewer.jupyter.org/github/NetAppDocs/netapp-solutions/blob/main/media/Support-Center-Model-Transfer-Learning-and-Fine-Tuning.ipynb["„Support-Center-Model-Transfer-Learning-and-Fine-Tuning.ipynb“"] Und link:https://nbviewer.jupyter.org/github/NetAppDocs/netapp-solutions/blob/main/media/Support-Center-Sentiment-Analysis-Pipeline.ipynb["„Support-Center-Sentiment-Analysis-Pipeline.ipynb“"]. Zusammen zeigen diese Notebooks, wie eine Pipeline entwickelt werden kann, um Support Center-Daten aufzunehmen und Gefühle aus jedem Satz zu extrahieren. Dabei verwenden sie hochmoderne Deep-Learning-Modelle, die auf die Daten des Benutzers abgestimmt sind.
+
+
+
+== Support Center - Sentiment Analysis Pipeline.ipynb
+
+Dieses Notizbuch enthält die Inferenz RIVA-Pipeline zum Einnehmen von Audio, Konvertieren in Text und Extrahieren von Gefühlen für die Verwendung in einem externen Dashboard. Datensatz wird automatisch heruntergeladen und verarbeitet, wenn dies noch nicht geschehen ist. Der erste Abschnitt im Notizbuch ist der Speech-to-Text, der die Konvertierung von Audiodateien in Text verarbeitet. Anschließend folgt der Abschnitt Sentiment Analysis, der für jeden Textsatz Einstellungen extrahiert und diese Ergebnisse in einem Format wie das vorgeschlagene Dashboard anzeigt.
+
+
+NOTE: Dieses Notebook muss vor dem Modelltraining und der Feinabstimmung ausgeführt werden, da der MP3-Datensatz heruntergeladen und in das richtige Format umgewandelt werden muss.
+
+image:ai-sent-image12.png["Fehler: Fehlendes Grafikbild"]
+
+
+
+== Support Center - Modellschulung und Feinabstimmungs.ipynb
+
+Die virtuelle TAO Toolkit-Umgebung muss vor Ausführung des Notebooks eingerichtet werden (Installationsanweisungen finden Sie im Abschnitt TAO Toolkit in der Befehlsübersicht).
+
+Dieses Notebook setzt auf das TAO Toolkit, um Deep-Learning-Modelle auf die Kundendaten abzustimmen. Wie beim vorherigen Notizbuch wird dieses in zwei Abschnitte für die Komponenten Speech-to-Text und Sentiment Analysis unterteilt. Jeder Abschnitt durchläuft die Datenverarbeitung, das Modelltraining und die Feinabstimmung, die Auswertung der Ergebnisse und den Modellexport. Schließlich gibt es einen Abschnitt für die Bereitstellung Ihrer beiden fein abgestimmten Modelle für die Verwendung in RIVA.
+
+image:ai-sent-image13.png["Fehler: Fehlendes Grafikbild"]
+
+link:ai-sent-conclusion.html["Weiter: Fazit."]

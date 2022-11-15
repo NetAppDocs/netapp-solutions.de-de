@@ -1,0 +1,299 @@
+---
+sidebar: sidebar 
+permalink: databases/awx_automation.html 
+keywords: Linux, RHEL Oracle19c, NFS, ONTAP 
+summary: Auf dieser Seite wird die automatisierte Methode zur Implementierung von Oracle19c auf NetApp ONTAP Storage beschrieben. 
+---
+= Schritt-für-Schritt-Anweisungen zur Implementierung
+:hardbreaks:
+:allow-uri-read: 
+:nofooter: 
+:icons: font
+:linkattrs: 
+:imagesdir: ./../media/
+
+
+
+
+== AWX/Tower-Implementierung der Oracle 19c-Datenbank
+
+
+
+=== 1. Erstellen Sie das Inventar, die Gruppe, die Hosts und die Anmeldeinformationen für Ihre Umgebung
+
+In diesem Abschnitt wird die Einrichtung von Inventar, Gruppen, Hosts und Zugangsdaten im AWX/Ansible Tower beschrieben, die die Umgebung für den Einsatz automatisierter NetApp Lösungen vorbereiten.
+
+. Konfigurieren Sie den Bestand.
++
+.. Navigieren Sie zu Ressourcen → Inventar → Hinzufügen, und klicken Sie auf Inventar hinzufügen.
+.. Geben Sie den Namen und die Organisationsdetails ein, und klicken Sie auf Speichern.
+.. Klicken Sie auf der Seite Inventar auf den erstellten Bestand.
+.. Wenn es Bestandsvariablen gibt, fügen Sie diese in das Feld Variablen ein.
+.. Navigieren Sie zum Untermenü Gruppen, und klicken Sie auf Hinzufügen.
+.. Geben Sie den Namen der Gruppe für ONTAP ein, fügen Sie die Gruppenvariablen ein (falls vorhanden) und klicken Sie auf Speichern.
+.. Wiederholen Sie den Vorgang für eine andere Gruppe für Oracle.
+.. Wählen Sie die erstellte ONTAP-Gruppe aus, gehen Sie zum Untermenü Hosts und klicken Sie auf Neuen Host hinzufügen.
+.. Geben Sie die IP-Adresse der ONTAP-Cluster-Management-IP an, fügen Sie die Host-Variablen ein (falls vorhanden), und klicken Sie auf Speichern.
+.. Dieser Prozess muss für die Oracle-Gruppe und für Oracle-Host(s)-Management-IP/Hostname wiederholt werden.
+
+
+. Erstellen von Anmeldungstypen. Bei Lösungen, die ONTAP verwenden, müssen Sie den Anmeldeinformationstyp so konfigurieren, dass er mit den Einträgen für Benutzernamen und Kennwort übereinstimmt.
++
+.. Navigieren Sie zu Administration → Credential Types, und klicken Sie auf Add.
+.. Geben Sie den Namen und eine Beschreibung an.
+.. Fügen Sie den folgenden Inhalt in die Eingabekonfiguration ein:
++
+[source, cli]
+----
+fields:
+  - id: username
+    type: string
+    label: Username
+  - id: password
+    type: string
+    label: Password
+    secret: true
+  - id: vsadmin_password
+    type: string
+    label: vsadmin_password
+    secret: true
+----
+.. Fügen Sie folgenden Inhalt in die Konfiguration des Injektors ein:
++
+[source, cli]
+----
+extra_vars:
+  password: '{{ password }}'
+  username: '{{ username }}'
+  vsadmin_password: '{{ vsadmin_password }}'
+----
+
+
+. Konfigurieren Sie die Anmeldedaten.
++
+.. Navigieren Sie zu Resources → Credentials, und klicken Sie auf Add.
+.. Geben Sie den Namen und die Organisationsdetails für ONTAP ein.
+.. Wählen Sie den benutzerdefinierten Anmeldungstyp aus, den Sie für ONTAP erstellt haben.
+.. Geben Sie unter „Type Details“ den Benutzernamen, das Passwort und das vsadmin_password ein.
+.. Klicken Sie auf Zurück zur Anmeldeinformation, und klicken Sie auf Hinzufügen.
+.. Geben Sie den Namen und die Organisationsdetails für Oracle ein.
+.. Wählen Sie den Typ der Geräteanmeldeinformationen aus.
+.. Geben Sie unter „Typdetails“ den Benutzernamen und das Kennwort für die Oracle-Hosts ein.
+.. Wählen Sie die richtige Privilege-Eskalationsmethode aus, und geben Sie Benutzernamen und Kennwort ein.
+
+
+
+
+
+
+=== 2. Erstellen Sie ein Projekt
+
+. Gehen Sie zu Ressourcen → Projekte, und klicken Sie auf Hinzufügen.
++
+.. Geben Sie den Namen und die Organisationsdetails ein.
+.. Wählen Sie im Feld Quellenkontrolle Credential Type die Option Git aus.
+.. Eingabe <https://github.com/NetApp-Automation/na_oracle19c_deploy.git>[] Als URL für die Quellensteuerung.
+.. Klicken Sie auf Speichern .
+.. Das Projekt muss gelegentlich synchronisiert werden, wenn sich der Quellcode ändert.
+
+
+
+
+
+
+=== 3. Oracle Host_vars konfigurieren
+
+Die in diesem Abschnitt definierten Variablen werden auf jeden einzelnen Oracle Server und jede Datenbank angewendet.
+
+. Geben Sie Ihre umgebungsspezifischen Parameter in das folgende eingebettete Oracle-Hosts-Variablen oder Host_vars-Formular ein.
+
+
+
+NOTE: Die blauen Elemente müssen an Ihre Umgebung angepasst werden.
+
+
+
+=== Host VARS-Konfiguration
+
+
+. Füllen Sie alle Variablen in die blauen Felder ein.
+. Klicken Sie nach Abschluss der Variablen auf die Schaltfläche Kopieren im Formular, um alle Variablen zu kopieren, die an AWX oder Tower übertragen werden sollen.
+. Navigieren Sie zurück zu AWX oder Tower, und gehen Sie zu Ressourcen → Hosts, und wählen Sie und öffnen Sie die Konfigurationsseite für den Oracle-Server.
+. Klicken Sie auf der Registerkarte Details auf Bearbeiten und fügen Sie die kopierten Variablen aus Schritt 1 in das Feld Variablen unter der Registerkarte YAML ein.
+. Klicken Sie auf Speichern .
+. Wiederholen Sie diesen Vorgang für alle weiteren Oracle Server im System.
+
+
+
+
+=== 4. Globale Variablen konfigurieren
+
+Die in diesem Abschnitt definierten Variablen gelten für alle Oracle Hosts, Datenbanken und den ONTAP Cluster.
+
+. Geben Sie Ihre umgebungsspezifischen Parameter in das folgende eingebettete globale Variablen oder Vars-Formular ein.
++
+
+NOTE: Die blauen Elemente müssen an Ihre Umgebung angepasst werden.
+
+
+
+
+
+=== VARS
+
+
+. Alle Variablen in blaue Felder eintragen.
+. Klicken Sie nach Abschluss der Variablen auf die Schaltfläche Kopieren im Formular, um alle Variablen zu kopieren, die an AWX oder Tower übertragen werden sollen, in die folgende Jobvorlage.
+
+
+
+
+=== 5. Konfigurieren und starten Sie die Jobvorlage.
+
+. Erstellen Sie die Job-Vorlage.
++
+.. Navigieren Sie zu Ressourcen → Vorlagen → Hinzufügen, und klicken Sie auf Job Template hinzufügen.
+.. Geben Sie den Namen und die Beschreibung ein
+.. Wählen Sie den Jobtyp aus. Führen Sie die Konfiguration des Systems anhand eines Playbooks aus, und prüfen Sie, ob ein Playbook trocken ausgeführt wird, ohne das System tatsächlich zu konfigurieren.
+.. Wählen Sie den entsprechenden Bestand, das Projekt, das Playbook und die Zugangsdaten für das Playbook aus.
+.. Wählen Sie all_Playbook.yml als Standard-Playbook aus, das ausgeführt werden soll.
+.. Fügen Sie globale Variablen, die aus Schritt 4 kopiert wurden, in das Feld Vorlagenvariablen unter der Registerkarte YAML ein.
+.. Aktivieren Sie das Kontrollkästchen Aufforderung zum Starten im Feld Job-Tags.
+.. Klicken Sie auf Speichern .
+
+
+. Starten Sie die Jobvorlage.
++
+.. Navigieren Sie zu Ressourcen → Vorlagen.
+.. Klicken Sie auf die gewünschte Vorlage und dann auf Starten.
+.. Wenn Sie beim Start nach Job-Tags gefragt werden, geben Sie Anforderungen_config ein. Möglicherweise müssen Sie unter Requirements_config auf die Zeile Job-Tag erstellen klicken, um die Job-Tag-Nummer einzugeben.
++
+
+NOTE: Requirements_config stellt sicher, dass Sie über die richtigen Bibliotheken verfügen, um die anderen Rollen auszuführen.
+
+.. Klicken Sie auf Weiter und dann auf Start, um den Job zu starten.
+.. Klicken Sie auf Ansicht → Jobs, um die Jobausgabe und den Fortschritt zu überwachen.
+.. Wenn Sie zur Einführung von Job-Tags aufgefordert werden, geben sie ontap_config ein. Sie müssen möglicherweise direkt unter ontap_config auf die Zeile „Job Tag erstellen“ klicken, um das Job-Tag einzugeben.
+.. Klicken Sie auf Weiter und dann auf Start, um den Job zu starten.
+.. Klicken Sie auf Ansicht → Jobs, um die Jobausgabe und den Fortschritt zu überwachen
+.. Führen Sie nach Abschluss der rolle ontap_config den Prozess für linux_config erneut aus.
+.. Navigieren Sie zu Ressourcen → Vorlagen.
+.. Wählen Sie die gewünschte Vorlage aus, und klicken Sie dann auf Starten.
+.. Wenn Sie beim Start aufgefordert werden, geben Sie die Job-Tags in linux_config ein, müssen Sie möglicherweise die Zeile „Job-Tag erstellen“ direkt unter linux_config auswählen, um das Job-Tag einzugeben.
+.. Klicken Sie auf Weiter und dann auf Start, um den Job zu starten.
+.. Wählen Sie Ansicht → Jobs, um die Jobausgabe und den Fortschritt zu überwachen.
+.. Führen Sie nach Abschluss der rolle linux_config den Prozess für oracle_config erneut aus.
+.. Gehen Sie zu Ressourcen → Vorlagen.
+.. Wählen Sie die gewünschte Vorlage aus, und klicken Sie dann auf Starten.
+.. Wenn Sie beim Start nach Job-Tags gefragt werden, geben sie oracle_config ein. Sie müssen möglicherweise die Zeile „Job Tag erstellen“ direkt unter oracle_config auswählen, um das Job-Tag einzugeben.
+.. Klicken Sie auf Weiter und dann auf Start, um den Job zu starten.
+.. Wählen Sie Ansicht → Jobs, um die Jobausgabe und den Fortschritt zu überwachen.
+
+
+
+
+
+
+=== 6. Implementieren Sie zusätzliche Datenbank auf demselben Oracle Host
+
+Der Oracle Teil des Playbook erstellt pro Ausführung eine einzelne Oracle-Container-Datenbank auf einem Oracle-Server. Führen Sie die folgenden Schritte aus, um zusätzliche Container-Datenbanken auf demselben Server zu erstellen.
+
+. Host_Vars-Variablen überarbeiten.
++
+.. Zurück zu Schritt 2 - Oracle Host_Vars konfigurieren.
+.. Ändern Sie Oracle SID zu einer anderen Namenskonvention.
+.. Ändern Sie den Listener-Port in eine andere Zahl.
+.. Ändern Sie den EM Express-Port in eine andere Nummer, wenn Sie EM Express installieren.
+.. Kopieren Sie die überarbeiteten Hostvariablen in das Feld Oracle Host Variables auf der Registerkarte Host Configuration Detail.
+
+
+. Starten Sie die Jobvorlage für die Bereitstellung nur mit dem tag oracle_config.
+
+
+
+
+=== Oracle-Installation validieren
+
+
+[source, cli]
+----
+ps -ef | grep ora
+----
+
+NOTE: Auf diese Weise werden die oracle-Prozesse aufgeführt, wenn die Installation wie erwartet abgeschlossen wurde und die oracle DB gestartet wurde
+
+
+[source, cli]
+----
+sqlplus / as sysdba
+----
+[oracle@localhost ~] USD/AS sysdba
+
+SQL*Plus: Release 19.0.0.0.0 - Produktion am Do Mai 6 12:52:51 2021 Version 19.8.0.0.0
+
+Copyright (c) 1982, 2019, Oracle. Alle Rechte vorbehalten.
+
+Verbunden mit: Oracle Database 19c Enterprise Edition Release 19.0.0.0.0 - Produktionsversion 19.8.0.0.0
+
+SQL>
+
+[source, cli]
+----
+select name, log_mode from v$database;
+----
+SQL> Name auswählen, log_Mode von der V-Dollar-Datenbank; NAME LOG_MODE --------- -------------- CDB2 ARCHIVELOG
+
+[source, cli]
+----
+show pdbs;
+----
+SQL> pdbs anzeigen
+
+....
+    CON_ID CON_NAME                       OPEN MODE  RESTRICTED
+---------- ------------------------------ ---------- ----------
+         2 PDB$SEED                       READ ONLY  NO
+         3 CDB2_PDB1                      READ WRITE NO
+         4 CDB2_PDB2                      READ WRITE NO
+         5 CDB2_PDB3                      READ WRITE NO
+....
+[source, cli]
+----
+col svrname form a30
+col dirname form a30
+select svrname, dirname, nfsversion from v$dnfs_servers;
+----
+SQL> col svrname Form a30 SQL> col dirname Form a30 SQL> svrname, dirname, nfsversion von V€dnfs_Servers auswählen;
+
+SVRNAME-NAME NFSVERSION ------------------------------------------ --------------------------------------- ------------------- 172.21.126.200 /rhelora03_u02 NFSv3.0 172.21.126.200 /rhelora03_u03 NFSv03 172.21.126.200 /rhelora03_u01 NFSv3.0
+
+[listing]
+----
+This confirms that dNFS is working properly.
+----
+
+[source, cli]
+----
+sqlplus system@//localhost:1523/cdb2_pdb1.cie.netapp.com
+----
+[oracle@localhost ~]@ System//localhost:1523/cdb2_pdb1.cie.netapp.com
+
+SQL*Plus: Release 19.0.0.0.0 - Produktion am Do Mai 6 13:19:57 2021 Version 19.8.0.0.0
+
+Copyright (c) 1982, 2019, Oracle. Alle Rechte vorbehalten.
+
+Geben Sie das Passwort ein: Letzte erfolgreiche Anmeldung: Mi 05 2021 17:11:11 -04:00
+
+Verbunden mit: Oracle Database 19c Enterprise Edition Release 19.0.0.0.0 - Produktionsversion 19.8.0.0.0
+
+SQL> show Benutzer is „SYSTEM“ SQL> show con_Name CON_NAME CDB2_PDB1
+
+[listing]
+----
+This confirms that Oracle listener is working properly.
+----
+
+
+=== Wo Hilfe benötigt wird?
+
+Wenn Sie Hilfe mit dem Toolkit benötigen, nehmen Sie bitte an der Teil link:https://netapppub.slack.com/archives/C021R4WC0LC["NetApp Solution Automation Community Support Slack Channel"] Und suchen Sie den Kanal zur Lösungsautomatisierung, um Ihre Fragen zu stellen oder zu fragen.

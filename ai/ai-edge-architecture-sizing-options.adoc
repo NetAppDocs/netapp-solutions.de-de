@@ -1,0 +1,34 @@
+---
+sidebar: sidebar 
+permalink: ai/ai-edge-architecture-sizing-options.html 
+keywords: architecture, sizing, computer server, shared storage 
+summary: Sie können das für die Validierung verwendete Setup an andere Anwendungsfälle anpassen. 
+---
+= Optionen zur Dimensionierung der Architektur
+:hardbreaks:
+:allow-uri-read: 
+:nofooter: 
+:icons: font
+:linkattrs: 
+:imagesdir: ./../media/
+
+
+link:ai-edge-test-results.html["Zurück: Testergebnisse."]
+
+Sie können das für die Validierung verwendete Setup an andere Anwendungsfälle anpassen.
+
+
+
+== Computing Server
+
+Wir haben eine Intel Xeon D-2123IT CPU mit vier physischen Kernen und 60 W TDP verwendet, die in SE350 die niedrigste CPU-Stufe unterstützt. Der Server unterstützt zwar keinen Austausch von CPUs, kann aber mit einer leistungsstärkeren CPU bestellt werden. Die wichtigste unterstützte CPU ist Intel Xeon D-2183IT mit 16 Kernen, 100 W mit 2,20 GHz. Dadurch erhöht sich die CPU-Rechenleistung erheblich. Während die CPU keinen Engpass mehr für die Ausführung der Inferenz-Workloads darstellt, hilft sie bei der Datenverarbeitung und anderen Vorgänge im Zusammenhang mit Inferenz. Derzeit ist NVIDIA T4 die einzige GPU für Edge-Anwendungsfälle und ist daher derzeit keine Möglichkeit, die GPU zu aktualisieren oder herunterzustufen.
+
+
+
+== Shared Storage
+
+Das NetApp AFF C190 System mit einer maximalen Storage-Kapazität von 50,5 TB, einem Durchsatz von 4,4 GB/s bei sequenziellem Lesen und 230.000 IOPS für kleine zufällige Lesevorgänge wurde in diesem Dokument eingesetzt. Es hat sich als gut für Edge-Inferenz-Workloads erwiesen.
+
+Wenn Sie jedoch mehr Storage-Kapazität oder schnellere Netzwerkgeschwindigkeiten benötigen, sollten Sie das NetApp AFF A220 oder https://tv.netapp.com/detail/video/6211798209001/netapp-aff-a250-virtual-tour-and-demo["NetApp AFF A250"^] Storage-Systeme. Außerdem wurde das NetApp EF280 System mit einer maximalen Kapazität von 1,5 PB und einer Bandbreite von 10 GB/s im Rahmen dieser Lösungsvalidierung ebenfalls verwendet. Wenn Sie mehr Storage-Kapazität mit höherer Bandbreite bevorzugen, https://www.netapp.com/pdf.html?item=/media/19339-DS-4082.pdf&v=2021691654["NetApp EF300"^] Kann verwendet werden.
+
+link:ai-edge-conclusion.html["Weiter: Fazit."]

@@ -1,0 +1,45 @@
+---
+sidebar: sidebar 
+permalink: vdi-vds/hcvdivds_why_ontap.html 
+keywords: VDS, Virtual Desktop Service, ONTAP, FlexGroup, File System analytics, cloud tiering, global namespace 
+summary: 'ONTAP-Funktionen für Virtual Desktop Service:' 
+---
+= ONTAP-Funktionen für Virtual Desktop Service
+:hardbreaks:
+:allow-uri-read: 
+:nofooter: 
+:icons: font
+:linkattrs: 
+:imagesdir: ./../media/
+
+
+Die folgenden ONTAP Funktionen machen es zu einer attraktiven Wahl für einen virtuellen Desktop-Service.
+
+* *Scale-out-Dateisystem.* ONTAP FlexGroup-Volumes können auf mehr als 20 PB groß sein und mehr als 400 Milliarden Dateien in einem Single Namespace enthalten. Das Cluster kann bis zu 24 Storage-Nodes enthalten, jedes mit einer flexiblen Anzahl von Netzwerkschnittstellenkarten, je nach verwendetem Modell.
++
+Die virtuellen Desktops und Home-Ordner der Benutzer, Container mit Benutzerprofilen, gemeinsam genutzte Daten können je nach Bedarf erweitert werden, ohne die Dateisystem-Einschränkungen zu bedenken.
+
+* *Dateisystemanalyse.* mit dem XCP-Tool erhalten Sie Einblicke in gemeinsam genutzte Daten. Mit ONTAP 9.8+ und ActiveIQ Unified Manager können Kunden Dateimetadaten einfach abfragen und abrufen und inaktive Daten identifizieren.
+* * Cloud-Tiering* ermöglicht die Migration kalter Daten zu einem Objektspeicher in der Cloud oder zu jedem S3-kompatiblen Storage im Datacenter.
+* *Dateiversionen.* Benutzer können Dateien wiederherstellen, die durch NetApp ONTAP Snapshot-Kopien geschützt sind. ONTAP Snapshot Kopien sind sehr platzsparend, da sie nur geänderte Blöcke aufzeichnen.
+* *Global Namespace.* die ONTAP FlexCache-Technologie ermöglicht das Remote-Caching von File Storage und vereinfacht das Management gemeinsam genutzter Daten an verschiedenen Standorten mit ONTAP Storage-Systemen.
+* *Unterstützung für sichere Mandantenfähigkeit.* Ein einziger physischer Storage Cluster kann als mehrere virtuelle Storage Arrays mit jeweils eigenen Volumes, Storage-Protokollen, logischen Netzwerkschnittstellen, Identitäts- und Authentifizierungsdomäne, Management-Benutzern usw. bereitgestellt werden. Auf diese Weise können Sie das Storage-Array für mehrere Geschäftseinheiten oder Umgebungen nutzen, beispielsweise für Tests, Entwicklung und Produktion.
++
+Um Performance zu garantieren, können Sie mittels anpassungsfähiger QoS Performance-Level auf Basis von belegtem oder zugewiesenem Speicherplatz festlegen und die Storage-Kapazität mittels Quoten steuern.
+
+* *VMware Integration.* ONTAP Tools für VMware vSphere bietet ein vCenter Plug-in zur Bereitstellung von Datastores, Implementierung von vSphere Host Best Practices und Überwachung von ONTAP Ressourcen.
++
+ONTAP unterstützt vStorage APIs zur Array Integration (VAAI) zur Auslagerung von SCSI-/Dateivorgängen auf das Storage Array. ONTAP unterstützt auch vStorage APIs for Storage Awareness (VASA) und Virtual Volumes für Block- und Dateiprotokolle.
+
++
+Das SnapCenter Plug-in für VMware vSphere ermöglicht mithilfe der Snapshot Funktion in einem Storage Array das Sichern und Wiederherstellen von Virtual Machines.
+
++
+ActiveIQ Unified Manager bietet End-to-End-Sichtbarkeit des Storage-Netzwerks in einer vSphere-Umgebung. Administratoren können problemlos alle Latenzprobleme identifizieren, die in virtuellen Desktop-Umgebungen, die auf ONTAP gehostet werden, auftreten können.
+
+* *Einhaltung der Sicherheitsvorschriften* mit ActiveIQ Unified Manager können Sie mehrere ONTAP-Systeme mit Warnmeldungen auf Richtlinienverstöße überwachen.
+* * Multi-Protokoll-Unterstützung.* ONTAP unterstützt Block (iSCSI, FC, FCoE und NVMe/FC), Datei (NFSv3, NFSv4.1, SMB2.x und SMB3.x) und Storage-Protokolle für Objekte (S3).
+* *Automatisierungsunterstützung* ONTAP bietet REST-API, Ansible und PowerShell-Module zur Automatisierung von Aufgaben mit dem VDS-Verwaltungsportal.
+
+
+link:hcvdivds_data_management.html["Weiter: Datenmanagement"]

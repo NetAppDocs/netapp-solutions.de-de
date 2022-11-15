@@ -1,0 +1,105 @@
+---
+sidebar: sidebar 
+permalink: ai/osrunai_testing_details_for_section_4.8.html 
+keywords:  
+summary:  
+---
+= Testdetails für Abschnitt 4.8
+:hardbreaks:
+:allow-uri-read: 
+:nofooter: 
+:icons: font
+:linkattrs: 
+:imagesdir: ./../media/
+
+
+Dieser Abschnitt enthält die Testdetails für den Abschnitt link:osrunai_achieving_high_cluster_utilization_with_over-uota_gpu_allocation.html["Erreichen einer hohen Cluster-Auslastung mit GPU-Zuweisung über ein Kontingent"].
+
+Senden von Jobs in folgender Reihenfolge:
+
+|===
+| Projekt | Bild | # GPUs | Gesamt | Kommentar 
+
+
+| Team A | Jupyter | 1 | 1/4 | – 
+
+
+| Team A | NetApp | 1 | 2/4 | – 
+
+
+| Team A | Run:AI | 2 | 4/4 | Mit allen ihren Quoten 
+
+
+| Team b | Run:AI | 0.6 | 0.6/2 | Fraktionale GPU 
+
+
+| Team b | Run:AI | 0.4 | 1/2 | Fraktionale GPU 
+
+
+| Team b | NetApp | 1 | 2/2 | – 
+
+
+| Team b | NetApp | 2 | 4/2 | Zwei über Kontingente 
+
+
+| Team c | Run:AI | 0.5 | 0.5/2 | Fraktionale GPU 
+
+
+| Team c | Run:AI | 0.3 | 0.8/2 | Fraktionale GPU 
+
+
+| Team c | Run:AI | 0.2 | 1/2 | Fraktionale GPU 
+
+
+| Team c | NetApp | 2 | 3/2 | Eins über Kontingent 
+
+
+| Team c | NetApp | 1 | 4/2 | Zwei über Kontingente 
+
+
+| Team d | NetApp | 4 | 4/8 | Mit der Hälfte ihrer Quote 
+|===
+Befehlsstruktur:
+
+....
+$ runai submit <job-name> -p <project-name> -g <#GPUs> -i <image-name>
+....
+Tatsächliche Befehlssequenz, die beim Testen verwendet wird:
+
+....
+$ runai submit a-1-1-jupyter -i jupyter/base-notebook -g 1 \
+  --interactive --service-type=ingress --port 8888 \
+  --args="--NotebookApp.base_url=team-a-test-ingress" --command=start-notebook.sh -p team-a
+$ runai submit a-1-g -i gcr.io/run-ai-demo/quickstart -g 1 -p team-a
+$ runai submit a-2-gg -i gcr.io/run-ai-demo/quickstart -g 2 -p team-a
+$ runai submit b-1-g06 -i gcr.io/run-ai-demo/quickstart -g 0.6 --interactive -p team-b
+$ runai submit b-2-g04 -i gcr.io/run-ai-demo/quickstart -g 0.4 --interactive -p team-b
+$ runai submit b-3-g -i gcr.io/run-ai-demo/quickstart -g 1 -p team-b
+$ runai submit b-4-gg -i gcr.io/run-ai-demo/quickstart -g 2 -p team-b
+$ runai submit c-1-g05 -i gcr.io/run-ai-demo/quickstart -g 0.5 --interactive -p team-c
+$ runai submit c-2-g03 -i gcr.io/run-ai-demo/quickstart -g 0.3 --interactive -p team-c
+$ runai submit c-3-g02 -i gcr.io/run-ai-demo/quickstart -g 0.2 --interactive -p team-c
+$ runai submit c-4-gg -i gcr.io/run-ai-demo/quickstart -g 2 -p team-c
+$ runai submit c-5-g -i gcr.io/run-ai-demo/quickstart -g 1 -p team-c
+$ runai submit d-1-gggg -i gcr.io/run-ai-demo/quickstart -g 4 -p team-d
+....
+An dieser Stelle sollten Sie folgende Zustände haben:
+
+|===
+| Projekt | GPUs zugewiesen | Workloads In Die Warteschlange 
+
+
+| Team A | 4/4 (weiche Quote/ist-Zuweisung) | Keine 
+
+
+| Team b | 4/2 | Keine 
+
+
+| Team c | 4/2 | Keine 
+
+
+| Team d | 4/8 | Keine 
+|===
+Siehe Abschnitt link:osrunai_achieving_high_cluster_utilization_with_over-uota_gpu_allocation.html["Hohe Cluster-Auslastung durch GPU-Zuweisung über Uota"] Für Diskussionen über das Fortsetzen des Testszenarios.
+
+link:osrunai_testing_details_for_section_4.9.html["Weiter: Testdetails für Abschnitt 4.9"]

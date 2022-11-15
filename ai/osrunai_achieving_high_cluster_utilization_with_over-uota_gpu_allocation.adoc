@@ -1,0 +1,70 @@
+---
+sidebar: sidebar 
+permalink: ai/osrunai_achieving_high_cluster_utilization_with_over-uota_gpu_allocation.html 
+keywords:  
+summary:  
+---
+= Erreichen einer hohen Cluster-Auslastung mit GPU-Zuweisung über ein Kontingent
+:hardbreaks:
+:allow-uri-read: 
+:nofooter: 
+:icons: font
+:linkattrs: 
+:imagesdir: ./../media/
+
+
+In diesem Abschnitt und in den Abschnitten link:osrunai_basic_resource_allocation_fairness.html["Gerechtigkeit Bei Der Grundlegenden Ressourcenzuweisung"], und link:osrunai_over-quota_fairness.html["Gerechtigkeit Wegen Zu Viel Quoten"], Wir haben erweiterte Testszenarien entwickelt, um die Funktionen der Run:KI-Orchestrierung für komplexes Workload-Management, automatisches präventiv Planen und GPU-Bereitstellung über Kontingente zu demonstrieren. Ziel war es, eine hohe Cluster-Ressourcen-Auslastung zu erzielen und die Produktivität des Data Science-Teams der Enterprise-Klasse in einer ONTAP KI-Umgebung zu optimieren.
+
+Legen Sie für diese drei Abschnitte die folgenden Projekte und Quoten fest:
+
+|===
+| Projekt | Kontingente 
+
+
+| Team A | 4 
+
+
+| Team b | 2 
+
+
+| Team c | 2 
+
+
+| Team d | 8 
+|===
+Zusätzlich werden für diese drei Abschnitte folgende Container verwendet:
+
+* Jupyter Notebook: `jupyter/base-notebook`
+* Run:AI quickstart: `gcr.io/run-ai-demo/quickstart`
+
+
+Für dieses Testszenario setzen wir folgende Ziele:
+
+* Zeigen Sie die Einfachheit der Ressourcenbereitstellung und wie Ressourcen von Benutzern abstrahiert werden
+* Zeigen Sie, wie Benutzer Fraktionen einer GPU und einer ganzen Zahl von GPUs einfach bereitstellen können
+* Zeigen Sie, wie das System Compute-Engpässe beseitigt, indem es Teams oder Benutzern ermöglicht, ihre Ressourcenkontingente zu überziehen, wenn es kostenlose GPUs im Cluster gibt
+* Zeigen Sie, wie Engpässe bei der Datenpipeline mithilfe der NetApp Lösung bei rechenintensiven Aufgaben wie dem NetApp Container beseitigt werden
+* Darstellung der Ausführung mehrerer Container mithilfe des Systems
++
+** Jupyter Notebook
+** Run:AI Container
+
+
+* Zeigt eine hohe Auslastung an, wenn das Cluster voll ist
+
+
+Einzelheiten zur tatsächlichen Befehlsfolge, die während des Tests ausgeführt wurde, finden Sie unter link:osrunai_testing_details_for_section_4.8.html["Testdetails für Abschnitt 4.8"].
+
+Wenn alle 13 Workloads übermittelt werden, wird eine Liste der zugewiesenen Containernamen und -GPUs angezeigt, wie in der folgenden Abbildung dargestellt. Wir haben sieben Trainings- und sechs interaktive Jobs und simulieren dabei vier Data-Science-Teams, die jeweils über eigene Modelle im Einsatz oder in der Entwicklung verfügen. Bei interaktiven Jobs verwenden einzelne Entwickler Jupyter Notebooks, um ihren Code zu schreiben oder zu debuggen. Dadurch eignet es sich, GPU-Fraktionen ohne zu viele Cluster-Ressourcen bereitzustellen.
+
+image:osrunai_image8.png["Fehler: Fehlendes Grafikbild"]
+
+Die Ergebnisse dieses Testszenarios zeigen Folgendes:
+
+* Der Cluster sollte voll sein: Es werden 16/16 GPUs verwendet.
+* Hohe Cluster-Auslastung.
+* Mehr Experimente als GPUs aufgrund der fraktionalen Zuweisung:
+* `team-d` Nutzt nicht die gesamte Quote; daher `team-b` Und `team-c` Da die Experimente mit zusätzlichen GPUs durchgeführt werden können, werden Innovationen schneller beschleunigt.
+
+
+link:osrunai_basic_resource_allocation_fairness.html["Weiter: Grundlegende Ressourcenzuweisung Fairness"]

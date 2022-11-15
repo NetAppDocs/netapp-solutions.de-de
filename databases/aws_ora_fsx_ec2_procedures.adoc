@@ -1,0 +1,501 @@
+---
+sidebar: sidebar 
+permalink: databases/aws_ora_fsx_ec2_procedures.html 
+summary: In diesem Abschnitt werden die Implementierungsverfahren für die Implementierung von Oracle RDS Custom Database mit FSX Storage beschrieben. 
+keywords: AWS, Oracle, RDS, HA, DR, database 
+---
+= Schritt-für-Schritt-Anweisungen zur Oracle-Implementierung auf AWS EC2/FSX
+:hardbreaks:
+:allow-uri-read: 
+:nofooter: 
+:icons: font
+:linkattrs: 
+:table-stripes: odd
+:imagesdir: ./../media/
+
+
+link:aws_ora_fsx_ec2_factors.html["Früher: Lösungsarchitektur."]
+
+
+
+== Implementieren Sie eine EC2 Linux-Instanz für Oracle über die EC2-Konsole
+
+Für neue AWS-Lösungen müssen Sie zunächst eine AWS-Umgebung einrichten. Die Registerkarte Dokumentation auf der Landing Page der AWS-Website enthält EC2-Anweisungslinks zur Implementierung einer Linux-EC2-Instanz, die zum Hosten Ihrer Oracle-Datenbank über die AWS-EC2-Konsole verwendet werden kann. Der folgende Abschnitt enthält eine Zusammenfassung dieser Schritte. Weitere Informationen finden Sie in der zugehörigen AWS EC2-spezifischen Dokumentation.
+
+
+
+=== Einrichten der AWS EC2-Umgebung
+
+Sie müssen ein AWS-Konto erstellen, um die erforderlichen Ressourcen bereitzustellen, um Ihre Oracle Umgebung auf dem EC2 und FSX Service auszuführen. Die folgende AWS-Dokumentation enthält die erforderlichen Details:
+
+* link:https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/get-set-up-for-amazon-ec2.html["Einrichten zur Verwendung von Amazon EC2"^]
+
+
+Hauptthemen:
+
+* Melden Sie sich für AWS an.
+* Erstellen Sie ein Schlüsselpaar.
+* Erstellen Sie eine Sicherheitsgruppe.
+
+
+
+
+=== Aktivierung mehrerer Verfügbarkeitszonen in AWS-Kontoattributen
+
+Für eine Oracle-Hochverfügbarkeitskonfiguration, wie im Architekturdiagramm gezeigt, müssen Sie mindestens vier Verfügbarkeitszonen in einer Region aktivieren. Die verschiedenen Verfügbarkeitszonen können auch in verschiedenen Regionen aufgestellt werden, um die für das Disaster Recovery erforderlichen Entfernungen zu erfüllen.
+
+image:aws_ora_fsx_ec2_inst_01.PNG["Fehler: Fehlendes Grafikbild"]
+
+
+
+=== Erstellen und Verbinden mit einer EC2-Instanz zum Hosten von Oracle-Datenbank
+
+Siehe Lernprogramm link:https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/EC2_GetStarted.html["Erste Schritte mit Amazon EC2 Linux Instanzen"^] Für Schritt-für-Schritt-Anweisungen und Best Practices bei der Implementierung.
+
+Hauptthemen:
+
+* Überblick.
+* Voraussetzungen.
+* Schritt 1: Eine Instanz starten.
+* Schritt 2: Stellen Sie eine Verbindung zu Ihrer Instanz her.
+* Schritt 3: Reinigen Sie Ihre Instanz.
+
+
+Die folgenden Screenshots zeigen die Bereitstellung einer m5-Typ Linux-Instanz mit der EC2-Konsole für die Ausführung von Oracle.
+
+. Klicken Sie im EC2-Dashboard auf die gelbe Schaltfläche Instanz starten, um den Implementierungs-Workflow für EC2 Instanzen zu starten.
++
+image:aws_ora_fsx_ec2_inst_02.PNG["Fehler: Fehlendes Grafikbild"]
+
+. Wählen Sie in Schritt 1 „Red hat Enterprise Linux 8 (HVM), SSD Volume Type - ami-0b0af3577fe5e3532 (64-bit x86) / ami-01fc429821bf1f4b4 (64-bit ARM)“ aus.
++
+image:aws_ora_fsx_ec2_inst_03.PNG["Fehler: Fehlendes Grafikbild"]
+
+. Wählen Sie in Schritt 2 einen m5-Instanztyp mit der entsprechenden CPU- und Speicherzuweisung basierend auf Ihrem Oracle-Datenbank-Workload aus. Klicken Sie Auf „Weiter: Instanzdetails Konfigurieren“.
++
+image:aws_ora_fsx_ec2_inst_04.PNG["Fehler: Fehlendes Grafikbild"]
+
+. Wählen Sie in Schritt 3 die VPC und das Subnetz aus, in dem die Instanz platziert werden soll, und aktivieren Sie die öffentliche IP-Zuweisung. Klicken Sie Auf „Next: Add Storage“ (Weiter).
++
+image:aws_ora_fsx_ec2_inst_05.PNG["Fehler: Fehlendes Grafikbild"]
+
+. Weisen Sie in Schritt 4 genügend Speicherplatz für die Root-Festplatte zu. Möglicherweise benötigen Sie den Speicherplatz, um einen Swap hinzuzufügen. Standardmäßig weist EC2-Instanz keinen Swap-Speicherplatz zu, was nicht optimal für die Ausführung von Oracle ist.
++
+image:aws_ora_fsx_ec2_inst_06.PNG["Fehler: Fehlendes Grafikbild"]
+
+. Fügen Sie in Schritt 5 bei Bedarf ein Tag für die Instanzidentifikation hinzu.
++
+image:aws_ora_fsx_ec2_inst_07.PNG["Fehler: Fehlendes Grafikbild"]
+
+. Wählen Sie in Schritt 6 eine vorhandene Sicherheitsgruppe aus oder erstellen Sie eine neue mit der gewünschten ein- und ausgehenden Richtlinie für die Instanz.
++
+image:aws_ora_fsx_ec2_inst_08.PNG["Fehler: Fehlendes Grafikbild"]
+
+. Überprüfen Sie in Schritt 7 die Zusammenfassung der Instanzkonfiguration, und klicken Sie auf Starten, um die Instanzbereitstellung zu starten. Sie werden aufgefordert, ein Schlüsselpaar zu erstellen oder ein Schlüsselpaar für den Zugriff auf die Instanz auszuwählen.
++
+image:aws_ora_fsx_ec2_inst_09.PNG["Fehler: Fehlendes Grafikbild"]
+image:aws_ora_fsx_ec2_inst_09_1.PNG["Fehler: Fehlendes Grafikbild"]
+
+. Melden Sie sich über ein SSH-Schlüsselpaar bei der EC2-Instanz an. Nehmen Sie ggf. Änderungen an Ihrem Schlüsselnamen und Ihrer Instanz-IP-Adresse vor.
++
+[source, cli]
+----
+ssh -i ora-db1v2.pem ec2-user@54.80.114.77
+----
+
+
+Sie müssen zwei EC2-Instanzen als primäre und Standby-Oracle-Server in ihrer festgelegten Verfügbarkeitszone erstellen, wie im Architekturdiagramm dargestellt.
+
+
+
+== Stellen Sie FSX für ONTAP File-Systeme für Oracle Datenbank-Storage bereit
+
+Die Implementierung der EC2-Instanz weist ein EBS Root Volume für das Betriebssystem zu. FSX für ONTAP stellt Oracle Datenbank-Storage-Volumes bereit, einschließlich der Oracle Binär-, Daten- und Protokoll-Volumes. Die FSX-Storage-NFS-Volumes können entweder über die AWS FSX Konsole oder über die Oracle-Installation bereitgestellt werden und durch Konfigurationsautomatisierung, die die Volumes dem Benutzer in einer Automatisierungsparameter-Datei zuweist.
+
+
+
+=== Erstellen von FSX für ONTAP-Dateisysteme
+
+Habe auf diese Dokumentation verwiesen https://docs.aws.amazon.com/fsx/latest/ONTAPGuide/managing-file-systems.html["Verwalten von FSX für ONTAP-Dateisysteme"^] Zur Erstellung von FSX für ONTAP-Dateisysteme.
+
+Wichtige Überlegungen:
+
+* SSD-Storage-Kapazität: Mindestens 1024 gib, maximal 192 tib.
+* Provisionierter SSD-IOPS: Maximal 80,000 SSD-IOPS pro Filesystem, basierend auf Workload-Anforderungen.
+* Durchsatzkapazität.
+* Legen Sie das Administratorpasswort fsxadmin/vsadmin fest. Erforderlich für FSX-Konfigurationsautomatisierung
+* Backup und Wartung. Automatische tägliche Backups deaktivieren; Datenbank-Storage-Backups werden durch SnapCenter-Planung durchgeführt.
+* Rufen Sie die SVM Management-IP-Adresse und protokollspezifische Zugriffadressen auf der SVM Detailseite ab. Erforderlich für FSX-Konfigurationsautomatisierung
++
+image:aws_rds_custom_deploy_fsx_01.PNG["Fehler: Fehlendes Grafikbild"]
+
+
+
+Sehen Sie sich die folgenden Schritt-für-Schritt-Anweisungen zum Einrichten eines primären oder Standby HA FSX-Clusters an.
+
+. Klicken Sie auf der FSX-Konsole auf Dateisystem erstellen, um den FSX-Bereitstellungsprozess zu starten.
++
+image:aws_ora_fsx_ec2_stor_01.PNG["Fehler: Fehlendes Grafikbild"]
+
+. Wählen Sie Amazon FSX für NetApp ONTAP aus. Klicken Sie anschließend auf Weiter.
++
+image:aws_ora_fsx_ec2_stor_02.PNG["Fehler: Fehlendes Grafikbild"]
+
+. Wählen Sie Standard Erstellen und benennen Sie unter Dateisystemdetails Ihr Dateisystem, Multi-AZ HA. Wählen Sie je nach Datenbank-Workload entweder automatisch oder vom Benutzer bereitgestellte IOPS bis zu 80,000 SSD-IOPS. FSX Storage verfügt über bis zu 2 tib NVMe-Caching im Backend, das noch höhere gemessene IOPS liefern kann.
++
+image:aws_ora_fsx_ec2_stor_03.PNG["Fehler: Fehlendes Grafikbild"]
+
+. Wählen Sie im Abschnitt Netzwerk & Sicherheit die VPC, die Sicherheitsgruppe und die Subnetze aus. Diese sollten vor der Bereitstellung von FSX erstellt werden. Platzieren Sie die FSX-Storage-Nodes auf Basis der Rolle des FSX-Clusters (primär oder Standby) in die entsprechenden Zonen.
++
+image:aws_ora_fsx_ec2_stor_04.PNG["Fehler: Fehlendes Grafikbild"]
+
+. Akzeptieren Sie im Abschnitt Sicherheit & Verschlüsselung die Standardeinstellung, und geben Sie das fsxadmin-Passwort ein.
++
+image:aws_ora_fsx_ec2_stor_05.PNG["Fehler: Fehlendes Grafikbild"]
+
+. Geben Sie den SVM-Namen und das vsadmin-Passwort ein.
++
+image:aws_ora_fsx_ec2_stor_06.PNG["Fehler: Fehlendes Grafikbild"]
+
+. Behalten Sie die Volume-Konfiguration leer. Sie müssen derzeit kein Volume erstellen.
++
+image:aws_ora_fsx_ec2_stor_07.PNG["Fehler: Fehlendes Grafikbild"]
+
+. Prüfen Sie die Seite Zusammenfassung, und klicken Sie auf Dateisystem erstellen, um die Bereitstellung des FSX-Dateisystems abzuschließen.
++
+image:aws_ora_fsx_ec2_stor_08.PNG["Fehler: Fehlendes Grafikbild"]
+
+
+
+
+
+=== Bereitstellung von Datenbank-Volumes für Oracle Database
+
+Siehe link:https://docs.aws.amazon.com/fsx/latest/ONTAPGuide/managing-volumes.html["Management von FSX für ONTAP-Volumes – Erstellen eines Volumes"^] Entsprechende Details.
+
+Wichtige Überlegungen:
+
+* Dimensionierung der Datenbank-Volumes entsprechend.
+* Deaktivieren der Kapazitäts-Pool Tiering-Richtlinie für eine Performance-Konfiguration
+* Oracle dNFS für NFS Storage Volumes aktivieren.
+* Multipath-Einrichtung für iSCSI-Storage-Volumes
+
+
+
+
+==== Erstellen Sie Datenbank-Volume über die FSX Konsole
+
+Über die AWS FSX-Konsole können Sie drei Volumes für Oracle-Datenbank-File-Storage erstellen: Eines für die Oracle-Binärdatei, eines für die Oracle-Daten und eines für das Oracle-Protokoll. Stellen Sie sicher, dass die Volume-Benennung mit dem Oracle Host-Namen (definiert in der Hosts-Datei im Automatisierungs-Toolkit) übereinstimmt, um die ordnungsgemäße Identifizierung zu finden. In diesem Beispiel verwenden wir db1 als Oracle-Hostname von EC2 anstelle eines typischen IP-Adressenbasierten Hostnamens für eine EC2-Instanz.
+
+image:aws_ora_fsx_ec2_stor_09.PNG["Fehler: Fehlendes Grafikbild"]
+image:aws_ora_fsx_ec2_stor_10.PNG["Fehler: Fehlendes Grafikbild"]
+image:aws_ora_fsx_ec2_stor_11.PNG["Fehler: Fehlendes Grafikbild"]
+
+
+NOTE: Das Erstellen von iSCSI-LUNs wird derzeit nicht von der FSX-Konsole unterstützt. Für die Implementierung von iSCSI-LUNs bei Oracle können die Volumes und LUNs mithilfe von Automatisierung für ONTAP mit dem NetApp Automatisierungs-Toolkit erstellt werden.
+
+
+
+== Installation und Konfiguration von Oracle auf einer EC2-Instanz mit FSX Datenbank-Volumes
+
+Das Automatisierungsteam von NetApp stellt ein Automatisierungs-Kit bereit, um Oracle Installation und Konfiguration auf EC2 Instanzen gemäß den Best Practices auszuführen. Die aktuelle Version des Automatisierungs-Kits unterstützt Oracle 19c on NFS mit dem Standard RU Patch 19.8. Das Automationskit kann bei Bedarf problemlos an andere RU-Patches angepasst werden.
+
+
+
+=== Ansible-Controller vorbereiten, um die Automatisierung auszuführen
+
+Befolgen Sie die Anweisungen im Abschnitt „ and connecting to an EC2 instance for hosting Oracle database„ “ Bezeichnet, um eine kleine EC2 Linux-Instanz zum Ausführen des Ansible-Controllers bereitzustellen. Anstatt RedHat zu verwenden, sollte Amazon Linux t2.Large mit 2vCPU und 8G RAM ausreichend sein.
+
+
+
+=== Rufen Sie das NetApp Oracle Deployment Automation Toolkit ab
+
+Melden Sie sich bei der EC2-Ansible-Controller-Instanz an, die von Schritt 1 als ec2-Benutzer bereitgestellt wird, und führen Sie das aus, wenn sie das ec2-User-Home-Verzeichnis verwenden `git clone` Befehl zum Klonen einer Kopie des Automatisierungscodes.
+
+[source, cli]
+----
+git clone https://github.com/NetApp-Automation/na_oracle19c_deploy.git
+----
+[source, cli]
+----
+git clone https://github.com/NetApp-Automation/na_rds_fsx_oranfs_config.git
+----
+
+
+=== Führen Sie die automatisierte Oracle 19c-Implementierung mit dem Automatisierungs-Toolkit aus
+
+Siehe diese detaillierte Anweisung link:https://docs.netapp.com/us-en/netapp-solutions/databases/cli_automation.html["CLI-Implementierung einer Oracle 19c Datenbank"^] Um Oracle 19c mit CLI-Automatisierung zu implementieren. Die Befehlssyntax für die Ausführung des Playbook-Befehls ändert sich klein, da Sie ein SSH-Schlüsselpaar anstelle eines Passworts für die Host-Zugriffs-Authentifizierung verwenden. Die folgende Liste enthält eine allgemeine Zusammenfassung:
+
+. Standardmäßig verwendet eine EC2-Instanz ein SSH-Schlüsselpaar für die Zugriffsauthentisierung. Über Ansible-Root-Verzeichnisse zur Controller-Automatisierung `/home/ec2-user/na_oracle19c_deploy`, und `/home/ec2-user/na_rds_fsx_oranfs_config`Erstellen Sie eine Kopie des SSH-Schlüssels `accesststkey.pem` Für den im Schritt implementierten Oracle Host „ and connecting to an EC2 instance for hosting Oracle database.“
+. Melden Sie sich als ec2-User beim DB-Host der EC2-Instanz an, und installieren Sie die python3-Bibliothek.
++
+[source, cli]
+----
+sudo yum install python3
+----
+. Erstellen Sie einen 16G-Swap-Speicherplatz vom Root-Festplattenlaufwerk. Standardmäßig erstellt eine EC2-Instanz keinen Swap-Speicherplatz. Folgen Sie der folgenden AWS Dokumentation: link:https://aws.amazon.com/premiumsupport/knowledge-center/ec2-memory-swap-file/["Wie weisen ich Speicher zu, um durch Verwendung einer Auslagerungsdatei als Auslagerungsspeicher in einer Amazon EC2 Instanz zu arbeiten?"^].
+. Zurück zum Ansible-Controller (`cd /home/ec2-user/na_rds_fsx_oranfs_config`), und führen Sie das Pre-Clone-Playbook mit den entsprechenden Anforderungen und aus `linux_config` tags:
++
+[source, cli]
+----
+ansible-playbook -i hosts rds_preclone_config.yml -u ec2-user --private-key accesststkey.pem -e @vars/fsx_vars.yml -t requirements_config
+----
++
+[source, cli]
+----
+ansible-playbook -i hosts rds_preclone_config.yml -u ec2-user --private-key accesststkey.pem -e @vars/fsx_vars.yml -t linux_config
+----
+. Wechseln Sie zum `/home/ec2-user/na_oracle19c_deploy-master` Lesen Sie die README-Datei, und füllen Sie den globalen Ordner aus `vars.yml` Datei mit den relevanten globalen Parametern.
+. Füllen Sie das aus `host_name.yml` Datei mit den entsprechenden Parametern im `host_vars` Verzeichnis.
+. Führen Sie das Playbook für Linux aus, und drücken Sie die Eingabetaste, wenn Sie zur Eingabe des vsadmin-Passworts aufgefordert werden.
++
+[source, cli]
+----
+ansible-playbook -i hosts all_playbook.yml -u ec2-user --private-key accesststkey.pem -t linux_config -e @vars/vars.yml
+----
+. Führen Sie das Playbook für Oracle aus, und drücken Sie die Eingabetaste, wenn Sie zur Eingabe des vsadmin-Passworts aufgefordert werden.
++
+[source, cli]
+----
+ansible-playbook -i hosts all_playbook.yml -u ec2-user --private-key accesststkey.pem -t oracle_config -e @vars/vars.yml
+----
+
+
+Ändern Sie ggf. das Berechtigungsbit für die SSH-Schlüsseldatei in 400. Ändern Sie den Oracle-Host (`ansible_host` Im `host_vars` Datei) IP-Adresse an die öffentliche Adresse Ihrer EC2 Instanz.
+
+
+
+== Einrichten von SnapMirror zwischen primärem und Standby FSX HA-Cluster
+
+Für Hochverfügbarkeit und Disaster Recovery kann SnapMirror Replizierung zwischen dem primären und Standby FSX Storage-Cluster eingerichtet werden. Im Gegensatz zu anderen Cloud-Storage-Services ermöglicht FSX Benutzern die Steuerung und das Management der Storage-Replizierung mit der gewünschten Häufigkeit und dem Replizierungsdurchsatz. Außerdem können Benutzer HA/DR ohne Auswirkungen auf die Verfügbarkeit testen.
+
+Die folgenden Schritte zeigen, wie die Replikation zwischen einem primären und Standby FSX-Storage-Cluster eingerichtet wird.
+
+. Primären und Standby-Cluster-Peering einrichten. Melden Sie sich als fsxadmin-Benutzer im primären Cluster an, und führen Sie den folgenden Befehl aus. Bei dieser gegenseitigen Erstellung wird der Befehl create sowohl auf dem primären Cluster als auch auf dem Standby-Cluster ausgeführt. Austausch `standby_cluster_name` Mit dem entsprechenden Namen für Ihre Umgebung einfügen.
++
+[source, cli]
+----
+cluster peer create -peer-addrs standby_cluster_name,inter_cluster_ip_address -username fsxadmin -initial-allowed-vserver-peers *
+----
+. Einrichten von Vserver Peering zwischen dem primären und dem Standby-Cluster Melden Sie sich als vsadmin-Benutzer im primären Cluster an, und führen Sie den folgenden Befehl aus. Austausch `primary_vserver_name`, `standby_vserver_name`, `standby_cluster_name` Den entsprechenden Namen für Ihre Umgebung bereit.
++
+[source, cli]
+----
+vserver peer create -vserver primary_vserver_name -peer-vserver standby_vserver_name -peer-cluster standby_cluster_name -applications snapmirror
+----
+. Überprüfen Sie, ob die Cluster- und vserver-Peerings korrekt eingerichtet sind.
++
+image:aws_ora_fsx_ec2_stor_14.PNG["Fehler: Fehlendes Grafikbild"]
+
+. Erstellung von Ziel-NFS-Volumes im Standby-FSX Cluster für jedes Quell-Volume im primären FSX-Cluster Ersetzen Sie den für Ihre Umgebung geeigneten Volume-Namen.
++
+[source, cli]
+----
+vol create -volume dr_db1_bin -aggregate aggr1 -size 50G -state online -policy default -type DP
+----
++
+[source, cli]
+----
+vol create -volume dr_db1_data -aggregate aggr1 -size 500G -state online -policy default -type DP
+----
++
+[source, cli]
+----
+vol create -volume dr_db1_log -aggregate aggr1 -size 250G -state online -policy default -type DP
+----
+. Sie können auch iSCSI Volumes und LUNs für die Oracle-Binärdatei, Oracle Daten und das Oracle-Protokoll erstellen, wenn das iSCSI-Protokoll für den Datenzugriff verwendet wird. Lassen Sie ungefähr 10% freien Platz in den Volumes für Schnappschüsse.
++
+[source, cli]
+----
+vol create -volume dr_db1_bin -aggregate aggr1 -size 50G -state online -policy default -unix-permissions ---rwxr-xr-x -type RW
+----
++
+[source, cli]
+----
+lun create -path /vol/dr_db1_bin/dr_db1_bin_01 -size 45G -ostype linux
+----
++
+[source, cli]
+----
+vol create -volume dr_db1_data -aggregate aggr1 -size 500G -state online -policy default -unix-permissions ---rwxr-xr-x -type RW
+----
++
+[source, cli]
+----
+lun create -path /vol/dr_db1_data/dr_db1_data_01 -size 100G -ostype linux
+----
++
+[source, cli]
+----
+lun create -path /vol/dr_db1_data/dr_db1_data_02 -size 100G -ostype linux
+----
++
+[source, cli]
+----
+lun create -path /vol/dr_db1_data/dr_db1_data_03 -size 100G -ostype linux
+----
++
+[source, cli]
+----
+lun create -path /vol/dr_db1_data/dr_db1_data_04 -size 100G -ostype linux
+----
++
+vol create -Volume dr_db1_log -aggregate aggr1 -size 250G -State online -Policy Standard -unix-Berechtigungen ---rwxr-xr-x -type RW
+
++
+[source, cli]
+----
+lun create -path /vol/dr_db1_log/dr_db1_log_01 -size 45G -ostype linux
+----
++
+[source, cli]
+----
+lun create -path /vol/dr_db1_log/dr_db1_log_02 -size 45G -ostype linux
+----
++
+[source, cli]
+----
+lun create -path /vol/dr_db1_log/dr_db1_log_03 -size 45G -ostype linux
+----
++
+[source, cli]
+----
+lun create -path /vol/dr_db1_log/dr_db1_log_04 -size 45G -ostype linux
+----
+. Erstellen Sie bei iSCSI LUNs eine Zuordnung für den Oracle-Host-Initiator für jede LUN, wobei die binäre LUN als Beispiel verwendet wird. Ersetzen Sie die Initiatorgruppe durch einen entsprechenden Namen für Ihre Umgebung und erhöhen Sie die LUN-id für jede zusätzliche LUN.
++
+[source, cli]
+----
+lun mapping create -path /vol/dr_db1_bin/dr_db1_bin_01 -igroup ip-10-0-1-136 -lun-id 0
+----
++
+[source, cli]
+----
+lun mapping create -path /vol/dr_db1_data/dr_db1_data_01 -igroup ip-10-0-1-136 -lun-id 1
+----
+. Erstellen einer SnapMirror Beziehung zwischen dem primären und dem Standby-Datenbank-Volume Ersetzen Sie den entsprechenden SVM-Namen für Ihre Umgebung.s
++
+[source, cli]
+----
+snapmirror create -source-path svm_FSxOraSource:db1_bin -destination-path svm_FSxOraTarget:dr_db1_bin -vserver svm_FSxOraTarget -throttle unlimited -identity-preserve false -policy MirrorAllSnapshots -type DP
+----
++
+[source, cli]
+----
+snapmirror create -source-path svm_FSxOraSource:db1_data -destination-path svm_FSxOraTarget:dr_db1_data -vserver svm_FSxOraTarget -throttle unlimited -identity-preserve false -policy MirrorAllSnapshots -type DP
+----
++
+[source, cli]
+----
+snapmirror create -source-path svm_FSxOraSource:db1_log -destination-path svm_FSxOraTarget:dr_db1_log -vserver svm_FSxOraTarget -throttle unlimited -identity-preserve false -policy MirrorAllSnapshots -type DP
+----
+
+
+Die SnapMirror Einrichtung kann mit einem NetApp Automation Toolkit für NFS-Datenbank-Volumes automatisiert werden. Das Toolkit kann auf der öffentlichen NetApp GitHub Website heruntergeladen werden.
+
+[source, cli]
+----
+git clone https://github.com/NetApp-Automation/na_ora_hadr_failover_resync.git
+----
+Lesen Sie die README-Anweisungen sorgfältig durch, bevor Sie die Einrichtung und Failover-Tests durchführen.
+
+
+NOTE: Bei der Replizierung der Oracle Binary vom primären zu einem Standby-Cluster können sich Auswirkungen auf die Oracle Lizenz ergeben. Weitere Informationen erhalten Sie bei Ihrem Oracle-Lizenzvertreter. Als Alternative könnte Oracle zum Zeitpunkt der Recovery und des Failover installiert und konfiguriert werden.
+
+
+
+== SnapCenter Deployment
+
+
+
+=== SnapCenter Installation
+
+Folgen link:https://docs.netapp.com/ocsc-41/index.jsp?topic=%2Fcom.netapp.doc.ocsc-isg%2FGUID-D3F2FBA8-8EE7-4820-A445-BC1E5C0AF374.html["Installieren des SnapCenter-Servers"^] So installieren Sie den SnapCenter-Server: In dieser Dokumentation wird die Installation eines eigenständigen SnapCenter-Servers erläutert. Eine SaaS-Version von SnapCenter ist derzeit in der Beta-Überprüfung und könnte in Kürze verfügbar sein. Wenden Sie sich bei Bedarf an Ihren NetApp Vertriebsmitarbeiter, um Informationen zur Verfügbarkeit zu erhalten.
+
+
+
+=== Konfiguration des SnapCenter Plug-ins für den EC2 Oracle Host
+
+. Melden SnapCenter Sie sich nach der automatisierten SnapCenter-Installation als administrativer Benutzer für den Windows-Host an, auf dem der SnapCenter-Server installiert ist.
++
+image:aws_rds_custom_deploy_snp_01.PNG["Fehler: Fehlendes Grafikbild"]
+
+. Klicken Sie im linken Menü auf Einstellungen und dann Credential und New, um ec2-User-Anmeldeinformationen für die SnapCenter-Plugin-Installation hinzuzufügen.
++
+image:aws_rds_custom_deploy_snp_02.PNG["Fehler: Fehlendes Grafikbild"]
+
+. Setzen Sie das ec2-User-Passwort zurück und aktivieren Sie die SSH-Passwort-Authentifizierung, indem Sie den bearbeiten `/etc/ssh/sshd_config` Datei auf dem EC2 Instance Host.
+. Vergewissern Sie sich, dass das Kontrollkästchen „Sudo-Berechtigungen verwenden“ aktiviert ist. Im vorherigen Schritt setzen Sie einfach das ec2-User-Passwort zurück.
++
+image:aws_rds_custom_deploy_snp_03.PNG["Fehler: Fehlendes Grafikbild"]
+
+. Fügen Sie zur Namensauflösung den SnapCenter-Servernamen und die IP-Adresse zur Host-Datei der EC2-Instanz hinzu.
++
+[listing]
+----
+[ec2-user@ip-10-0-0-151 ~]$ sudo vi /etc/hosts
+[ec2-user@ip-10-0-0-151 ~]$ cat /etc/hosts
+127.0.0.1   localhost localhost.localdomain localhost4 localhost4.localdomain4
+::1         localhost localhost.localdomain localhost6 localhost6.localdomain6
+10.0.1.233  rdscustomvalsc.rdscustomval.com rdscustomvalsc
+----
+. Fügen Sie auf dem Windows-Host des SnapCenter-Servers der Windows-Hostdatei die Host-IP-Adresse der EC2-Instanz hinzu `C:\Windows\System32\drivers\etc\hosts`.
++
+[listing]
+----
+10.0.0.151		ip-10-0-0-151.ec2.internal
+----
+. Wählen Sie im linken Menü Hosts > Managed Hosts aus und klicken Sie dann auf Hinzufügen, um den EC2 Instance Host zu SnapCenter hinzuzufügen.
++
+image:aws_rds_custom_deploy_snp_04.PNG["Fehler: Fehlendes Grafikbild"]
+
++
+Aktivieren Sie Oracle Database, und klicken Sie vor dem Senden auf More Options.
+
++
+image:aws_rds_custom_deploy_snp_05.PNG["Fehler: Fehlendes Grafikbild"]
+
++
+Aktivieren Sie Prüfungen Vor Der Installation Überspringen. Bestätigen Sie die Überprüfung der Vorinstallation überspringen, und klicken Sie dann auf nach Speichern senden.
+
++
+image:aws_rds_custom_deploy_snp_06.PNG["Fehler: Fehlendes Grafikbild"]
+
++
+Sie werden mit Fingerabdruck bestätigen aufgefordert und dann auf Bestätigen und Senden klicken.
+
++
+image:aws_rds_custom_deploy_snp_07.PNG["Fehler: Fehlendes Grafikbild"]
+
++
+Nach erfolgreicher Plugin-Konfiguration wird der Gesamtstatus des verwalteten Hosts als aktiv angezeigt.
+
++
+image:aws_rds_custom_deploy_snp_08.PNG["Fehler: Fehlendes Grafikbild"]
+
+
+
+
+
+=== Konfigurieren der Backup-Richtlinie für Oracle-Datenbank
+
+Siehe diesen Abschnitt link:https://docs.netapp.com/us-en/netapp-solutions/databases/hybrid_dbops_snapcenter_getting_started_onprem.html#7-setup-database-backup-policy-in-snapcenter["Backup-Richtlinie für Datenbanken in SnapCenter einrichten"^] Weitere Informationen zur Konfiguration der Backup-Richtlinie für Oracle Datenbanken finden Sie unter.
+
+Im Allgemeinen müssen Sie eine Politik für das vollständige Snapshot-Backup der Oracle-Datenbank und eine Politik für das Oracle Archiv-Log-only Snapshot-Backup erstellen.
+
+
+NOTE: Sie können Oracle Archivprotokoll-Beschneidung in der Backup-Richtlinie aktivieren, um den Protokollarchiv-Speicherplatz zu steuern. Aktivieren Sie „Update SnapMirror nach dem Erstellen einer lokalen Snapshot Kopie“ in der „Select secondary Replication Option“, da Sie die Replizierung zu einem Standby-Standort für HA oder DR benötigen.
+
+
+
+=== Konfigurieren Sie Backup und Planung von Oracle Datenbanken
+
+Das Datenbank-Backup in SnapCenter ist benutzerkonfigurierbar und kann entweder einzeln oder als Gruppe in einer Ressourcengruppe eingerichtet werden. Das Backup-Intervall hängt von den RTO- und RPO-Zielen ab. NetApp empfiehlt, alle paar Stunden ein komplettes Datenbank-Backup auszuführen und das Protokoll-Backup mit einer höheren Frequenz, z. B. 10-15 Minuten, zu archivieren, um eine schnelle Recovery zu ermöglichen.
+
+Weitere Informationen finden Sie im Abschnitt Oracle von link:https://docs.netapp.com/us-en/netapp-solutions/databases/hybrid_dbops_snapcenter_getting_started_onprem.html#8-implement-backup-policy-to-protect-database["Backup-Richtlinie zum Schutz der Datenbank implementieren"^] Für detaillierte Schritt-für-Schritt-Prozesse zur Implementierung der im Abschnitt erstellten Backup-Richtlinie  backup policy for Oracle database Und für die Backup-Jobplanung.
+
+Das folgende Bild zeigt ein Beispiel für die Ressourcengruppen, die zum Backup einer Oracle-Datenbank eingerichtet wurden.
+
+image:aws_rds_custom_deploy_snp_09.PNG["Fehler: Fehlendes Grafikbild"]
+
+link:aws_ora_fsx_ec2_mgmt.html["Als Nächstes: Datenbankmanagement."]

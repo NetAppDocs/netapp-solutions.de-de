@@ -1,0 +1,27 @@
+---
+sidebar: sidebar 
+permalink: ai/osrunai_achieving_high_cluster_utilization.html 
+keywords:  
+summary:  
+---
+= Erreichen Einer Hohen Cluster-Auslastung
+:hardbreaks:
+:allow-uri-read: 
+:nofooter: 
+:icons: font
+:linkattrs: 
+:imagesdir: ./../media/
+
+
+In diesem Abschnitt emulieren wir ein realistisches Szenario, in dem vier Data-Science-Teams jeweils ihre eigenen Workloads einreichen, um die Run:KI-Orchestrierungslösung vorzuführen. Diese Lösung erzielt eine hohe Cluster-Auslastung, während Priorisierung beibehalten und GPU-Ressourcen ausgeglichen werden. Wir beginnen mit dem im Abschnitt beschriebenen ResNet-50-Benchmark link:osrunai_resnet-50_with_imagenet_dataset_benchmark_summary.html["ResNet-50 mit ImageNet-Datensatz Benchmark-Zusammenfassung"]:
+
+....
+$ runai submit netapp1 -i netapp/tensorflow-tf1-py3:20.01.0 --local-image --large-shm  -v /mnt:/mnt -v /tmp:/tmp --command python --args "/netapp/scripts/run.py" --args "--dataset_dir=/mnt/mount_0/dataset/imagenet/imagenet_original/" --args "--num_mounts=2"  --args "--dgx_version=dgx1" --args "--num_devices=1" -g 1
+....
+Wir führten den gleichen ResNet-50-Benchmark wie in aus https://www.netapp.com/us/media/nva-1121-design.pdf["NVA-1121"^]. Wir haben die Flagge benutzt `--local-image` Für Container, die sich nicht im öffentlichen Docker-Repository befinden. Wir haben die Verzeichnisse angehängt `/mnt` Und `/tmp` Auf dem Host DGX-1-Node zu `/mnt` Und `/tmp` Zum Behälter bzw.. Der Datensatz befindet sich bei NetApp AFFA800 mit dem `dataset_dir` Argument, das auf das Verzeichnis verweist. Beides `--num_devices=1` Und `-g 1` Meinen, dass wir eine GPU für diesen Job zuweisen. Ersteres ist ein Argument für das `run.py` Skript, während letzteres eine Flagge für die ist `runai submit` Befehl.
+
+Die folgende Abbildung zeigt ein Dashboard mit Systemübersicht mit einer GPU-Auslastung von 97 % und allen sechzehn verfügbaren GPUs. Im Balkendiagramm der GPUs können Sie leicht sehen, wie viele GPUs jedem Team zugewiesen sind. Im Bereich laufende Jobs werden die aktuell ausgeführten Jobnamen, Projekte, Benutzer, Typ, Knoten, angezeigt. GPUs – verbrauchte, Laufzeit, Fortschritt und Auslastungsdetails Eine Liste der Workloads in der Warteschlange mit deren Wartezeit wird unter Ausstehende Jobs angezeigt. Schließlich bietet die Box Nodes GPU-Nummern und Auslastung für einzelne DGX-1-Nodes im Cluster.
+
+image:osrunai_image6.png["Fehler: Fehlendes Grafikbild"]
+
+link:osrunai_fractional_gpu_allocation_for_less_demanding_or_interactive_workloads.html["Nächste: Fraktionale GPU-Zuweisung für weniger anspruchsvolle oder interaktive Workloads"]

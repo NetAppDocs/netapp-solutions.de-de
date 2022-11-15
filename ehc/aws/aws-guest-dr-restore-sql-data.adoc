@@ -1,0 +1,138 @@
+---
+sidebar: sidebar 
+permalink: ehc/aws/aws-guest-dr-restore-sql-data.html 
+keywords: Configure, FSx storage, SQL Server, restore, Windows VM, iSCSI access, file systems, SnapCenter, SQL Server Plug-in 
+summary: Diese Seite enthält Anweisungen zur Wiederherstellung eines SQL Servers in VMware Cloud Services in AWS im Falle eines Ausfalls, durch den der Standort vor Ort funktionsfähig wird. 
+---
+= Stellen Sie SQL Server Applikationsdaten wieder her
+:hardbreaks:
+:allow-uri-read: 
+:nofooter: 
+:icons: font
+:linkattrs: 
+:imagesdir: ./../../media/
+
+
+link:aws-guest-dr-restore-veeam-full.html["Früher: Stellen Sie die Applikations-VMs mit Veeam Full Restore wieder her."]
+
+Das folgende Verfahren enthält Anweisungen zur Wiederherstellung eines SQL Servers in VMware Cloud Services in AWS im Falle eines Ausfalls, durch den der Betrieb des lokalen Standorts gewährleistet wird.
+
+Es wird davon ausgegangen, dass die folgenden Voraussetzungen abgeschlossen sind, um mit den Wiederherstellungsschritten fortzufahren:
+
+. Die Windows-Server-VM wurde mithilfe von Veeam Full Restore in VMware Cloud SDDC wiederhergestellt.
+. Es wurde ein sekundärer SnapCenter-Server eingerichtet, und die Wiederherstellung und Konfiguration von SnapCenter Datenbanken wurden anhand der im Abschnitt beschriebenen Schritte abgeschlossen link:aws-guest-dr-snapcenter-db-backup.html#snapcenter-backup-and-restore-process-summary["Zusammenfassung des SnapCenter-Backup- und Restore-Prozesses"]
+
+
+Eine Zusammenfassung des Recovery-Prozesses für SQL Server-Applikationsdaten:
+
+. Konfigurieren Sie die VM in Vorbereitung für den Wiederherstellungsprozess.
+. Richten Sie FSX für iSCSI-Zugriff ein.
+. Richten Sie die Windows VM für iSCSI-Zugriff ein.
+. Verbinden Sie die SQL Server-Datenbank, und schalten Sie sie online.
+. Bestätigen Sie die Kommunikation zwischen SnapCenter und dem SnapCenter SQL Server Plug-in.
+
+
+
+
+== VM: Post-Restore-Konfiguration für SQL Server VM
+
+Nach Abschluss der Wiederherstellung der VM müssen Sie Netzwerke und andere Elemente konfigurieren, die für die erneute Erkennung der Host-VM in SnapCenter konfiguriert werden.
+
+. Weisen Sie neue IP-Adressen für Management und iSCSI oder NFS zu.
+. Verbinden Sie den Host mit der Windows Domain.
+. Fügen Sie die Hostnamen zum DNS oder zur Hosts-Datei auf dem SnapCenter-Server hinzu.
+
+
+
+NOTE: Wenn das SnapCenter-Plug-in mit anderen Domänenanmeldeinformationen bereitgestellt wurde als die aktuelle Domäne, müssen Sie das Anmeldekonto für den Plug-in für Windows-Dienst auf der SQL Server-VM ändern. Starten Sie nach dem Ändern des Anmelde-Kontos den SnapCenter SMCore, das Plug-in für Windows und das Plug-in für SQL Server-Dienste neu.
+
+
+NOTE: Damit die wiederhergestellten VMs in SnapCenter automatisch wieder aufgeermittelt werden können, muss der FQDN mit der VM übereinstimmen, die ursprünglich der SnapCenter vor Ort hinzugefügt wurde.
+
+
+
+== Konfigurieren Sie FSX-Speicher für SQL Server Restore
+
+Um den Disaster Recovery-Prozess für eine SQL Server VM durchzuführen, müssen Sie die bestehende SnapMirror Beziehung vom FSX Cluster durchbrechen und den Zugriff auf das Volume gewähren. Um das zu tun, führen Sie folgende Schritte durch.
+
+. Um die vorhandene SnapMirror Beziehung für die SQL Server-Datenbank und Protokoll-Volumes zu unterbrechen, führen Sie den folgenden Befehl aus der FSX-CLI aus:
++
+....
+FSx-Dest::> snapmirror break -destination-path DestSVM:DestVolName
+....
+. Gewähren Sie den Zugriff auf die LUN, indem Sie eine Initiatorgruppe erstellen, die den iSCSI-IQN der Windows VM des SQL Servers enthält:
++
+....
+FSx-Dest::> igroup create -vserver DestSVM -igroup igroupName -protocol iSCSI -ostype windows -initiator IQN
+....
+. Schließlich ordnen Sie die LUNs der Initiatorgruppe zu, die Sie gerade erstellt haben:
++
+....
+FSx-Dest::> lun mapping create -vserver DestSVM -path LUNPath igroup igroupName
+....
+. Um den Namen des Pfads zu finden, führen Sie den aus `lun show` Befehl.
+
+
+
+
+== Richten Sie Windows VM für iSCSI-Zugriff ein und ermitteln Sie die Dateisysteme
+
+. Richten Sie von der SQL Server-VM aus Ihren iSCSI-Netzwerkadapter ein, um mit der VMware-Portgruppe zu kommunizieren, die mit Konnektivität zu den iSCSI-Zielschnittstellen auf Ihrer FSX-Instanz eingerichtet wurde.
+. Öffnen Sie das Dienstprogramm iSCSI Initiator Properties, und löschen Sie die alten Verbindungseinstellungen auf den Registerkarten Discovery, Favorite Targets und Targets.
+. Suchen Sie die IP-Adresse(n) für den Zugriff auf die logische iSCSI-Schnittstelle auf der FSX-Instanz/dem FSX-Cluster. Sie finden sie in der AWS Konsole unter Amazon FSX > ONTAP > Storage Virtual Machines.
++
+image:dr-vmc-aws-image68.png["Fehler: Fehlendes Grafikbild"]
+
+. Klicken Sie auf der Registerkarte Erkennung auf Portal ermitteln, und geben Sie die IP-Adressen für Ihre FSX-iSCSI-Ziele ein.
++
+image:dr-vmc-aws-image69.png["Fehler: Fehlendes Grafikbild"]
+
++
+image:dr-vmc-aws-image70.png["Fehler: Fehlendes Grafikbild"]
+
+. Klicken Sie auf der Registerkarte Ziel auf Verbinden, wählen Sie gegebenenfalls Multi-Path aktivieren für Ihre Konfiguration aus, und klicken Sie dann auf OK, um eine Verbindung zum Ziel herzustellen.
++
+image:dr-vmc-aws-image71.png["Fehler: Fehlendes Grafikbild"]
+
+. Öffnen Sie das Computer Management-Dienstprogramm, und bringen Sie die Laufwerke online. Vergewissern Sie sich, dass sie die gleichen Laufwerksbuchstaben wie zuvor gehalten haben.
++
+image:dr-vmc-aws-image72.png["Fehler: Fehlendes Grafikbild"]
+
+
+
+
+
+== Verbinden Sie die SQL Server-Datenbanken
+
+. Öffnen Sie in der SQL Server VM Microsoft SQL Server Management Studio, und wählen Sie Attach aus, um den Prozess der Verbindung zur Datenbank zu starten.
++
+image:dr-vmc-aws-image73.png["Fehler: Fehlendes Grafikbild"]
+
+. Klicken Sie auf Hinzufügen, und navigieren Sie zu dem Ordner, der die primäre SQL Server-Datenbankdatei enthält, wählen Sie sie aus, und klicken Sie auf OK.
++
+image:dr-vmc-aws-image74.png["Fehler: Fehlendes Grafikbild"]
+
+. Wenn sich die Transaktionsprotokolle auf einem separaten Laufwerk befinden, wählen Sie den Ordner aus, der das Transaktionsprotokoll enthält.
+. Wenn Sie fertig sind, klicken Sie auf OK, um die Datenbank anzuhängen.
++
+image:dr-vmc-aws-image75.png["Fehler: Fehlendes Grafikbild"]
+
+
+
+
+
+== Bestätigen Sie die SnapCenter-Kommunikation mit dem SQL Server-Plug-in
+
+Wenn die SnapCenter Datenbank wieder in den vorherigen Status zurückversetzt wurde, werden die SQL Server Hosts automatisch erneut erkannt. Damit dies korrekt funktioniert, beachten Sie die folgenden Voraussetzungen:
+
+* SnapCenter muss im Disaster Recovery-Modus platziert werden. Dies kann über die Swagger API oder in den globalen Einstellungen unter Disaster Recovery erreicht werden.
+* Der FQDN des SQL-Servers muss mit der Instanz identisch sein, die im lokalen Datacenter ausgeführt wurde.
+* Die ursprüngliche SnapMirror Beziehung muss unterbrochen werden.
+* Die LUNs, die die Datenbank enthalten, müssen auf die SQL Server-Instanz und die angehängte Datenbank eingebunden werden.
+
+
+Um zu überprüfen, ob sich SnapCenter im Disaster Recovery-Modus befindet, navigieren Sie über den SnapCenter Web-Client zu Einstellungen. Wechseln Sie zur Registerkarte Globale Einstellungen und klicken Sie dann auf Disaster Recovery. Stellen Sie sicher, dass das Kontrollkästchen Disaster Recovery aktivieren aktiviert ist.
+
+image:dr-vmc-aws-image76.png["Fehler: Fehlendes Grafikbild"]
+
+link:aws-guest-dr-restore-oracle-data.html["Im nächsten Schritt werden Oracle Applikationsdaten wiederhergestellt."]

@@ -1,0 +1,95 @@
+---
+sidebar: sidebar 
+permalink: ai/nvaie_ngc_setup.html 
+keywords: NetApp AI, AI, Artificial Intelligence, ML, Machine Learning, NVIDIA, NVIDIA AI Enterprise, NVAIE, VMware, NGC 
+summary: NVIDIA AI Enterprise mit NetApp und VMware – Nutzen Sie NVIDIA NGC Software – Setup 
+---
+= Einrichtung
+:hardbreaks:
+:allow-uri-read: 
+:nofooter: 
+:icons: font
+:linkattrs: 
+:imagesdir: ./../media/
+
+
+link:nvaie_ngc.html["Zuvor: NVIDIA NGC Software verwenden"]
+
+In diesem Abschnitt werden die anfänglichen Einrichtungsaufgaben beschrieben, die durchgeführt werden müssen, um NVIDIA NGC Enterprise-Software in einer NVIDIA KI Enterprise-Umgebung zu nutzen.
+
+
+
+== Voraussetzungen
+
+Bevor Sie die in diesem Abschnitt beschriebenen Schritte ausführen, gehen wir davon aus, dass Sie die NVIDIA AI Enterprise Host-Software bereits implementiert haben. Befolgen Sie dazu die Anweisungen auf der link:nvaie_initial_setup.html["Ersteinrichtung"] Seite.
+
+
+
+== Erstellen einer Ubuntu Gast-VM mit vGPU
+
+Zunächst müssen Sie eine Ubuntu 20.04 Gast-VM mit vGPU erstellen. Um eine Ubuntu 20.04 Gast-VM mit vGPU zu erstellen, befolgen Sie die Anweisungen in der link:https://docs.nvidia.com/ai-enterprise/deployment-guide/dg-first-vm.html["NVIDIA AI Enterprise Deployment Guide"].
+
+
+
+== Laden Sie die NVIDIA Gast-Software herunter und installieren Sie sie
+
+Als Nächstes müssen Sie die erforderliche NVIDIA-Gastsoftware auf der Gast-VM installieren, die Sie im vorherigen Schritt erstellt haben. Befolgen Sie zum Herunterladen und Installieren der erforderlichen NVIDIA-Gastsoftware auf der Gast-VM die Anweisungen in den Abschnitten 5.1-5.4 in link:https://docs.nvidia.com/ai-enterprise/latest/quick-start-guide/index.html["NVIDIA AI Enterprise Quick Start Guide"].
+
+
+NOTE: Wenn Sie die in Abschnitt 5.4 beschriebenen Verifizierungsaufgaben durchführen, müssen Sie möglicherweise ein anderes CUDA Container Image Version-Tag verwenden, da das CUDA Container-Image seit dem Schreiben des Handbuchs aktualisiert wurde. In unserer Validierung haben wir 'nvidia/cuda:11.0.3-base-ubuntu20.04' verwendet.
+
+
+
+== KI-/Analytics-Framework-Container herunterladen
+
+Als Nächstes müssen Sie benötigte KI- oder Analyse-Framework-Container-Images von NVIDIA NGC herunterladen, damit diese in Ihrer Gast-VM verfügbar sein können. Befolgen Sie zum Herunterladen von Framework-Containern innerhalb der Gast-VM die Anweisungen im link:https://docs.nvidia.com/ai-enterprise/deployment-guide/dg-installai.html["NVIDIA AI Enterprise Deployment Guide"].
+
+
+
+== Installation und Konfiguration des NetApp DataOps Toolkit
+
+Als Nächstes müssen Sie das NetApp DataOps Toolkit für herkömmliche Umgebungen innerhalb der Gast-VM installieren. Das NetApp DataOps Toolkit kann zur Verwaltung von horizontal skalierbaren Daten-Volumes auf Ihrem ONTAP System direkt aus dem Terminal innerhalb der Gast-VM verwendet werden. Führen Sie die folgenden Aufgaben aus, um das NetApp DataOps Toolkit in der Gast-VM zu installieren.
+
+. Installieren Sie pip.
++
+....
+$ sudo apt update
+$ sudo apt install python3-pip
+$ python3 -m pip install netapp-dataops-traditional
+....
+. Melden Sie sich vom Gast-VM-Terminal ab und melden Sie sich dann erneut an.
+. Konfigurieren Sie das NetApp DataOps Toolkit. Um diesen Schritt abzuschließen, benötigen Sie API-Zugriffsdetails für Ihr ONTAP-System. Möglicherweise müssen Sie diese Informationen von Ihrem Storage-Administrator beziehen.
++
+....
+$ netapp_dataops_cli.py config
+
+Enter ONTAP management LIF hostname or IP address (Recommendation: Use SVM management interface): 172.22.10.10
+Enter SVM (Storage VM) name: NVAIE-client
+Enter SVM NFS data LIF hostname or IP address: 172.22.13.151
+Enter default volume type to use when creating new volumes (flexgroup/flexvol) [flexgroup]:
+Enter export policy to use by default when creating new volumes [default]:
+Enter snapshot policy to use by default when creating new volumes [none]:
+Enter unix filesystem user id (uid) to apply by default when creating new volumes (ex. '0' for root user) [0]:
+Enter unix filesystem group id (gid) to apply by default when creating new volumes (ex. '0' for root group) [0]:
+Enter unix filesystem permissions to apply by default when creating new volumes (ex. '0777' for full read/write permissions for all users and groups) [0777]:
+Enter aggregate to use by default when creating new FlexVol volumes: aff_a400_01_NVME_SSD_1
+Enter ONTAP API username (Recommendation: Use SVM account): admin
+Enter ONTAP API password (Recommendation: Use SVM account):
+Verify SSL certificate when calling ONTAP API (true/false): false
+Do you intend to use this toolkit to trigger Cloud Sync operations? (yes/no): no
+Do you intend to use this toolkit to push/pull from S3? (yes/no): no
+Created config file: '/home/user/.netapp_dataops/config.json'.
+....
+
+
+
+
+== Erstellen einer Gast-VM-Vorlage
+
+Und schließlich müssen Sie eine VM-Vorlage auf der Grundlage Ihrer Gast-VM erstellen. Sie können diese Vorlage verwenden, um schnell Gast-VMs zur Nutzung der NVIDIA NGC Software zu erstellen.
+
+Um eine VM-Vorlage auf der Grundlage Ihrer Gast-VM zu erstellen, melden Sie sich bei VMware vSphere an, klicken Sie einfach auf den Namen der Gast-VM, wählen Sie „Klonen“, wählen Sie „Vorlage klonen...“ und folgen Sie dann dem Assistenten.
+
+image:nvaie_image3.png["Fehler: Fehlendes Grafikbild"]
+
+link:nvaie_ngc_tensorflow.html["Weiter: Beispiel Anwendungsfall – TensorFlow Training Job."]

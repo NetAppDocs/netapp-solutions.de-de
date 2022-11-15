@@ -1,0 +1,101 @@
+---
+sidebar: sidebar 
+permalink: data-analytics/kafka-sc-confluent-performance-validation.html 
+keywords: setup, verification results, Object store, correctness test, Tiering functionality, Tier fetch benchmark, Produce-consume, workload generator, Retention 
+summary: Diese Seite beschreibt die Leistungsvalidierung von Confluent innerhalb der Parameter dieser Lösung. 
+---
+= Validierung der Performance in einem fließenden Verhältnis
+:hardbreaks:
+:allow-uri-read: 
+:nofooter: 
+:icons: font
+:linkattrs: 
+:imagesdir: ./../media/
+
+
+link:kafka-sc-technology-overview.html["Zurück: Technologieübersicht."]
+
+Wir haben die Verifizierung mit der Conflient Plattform für Tiered Storage auf NetApp ONTAP durchgeführt. Die NetApp und Conflient Teams haben diese Verifizierung gemeinsam bearbeitet und die erforderlichen Testfälle ausgeführt.
+
+
+
+== Fließende Einrichtung
+
+Für das Setup wurden drei Zookeeper, fünf Broker und fünf Testserver mit 256 GB RAM und 16 CPUs verwendet. Für NetApp Storage haben wir ONTAP mit einem AFF A900 HA Paar verwendet. Der Storage und die Broker waren über 100-GbE-Verbindungen verbunden.
+
+Die folgende Abbildung zeigt die Netzwerktopologie der Konfiguration für die Tiered Storage-Verifizierung.
+
+image:kafka-sc-image7.png["Diese Grafik zeigt die Netzwerktopologie der Konfiguration für die Tiered Storage-Verifizierung."]
+
+Die Tools-Server fungieren als Anwendungsclients, die Ereignisse an oder von Confluent Nodes senden oder empfangen.
+
+
+
+== Fließende Tiered Storage-Konfiguration
+
+Dabei wurden die folgenden Testparameter verwendet:
+
+....
+confluent.tier.fetcher.num.threads=80
+confluent.tier.archiver.num.threads=80
+confluent.tier.enable=true
+confluent.tier.feature=true
+confluent.tier.backend=S3
+confluent.tier.s3.bucket=kafkabucket1-1
+confluent.tier.s3.region=us-east-1
+confluent.tier.s3.cred.file.path=/data/kafka/.ssh/credentials
+confluent.tier.s3.aws.endpoint.override=http://wle-mendocino-07-08/
+confluent.tier.s3.force.path.style.access=true
+bootstrap.server=192.168.150.172:9092,192.168.150.120:9092,192.168.150.164:9092,192.168.150.198:9092,192.168.150.109:9092,192.168.150.165:9092,192.168.150.119:9092,192.168.150.133:9092debug=truejmx.port=7203
+num.partitions=80num.records=200000000#object PUT size - 512MB and fetch 100MB - netappsegment.bytes=536870912max.partition.fetch.bytes=1048576000#GET size is max.partition.fetch.bytes/num.partitionslength.key.value=2048trogdor.agent.nodes=node0,node1,node2,node3,node4trogdor.coordinator.hostname.port=192.168.150.155:8889num.producers=20num.head.consumers=20
+num.tail.consumers=1test.binary.task.max.heap.size=32Gtest.binary.task.timeout.sec=3600producer.timeout.sec=3600consumer.timeout.sec=3600
+....
+Zur Überprüfung haben wir ONTAP mit dem HTTP-Protokoll verwendet, aber HTTPS haben auch funktioniert. Der Zugriffsschlüssel und der Geheimschlüssel werden im Dateinamen im gespeichert `confluent.tier.s3.cred.file.path` Parameter.
+
+
+
+== NetApp Storage Controller – ONTAP
+
+Wir haben zur Verifizierung eine Single HA-Paar-Konfiguration in ONTAP konfiguriert.
+
+image:kafka-sc-image8.png["Diese Abbildung zeigt, wie die Umgebung zur Verifizierung als ein einziges HA-Paar konfiguriert wurde."]
+
+
+
+== Überprüfungsergebnisse
+
+Wir haben die folgenden fünf Testfälle für die Verifizierung abgeschlossen. Die ersten beiden waren Funktionstests und die verbleibenden drei waren Performance-Tests.
+
+
+
+=== Korrektheit des Objektspeichers
+
+Dieser Test führt grundlegende Vorgänge wie Abrufen, Put und Löschen im Objektspeicher durch, der mithilfe von API-Aufrufen für den Tiered Storage verwendet wird.
+
+
+
+=== Funktionstest der Tiering-Funktion
+
+Dieser Test überprüft die End-to-End-Funktionen des Objekt-Storage. Es erstellt ein Thema, erstellt einen Ereignisstrom zum neu erstellten Thema, wartet auf die Broker, um die Segmente im Objektspeicher zu archivieren, verbraucht den Ereignisstrom und validiert die verbrauchten Streams mit dem erzeugten Stream. Diesen Test haben wir mit und ohne Objektspeicherfehlereinspritzung durchgeführt. Wir haben einen Node-Ausfall simuliert, indem wir den Service Manager Service in einem der Nodes in ONTAP unterbrechen und validieren, dass die End-to-End-Funktionalität mit dem Objekt-Storage kompatibel ist.
+
+
+
+=== Tier-Fetch-Benchmark
+
+Dieser Test bestätigte die Lese-Performance des Tiered Objekt-Storage und prüfte den Bereich, in dem Leseanforderungen unter hoher Last aus vom Benchmark erzeugten Segmenten abgerufen werden. In dieser Benchmark hat Confluent benutzerdefinierte Clients entwickelt, um die Tier-fetch-Anforderungen zu erfüllen.
+
+
+
+=== Produzieren-Workload-Generator zur Nutzung
+
+Dieser Test generiert über die Archivierung von Segmenten indirekt einen Schreib-Workload auf dem Objektspeicher. Der Lese-Workload (Segmente Lesen) wurde aus dem Objekt-Storage generiert, wenn Verbrauchergruppen die Segmente abgerufen haben. Dieser Workload wurde von einem TOCC-Skript generiert. In diesem Test wurde die Performance von Lese- und Schreibvorgängen im Objekt-Storage in parallelen Threads überprüft. Wir haben wie bei dem Tiering-Funktionstest mit und ohne Objektspeicher-Fehlereinspritzung getestet.
+
+
+
+=== Retention Workload Generator
+
+Im Rahmen dieses Tests wurde die Löschleistung eines Objektspeichers unter einem anspruchsvollen Thema Aufbewahrung Workload überprüft. Der Retention Workload wurde mit einem TOCC-Skript erzeugt, das viele Nachrichten parallel zu einem Testthema erzeugt. Das Testthema wurde mit einer aggressiven größenbasierten und zeitbasierten Aufbewahrungseinstellung konfiguriert, die dazu führte, dass der Ereignisstrom kontinuierlich aus dem Objektspeicher gelöscht wurde. Die Segmente wurden anschließend archiviert. Dies führte dazu, dass der Vermittler zahlreiche Löschungen im Objekt-Storage erfasst und bei der Performance der Objektspeicher-Löschvorgänge erfasst wurde.
+
+Informationen zur Überprüfung finden Sie im https://docs.confluent.io/platform/current/kafka/tiered-storage.html["Fließend"^] Website.
+
+link:kafka-sc-performance-tests-with-produce-consume-workload-generator.html["Der nächste Schritt: Performance-Tests mit dem Produce-Consume Workload Generator."]

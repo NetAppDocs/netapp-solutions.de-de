@@ -1,0 +1,57 @@
+---
+sidebar: sidebar 
+permalink: data-analytics/confluent-kafka-introduction.html 
+keywords: tr-4912, tr4912, 4912, introduction, best practices, Kafka, confluent 
+summary: Dieses Dokument enthält eine Beschreibung der Best Practice-Richtlinien zum Einsatz von Kafka auf einem NetApp Storage Controller. 
+---
+= TR-4912: Best Practice Guidelines für Conflient Kafka Tiered Storage mit NetApp
+:hardbreaks:
+:allow-uri-read: 
+:nofooter: 
+:icons: font
+:linkattrs: 
+:imagesdir: ./../media/
+
+
+Karthikeyan Nagalingam, Joseph Kandatilparambil, NetApp Rankesh Kumar, Confluent
+
+Apache Kafka ist eine Community-verteilte Event-Streaming-Plattform, die täglich Billionen von Ereignissen bewältigen kann. Kafka wurde ursprünglich als Messaging-Warteschlange konzipiert und basiert auf einer Abstraktion eines verteilten Commit-Protokolls. Seit der Gründung und Open-sourcing von LinkedIn im Jahr 2011 hat sich Kafka von einer Nachrichtenwarteschlange zu einer vollwertigen Event-Streaming-Plattform entwickelt. Confluent liefert die Distribution von Apache Kafka mit der Confluent Platform. Die Confluent Platform ergänzt Kafka um zusätzliche Community- und kommerzielle Funktionen, die das Streamingerlebnis sowohl von Betreibern als auch von Entwicklern in der Produktion in großem Maßstab verbessern sollen.
+
+Dieses Dokument beschreibt die Best Practice-Richtlinien für die Verwendung von Confluent Tiered Storage auf dem Objekt-Storage-Angebot von NetApp, indem es folgende Inhalte zur Verfügung stellt:
+
+* Fließende Verifizierung mit NetApp Objekt-Storage – NetApp StorageGRID
+* Tiered Storage-Performance-Tests
+* Best Practice-Richtlinien für Conflient auf NetApp Storage-Systeme
+
+
+
+
+== Warum Confluent Tiered Storage?
+
+Confluent hat sich zur standardmäßigen Streaming-Plattform in Echtzeit für viele Applikationen entwickelt. Dies gilt insbesondere für Big Data, Analysen und Streaming Workloads. Tiered Storage ermöglicht Benutzern die Trennung von Computing und Storage auf der Conflient Plattform. Mit sie lassen sich Daten kostengünstiger speichern, nahezu unbegrenzte Datenmengen speichern und On-Demand-Workloads skalieren. Administrative Aufgaben wie die Ausbalancierung von Daten und Mandanten werden vereinfacht. S3-kompatible Storage-Systeme profitieren von all diesen Funktionen, um Daten bei allen Ereignissen an einem Ort zu dezentralisieren. Dadurch ist ein komplexes Daten-Engineering überflüssig. Weitere Informationen dazu, warum Sie Tiered Storage für Kafka verwenden sollten, finden Sie hier link:https://docs.confluent.io/platform/current/kafka/tiered-storage.html#netapp-object-storage["Dieser Artikel von Confluent"^].
+
+
+
+== Warum NetApp StorageGRID für Tiered Storage?
+
+StorageGRID ist eine der Objekt-Storage-Plattformen von NetApp, StorageGRID ist eine softwaredefinierte, objektbasierte Storage-Lösung, die dem Branchenstandard entsprechende Objekt-APIs, einschließlich der S3 API (Amazon Simple Storage Service) unterstützt. StorageGRID speichert und managt unstrukturierte Daten jeder Größenordnung und stellt sicheren und langlebigen Objekt-Storage zur Verfügung. Inhalte werden zur richtigen Zeit am richtigen Ort und in der richtigen Storage-Tier platziert. Dies optimiert Workflows und senkt die Kosten für global verteilte Rich Media.
+
+Das größte Unterscheidungsmerkmal von StorageGRID ist die Policy Engine für Information Lifecycle Management (ILM), die ein richtlinienbasiertes Management des Daten-Lebenszyklus ermöglicht. Die Richtlinien-Engine kann Metadaten verwenden, um zu managen, wie die Daten über ihre gesamte Lebensdauer gespeichert werden. So kann sie anfänglich auf eine optimale Performance aufsetzt und bei zunehmenden Alter der Daten automatisch auf Kosten und Langlebigkeit optimiert werden.
+
+
+
+== Aktivieren Von Confluent Tiered Storage
+
+Die grundlegende Idee von Tiered Storage besteht darin, die Storage-Aufgaben von der Datenverarbeitung zu trennen. Dank dieser Trennung ist es viel einfacher, dass Storage Tiers und die Datenverarbeitungs-Tier unabhängig skaliert werden können.
+
+Eine Tiered Storage-Lösung für Confluent muss zwei Faktoren berücksichtigen. Zunächst muss die IT sich um häufige Objekt-Storage-Konsistenz und Verfügbarkeiteigenschaften wie Inkonsistenzen bei LISTENVORGÄNGEN und gelegentlichen Nichtverfügbarkeit von Objekten handeln. Zweitens muss sie die Interaktion zwischen Tiered Storage und Kafkas Replizierungs- und Fehlertoleranz-Modell korrekt handhaben, einschließlich der Möglichkeit, dass Zombie-Führungskräfte weiterhin Tier-Offset-Bereiche nutzen. NetApp Objekt-Storage bietet sowohl die konsistente Objektverfügbarkeit als auch das HA-Modell, sodass der müde Storage für Tier-Offset-Bereiche verfügbar ist. NetApp Objekt-Storage bietet eine konsistente Objektverfügbarkeit sowie ein HA-Modell, um den müden Storage für Tier-Offset-Bereiche verfügbar zu machen.
+
+Mit Tiered Storage können Sie hochperformante Plattformen für Lese- und Schreibvorgänge mit niedriger Latenz in Reichweite des Datenstreamings nutzen. Außerdem können Sie kostengünstigere und skalierbare Objektspeicher wie NetApp StorageGRID für historische Lesevorgänge mit hohem Durchsatz nutzen. Außerdem verfügen wir über technische Lösungen für Spark mit netapp Storage Controller und erhalten weitere Informationen. Die folgende Abbildung zeigt, wie Kafka in eine Echtzeit-Analyse-Pipeline passt.
+
+image:confluent-kafka-image2.png["Fehler: Fehlendes Grafikbild"]
+
+Die folgende Abbildung zeigt, wie NetApp StorageGRID zu einem Objekt-Storage Tier von Conflient Kafka passt.
+
+image:confluent-kafka-image3.png["Fehler: Fehlendes Grafikbild"]
+
+link:confluent-kafka-solution.html["Weiter: Details zur Lösungsarchitektur."]

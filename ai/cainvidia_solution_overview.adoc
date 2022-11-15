@@ -1,0 +1,63 @@
+---
+sidebar: sidebar 
+permalink: ai/cainvidia_solution_overview.html 
+keywords: Solution Overview, ONTAP, AI, Cloud Sync, NVIDIA DGX, 
+summary:  
+---
+= Lösungsüberblick
+:hardbreaks:
+:allow-uri-read: 
+:nofooter: 
+:icons: font
+:linkattrs: 
+:imagesdir: ./../media/
+
+
+
+
+== NetApp ONTAP AI und Cloud Sync
+
+Die NetApp ONTAP KI-Architektur mit NVIDIA DGX -Systemen und Cloud-vernetzten NetApp Storage-Systemen wurde von NetApp und NVIDIA entwickelt und verifiziert. Diese Referenzarchitektur bietet IT-Abteilungen folgende Vorteile:
+
+* Sie vereinfacht das Design
+* Computing und Storage können unabhängig voneinander skaliert werden
+* Kunden können mit einer kleinen Konfiguration starten und nahtlos skalieren
+* Bietet eine Reihe von Storage-Optionen für verschiedene Performance- und KostenpunkteNetApp ONTAP AI integriert DGX-Systeme und NetApp AFF A220 Storage-Systeme nahtlos in hochmoderne Netzwerke. Mithilfe von NetApp ONTAP AI und DGX-Systemen können Komplexität und Unsicherheiten bei der Systemaufsetzung beseitigt werden, was den Einsatz von KI-Projekten vereinfacht. Kunden können mit einer kleinen Installation starten und ihre Systeme unterbrechungsfrei erweitern. Gleichzeitig erhalten sie intelligente Datenmanagement-Funktionen, mit denen sich Daten zwischen Datenaufnahme, zentraler Datenplattform und Cloud frei verschieben lassen.
+
+
+Mit NetApp Cloud Sync lassen sich Daten einfach über verschiedene Protokolle verschieben, ob zwischen zwei NFS-Freigaben, zwischen zwei CIFS-Freigaben oder zwischen einer Dateifreigabe und Amazon S3, Amazon Elastic File System (EFS) oder Azure Blob Storage. Durch die aktiv/aktiv-Vorgänge ist gleichzeitiges Arbeiten an Daten am Quell- und am Zielort möglich, während die Datenänderungen bei Bedarf inkrementell synchronisiert werden. Da sich Daten zwischen lokalen und Cloud-basierten Quell- und Zielsystem verschieben und inkrementell synchronisieren lassen, bietet Cloud Sync zahlreiche neue Möglichkeiten für die Nutzung der Daten. Das Migrieren von Daten zwischen On-Premises-Systemen, Cloud-On-Boarding und Cloud-Migration oder Collaboration und Datenanalysen ist leicht möglich. Die Abbildung unten zeigt die verfügbaren Quellen und Ziele.
+
+Bei konvergenten KI-Systemen können Entwickler mithilfe von Cloud Sync Gesprächsverlauf von der Cloud zu Datacentern archivieren und so das Offline-Training von NLP-Modellen (Natural Language Processing) ermöglichen. Durch Training von Modellen, um mehr Absichten zu erkennen, wird das Conversational KI-System besser gerüstet sein, um komplexere Fragen von den Endbenutzern zu managen.
+
+
+
+== NVIDIA Jarvis Multimodal Framework
+
+image:cainvidia_image2.png["Fehler: Fehlendes Grafikbild"]
+
+https://devblogs.nvidia.com/introducing-jarvis-framework-for-gpu-accelerated-conversational-ai-apps/["NVIDIA Jarvis"^] Ist ein durchgängiges Framework für die Erstellung umgangssprachlicher KI-Services. Es umfasst die folgenden GPU-optimierten Services:
+
+* Automatische Spracherkennung (ASR)
+* Verständnis natürlicher Sprachen (NLU)
+* Integration in domänenspezifische Fulfillment Services
+* Text-to-Speech (TTS)
+* Computer Vision (CV)Jarvis-basierte Services nutzen moderne Deep-Learning-Modelle, um der komplexen und anspruchsvollen Aufgabe von Echtzeit-konvergierter KI gerecht zu werden. Um natürliche Echtzeit-Interaktionen mit einem Endbenutzer zu ermöglichen, müssen die Modelle die Berechnungen in weniger als 300 Millisekunden durchführen. Natürliche Interaktionen sind anspruchsvoll und erfordern eine multimodale sensorische Integration. Modell-Pipelines sind auch komplex und erfordern Koordination über die oben genannten Services.
+
+
+Jarvis ist ein vollständig beschleunigtes Applikations-Framework für die Erstellung multimodaler, umgangssprachlicher KI-Services, die eine End-to-End-Deep-Learning-Pipeline nutzen. Das Jarvis-Framework umfasst vortrainierte konvergente KI-Modelle, Tools und optimierte End-to-End-Services für sprach-, Vision- und NLU-Aufgaben. Neben den KI-Services ermöglicht Jarvis die gleichzeitige Sicherung von Bild-, Audio- und anderen Sensoreingängen, um Funktionen wie Multi-User-, Multi-Context-Gespräche in Anwendungen wie virtuellen Assistenten, Multi-User-Diarization und Callcenter-Assistenten bereitzustellen.
+
+
+
+== NVIDIA Nemo
+
+https://developer.nvidia.com/nvidia-nemo["NVIDIA Nemo"^] Es ist ein Open-Source-Python-Toolkit für die Erstellung, das Training und die Feinabstimmung von GPU-beschleunigten, hochmodernen KI-Modellen mit benutzerfreundlichen APIs (Application Programming Interfaces). Nemo arbeitet mit Tensor Cores in NVIDIA GPUs und kann bis auf mehrere GPUs skaliert werden, um die höchstmögliche Trainings-Performance zu erzielen. Nemo wird zur Erstellung von Modellen für ASR-, NLP- und TTS-Anwendungen in Echtzeit verwendet, wie z. B. Videoanrufe-Transkriptionen, intelligente Videoassistenten und automatisierte Unterstützung von Callcenter in verschiedenen Branchen, einschließlich Gesundheitswesen, Finanzen, Einzelhandel und Telekommunikation.
+
+Mit Nemo trainierte man Modelle, die komplexe Absichten aus Benutzerfragen in der Vergangenheit archivierter Gespräche erkennen. Diese Schulung erweitert die Fähigkeiten des virtuellen Einzelhandels-Assistenten über das hinaus, was Jarvis als bereitgestellt unterstützt.
+
+
+
+== Anwendungsbeispiel Im Einzelhandel – Zusammenfassung
+
+Mithilfe von NVIDIA Jarvis haben wir einen virtuellen Retail-Assistenten entwickelt, der sprach- oder Texteingaben akzeptiert und Fragen zu Wetter, Points of Interest und Bestandspreisen beantwortet. Das Conversational AI-System kann sich an den Gesprächsablauf erinnern, beispielsweise eine weitere Frage stellen, wenn der Benutzer nicht den Standort für Wetter oder Points of Interest angeben kann. Das System erkennt auch komplexe Einheiten wie „Thai Food“ oder „Laptop-Speicher“. Es versteht natürliche Sprachfragen wie „regnet es nächste Woche in Los Angeles?“ Eine Demonstration des virtuellen Assistenten für den Einzelhandel finden Sie in https://cainvidia_customize_states_and_flows_for_retail_use_case.html["Passen Sie die Staaten und Abläufe für den Einzelhandel an"].
+
+link:cainvidia_solution_technology.html["Als Nächstes: Lösungstechnologie"]

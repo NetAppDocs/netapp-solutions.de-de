@@ -1,0 +1,72 @@
+---
+sidebar: sidebar 
+permalink: data-analytics/bda-ai-introduction.html 
+keywords: tr-4732, tr4732, 4732, introduction, concepts, components 
+summary: Dieses Whitepaper enthält Richtlinien zum Verschieben von Big-Data-Analysedaten und HPC-Daten mithilfe von NetApp XCP und NIPAM in die KI. Außerdem werden die geschäftlichen Vorteile erläutert, die sich aus dem Verschieben von Daten von Big Data und HPC hin zur KI ergeben. 
+---
+= TR-4732: Big Data-Analysedaten in der künstlichen Intelligenz
+:hardbreaks:
+:allow-uri-read: 
+:nofooter: 
+:icons: font
+:linkattrs: 
+:imagesdir: ./../media/
+
+
+Karthikeyan Nagalingam, NetApp
+
+In diesem Dokument wird beschrieben, wie Big-Data-Analysedaten und HPC-Daten in die KI verschoben werden. KI verarbeitet NFS-Daten durch NFS-Exporte, während Kunden ihre KI-Daten oft in einer Big-Data-Analyseplattform wie HDFS, Blob oder S3 Storage und HPC-Plattformen wie GPFS speichern. Dieses Whitepaper enthält Richtlinien zum Verschieben von Big-Data-Analysedaten und HPC-Daten mithilfe von NetApp XCP und NIPAM in die KI. Außerdem werden die geschäftlichen Vorteile erläutert, die sich aus dem Verschieben von Daten von Big Data und HPC hin zur KI ergeben.
+
+
+
+== Konzepte und Komponenten
+
+
+
+=== Big-Data-Analysesstorage
+
+Big-Data-Analysen sind der größte Storage-Anbieter für HDFS. Ein Kunde setzt häufig ein Hadoop-kompatibles Filesystem (HCFS) wie Windows Azure Blob Storage, MapR File System (MapR-FS) und S3 Objekt-Storage ein.
+
+
+
+=== Allgemeines paralleles Dateisystem
+
+IBM GPFS ist ein Enterprise-Dateisystem, das eine Alternative zu HDFS bietet. GPFS bietet für Anwendungen die Flexibilität, die Blockgröße und das Replikationslayout zu bestimmen, was eine gute Performance und Effizienz bietet.
+
+
+
+=== NetApp in-Place-Analysemodule
+
+Das NetApp in-Place-Analysemodul (NIPAM) dient als Treiber für Hadoop Cluster zum Zugriff auf NFS-Daten. Es verfügt über vier Komponenten: Einen Verbindungspool, einen NFS InputStream, einen Datei-Handle-Cache und einen NFS OutputStream. Weitere Informationen finden Sie unter https://www.netapp.com/us/media/tr-4382.pdf["TR-4382: NetApp in-Place-Analysemodul"^]
+
+
+
+=== Hadoop Distributed Copy
+
+Hadoop Distributed Copy (DistCp) ist ein Tool für verteilte Kopien, das für große Cluster- und Clusteraufgaben eingesetzt wird. Dieses Tool verwendet MapReduce für Datenverteilung, Fehlerbehandlung und Reporting. Es erweitert die Liste der Dateien und Verzeichnisse und gibt sie ein, um Aufgaben zuzuordnen, um die Daten aus der Quellliste zu kopieren. Das Bild unten zeigt die DiCp-Operation in HDFS und nicht HDFS.
+
+image:bda-ai-image1.png["Fehler: Fehlendes Grafikbild"]
+
+Hadoop DistCp verschiebt Daten zwischen den beiden HDFS-Systemen ohne zusätzlichen Treiber. NetApp liefert den Treiber für nicht-HDFS-Systeme. Für ein NFS-Ziel bietet NIPAM den Treiber, Daten zu kopieren, die Hadoop DistCp verwendet, um mit NFS-Zielen beim Kopieren von Daten zu kommunizieren.
+
+
+
+== NetApp Cloud Volumes Service
+
+Die NetApp Cloud Volumes Service ist ein Cloud-nativer Fileservice mit höchster Performance. Dieser Service hilft Kunden, ihre Produkteinführungszeiten zu verkürzen, indem sie ihre Ressourcen schnell nach oben oder unten einrichten und NetApp Funktionen zur Steigerung der Produktivität und Reduzierung der Mitarbeiterausfallzeiten nutzen. Die Cloud Volumes Service ist die richtige Alternative für Disaster Recovery und Backups in der Cloud, da sie den Platzbedarf im Datacenter reduziert und den Verbrauch von nativem Public-Cloud-Storage verringert.
+
+
+
+== NetApp XCP
+
+Bei NetApp XCP handelt es sich um eine Client-Software, die eine schnelle und zuverlässige Datenmigration zwischen NetApp und NetApp zu ermöglichen. Dieses Tool dient zum Kopieren einer großen Menge unstrukturierter NAS-Daten von einem beliebigen NAS-System auf einen NetApp Storage Controller. Das XCP Migration Tool verwendet eine Multicore-Multichannel-I/O-Streaming-Engine, die viele Anfragen parallel verarbeitet, z. B. Datenmigration, Datei- oder Verzeichnislisten und Speicherplatzberichte. Dies ist das NetApp Datenmigrationstool standardmäßig. Mit XCP können Daten von einem Hadoop Cluster und HPC auf einen NetApp NFS Storage kopiert werden. Die folgende Abbildung zeigt den Datentransfer aus einem Hadoop und HPC Cluster auf ein NetApp NFS-Volume mit XCP.
+
+image:bda-ai-image2.png["Fehler: Fehlendes Grafikbild"]
+
+
+
+== NetApp Cloud Sync
+
+NetApp Cloud Sync ist eine hybride Datenreplizierungssoftware als Service, die NFS, S3 und CIFS Daten nahtlos und sicher zwischen lokalem Storage und Cloud Storage überträgt und synchronisiert. Diese Software wird für Datenmigration, Archivierung, Zusammenarbeit, Analysen usw. verwendet. Nach der Datenübertragung synchronisiert Cloud Sync kontinuierlich die Daten zwischen Quelle und Ziel. In Zukunft wird das Delta übertragen. Außerdem werden die Daten in Ihrem eigenen Netzwerk, in der Cloud oder lokal gesichert. Diese Software basiert auf einem Pay-as-you-go-Modell, das eine kostengünstige Lösung bietet und Monitoring- und Berichtsfunktionen für Ihren Datentransfer bereitstellt.
+
+link:bda-ai-customer-challenges.html["Als Nächstes: Herausforderungen für Kunden."]

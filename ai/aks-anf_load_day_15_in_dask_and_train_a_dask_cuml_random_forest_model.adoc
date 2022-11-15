@@ -1,0 +1,77 @@
+---
+sidebar: sidebar 
+permalink: ai/aks-anf_load_day_15_in_dask_and_train_a_dask_cuml_random_forest_model.html 
+keywords: dask, cuml, dataframe, criteo, click, logs, pandas, scikit, cudf 
+summary: Dieser Abschnitt beschreibt die Beladung von Criteo Click Logs Tag 15 in Pandas und Training eines scikit-Learn Zufallswaldmodells. In diesem Beispiel haben wir DataFrame-Beladung mit Dask cuDF durchgeführt und ein zufälliges Waldmodell in Dask cuML trainiert. 
+---
+= Laden Sie Tag 15 in Damast und trainieren Sie ein Damast CuML zufälligen Wald Modell
+:hardbreaks:
+:allow-uri-read: 
+:nofooter: 
+:icons: font
+:linkattrs: 
+:imagesdir: ./../media/
+
+
+link:aks-anf_load_criteo_click_logs_day_15_in_pandas_and_train_a_scikit-learn_random_forest_model.html["Früher: Laden Criteo Click Logs Tag 15 in Pandas und trainieren ein scikit-lernen zufälligen Wald Modell."]
+
+Ähnlich wie im vorherigen Abschnitt, laden Criteo Click Logs Tag 15 in Pandas und trainieren ein scikit-Learn Zufallswaldmodell. In diesem Beispiel haben wir DataFrame-Beladung mit Dask cuDF durchgeführt und ein zufälliges Waldmodell in Dask cuML trainiert. Im Abschnitt wurden die Unterschiede in Trainingszeit und Umfang verglichen link:aks-anf_training_time_comparison.html["„Zeitvergleich Training“."]
+
+
+
+== criteo_dask_RF.ipynb
+
+Dieses Notizbuch importiert `numpy`, `cuml`, Und das nötige `dask` Bibliotheken, wie im folgenden Beispiel gezeigt:
+
+....
+import cuml
+from dask.distributed import Client, progress, wait
+import dask_cudf
+import numpy as np
+import cudf
+from cuml.dask.ensemble import RandomForestClassifier as cumlDaskRF
+from cuml.dask.common import utils as dask_utils
+....
+Dask Client() Initiieren.
+
+....
+client = Client()
+....
+Wenn das Cluster ordnungsgemäß konfiguriert ist, können Sie den Status von „Worker“-Nodes anzeigen.
+
+....
+client
+workers = client.has_what().keys()
+n_workers = len(workers)
+n_streams = 8 # Performance optimization
+....
+In unserem AKS-Cluster wird folgender Status angezeigt:
+
+image:aks-anf_image12.png["Fehler: Fehlendes Grafikbild"]
+
+Beachten Sie, dass Dask das faule Ausführungsmodell verwendet: Anstatt den Verarbeitungscode sofort auszuführen, erstellt Dask stattdessen ein gesteuertes Acyclic Graph (DAG) der Ausführung. DAG umfasst eine Reihe von Aufgaben und ihre Interaktionen, die jeder Mitarbeiter ausführen muss. Dieses Layout bedeutet, dass die Tasks nicht ausgeführt werden, bis der Benutzer DASK anweist, sie auf die eine oder andere Weise auszuführen. Mit DASK haben Sie drei Hauptoptionen:
+
+* *Aufruf Compute() auf einem DataFrame.* dieser Aufruf verarbeitet alle Partitionen und gibt die Ergebnisse dann in den Scheduler für die abschließende Aggregation und Konvertierung in cuDF DataFrame zurück. Diese Option sollte sparsam und nur bei stark reduzierten Ergebnissen verwendet werden, es sei denn, Ihr Scheduler-Node verfügt über keinen Arbeitsspeicher.
+* *Call persist() auf einem DataFrame.* dieser Aufruf führt die Grafik aus, aber anstatt die Ergebnisse an den Scheduler-Knoten zurückzugeben, wird sie über den Cluster im Speicher verwaltet, sodass der Benutzer diese Zwischenergebnisse in der Pipeline wiederverwenden kann, ohne dass eine erneute Verarbeitung erforderlich ist.
+* *Call Head() auf einem DataFrame.* wie bei cuDF gibt dieser Aufruf 10 Datensätze zurück zum Scheduler-Knoten. Mit dieser Option können Sie schnell überprüfen, ob Ihr DataFrame das gewünschte Ausgabeformat enthält oder ob die Datensätze selbst in Abhängigkeit von Ihrer Verarbeitung und Berechnung sinnvoll sind.
+
+
+Wenn der Benutzer eine dieser Aktionen nicht anruft, warten die Arbeiter daher nicht, bis der Planer die Verarbeitung initiiert hat. Dieses faul Ausführungsparadigma ist häufig in modernen Parallel- und Distributed Computing Frameworks wie Apache Spark zu finden.
+
+Im folgenden Abschnitt wird ein Zufallswaldmodell mit Hilfe von Dask cuML für verteiltes GPU-beschleunigtes Computing trainiert und die Genauigkeit der Modellvorhersage berechnet.
+
+....
+Adsf
+# Random Forest building parameters
+n_streams = 8 # optimization
+max_depth = 10
+n_bins = 16
+n_trees = 10
+cuml_model = cumlDaskRF(max_depth=max_depth, n_estimators=n_trees, n_bins=n_bins, n_streams=n_streams, verbose=True, client=client)
+cuml_model.fit(gdf_sliced_small, Y)
+# Model prediction
+pred_df = cuml_model.predict(gdf_test)
+# calculate accuracy
+cu_score = cuml.metrics.accuracy_score( test_y, pred_df )
+....
+link:aks-anf_monitor_dask_using_native_task_streams_dashboard.html["Nächster: Überwachung des DASK mit dem Dashboard für native Task Streams."]

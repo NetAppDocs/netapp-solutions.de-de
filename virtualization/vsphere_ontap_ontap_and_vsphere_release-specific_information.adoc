@@ -1,0 +1,56 @@
+---
+sidebar: sidebar 
+permalink: virtualization/vsphere_ontap_ontap_and_vsphere_release-specific_information.html 
+keywords: vSphere, release, ESXi, Cisco UCS, NFS Plug In for VMware VAAI, VASA Provider 
+summary: Dieser Abschnitt enthält eine Anleitung zu den Funktionen, die von spezifischen Versionen von ONTAP und vSphere unterstützt werden. NetApp empfiehlt, eine bestimmte Kombination von Versionen mithilfe der NetApp Interoperabilitäts-Matrix zu überprüfen. 
+---
+= Release-spezifische Informationen zu ONTAP und vSphere
+:hardbreaks:
+:allow-uri-read: 
+:nofooter: 
+:icons: font
+:linkattrs: 
+:imagesdir: ./../media/
+
+
+Dieser Abschnitt enthält eine Anleitung zu den Funktionen, die von spezifischen Versionen von ONTAP und vSphere unterstützt werden. NetApp empfiehlt, eine bestimmte Kombination von Versionen mit dem zu überprüfen http://mysupport.netapp.com/matrix/["NetApp Interoperabilitätsmatrix"^].
+
+
+
+== ONTAP-Versionen
+
+Zum Zeitpunkt der Veröffentlichung bietet NetApp vollständige Unterstützung für die folgenden Versionsfamilien:
+
+* ONTAP 9.5
+* ONTAP 9.6
+* ONTAP 9.7
+* ONTAP 9.8
+
+
+
+
+== Unterstützung von vSphere und ESXi
+
+NetApp ONTAP bietet umfassende Unterstützung für vSphere ESXi Hosts. Die vier gerade beschriebenen Hauptversionsfamilien (9.5, 9.6, 9.7 und 9.8) werden vollständig als Daten-Storage-Plattformen für neue vSphere Versionen unterstützt, einschließlich 6.0, 6.5 und 7.0 (inklusive Updates für diese Versionen). Die NFSv3-Interoperabilität ist weit gefasst. NetApp unterstützt alle Clients, darunter auch Hypervisoren, die mit dem NFSv3-Standard kompatibel sind. Die Unterstützung für NFSv4.1 ist auf vSphere 6.0 bis 7.0 beschränkt.
+
+Für SAN-Umgebungen führt NetApp umfassende Tests der SAN-Komponenten durch. Im Allgemeinen unterstützt NetApp standardmäßige X86-64-Rack-Server und Cisco UCS Server zusammen mit Ethernet-Standardadaptern für iSCSI-Verbindungen. Aufgrund der erforderlichen HBA-Firmware und -Treiber verfügen FC-, FCoE- und NVMe/FC-Umgebungen über eine spezifischer definierte Unterstützung.
+
+Prüfen Sie immer das http://mysupport.netapp.com/matrix/["NetApp Interoperabilitätsmatrix"^] Bestätigen des Supports für eine bestimmte Hardware- und Softwarekonfiguration.
+
+
+
+== NFS-Plug-in für VMware VAAI
+
+Dieses Plug-in für ESXi Hosts hilft beim verlagern von Vorgängen zu ONTAP mithilfe von VAAI. Die neueste Version, 1.1.2, unterstützt NFSv4.1-Datastores, einschließlich Unterstützung für Kerberos (krb5 und krb5i). Das Plug-in wird mit ESXi 6.0, 6.5 und 7.0 zusammen mit ONTAP 9.5-9.8 unterstützt.
+
+
+
+== VASA Provider
+
+NetApp VASA Provider unterstützt die Bereitstellung und das Management von vVol (siehe Abschnitt 3.7). Die neuen VASA Provider Versionen unterstützen ESXi 6.0, 6.5 und 7.0 zusammen mit ONTAP 9.5-9.8.
+
+
+
+== ONTAP Tools für VMware vSphere
+
+ONTAP Tools für VMware vSphere sind für das Management von ONTAP Storage zusammen mit vSphere entscheidend (die Nutzung dieses Tools ist eine Best Practice). Die neueste Version, 9.8, wird mit vSphere 6.5 und 7.0 zusammen mit ONTAP 9.5-9.8 unterstützt.

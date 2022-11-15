@@ -1,0 +1,149 @@
+---
+sidebar: sidebar 
+permalink: ehc/aws/aws-guest-dr-technology.html 
+keywords: technology, vmware cloud foundation, vsphere, nsx, snapcenter, veeam, VMware Cloud on AWS, Amazon FSx 
+summary: Dieser Abschnitt bietet einen Überblick über die verschiedenen technologischen Komponenten, die diese Lösung verwenden. 
+---
+= Technologie
+:hardbreaks:
+:allow-uri-read: 
+:nofooter: 
+:icons: font
+:linkattrs: 
+:imagesdir: ./../../media/
+
+
+link:aws-guest-dr-solution-overview.html["Zurück: Lösungsübersicht."]
+
+Zur Lösung gehören innovative Technologien von NetApp, VMware, Amazon Web Services (AWS) und Veeam.
+
+
+
+== VMware
+
+
+
+=== VMware Cloud Foundation
+
+Die VMware Cloud Foundation Plattform umfasst mehrere Produktangebote, mit denen Administratoren logische Infrastrukturen in einer heterogenen Umgebung bereitstellen können. Diese Infrastrukturen (auch Domänen genannt) sorgen für konsistente Abläufe in Private und Public Clouds. Die begleitende Cloud Foundation Software ist eine Stückliste, die vorab validierte und qualifizierte Komponenten identifiziert, die die Risiken für Kunden minimieren und die Implementierung vereinfachen.
+
+Zu den Komponenten der Cloud Foundation BOM gehören:
+
+* Cloud Builder
+* SDDC Manager
+* VMware vCenter Server Appliance
+* VMware ESXi
+* VMware NSX
+* VRealize Automatisierung
+* VRealize Suite Lifecycle Manager
+* VRealize Log Insight
+
+
+Weitere Informationen zur VMware Cloud Foundation finden Sie unter https://docs.vmware.com/en/VMware-Cloud-Foundation/index.html["Dokumentation der VMware Cloud Foundation"^].
+
+
+
+=== VMware vSphere
+
+VMware vSphere ist eine Virtualisierungsplattform, die physische Ressourcen in Computing-, Netzwerk- und Storage-Pools verwandelt, die zur Erfüllung der Workload- und Applikationsanforderungen der Kunden eingesetzt werden können. Zu den wichtigsten Komponenten von VMware vSphere gehören:
+
+* *ESXi.* dieser VMware-Hypervisor ermöglicht die Abstraktion von Rechen-, Speicher-, Netzwerk- und anderen Ressourcen und stellt sie virtuellen Maschinen und Container-Workloads zur Verfügung.
+* *VCenter.* VMware vCenter schafft eine zentrale Managementerfahrung für die Interaktion mit Computing-Ressourcen, Networking und Storage als Teil Ihrer virtuellen Infrastruktur.
+
+
+Kunden schöpfen das volle Potenzial ihrer vSphere Umgebung aus, indem sie NetApp ONTAP mit umfassender Produktintegration, robustem Support sowie leistungsstarken Funktionen und Storage-Effizienzfunktionen für eine robuste hybride Multi-Cloud-Umgebung nutzen.
+
+Weitere Informationen zu VMware vSphere finden Sie im folgenden https://docs.vmware.com/en/VMware-vSphere/index.html["Dieser Link"^].
+
+Weitere Informationen zu NetApp Lösungen mit VMware finden Sie unter https://docs.netapp.com/us-en/netapp-solutions/virtualization/netapp-vmware.html["Dieser Link"^].
+
+
+
+=== VMware NSX
+
+VMware NSX wird allgemein als Netzwerk-Hypervisor bezeichnet. Es verwendet ein softwaredefiniertes Modell, um virtualisierte Workloads zu verbinden. VMware NSX ist allgegenwärtig vor Ort und in VMware Cloud auf AWS, wo es Netzwerkvirtualisierung und Sicherheit für Kundenapplikationen und Workloads bietet.
+
+Weitere Informationen zu VMware NSX finden Sie im hier https://docs.vmware.com/en/VMware-NSX-T-Data-Center/index.html["Dieser Link"^].
+
+
+
+== NetApp
+
+
+
+=== NetApp ONTAP
+
+Seit fast zwei Jahrzehnten ist die NetApp ONTAP Software eine der führenden Storage-Lösungen für VMware vSphere Umgebungen und wird kontinuierlich mit innovativen Funktionen erweitert, die nicht nur zur Vereinfachung des Managements, sondern auch zu Kostensenkungen beitragen. Die Kombination von ONTAP und vSphere ermöglicht Kosteneinsparungen für Host-Hardware und VMware Software. Sichern Sie Ihre Daten außerdem zu niedrigeren Kosten durch eine konstant hohe Performance und profitieren Sie gleichzeitig von der nativen Storage-Effizienz.
+
+Weitere Informationen zu NetApp ONTAP finden Sie hier https://docs.vmware.com/en/VMware-Cloud-on-AWS/index.html["Dieser Link"^].
+
+
+
+=== NetApp ONTAP Tools für VMware
+
+Die ONTAP Tools für VMware kombinieren mehrere Plug-ins in einer einzigen virtuellen Appliance, die ein lückenloses Lifecycle Management für Virtual Machines in VMware Umgebungen mit NetApp Storage-Systemen ermöglicht. Die ONTAP Tools für VMware umfassen Folgendes:
+
+* *Virtual Storage Console (VSC).* führt umfangreiche administrative Aufgaben für VMs und Datenspeicher mit NetApp Storage aus.
+* *VASA Provider für ONTAP ermöglicht richtlinienbasiertes Storage-Management (SPBM, Storage Policy Based Management) mit VMware Virtual Volumes (VVols) und NetApp Storage.
+* *Storage Replication Adapter (SRA)*. Wiederherstellung von vCenter Datenspeichern und Virtual Machines bei einem Ausfall in Verbindung mit VMware Site Recovery Manager (SRM)
+
+
+ONTAP Tools für VMware ermöglichen Benutzern das Management nicht nur externer Storage, sondern auch die Integration in VVols sowie in VMware Site Recovery Manager. Dies erleichtert die Implementierung und den Betrieb von NetApp Storage aus Ihrer vCenter Umgebung heraus.
+
+Weitere Informationen zu NetApp ONTAP-Tools für VMware finden Sie im hier https://docs.netapp.com/us-en/ontap-tools-vmware-vsphere/index.html["Dieser Link"^].
+
+
+
+=== NetApp SnapCenter
+
+Die NetApp SnapCenter Software ist eine unkomplizierte Enterprise-Plattform, die die Koordination und das Management der Datensicherung für alle Applikationen, Datenbanken und Filesysteme sicher gestaltet. SnapCenter vereinfacht das Backup, Restore und das Lifecycle Management von Klonen, indem diese Aufgaben an Applikationseigentümer abgegeben werden, ohne darauf zu verzichten, Aktivitäten auf den Storage-Systemen zu überwachen und zu regulieren. Durch die Nutzung von Storage-basiertem Datenmanagement steigert SnapCenter die Performance sowie Verfügbarkeit und verringert gleichzeitig die Test- und Entwicklungszeiten.
+
+Das SnapCenter Plug-in für VMware vSphere unterstützt absturzkonsistente und VM-konsistente Backup- und Restore-Vorgänge für Virtual Machines (VMs), Datastores und Virtual Machine Disks (VMDKs). Die Software unterstützt außerdem applikationsspezifische SnapCenter Plug-ins, um applikationskonsistente Backup- und Restore-Vorgänge für virtualisierte Datenbanken und Filesysteme zu sichern.
+
+Weitere Informationen zu NetApp SnapCenter finden Sie hier https://docs.netapp.com/us-en/snapcenter/["Dieser Link"^].
+
+
+
+== Datensicherung von Drittanbietern
+
+
+
+=== Veeam Backup & Replication
+
+Veeam Backup & Replication ist eine Backup-, Recovery- und Datenmanagement-Lösung für Cloud-, virtuelle und physische Workloads. Veeam Backup & Replication verfügt über eine spezielle Integration in NetApp Snapshot Technologie, die vSphere Umgebungen noch weiter schützt.
+
+Weitere Informationen zu Veeam Backup & Replication finden Sie im folgenden https://www.veeam.com/vm-backup-recovery-replication-software.html["Dieser Link"^].
+
+
+
+== Public Cloud
+
+
+
+=== Identitäts- und Zugriffsmanagement für AWS
+
+AWS-Umgebungen umfassen eine breite Palette an Produkten, darunter Computing, Storage, Datenbank, Netzwerk, Analyse Und vieles mehr, um geschäftliche Herausforderungen zu lösen. Unternehmen müssen festlegen können, wer berechtigt ist, auf diese Produkte, Services und Ressourcen zuzugreifen. Ebenso wichtig ist es, unter welchen Bedingungen Benutzer Konfigurationen bearbeiten, ändern oder hinzufügen dürfen.
+
+AWS Identity and Access Management (AIM) stellt eine sichere Kontrollebene für das Management des Zugriffs auf AWS Services und Produkte bereit. Ordnungsgemäß konfigurierte Benutzer, Zugriffsschlüssel und Berechtigungen ermöglichen die Implementierung von VMware Cloud auf AWS und Amazon FSX.
+
+Weitere Informationen zu AIM finden Sie im folgenden https://docs.aws.amazon.com/iam/index.html["Dieser Link"^].
+
+
+
+=== VMware Cloud auf AWS
+
+VMware Cloud auf AWS ermöglicht die Software SDDC der Enterprise-Klasse von VMware in der AWS Cloud mit optimiertem Zugriff auf native AWS Services. VMware Cloud auf AWS basiert auf der VMware Cloud Foundation und integriert die Computing-, Storage- und Netzwerkvirtualisierungsprodukte von VMware (VMware vSphere, VMware vSAN und VMware NSX) mit dem für die Ausführung auf dedizierter, elastischer Bare-Metal-Infrastruktur von AWS optimierten VMware vCenter Server-Management.
+
+Weitere Informationen zu VMware Cloud auf AWS finden Sie im https://docs.vmware.com/en/VMware-Cloud-on-AWS/index.html["Dieser Link"^].
+
+
+
+=== Amazon FSX für NetApp ONTAP
+
+Amazon FSX für NetApp ONTAP ist ein vollständig gemanagtes ONTAP System, das als nativer AWS Service verfügbar ist. Die Lösung basiert auf NetApp ONTAP und bietet Ihnen vertraute Funktionen und bietet gleichzeitig die Einfachheit eines vollständig gemanagten Cloud-Service.
+
+Amazon FSX für ONTAP unterstützt mehrere Protokolle für verschiedene Computing-Typen, einschließlich VMware in der Public Cloud oder vor Ort. Amazon FSX für ONTAP ist verfügbar für heutige Anwendungsfälle mit Gastverbunden und bietet als Technologievorschau NFS Datastores. So können Unternehmen von bekannten Funktionen ihrer lokalen Umgebungen und in der Cloud profitieren.
+
+Weitere Informationen zu Amazon FSX für NetApp ONTAP finden Sie im hier https://aws.amazon.com/fsx/netapp-ontap/["Dieser Link"].
+
+link:aws-guest-dr-overview.html["Weiter: Übersicht - AWS Disaster Recovery mit Gast-Integration."]

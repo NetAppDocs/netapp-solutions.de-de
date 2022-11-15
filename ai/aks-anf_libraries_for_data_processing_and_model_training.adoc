@@ -1,0 +1,34 @@
+---
+sidebar: sidebar 
+permalink: ai/aks-anf_libraries_for_data_processing_and_model_training.html 
+keywords: libraries, cuml, cudf, dask, transform, load, subsetting, transformation, encoding, rapids, estimators 
+summary: Auf dieser Seite werden die Bibliotheken und Frameworks aufgeführt, die zum Erstellen dieser Aufgabe verwendet wurden. Alle diese Komponenten wurden vollständig in die rollenbasierte Zugriffs- und Sicherheitskontrolle von Azure integriert. 
+---
+= Bibliotheken für die Datenverarbeitung und das Modelltraining
+:hardbreaks:
+:allow-uri-read: 
+:nofooter: 
+:icons: font
+:linkattrs: 
+:imagesdir: ./../media/
+
+
+link:aks-anf_azure_netapp_files_performance_tiers.html["Früher: Azure NetApp Files Performance Tiers."]
+
+In der folgenden Tabelle sind die Bibliotheken und Frameworks aufgeführt, die zum Erstellen dieser Aufgabe verwendet wurden. Alle diese Komponenten wurden vollständig in die rollenbasierte Zugriffs- und Sicherheitskontrolle von Azure integriert.
+
+|===
+| Bibliotheken/Framework | Beschreibung 
+
+
+| Fragen Sie die CuML | Für ML zur Arbeit an GPU, das https://github.com/rapidsai/cuml/tree/main/python/cuml/dask["CuML-Bibliothek"^] Bietet Zugriff auf DAS RAPIDS CuML-Paket mit DASK. RAPIDS CuML implementiert gängige ML-Algorithmen wie Clustering, Dimensionierungsreduzierung und Regression. Hochperformante GPU-basierte Implementierungen ermöglichen eine bis zu 100-fache Geschwindigkeit gegenüber CPU-basierten Ansätzen. 
+
+
+| Fragen Sie nach cuDF | CuDF umfasst verschiedene andere Funktionen, die GPU-beschleunigte Extraktion, Transformation, Last (ETL) unterstützen, wie z. B. Untersetzung von Daten, Transformationen, One-Hot-Codierung und mehr. Das Team VON RAPIDS unterhält eine https://github.com/rapidsai/cudf/tree/main/python/dask_cudf["Dask-cudf Bibliothek"^] Dazu gehören Hilfsmethoden für die Verwendung von Fragen und CuDF. 
+
+
+| Ischikit Lernen | Scikit-Learn bietet Dutzende von integrierten Algorithmen und Modellen für maschinelles Lernen an, die als Schätzer bezeichnet werden. Beide https://scikit-learn.org/stable/glossary.html#term-estimators["kostenplaner"^] Kann mit dem an einige Daten angepasst werden https://scikit-learn.org/stable/glossary.html#term-fit["Fit"^] Methode. 
+|===
+Zum Vergleich haben wir zwei Notebooks für DIE ERSTELLUNG der ML-Pipelines eingesetzt, eines ist der konventionelle Pandas-Scikit-Learn-Ansatz, und das andere ist Distributed Training mit RAPIDS und Dask. Jedes Notebook kann einzeln getestet werden, um die Leistung in Bezug auf Zeit und Umfang zu sehen. Wir decken jedes Notebook einzeln ab, um die Vorteile des Distributed Trainings mit RAPIDS und Dask zu demonstrieren.
+
+link:aks-anf_load_criteo_click_logs_day_15_in_pandas_and_train_a_scikit-learn_random_forest_model.html["Nächster: Lade Criteo Click Logs Tag 15 in Pandas und trainiere ein scikit-Learn Zufallswaldmodell."]

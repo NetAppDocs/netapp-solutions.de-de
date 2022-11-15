@@ -1,0 +1,47 @@
+---
+sidebar: sidebar 
+permalink: data-analytics/apache-spark-netapp-spark-solutions-overview.html 
+keywords: fas, aff, e-series, cloud volumes ontap, nfs, direct access, snapmirror, paas, 
+summary: 'NetApp verfügt über drei Storage-Portfolios: FAS/AFF, E-Series und Cloud Volumes ONTAP. Wir haben AFF und die E-Series mit ONTAP Storage-System für Hadoop Lösungen mit Apache Spark validiert. Die Data Fabric von NetApp integriert Datenmanagementservices und Applikationen (Bausteine) für Datenzugriff, Kontrolle, Schutz und Sicherheit.' 
+---
+= NetApp Spark-Lösungen im Überblick
+:hardbreaks:
+:allow-uri-read: 
+:nofooter: 
+:icons: font
+:linkattrs: 
+:imagesdir: ./../media/
+
+
+link:apache-spark-solution-technology.html["Früher: Lösungstechnologie."]
+
+NetApp verfügt über drei Storage-Portfolios: FAS/AFF, E-Series und Cloud Volumes ONTAP. Wir haben AFF und die E-Series mit ONTAP Storage-System für Hadoop Lösungen mit Apache Spark validiert. Die Data Fabric von NetApp integriert Datenmanagement-Services und -Applikationen (Bausteine) für Datenzugriff, Kontrolle, Sicherung und Sicherheit, wie in der Abbildung unten dargestellt.
+
+image:apache-spark-image4.png["Die Data-Fabric-Strategie bietet Datenmanagementservices und Applikationen."]
+
+Die Abbildung oben beinhaltet folgende Bausteine:
+
+* *NetApp NFS Direct Access.* bietet die neuesten Hadoop und Spark Cluster mit direktem Zugriff auf NetApp NFS Volumes ohne zusätzliche Software- oder Treiberanforderungen.
+* *NetApp Cloud Volumes ONTAP und Cloud-Volume-Services.* softwaredefinierter vernetzter Storage auf Basis von ONTAP, der in Amazon Web Services (AWS) oder Azure NetApp Files (ANF) in Microsoft Azure Cloud-Services ausgeführt wird.
+* *NetApp SnapMirror Technologie.* bietet Datensicherungsfunktionen zwischen On-Premises-Umgebungen und ONTAP Cloud oder NPS Instanzen.
+* *Cloud-Service-Provider.* zu diesen Anbietern gehören AWS, Microsoft Azure, Google Cloud und IBM Cloud.
+* *PaaS.* Cloud-basierte Analyseservices wie Amazon Elastic MapReduce (EMR) und Databricks in AWS sowie Microsoft Azure HDInsight und Azure Databricks.
+
+
+In der folgenden Abbildung ist die Spark-Lösung mit NetApp Storage dargestellt.
+
+image:apache-spark-image5.png["Zündende Lösung mit NetApp Storage"]
+
+Die ONTAP Spark Lösung verwendet das NetApp NFS Direct-Access-Protokoll für in-Place-Analysen sowie KI-, ML- und DL-Workflows, wobei auf vorhandene Produktionsdaten zugegriffen wird. Produktionsdaten, die Hadoop-Nodes zur Verfügung stehen, werden exportiert, um in-Place-Analysen und KI-, ML- und DL-Jobs auszuführen. Die Daten können in Hadoop Nodes entweder mit direkt oder ohne NetApp NFS verarbeitet werden. In Spark mit dem Standalone oder `yarn` Cluster Manager, Sie können ein NFS-Volume mithilfe von konfigurieren `<file:///<target_volume>`. Wir haben drei Anwendungsfälle mit unterschiedlichen Datensätzen validiert. Die Details dieser Validierungen finden Sie im Abschnitt „Testergebnisse“. (xref)
+
+Abbildung: Die Positionierung von NetApp Apache Spark/Hadoop Storage
+
+image:apache-spark-image7.png["Positionierung von NetApp Apache Spark/Hadoop Storage"]
+
+Es wurden die einzigartigen Funktionen der E-Series Spark-Lösung, die All Flash FAS/FAS ONTAP Spark-Lösung und die StorageGRID Spark-Lösung identifiziert und detaillierte Validierungen und Tests durchgeführt. Basierend auf unseren Beobachtungen empfiehlt NetApp die E-Series Lösung für Greenfield-Installationen und neue skalierbare Implementierungen. Die All Flash FAS/FAS Lösung für in-Place-Analysen, KI-, ML- und DL-Workloads nutzt dabei vorhandene NFS-Daten sowie StorageGRID für AI, ML und DL sowie moderne Datenanalysen, wenn Objekt-Storage benötigt wird.
+
+image:apache-spark-image9.png["Empfohlene NetApp Lösungen für Spark"]
+
+Ein Data Lake ist ein Storage-Repository für große Datensätze in nativer Form, das für Analytics-, KI-, ML- und DL-Jobs verwendet werden kann. Wir haben ein Data-Lake-Repository für die E-Series, All Flash FAS/FAS und StorageGRID SG6060 Spark Lösungen erstellt. Das E-Series System bietet HDFS Zugriff auf das Hadoop Spark-Cluster, während auf vorhandene Produktionsdaten über das NFS-Direktzugriffsprotokoll auf den Hadoop-Cluster zugegriffen wird. Für Datensätze, die sich im Objekt-Storage befinden, bietet NetApp StorageGRID sicheren Zugriff über S3 und S3A.
+
+link:apache-spark-use-cases-summary.html["Weiter: Zusammenfassung der Anwendungsfälle."]

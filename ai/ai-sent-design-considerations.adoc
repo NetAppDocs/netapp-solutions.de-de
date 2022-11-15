@@ -1,0 +1,52 @@
+---
+sidebar: sidebar 
+permalink: ai/ai-sent-design-considerations.html 
+keywords: network, compute, design, storage, riva, best practices, 
+summary: In diesem Abschnitt werden die Design-Überlegungen für die verschiedenen Komponenten dieser Lösung beschrieben. 
+---
+= Designüberlegungen
+:hardbreaks:
+:allow-uri-read: 
+:nofooter: 
+:icons: font
+:linkattrs: 
+:imagesdir: ./../media/
+
+
+link:ai-sent-architecture.html["Früher: Architektur."]
+
+
+
+== Design von Netzwerk und Computing
+
+Je nach den Einschränkungen der Datensicherheit müssen alle Daten innerhalb der Infrastruktur des Kunden oder einer sicheren Umgebung verbleiben.
+
+image:ai-sent-image9.png["Fehler: Fehlendes Grafikbild"]
+
+
+
+== Storage-Design
+
+Das NetApp DataOps Toolkit dient als primärer Service für das Management von Storage-Systemen. Das DataOps Toolkit ist eine Python Library, mit der Entwickler, Data Scientists, DevOps Engineers und Data Engineers verschiedene Datenmanagement-Aufgaben ausführen können, zum Beispiel die nahezu sofortige Bereitstellung eines neuen Daten-Volumes oder einer JupyterLab Workspace, das nahezu sofortiges Klonen eines Daten-Volumes oder einer JupyterLab Workspace. Und nahezu sofortiges Snapshots eines Daten-Volumes oder einer JupyterLab Arbeitsumgebung für Rückverfolgbarkeit oder Baselining. Diese Python-Bibliothek kann entweder als Befehlszeilen-Utility oder als Bibliothek mit Funktionen verwendet werden, die in jedes Python-Programm oder Jupyter Notebook importiert werden können.
+
+
+
+== RIVA Best Practices
+
+NVIDIA bietet einige allgemeine Funktionen https://docs.nvidia.com/deeplearning/riva/user-guide/docs/best-practices.html["Best Practices für Daten"^] Zur Verwendung VON RIVA:
+
+* *Verwenden Sie möglichst verlustfreie Audioformate.* die Verwendung verlustbehafteten Codecs wie MP3 kann die Qualität verringern.
+* *Erweitern Sie Trainingsdaten.* das Hinzufügen von Hintergrundgeräuschen zu Audio-Trainingsdaten kann zunächst die Genauigkeit verringern und gleichzeitig die Robustheit steigern.
+* *Limit Vokabular Größe bei Verwendung von Scraped Text.* viele Online-Quellen enthalten Tippfehler oder Nebenpronomen und unübliche Wörter. Durch das Entfernen dieser Optionen kann das Sprachmodell verbessert werden.
+* *Verwenden Sie möglichst eine minimale Abtastrate von 16 kHz.* Versuchen Sie es jedoch nicht erneut zu verteilen, da dadurch die Audioqualität verringert wird.
+
+
+Zusätzlich zu diesen Best Practices müssen Kunden Prioritäten beim Sammeln eines repräsentativen Beispieldatensatzes mit genauen Angaben zu jedem Schritt der Pipeline setzen. Anders ausgedrückt: Der Beispieldatensatz sollte proportional zu den angegebenen Eigenschaften entsprechen, die in einem Zieldatensatz beispielhaft genannt werden. Gleichermaßen sind es die Datensatzanschriften dafür verantwortlich, die Genauigkeit und die Schnelligkeit der Kennzeichnung auszugleichen, um die Qualität und Quantität der Daten zu maximieren. Beispielsweise sind für diese Supportcenter-Lösung Audiodateien, beschriftete Texte und Sentiment-Labels erforderlich. Die sequenzielle Natur dieser Lösung bedeutet, dass Fehler vom Anfang der Pipeline bis zum Ende weiterverbreitet werden Wenn die Audiodateien von schlechter Qualität sind, werden auch die Text-Transkriptionen und Sentiment-Labels sein.
+
+Diese Fehlerweitergabe gilt ähnlich für die Modelle, die auf diesen Daten geschult wurden. Wenn die Sentimentprognosen zu 100 % genau sind, aber das sprach-zu-Text-Modell schlecht funktioniert, dann wird die endgültige Pipeline durch die anfängliche Audio- zu-Text-Transkription begrenzt. Es ist wichtig, dass Entwickler die Leistung jedes Modells einzeln und als Bestandteil einer größeren Pipeline betrachten. In diesem speziellen Fall ist das Ziel, eine Pipeline zu entwickeln, die die Stimmung präzise vorhersagen kann. Daher ist die Gesamtmetrik, auf der die Pipeline beurteilt werden soll, die Genauigkeit der Gefühle, die die Sprache-zu-Text-Transkription direkt beeinflusst.
+
+image:ai-sent-image10.png["Fehler: Fehlendes Grafikbild"]
+
+Das NetApp DataOps Toolkit ergänzt die Pipeline für die Datenqualitätsüberprüfung durch den Einsatz seiner nahezu sofortigen Datenklontechnologie. Jede markierte Datei muss bewertet und mit den vorhandenen beschrifteten Dateien verglichen werden. Durch die Verteilung dieser Qualitätskontrollen auf verschiedene Datenspeichersysteme wird sichergestellt, dass diese Prüfungen schnell und effizient durchgeführt werden.
+
+link:ai-sent-deploying-support-center-sentiment-analysis.html["Als Nächstes: Bereitstellung von Sentimentanalysen im Support-Center."]

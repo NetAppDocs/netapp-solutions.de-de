@@ -1,0 +1,66 @@
+---
+sidebar: sidebar 
+permalink: ai/ai-edge-test-plan.html 
+keywords: test, plan, mlperf, inference, benchmarks 
+summary: Dieses Dokument folgt dem Code MLPerf Inferenz v0.7, dem MLPerf-Inferenz v1.1-Code und den Regeln. Die Benchmarks für den Inferenz am Edge wurden ausgeführt, wie in den in diesem Abschnitt dargestellten Tabellen definiert. 
+---
+= Testplan
+:hardbreaks:
+:allow-uri-read: 
+:nofooter: 
+:icons: font
+:linkattrs: 
+:imagesdir: ./../media/
+
+
+link:ai-edge-technology-overview.html["Zurück: Technologieübersicht."]
+
+Dieses Dokument folgt MLPerf Inferenz v0.7 https://github.com/mlperf/inference_results_v0.7/tree/master/closed/Lenovo["Codieren"^], MLPerf Inferenz v1.1 https://github.com/mlcommons/inference_results_v1.1/tree/main/closed/Lenovo["Codieren"^], und https://github.com/mlcommons/inference_policies/blob/master/inference_rules.adoc["Regeln"^]. Wir führten MLPerf-Benchmarks aus, die für die Inferenz am Rand entwickelt wurden, wie in der folgenden Tabelle definiert.
+
+|===
+| Werden | Aufgabe | Modell | Datensatz | QSL-Größe | Qualität | Einschränkung der Latenz bei mehreren Streams 
+
+
+| Vision | Bildklassifizierung | Resnet50v1.5 | ImageNet (24 x 224) | 1024 | 99 % des FP32 | 50 ms 
+
+
+| Vision | Objekterkennung (groß) | SSD - Wiedereinsetzen Net34 | COCO (1200 x 1200) | 64 | 99 % des FP32 | 66 ms 
+
+
+| Vision | Objekterkennung (klein) | SSD- MobileNetsv1 | COCO (300 x 300) | 256 | 99 % des FP32 | 50 ms 
+
+
+| Vision | Segmentierung von medizinischem Bildmaterial | 3D-UNET | Briats 2019 (22x24 x 2160) | 16 | 99 % und 99.9 % des FP32 | k. A. 
+
+
+| Sprache | Sprache-zu-Text | RNNT | Librispeech dev-clean | 2513 | 99 % des FP32 | k. A. 
+
+
+| Sprache | Sprachverarbeitung | BERT | Kader v1.1 | 10833 | 99 % des FP32 | k. A. 
+|===
+In der folgenden Tabelle sind Edge Benchmark-Szenarien aufgeführt.
+
+|===
+| Werden | Aufgabe | Szenarien 
+
+
+| Vision | Bildklassifizierung | Single Stream, offline, Multistream 
+
+
+| Vision | Objekterkennung (groß) | Single Stream, offline, Multistream 
+
+
+| Vision | Objekterkennung (klein) | Single Stream, offline, Multistream 
+
+
+| Vision | Segmentierung von medizinischem Bildmaterial | Single Stream offline 
+
+
+| Sprache | Sprache-zu-Text | Single Stream offline 
+
+
+| Sprache | Sprachverarbeitung | Single Stream offline 
+|===
+Diese Benchmarks wurden mithilfe der im Rahmen dieser Validierung entwickelten Netzwerk-Storage-Architektur durchgeführt und mit denen von lokalen Ausführung auf den Edge-Servern verglichen, die zuvor MLPerf vorgelegt wurden. Der Vergleich soll ermitteln, welche Auswirkungen der Shared Storage auf die Inferenz-Performance hat.
+
+link:ai-edge-test-configuration.html["Als Nächstes: Testkonfiguration."]

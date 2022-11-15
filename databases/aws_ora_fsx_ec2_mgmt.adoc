@@ -1,0 +1,278 @@
+---
+sidebar: sidebar 
+permalink: databases/aws_ora_fsx_ec2_mgmt.html 
+summary: Dieser Abschnitt enthält Einzelheiten zum Management von AWS RDS Custom für Oracle Datenbanken als Ergänzung zur AWS RDS-Konsole über die UI von SnapCenter. 
+keywords: HA, DR, database, Oracle, RDS, AWS, SnapCenter 
+---
+= EC2/FSX Oracle Datenbankmanagement
+:hardbreaks:
+:allow-uri-read: 
+:nofooter: 
+:icons: font
+:linkattrs: 
+:table-stripes: odd
+:imagesdir: ./../media/
+
+
+link:aws_ora_fsx_ec2_procedures.html["Früher: Implementierungsverfahren"]
+
+Neben der AWS EC2 und FSX Managementkonsole werden der Ansible-Steuerungsknoten und das SnapCenter UI-Tool für das Datenbankmanagement in dieser Oracle-Umgebung implementiert.
+
+Ein Ansible-Steuerungsknoten kann zum Management der Oracle Umgebungskonfiguration verwendet werden. Dabei stehen parallele Updates zur Verfügung, durch die primäre und Standby-Instanzen für Kernel- oder Patch-Updates synchronisiert werden. Failover, Resynchronisierung und Failback können mit dem NetApp Automation Toolkit automatisiert werden, um eine schnelle Wiederherstellung und Verfügbarkeit von Applikationen mit Ansible zu ermöglichen. Einige wiederholbare Aufgaben zum Datenbankmanagement können mithilfe eines Playbooks zur Reduzierung menschlicher Fehler ausgeführt werden.
+
+Das SnapCenter UI Tool kann Datenbank-Snapshot-Backups, zeitpunktgenaue Recovery, Klonen von Datenbanken usw. mit dem SnapCenter Plug-in für Oracle Datenbanken durchführen. Weitere Informationen zu Oracle-Plugin-Funktionen finden Sie im link:https://docs.netapp.com/ocsc-43/index.jsp?topic=%2Fcom.netapp.doc.ocsc-con%2FGUID-CF6B23A3-2B2B-426F-826B-490706880EE8.html["SnapCenter Plug-in für Oracle Database – Übersicht"^].
+
+Die folgenden Abschnitte erläutern, wie die wichtigsten Funktionen des Oracle Datenbankmanagements über die Benutzeroberfläche von SnapCenter erfüllt werden:
+
+* Datenbank-Snapshot-Backups
+* Zeitpunktgenaue Datenbank-Wiederherstellung
+* Erstellen von Datenbankklonen
+
+
+Beim Klonen von Datenbanken wird ein Replikat einer primären Datenbank auf einem separaten EC2 Host zur Datenwiederherstellung im Falle eines logischen Datenfehlers oder einer Beschädigung erstellt. Klone können auch für Applikationstests, Fehlerbehebung, Patch-Validierung usw. verwendet werden.
+
+
+
+== Erstellen eines Snapshots
+
+Eine EC2/FSX Oracle-Datenbank wird regelmäßig in vom Benutzer konfigurierten Intervallen gesichert. Ein Benutzer kann jederzeit auch ein einmalig durchzuführenden Snapshot Backup durchführen. Dies gilt sowohl für Volldatenbank-Snapshot-Backups als auch für Archiv-Log-only Snapshot-Backups.
+
+
+
+=== Erstellen eines vollständigen Datenbank-Snapshots
+
+Ein vollständiger Datenbank-Snapshot umfasst alle Oracle Dateien, einschließlich Datendateien, Steuerdateien und Archivprotokolldateien.
+
+. Melden Sie sich in der Benutzeroberfläche von SnapCenter an und klicken Sie im Menü auf der linken Seite auf „Ressourcen“. Wechseln Sie im Dropdown-Menü Ansicht in die Ansicht Ressourcengruppe.
++
+image:aws_rds_custom_deploy_snp_10.PNG["Fehler: Fehlendes Grafikbild"]
+
+. Klicken Sie auf den Namen der vollständigen Backup-Ressource, und klicken Sie dann auf das Symbol Jetzt sichern, um ein Add-hoc-Backup zu starten.
++
+image:aws_rds_custom_deploy_snp_11.PNG["Fehler: Fehlendes Grafikbild"]
+
+. Klicken Sie auf Backup und bestätigen Sie dann das Backup, um eine vollständige Datenbank-Sicherung zu starten.
++
+image:aws_rds_custom_deploy_snp_12.PNG["Fehler: Fehlendes Grafikbild"]
+
++
+Öffnen Sie in der Ansicht „Ressource“ für die Datenbank die Seite „verwaltete Backupkopien für die Datenbank“, um zu überprüfen, ob die einmalige Sicherung erfolgreich abgeschlossen wurde. Ein vollständiges Datenbank-Backup erstellt zwei Snapshots: Einen für das Daten-Volume und einen für das Log-Volume.
+
++
+image:aws_rds_custom_deploy_snp_13.PNG["Fehler: Fehlendes Grafikbild"]
+
+
+
+
+
+=== Erstellen eines Snapshot für Archivprotokolle
+
+Ein Snapshot für das Archivprotokoll wird nur für das Oracle Archiv-Log-Volume erstellt.
+
+. Melden Sie sich in der Benutzeroberfläche von SnapCenter an und klicken Sie in der Menüleiste links auf die Registerkarte „Ressourcen“. Wechseln Sie im Dropdown-Menü Ansicht in die Ansicht Ressourcengruppe.
++
+image:aws_rds_custom_deploy_snp_10.PNG["Fehler: Fehlendes Grafikbild"]
+
+. Klicken Sie auf den Namen der Backup-Ressource protokollieren und klicken Sie dann auf das Symbol Jetzt sichern, um eine zusätzliche Sicherung für Archivprotokolle zu starten.
++
+image:aws_rds_custom_deploy_snp_14.PNG["Fehler: Fehlendes Grafikbild"]
+
+. Klicken Sie auf Backup und bestätigen Sie dann das Backup, um eine Archiv-Log-Sicherung zu starten.
++
+image:aws_rds_custom_deploy_snp_15.PNG["Fehler: Fehlendes Grafikbild"]
+
++
+Öffnen Sie in der Ansicht „Ressource“ für die Datenbank die Seite „verwaltete Backupkopien für die Datenbank“, um zu überprüfen, ob die Sicherungskopie für das einmalige Archivprotokoll erfolgreich abgeschlossen wurde. Ein Backup des Archivprotokolls erstellt einen Snapshot für das Protokollvolumen.
+
++
+image:aws_rds_custom_deploy_snp_16.PNG["Fehler: Fehlendes Grafikbild"]
+
+
+
+
+
+== Wiederherstellung zu einem bestimmten Zeitpunkt
+
+Eine zeitpunktgenaue SnapCenter Wiederherstellung wird auf demselben EC2 Instanzhost ausgeführt. Führen Sie die folgenden Schritte aus, um die Wiederherstellung durchzuführen:
+
+. Klicken Sie auf der Registerkarte SnapCenter-Ressourcen > Datenbank auf den Datenbanknamen, um das Datenbank-Backup zu öffnen.
++
+image:aws_rds_custom_deploy_snp_17.PNG["Fehler: Fehlendes Grafikbild"]
+
+. Wählen Sie die Datenbank-Backup-Kopie und den gewünschten Zeitpunkt für die Wiederherstellung aus. Markieren Sie auch die entsprechende SCN-Nummer für den Point-in-Time. Die Point-in-Time-Wiederherstellung kann entweder mit der Zeit oder mit dem SCN durchgeführt werden.
++
+image:aws_rds_custom_deploy_snp_18.PNG["Fehler: Fehlendes Grafikbild"]
+
+. Markieren Sie den Snapshot des Protokollvolumens, und klicken Sie auf die Schaltfläche Mount, um das Volume zu mounten.
++
+image:aws_rds_custom_deploy_snp_19.PNG["Fehler: Fehlendes Grafikbild"]
+
+. Wählen Sie die primäre EC2-Instanz, um das Protokoll-Volume zu mounten.
++
+image:aws_rds_custom_deploy_snp_20.PNG["Fehler: Fehlendes Grafikbild"]
+
+. Vergewissern Sie sich, dass der Mount-Job erfolgreich abgeschlossen wurde. Überprüfen Sie auch auf dem EC2 Instance-Host, um das gemountete Protokoll-Volume und auch den Mount Point-Pfad zu sehen.
++
+image:aws_rds_custom_deploy_snp_21_1.PNG["Fehler: Fehlendes Grafikbild"]
+image:aws_rds_custom_deploy_snp_21_2.PNG["Fehler: Fehlendes Grafikbild"]
+
+. Kopieren Sie die Archivprotokolle vom gemounteten Protokollvolume in das aktuelle Archivprotokollverzeichnis.
++
+[listing]
+----
+[ec2-user@ip-10-0-0-151 ~]$ cp /var/opt/snapcenter/sco/backup_mount/ip-10-0-0-151_03-25-2022_11.15.01.1503_1/ORCL/1/db/ORCL_A/arch/*.arc /ora_nfs_log/db/ORCL_A/arch/
+----
+. Kehren Sie zur Registerkarte SnapCenter-Ressourcen > Seite Datenbank-Backup zurück, markieren Sie die Daten-Snapshot-Kopie und klicken Sie auf die Schaltfläche Wiederherstellen, um den Workflow zur Datenbankwiederherstellung zu starten.
++
+image:aws_rds_custom_deploy_snp_22.PNG["Fehler: Fehlendes Grafikbild"]
+
+. Überprüfen Sie „Alle Datendateien“ und „Datenbankstatus ändern, falls erforderlich für Restore und Recovery“, und klicken Sie auf Weiter.
++
+image:aws_rds_custom_deploy_snp_23.PNG["Fehler: Fehlendes Grafikbild"]
+
+. Wählen Sie einen gewünschten Wiederherstellungsumfang mit SCN oder Time aus. Statt die gemounteten Archivprotokolle wie in Schritt 6 gezeigt in das aktuelle Logverzeichnis zu kopieren, kann der gemountete Archiv-Log-Pfad in "Geben Sie externe Archiv-Log-Dateien Speicherorte" zur Wiederherstellung aufgelistet werden.
++
+image:aws_rds_custom_deploy_snp_24_1.PNG["Fehler: Fehlendes Grafikbild"]
+
+. Geben Sie bei Bedarf ein optionales Preskript an.
++
+image:aws_rds_custom_deploy_snp_25.PNG["Fehler: Fehlendes Grafikbild"]
+
+. Geben Sie ggf. ein optionales Nachskript an, das ausgeführt werden soll. Überprüfen Sie die geöffnete Datenbank nach der Wiederherstellung.
++
+image:aws_rds_custom_deploy_snp_26.PNG["Fehler: Fehlendes Grafikbild"]
+
+. Geben Sie einen SMTP-Server und eine E-Mail-Adresse an, wenn eine Jobbenachrichtigung erforderlich ist.
++
+image:aws_rds_custom_deploy_snp_27.PNG["Fehler: Fehlendes Grafikbild"]
+
+. Stellen Sie die Jobübersicht wieder her. Klicken Sie auf Fertig stellen, um den Wiederherstellungsauftrag zu starten.
++
+image:aws_rds_custom_deploy_snp_28.PNG["Fehler: Fehlendes Grafikbild"]
+
+. Validieren Sie die Wiederherstellung aus SnapCenter.
++
+image:aws_rds_custom_deploy_snp_29_1.PNG["Fehler: Fehlendes Grafikbild"]
+
+. Validieren Sie die Wiederherstellung über den EC2 Instance Host.
++
+image:aws_rds_custom_deploy_snp_29_2.PNG["Fehler: Fehlendes Grafikbild"]
+
+. Um die Bereitstellung des Wiederherstellungsprotokollvolumens aufzuheben, kehren Sie die Schritte in Schritt 4 um.
+
+
+
+
+== Erstellen eines Datenbankklons
+
+Der folgende Abschnitt zeigt, wie der Workflow für SnapCenter-Klone zum Erstellen eines Datenbankklonen aus einer primären Datenbank auf eine Standby-EC2-Instanz verwendet wird.
+
+. Erstellen Sie mit der vollständigen Backup-Ressourcengruppe ein vollständiges Snapshot-Backup der primären Datenbank von SnapCenter.
++
+image:aws_rds_custom_deploy_replica_02.PNG["Fehler: Fehlendes Grafikbild"]
+
+. Öffnen Sie auf der Registerkarte SnapCenter-Ressource > Datenbank die Seite Datenbank-Backup-Verwaltung für die primäre Datenbank, aus der das Replikat erstellt werden soll.
++
+image:aws_rds_custom_deploy_replica_04.PNG["Fehler: Fehlendes Grafikbild"]
+
+. Mounten Sie den in Schritt 4 erstellte Protokoll-Volume-Snapshot zum Standby-EC2-Instanz-Host.
++
+image:aws_rds_custom_deploy_replica_13.PNG["Fehler: Fehlendes Grafikbild"]
+image:aws_rds_custom_deploy_replica_14.PNG["Fehler: Fehlendes Grafikbild"]
+
+. Markieren Sie die für das Replikat zu klonenden Snapshot Kopie und klicken Sie auf die Schaltfläche Klonen, um das Klonverfahren zu starten.
++
+image:aws_rds_custom_deploy_replica_05.PNG["Fehler: Fehlendes Grafikbild"]
+
+. Ändern Sie den Namen der Replikatkopie, damit sie sich vom Namen der primären Datenbank unterscheidet. Klicken Sie Auf Weiter.
++
+image:aws_rds_custom_deploy_replica_06.PNG["Fehler: Fehlendes Grafikbild"]
+
+. Ändern Sie den Klon-Host auf den Standby-EC2-Host, akzeptieren Sie die Standardbenennung und klicken Sie auf Weiter.
++
+image:aws_rds_custom_deploy_replica_07.PNG["Fehler: Fehlendes Grafikbild"]
+
+. Ändern Sie Ihre Oracle-Starteinstellungen auf die für den Oracle-Zielserver-Host konfigurierten Einstellungen, und klicken Sie auf Weiter.
++
+image:aws_rds_custom_deploy_replica_08.PNG["Fehler: Fehlendes Grafikbild"]
+
+. Geben Sie einen Wiederherstellungspunkt mit entweder Time oder dem SCN und dem angehängten Archivprotokollpfad an.
++
+image:aws_rds_custom_deploy_replica_15.PNG["Fehler: Fehlendes Grafikbild"]
+
+. Senden Sie bei Bedarf die SMTP-E-Mail-Einstellungen.
++
+image:aws_rds_custom_deploy_replica_11.PNG["Fehler: Fehlendes Grafikbild"]
+
+. Klonen Sie die Jobübersicht, und klicken Sie auf Fertig stellen, um den Klonauftrag zu starten.
++
+image:aws_rds_custom_deploy_replica_12.PNG["Fehler: Fehlendes Grafikbild"]
+
+. Überprüfen Sie das Klon-Jobprotokoll, indem Sie das Klon-Jobprotokoll überprüfen.
++
+image:aws_rds_custom_deploy_replica_17.PNG["Fehler: Fehlendes Grafikbild"]
+
++
+Die geklonte Datenbank ist sofort in SnapCenter registriert.
+
++
+image:aws_rds_custom_deploy_replica_18.PNG["Fehler: Fehlendes Grafikbild"]
+
+. Deaktivieren Sie den Oracle Archivprotokollmodus. Melden Sie sich als oracle-Benutzer bei der EC2-Instanz an und führen Sie den folgenden Befehl aus:
++
+[source, cli]
+----
+sqlplus / as sysdba
+----
++
+[source, cli]
+----
+shutdown immediate;
+----
++
+[source, cli]
+----
+startup mount;
+----
++
+[source, cli]
+----
+alter database noarchivelog;
+----
++
+[source, cli]
+----
+alter database open;
+----
+
+
+
+NOTE: Anstelle primärer Oracle Backup-Kopien kann ein Klon auch aus replizierten sekundären Backup-Kopien auf dem FSX Ziel-Cluster erstellt werden. Dies gilt gleichermaßen.
+
+
+
+== HA-Failover auf Standby und Resynchronisierung
+
+Der Standby Oracle HA Cluster bietet Hochverfügbarkeit bei einem Ausfall am primären Standort, entweder in der Rechenschicht oder auf der Storage-Ebene. Ein wesentlicher Vorteil der Lösung besteht darin, dass Anwender die Infrastruktur jederzeit und beliebig oft testen und validieren können. Failover kann vom Benutzer simuliert oder durch wirklichen Ausfall ausgelöst werden. Die Failover-Prozesse sind identisch und können für ein schnelles Applikations-Recovery automatisiert werden.
+
+Siehe folgende Liste der Failover-Verfahren:
+
+. Führen Sie bei einem simulierten Failover ein Protokoll-Snapshot-Backup aus, um die neuesten Transaktionen auf den Standby-Standort zu leeren, wie im Abschnitt dargestellt  an archive log snapshot. Bei einem durch einen tatsächlichen Ausfall ausgelösten Failover werden die letzten wiederherstellbaren Daten auf den Standby-Standort repliziert, wobei das letzte erfolgreiche Backup des geplanten Protokoll-Volumes erfolgt.
+. SnapMirror zwischen primärem und Standby FSX-Cluster unterbrechen
+. Mounten Sie die replizierten Standby-Datenbank-Volumes auf dem Standby-EC2 Instance-Host.
+. Verknüpfen Sie die Oracle-Binärdatei neu, wenn die replizierte Oracle-Binärdatei für die Oracle-Wiederherstellung verwendet wird.
+. Stellen Sie die Standby-Oracle-Datenbank auf das letzte verfügbare Archivprotokoll wieder her.
+. Öffnen Sie die Standby-Oracle-Datenbank für den Anwendungs- und Benutzerzugriff.
+. Bei einem tatsächlichen Ausfall des primären Standorts übernimmt die Standby-Oracle-Datenbank nun die Rolle des neuen primären Standorts und Datenbank-Volumes können dazu verwendet werden, den ausgefallenen primären Standort als neuen Standby-Standort mit der Reverse SnapMirror Methode wiederherzustellen.
+. Wenn ein simulierter Ausfall des primären Standorts im Rahmen des Tests oder der Validierung auftritt, fahren Sie nach Abschluss der Testdurchführung die Standby-Oracle-Datenbank herunter. Heben Sie dann die Standby-Datenbank-Volumes vom Standby-EC2-Instance-Host auf und synchronisieren Sie die Replikation vom primären Standort zum Standby-Standort neu.
+
+
+Diese Verfahren können mit dem NetApp Automation Toolkit durchgeführt werden, das auf der öffentlichen NetApp GitHub Website heruntergeladen werden kann.
+
+[source, cli]
+----
+git clone https://github.com/NetApp-Automation/na_ora_hadr_failover_resync.git
+----
+Lesen Sie die README-Anweisung sorgfältig, bevor Sie die Einrichtung und Failover-Tests durchführen.
+
+link:aws_ora_fsx_ec2_migration.html["Als Nächstes geht es um die Datenbankmigration."]

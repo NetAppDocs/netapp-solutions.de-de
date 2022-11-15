@@ -1,0 +1,45 @@
+---
+sidebar: sidebar 
+permalink: xcp/xcp-bp-data-lake-to-ontap-nfs.html 
+keywords: requirements, proof of concept, AI, data mover, mapr 
+summary: 'Dieser Anwendungsfall basiert auf dem größten Proof of Concept (CPOC) eines Finanzkunden, den wir erreicht haben. Mit dem NetApp in-Place-Analysemodul (NIPAM) verschieben wir Analysedaten in die NetApp ONTAP AI. Aufgrund von jüngsten Verbesserungen und der verbesserten Performance von NetApp XCP und dem einzigartigen Ansatz der NetApp Data Mover-Lösung haben wir die Datenmigration mithilfe von NetApp XCP neu veröffentlicht.' 
+---
+= Data Lake zu ONTAP-NFS
+:hardbreaks:
+:allow-uri-read: 
+:nofooter: 
+:icons: font
+:linkattrs: 
+:imagesdir: ./../media/
+
+
+link:xcp-bp-customer-scenarios-overview.html["Früher: Kundenszenarien."]
+
+Dieser Anwendungsfall basiert auf dem größten Proof of Concept (CPOC) eines Finanzkunden, den wir erreicht haben. Mit dem NetApp in-Place-Analysemodul (NIPAM) verschieben wir Analysedaten in die NetApp ONTAP AI. Aufgrund von jüngsten Verbesserungen und der verbesserten Performance von NetApp XCP und dem einzigartigen Ansatz der NetApp Data Mover-Lösung haben wir die Datenmigration mithilfe von NetApp XCP neu veröffentlicht.
+
+
+
+== Herausforderungen und Anforderungen des Kunden
+
+Zu den folgenden Herausforderungen und Anforderungen des Kunden zählen:
+
+* Kunden haben unterschiedliche Datentypen, darunter strukturierte, unstrukturierte und halbstrukturierte Daten, Protokolle, Und Machine-to-Machine-Daten in Data Lakes. KI-Systeme setzen all diese Datentypen für die Verarbeitung von Vorhersagevorgängen voraus. Wenn sich Daten in einem nativen Data-Lake-Filesystem befinden, ist die Verarbeitung schwierig.
+* Die KI-Architektur des Kunden ist nicht in der Lage, auf Daten aus Hadoop Distributed File System (HDFS) und Hadoop Compatible File System (HCFS) zuzugreifen, so dass die Daten nicht für AI-Operationen zur Verfügung stehen. Für die KI müssen Daten in einem verständlichen File-Systemformat wie NFS vorliegen.
+* Für das Verschieben von Daten aus dem Data Lake sind einige spezielle Prozesse erforderlich, da große Datenmengen und hoher Durchsatz erforderlich sind. Um die Daten in das KI-System zu verschieben, ist eine kostengünstige Methode erforderlich.
+
+
+
+
+== Data Mover-Lösung
+
+In dieser Lösung wird das MapR Filesystem (MapR-FS) aus lokalen Festplatten im MapR Cluster erstellt. Das MapR NFS Gateway wird auf jedem Daten-Node mit virtuellen IPs konfiguriert. Der Fileserver-Service speichert und managt die MapR-FS-Daten. NFS Gateway ermöglicht den Zugriff auf Map-FS Daten vom NFS-Client über die virtuelle IP. Auf jedem MapR Daten-Node wird eine XCP Instanz ausgeführt, um die Daten vom Map NFS Gateway zu NetApp ONTAP NFS zu übertragen. Jede XCP-Instanz überträgt einen bestimmten Satz von Quellordnern an den Zielspeicherort.
+
+Die folgende Abbildung zeigt die NetApp Data Mover-Lösung für MapR Cluster mit XCP.
+
+image:xcp-bp_image30.png["Fehler: Fehlendes Grafikbild"]
+
+Detaillierte Anwendungsfälle, aufgezeichnete Demos und Testergebnisse finden Sie im https://blog.netapp.com/data-migration-xcp["Nutzung von XCP, um Daten von einem Data Lake und High-Performance-Computing zu ONTAP NFS zu verschieben"^] blog:
+
+Detaillierte Schritte zum Verschieben von MapR-FS-Daten in ONTAP-NFS mithilfe von NetApp XCP finden Sie in Anhang B in https://www.netapp.com/pdf.html?item=/media/17082-tr4732pdf.pdf&ntap-no-cache["TR-4732: Big Data Analytics Data to Artificial Intelligence"^].
+
+link:xcp-bp-high-performance-computing-to-ontap-nfs.html["Weiter: High-Performance-Computing für ONTAP NFS."]

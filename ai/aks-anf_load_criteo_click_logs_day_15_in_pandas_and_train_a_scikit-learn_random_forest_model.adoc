@@ -1,0 +1,71 @@
+---
+sidebar: sidebar 
+permalink: ai/aks-anf_load_criteo_click_logs_day_15_in_pandas_and_train_a_scikit-learn_random_forest_model.html 
+keywords: criteo, click log, pandas, scikit-learn, random, forest, model, dataframes, 
+summary: Diese Seite beschreibt, wie wir Pandas und DataFrames zum Laden von Click Logs Daten aus dem Criteo Terabyte Datensatz verwendet haben. Der Anwendungsfall ist in der digitalen Werbung relevant, damit Anzeigenaustausch Nutzer-Profile bauen kann, indem er vorhersagt, ob Werbeanzeigen angeklickt werden oder wenn der Austausch kein genaues Modell in einer automatisierten Pipeline verwendet. 
+---
+= Criteo Click Logs Tag 15 in Pandas laden und ein scikit-Learn Zufallswaldmodell trainieren
+:hardbreaks:
+:allow-uri-read: 
+:nofooter: 
+:icons: font
+:linkattrs: 
+:imagesdir: ./../media/
+
+
+link:aks-anf_libraries_for_data_processing_and_model_training.html["Früher: Bibliotheken für die Datenverarbeitung und Modellschulung."]
+
+In diesem Abschnitt wird beschrieben, wie wir Pandas und DataFrames zum Laden von Click Logs-Daten aus dem Criteo Terabyte-Datensatz verwendet haben. Der Anwendungsfall ist in der digitalen Werbung relevant, damit Anzeigenaustausch Nutzer-Profile bauen kann, indem er vorhersagt, ob Werbeanzeigen angeklickt werden oder wenn der Austausch kein genaues Modell in einer automatisierten Pipeline verwendet.
+
+Wir haben Tag 15 Daten aus dem Click Logs Datensatz geladen, insgesamt 45GB. Ausführen der folgenden Zelle im Jupyter-Notebook `CTR-PandasRF-collated.ipynb` Erstellt einen Pandas DataFrame, der die ersten 50 Millionen Zeilen enthält und ein scikit-Learn Zufallswaldmodell erzeugt.
+
+....
+%%time
+import pandas as pd
+import numpy as np
+header = ['col'+str(i) for i in range (1,41)] #note that according to criteo, the first column in the dataset is Click Through (CT). Consist of 40 columns
+first_row_taken = 50_000_000 # use this in pd.read_csv() if your compute resource is limited.
+# total number of rows in day15 is 20B
+# take 50M rows
+"""
+Read data & display the following metrics:
+1. Total number of rows per day
+2. df loading time in the cluster
+3. Train a random forest model
+"""
+df = pd.read_csv(file, nrows=first_row_taken, delimiter='\t', names=header)
+# take numerical columns
+df_sliced = df.iloc[:, 0:14]
+# split data into training and Y
+Y = df_sliced.pop('col1') # first column is binary (click or not)
+# change df_sliced data types & fillna
+df_sliced = df_sliced.astype(np.float32).fillna(0)
+from sklearn.ensemble import RandomForestClassifier
+# Random Forest building parameters
+# n_streams = 8 # optimization
+max_depth = 10
+n_bins = 16
+n_trees = 10
+rf_model = RandomForestClassifier(max_depth=max_depth, n_estimators=n_trees)
+rf_model.fit(df_sliced, Y)
+....
+Führen Sie den folgenden Abschnitt in diesem Notizbuch aus, um eine Vorhersage mit einem trainierten zufälligen Waldmodell durchzuführen. Wir haben die letzten 1 Million Zeilen ab Tag 15 als Testsatz genommen, um mögliche Duplikate zu vermeiden. Die Zelle berechnet auch die Genauigkeit der Vorhersage, definiert als Prozentsatz der Vorkommen das Modell sagt genau aus, ob ein Benutzer auf eine Anzeige klickt oder nicht. Informationen zu unbekannten Komponenten in diesem Notebook finden Sie im https://scikit-learn.org/stable/modules/generated/sklearn.ensemble.RandomForestClassifier.html["Offizielle Scikit-Learn-Dokumentation"^].
+
+....
+# testing data, last 1M rows in day15
+test_file = '/data/day_15_test'
+with open(test_file) as g:
+    print(g.readline())
+
+# dataFrame processing for test data
+test_df = pd.read_csv(test_file, delimiter='\t', names=header)
+test_df_sliced = test_df.iloc[:, 0:14]
+test_Y = test_df_sliced.pop('col1')
+test_df_sliced = test_df_sliced.astype(np.float32).fillna(0)
+# prediction & calculating error
+pred_df = rf_model.predict(test_df_sliced)
+from sklearn import metrics
+# Model Accuracy
+print("Accuracy:",metrics.accuracy_score(test_Y, pred_df))
+....
+link:aks-anf_load_day_15_in_dask_and_train_a_dask_cuml_random_forest_model.html["Nächster: Lade Tag 15 in Damsk und trainiere ein Dusk CuML Zufallswaldmodell."]

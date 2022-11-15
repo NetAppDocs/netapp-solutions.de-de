@@ -1,0 +1,45 @@
+---
+sidebar: sidebar 
+permalink: ai/mlrun_configuring_kubernetes_cluster.html 
+keywords: NetApp, Kubernetes, Cluster, Configuring 
+summary:  
+---
+= Kubernetes-Cluster Konfigurieren
+:hardbreaks:
+:allow-uri-read: 
+:nofooter: 
+:icons: font
+:linkattrs: 
+:imagesdir: ./../media/
+
+
+[role="lead"]
+Dieser Abschnitt ist in zwei Teile für die Cloud und lokale Implementierung unterteilt.
+
+
+
+== Konfiguration Von Cloud Deployment Kubernetes
+
+Über NetApp Cloud Manager können Sie die Verbindung zum Iguazio Kubernetes Cluster definieren. Für Trident ist Zugriff auf mehrere Ressourcen im Cluster erforderlich, damit das Volume verfügbar wird.
+
+. Um den Zugriff zu aktivieren, rufen Sie die Kubernetes-Konfigurationsdatei von einem der Iguazio-Knoten ab. Die Datei befindet sich unter `/home/Iguazio/.kube/config.` Laden Sie diese Datei auf Ihren Desktop herunter.
+. Gehen Sie zu Discover Cluster, um zu konfigurieren.
++
+image:mlrun_image9.png["Fehler: Fehlendes Grafikbild"]
+
+. Laden Sie die Kubernetes-Konfigurationsdatei hoch. Siehe folgendes Bild.
++
+image:mlrun_image10.PNG["Fehler: Fehlendes Grafikbild"]
+
+. Trident implementieren und ein Volume dem Cluster zuweisen. Sehen Sie das folgende Bild zum Definieren und Zuweisen eines Persistent Volumes zum Iguazio-Cluster.dieser Prozess erstellt ein Persistent Volume (PV) im Iguazio-Cluster. Bevor Sie ihn verwenden können, müssen Sie einen Persistent Volume Claim (PVC) definieren.
+
+
+image:mlrun_image5.png["Fehler: Fehlendes Grafikbild"]
+
+
+
+== On-Premises-Implementierung Der Kubernetes-Konfiguration
+
+Eine lokale Installation von NetApp Trident finden Sie unter https://www.netapp.com/us/media/tr-4798.pdf["TR-4798"^] Entsprechende Details. Nach der Konfiguration des Kubernetes-Clusters und der Installation von NetApp Trident können Sie Trident mit dem Iguazio Cluster verbinden, um NetApp Datenmanagementfunktionen zu aktivieren, wie beispielsweise die Erstellung von Snapshot Kopien Ihrer Daten und Modelle.
+
+link:mlrun_define_persistent_volume_claim.html["Als Nächstes Definieren Sie Persistent Volume Claim"]

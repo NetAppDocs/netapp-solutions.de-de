@@ -1,0 +1,122 @@
+---
+sidebar: sidebar 
+permalink: ehc/aws/aws-guest-dr-snapcenter-db-backup.html 
+keywords: SnapCenter backup, restore process, Swagger, authorization token, NFS, CIFS, file share, XCOPY utility 
+summary: SnapCenter ermöglicht das Backup und Recovery seiner zugrunde liegenden MySQL Datenbank und Konfigurationsdaten, um bei einem Ausfall den SnapCenter Server wiederherzustellen. Für unsere Lösung haben wir die SnapCenter-Datenbank und die Konfiguration auf einer AWS EC2 Instanz in unserer VPC wiederhergestellt. 
+---
+= Backup von SnapCenter Datenbanken für Disaster Recovery
+:hardbreaks:
+:allow-uri-read: 
+:nofooter: 
+:icons: font
+:linkattrs: 
+:imagesdir: ./../../media/
+
+
+link:aws-guest-dr-cloud-backup-config.html["Früher: Cloud-Backup-Tools und -Konfiguration."]
+
+SnapCenter ermöglicht das Backup und Recovery seiner zugrunde liegenden MySQL Datenbank und Konfigurationsdaten, um bei einem Ausfall den SnapCenter Server wiederherzustellen. Für unsere Lösung haben wir die SnapCenter-Datenbank und die Konfiguration auf einer AWS EC2 Instanz in unserer VPC wiederhergestellt. Weitere Informationen zu diesem Schritt finden Sie unter https://docs.netapp.com/us-en/snapcenter/sc-automation/rest_api_workflows_disaster_recovery_of_snapcenter_server.html["Dieser Link"^].
+
+
+
+== Voraussetzungen für SnapCenter-Backup
+
+Für die SnapCenter-Sicherung sind folgende Voraussetzungen erforderlich:
+
+* Eine auf dem lokalen ONTAP-System erstellte Volume- und SMB-Freigabe, um die gesicherten Datenbank- und Konfigurationsdateien zu lokalisieren.
+* Eine SnapMirror Beziehung zwischen dem lokalen ONTAP System und FSX oder CVO im AWS-Konto Über diese Beziehung wird der Snapshot mit der gesicherten SnapCenter-Datenbank und den Konfigurationsdateien transportiert.
+* Windows Server wird im Cloud-Konto installiert, entweder auf einer EC2 Instanz oder auf einer VM im VMware Cloud SDDC.
+* SnapCenter installiert auf der Windows EC2 Instanz oder VM in VMware Cloud.
+
+
+
+
+== Zusammenfassung des SnapCenter-Backup- und Restore-Prozesses
+
+* Erstellen Sie ein Volume auf dem lokalen ONTAP System zum Hosten der Backup-db und Konfigurationsdateien.
+* Einrichten einer SnapMirror Beziehung zwischen On-Premises- und FSX/CVO
+* Mounten Sie den SMB-Share.
+* Rufen Sie das Swagger-Autorisierungs-Token zum Ausführen von API-Aufgaben ab.
+* starten sie den db-Wiederherstellungsprozess.
+* Verwenden Sie das xcopy-Dienstprogramm, um das lokale Verzeichnis der db- und Konfigurationsdatei in die SMB-Freigabe zu kopieren.
+* Erstellen Sie auf FSX einen Klon des ONTAP Volumes (kopiert über SnapMirror aus dem lokalen Datacenter).
+* Installieren Sie den SMB-Share von FSX zu EC2/VMware Cloud.
+* Kopieren Sie das Wiederherstellungsverzeichnis aus der SMB-Freigabe in ein lokales Verzeichnis.
+* Führen Sie den Wiederherstellungsprozess für SQL Server aus Swagger aus.
+
+
+
+
+== Backup der SnapCenter-Datenbank und -Konfiguration
+
+SnapCenter stellt eine Web-Client-Schnittstelle zum Ausführen VON REST-API-Befehlen bereit. Weitere Informationen zum Zugriff auf DIE REST-APIs über Swagger finden Sie in der SnapCenter-Dokumentation unter https://docs.netapp.com/us-en/snapcenter/sc-automation/overview_rest_apis.html["Dieser Link"^].
+
+
+
+=== Melden Sie sich bei Swagger an und erhalten Sie ein Autorisierungs-Token
+
+Nachdem Sie die Seite Swagger aufgerufen haben, müssen Sie ein Autorisierungs-Token abrufen, um den Wiederherstellungsprozess der Datenbank zu starten.
+
+. Rufen Sie die Webseite der SnapCenter Swagger API auf unter _\https://<SnapCenter Server IP>:8146/Swagger/_.
++
+image:dr-vmc-aws-image40.png["Fehler: Fehlendes Grafikbild"]
+
+. Erweitern Sie den Abschnitt „Auth“, und klicken Sie auf „Probieren Sie es aus“.
++
+image:dr-vmc-aws-image41.png["Fehler: Fehlendes Grafikbild"]
+
+. Geben Sie im Bereich BenutzerbetriebContext die SnapCenter-Anmeldeinformationen und -Rolle ein, und klicken Sie auf Ausführen.
++
+image:dr-vmc-aws-image42.png["Fehler: Fehlendes Grafikbild"]
+
+. Im unten stehenden Antwortkörper können Sie das Token sehen. Kopieren Sie den Token-Text zur Authentifizierung, wenn Sie den Backup-Prozess ausführen.
++
+image:dr-vmc-aws-image43.png["Fehler: Fehlendes Grafikbild"]
+
+
+
+
+
+=== Backup einer SnapCenter-Datenbank durchführen
+
+Gehen Sie dann auf der Seite „Swagger“ auf den Bereich „Disaster Recovery“, um den SnapCenter-Backup-Prozess zu starten.
+
+. Erweitern Sie den Bereich Disaster Recovery, indem Sie darauf klicken.
++
+image:dr-vmc-aws-image44.png["Fehler: Fehlendes Grafikbild"]
+
+. Erweitern Sie den `/4.6/disasterrecovery/server/backup` Und klicken Sie auf „Probieren“.
++
+image:dr-vmc-aws-image45.png["Fehler: Fehlendes Grafikbild"]
+
+. Fügen Sie im Abschnitt SmDRBackupRequest den korrekten lokalen Zielpfad hinzu und wählen Sie Ausführen, um das Backup der SnapCenter-Datenbank und -Konfiguration zu starten.
++
+
+NOTE: Der Backup-Prozess erlaubt keine direkte Sicherung in einer NFS- oder CIFS-Dateifreigabe.
+
++
+image:dr-vmc-aws-image46.png["Fehler: Fehlendes Grafikbild"]
+
+
+
+
+
+=== Überwachen Sie den Backup-Job von SnapCenter
+
+Melden Sie sich bei SnapCenter an, um Protokolldateien beim Starten der Datenbankwiederherstellung zu überprüfen. Im Abschnitt „Überwachen“ können Sie Details zum Disaster-Recovery-Backup des SnapCenter Servers anzeigen.
+
+image:dr-vmc-aws-image47.png["Fehler: Fehlendes Grafikbild"]
+
+
+
+=== Verwenden Sie das XCOPY-Dienstprogramm, um die Datenbank-Sicherungsdatei in die SMB-Freigabe zu kopieren
+
+Als Nächstes müssen Sie das Backup vom lokalen Laufwerk auf dem SnapCenter Server in die CIFS-Freigabe verschieben, die zum Kopieren der Daten durch SnapMirror an den sekundären Speicherort auf der FSX Instanz in AWS verwendet wird. Verwenden Sie xcopy mit spezifischen Optionen, die die Berechtigungen der Dateien behalten.
+
+Öffnen Sie eine Eingabeaufforderung als Administrator. Geben Sie an der Eingabeaufforderung die folgenden Befehle ein:
+
+....
+xcopy  <Source_Path>  \\<Destination_Server_IP>\<Folder_Path> /O /X /E /H /K
+xcopy c:\SC_Backups\SnapCenter_DR \\10.61.181.185\snapcenter_dr /O /X /E /H /K
+....
+link:aws-guest-dr-failover.html["Weiter: Failover."]

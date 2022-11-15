@@ -1,0 +1,49 @@
+---
+sidebar: sidebar 
+permalink: ai/aks-anf_cloud_resource_requirements.html 
+keywords: configuration, configure, resource provider, dask, cloud, Requirements 
+summary: Auf dieser Seite werden die Konfiguration von Cloud-Ressourcen für Azure NetApp Files beschrieben. 
+---
+= Anforderungen an die Cloud-Ressourcen
+:hardbreaks:
+:allow-uri-read: 
+:nofooter: 
+:icons: font
+:linkattrs: 
+:imagesdir: ./../media/
+
+
+link:aks-anf_software_requirements.html["Früher: Software-Anforderungen."]
+
+
+
+== Konfigurieren Sie Azure NetApp Files
+
+Konfigurieren Sie Azure NetApp Files wie unter beschrieben https://docs.microsoft.com/azure/azure-netapp-files/azure-netapp-files-quickstart-set-up-account-create-volumes?tabs=azure-portal["QuickStart: Azure NetApp Files einrichten und ein NFS-Volume erstellen"^].
+
+Sie können über den Abschnitt „Create NFS Volume for Azure NetApp Files“ hinaus fortfahren, weil Sie Volumes über Trident erstellen. Bevor Sie fortfahren, gehen Sie wie folgt vor:
+
+. Registrieren Sie sich über die Azure Shell für Azure NetApp Files und NetApp Ressourcen-Provider ( https://docs.microsoft.com/azure/azure-netapp-files/azure-netapp-files-register["Verlinken"^]).
+. Erstellen Sie ein Konto in Azure NetApp Files ( https://docs.microsoft.com/azure/azure-netapp-files/azure-netapp-files-create-netapp-account["Verlinken"^]).
+. Richten Sie einen Kapazitäts-Pool ein (mindestens 4 TB Standard oder Premium, je nach Bedarf) ( https://docs.microsoft.com/azure/azure-netapp-files/azure-netapp-files-set-up-capacity-pool["Verlinken"^]In der folgenden Tabelle sind die Anforderungen an die Netzwerkkonfiguration für die Einrichtung in der Cloud aufgeführt. Der DASK-Cluster und der Azure NetApp Files müssen sich im gleichen virtuellen Azure-Netzwerk (vnet) oder einem Peering vnet befinden.
+
+
+|===
+| Ressourcen | Typ/Version 
+
+
+| Azure Kubernetes Service | 1.18.14 
+
+
+| Agent-Knoten | 3x Standard_DS2_v2 
+
+
+| GPU-Node | 3x Standard_NC6s_v3 
+
+
+| Azure NetApp Dateien | Standard-Kapazitäts-Pool 
+
+
+| Kapazität in TB | 4 
+|===
+link:aks-anf_click-through_rate_prediction_use_case_summary.html["Weiter: Click-through-Rate-Prognose use case summary."]

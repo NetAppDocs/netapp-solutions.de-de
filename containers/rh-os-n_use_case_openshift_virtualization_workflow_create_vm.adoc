@@ -1,0 +1,38 @@
+---
+sidebar: sidebar 
+permalink: containers/rh-os-n_use_case_openshift_virtualization_workflow_create_vm.html 
+keywords: OpenShift, OCP, Astra Trident, NetApp ONTAP, Red Hat OpenShift, OpenShift Virtualization, CNV, Container Native Virtualization, Red Hat OpenShift Virtualization 
+summary: Red hat OpenShift Virtualisierung mit NetApp ONTAP 
+---
+= Workflows: Red hat OpenShift Virtualisierung mit NetApp ONTAP
+:allow-uri-read: 
+
+
+
+
+== Erstellen Sie eine VM
+
+VMs sind statusorientierte Implementierungen, bei denen Volumes das Betriebssystem und die Daten hosten müssen. Da die VMs als Pods ausgeführt werden, werden die VMs mit PVS unterstützt, die über Trident auf NetApp ONTAP gehostet werden. Diese Volumes sind als Festplatten verbunden und speichern das gesamte Dateisystem einschließlich der Boot-Quelle der VM.
+
+image::redhat_openshift_image52.jpg[Erstellung einer VM-Architektur]
+
+Gehen Sie wie folgt vor, um eine virtuelle Maschine im OpenShift-Cluster zu erstellen:
+
+. Navigieren Sie zu Workloads > Virtualisierung > Virtuelle Maschinen, und klicken Sie auf Erstellen > mit Assistenten.
+. Wählen Sie das gewünschte Betriebssystem aus, und klicken Sie auf Weiter.
+. Wenn für das ausgewählte Betriebssystem keine Startquelle konfiguriert ist, müssen Sie es konfigurieren. Wählen Sie unter „Startquelle“ aus, ob Sie das BS-Image aus einer URL oder aus einer Registrierung importieren möchten, und geben Sie die entsprechenden Details an. Erweitern Sie Advanced und wählen Sie die Trident-gestützte StorageClass aus. Klicken Sie anschließend auf Weiter.
++
+image::redhat_openshift_image53.JPG[Boot-Quelle für VM erstellen]
+
+. Wenn für das ausgewählte Betriebssystem bereits eine Startquelle konfiguriert ist, kann der vorherige Schritt übersprungen werden.
+. Wählen Sie im Bereich „Prüfen und Erstellen“ das Projekt aus, in dem Sie die VM erstellen möchten, und geben Sie die VM-Details an. Vergewissern Sie sich, dass die Startquelle für den Klon- und Bootvorgang von CD-ROM ausgewählt ist, wobei die entsprechende PVC für das ausgewählte Betriebssystem zugewiesen ist.
++
+image::redhat_openshift_image54.JPG[Erstellen Sie eine VM]
+
+. Wenn Sie die virtuelle Maschine anpassen möchten, klicken Sie auf Virtuelle Maschine anpassen und ändern Sie die erforderlichen Parameter.
+. Klicken Sie auf Virtual Machine erstellen, um die virtuelle Maschine zu erstellen. Dadurch wird ein entsprechender Pod im Hintergrund bereitgestellt.
+
+
+Wenn eine Startquelle für eine Vorlage oder ein Betriebssystem aus einer URL oder aus einer Registrierung konfiguriert ist, wird in der ein PVC erstellt `openshift-virtualization-os-images` Projizieren und Herunterladen des KVM-Gastabbilds auf das PVC. Sie müssen sicherstellen, dass Vorlagen-PVCs über genügend bereitgestellten Speicherplatz verfügen, um das KVM-Gast-Image für das entsprechende Betriebssystem unterzubringen. Diese VES werden dann geklont und als RootDisks an virtuelle Maschinen angehängt, wenn sie mit den entsprechenden Vorlagen in einem Projekt erstellt werden.
+
+link:rh-os-n_use_case_openshift_virtualization_workflow_vm_live_migration.html["Weiter: Workflows: VM Live Migration"]

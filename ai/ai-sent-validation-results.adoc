@@ -1,0 +1,53 @@
+---
+sidebar: sidebar 
+permalink: ai/ai-sent-validation-results.html 
+keywords: validation, errors, metrics, score, recall, precision 
+summary: Wie bereits im vorherigen Abschnitt erwähnt, werden Fehler innerhalb der Pipeline verbreitet, wenn immer zwei oder mehr Modelle für maschinelles Lernen nacheinander ausgeführt werden. Für diese Lösung ist die Stimmung des Satzes der wichtigste Faktor bei der Messung des Aktienrisikos des Unternehmens. Das sprach-zu-Text-Modell, obwohl wesentlich für die Pipeline, dient als Vorverarbeitung, bevor die Gefühle vorhergesagt werden können. 
+---
+= Validierungsergebnisse
+:hardbreaks:
+:allow-uri-read: 
+:nofooter: 
+:icons: font
+:linkattrs: 
+:imagesdir: ./../media/
+
+
+link:ai-sent-deploying-support-center-sentiment-analysis.html["Zurück: Bereitstellung von Sentimentanalysen im Support-Center."]
+
+Wie bereits im vorherigen Abschnitt erwähnt, werden Fehler innerhalb der Pipeline verbreitet, wenn immer zwei oder mehr Modelle für maschinelles Lernen nacheinander ausgeführt werden. Für diese Lösung ist die Stimmung des Satzes der wichtigste Faktor bei der Messung des Aktienrisikos des Unternehmens. Das sprach-zu-Text-Modell, obwohl wesentlich für die Pipeline, dient als Vorverarbeitung, bevor die Gefühle vorhergesagt werden können. Was wirklich zählt, ist der Unterschied in der Stimmung zwischen den Urteile der Wahrheit und den vorhergesagten Sätzen. Dies dient als Proxy für die Wortfehlerrate (WER). Die sprach-zu-Text-Genauigkeit ist wichtig, aber der WER wird nicht direkt in der endgültigen Pipeline-Metrik verwendet.
+
+....
+PIPELINE_SENTIMENT_METRIC = MEAN(DIFF(GT_sentiment, ASR_sentiment))
+....
+Diese Sentimentmetriken können für den F1-Score, den Rückruf und die Präzision jedes Satzes berechnet werden. Die Ergebnisse können anschließend zusammengefasst und in einer Durcheinander-Matrix sowie den Konfidenzintervallen für jede Metrik angezeigt werden.
+
+Der Vorteil des Lernens bei Übertragungen besteht in einer höheren Modellleistung zu einem Bruchteil der Datenanforderungen, der Trainingszeit und der Kosten. Außerdem sollten die fein abgestimmten Modelle mit ihren Basismodellen verglichen werden, um sicherzustellen, dass das Transferlernen die Leistung verbessert, anstatt sie zu beeinträchtigen. Mit anderen Worten: Das fein abgestimmte Modell sollte die Leistung im Support Center besser erbringen als das vortrainierte Modell.
+
+
+
+== Pipeline-Bewertung
+
+|===
+| Testfall | Details 
+
+
+| Testnummer | Kennzahl für Einschätzung der Pipeline 
+
+
+| Testvoraussetzungen | Fein abgestimmte Modelle für Speech-to-Text- und Sentiment-Analysemodelle 
+
+
+| Erwartetes Ergebnis | Die Sentimentmetrik des fein abgestimmten Modells liefert eine bessere Leistung als das ursprüngliche vortrainierte Modell. 
+|===
+
+
+== Kennzahl für Einschätzung der Pipeline
+
+. Berechnen Sie die Sentimentmetrik für das Basismodell.
+. Berechnen Sie die Sentimentmetrik für das fein abgestimmte Modell.
+. Berechnen Sie die Differenz zwischen diesen Metriken.
+. Die Unterschiede in allen Sätzen sind durchschnittlich.
+
+
+link:ai-sent-videos-and-demos.html["Als Nächstes: Videos und Demos."]

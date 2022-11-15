@@ -1,0 +1,120 @@
+---
+sidebar: sidebar 
+permalink: ehc/aws/aws-guest-dr-config-snapcenter.html 
+keywords: Windows SnapCenter Server, storage controllers, hosts, policies, resource groups, 
+summary: Diese Lösung verwendet NetApp SnapCenter zur Erstellung applikationskonsistenter Backups von SQL Server und Oracle Datenbanken. Zusammen mit Veeam Backup & Replication zum Backup von VMDKs für Virtual Machines stellt dies eine umfassende Disaster-Recovery-Lösung für lokale und Cloud-basierte Datacenter bereit. 
+---
+= Implementieren und konfigurieren Sie Windows SnapCenter Server vor Ort
+:hardbreaks:
+:allow-uri-read: 
+:nofooter: 
+:icons: font
+:linkattrs: 
+:imagesdir: ./../../media/
+
+
+link:aws-guest-dr-config-snapmirror.html["Früher: SnapMirror Beziehungen und Aufbewahrungszeitpläne konfigurieren."]
+
+
+
+== Implementieren Sie Windows SnapCenter Server vor Ort
+
+Diese Lösung verwendet NetApp SnapCenter zur Erstellung applikationskonsistenter Backups von SQL Server und Oracle Datenbanken. Zusammen mit Veeam Backup & Replication zum Backup von VMDKs für Virtual Machines stellt dies eine umfassende Disaster-Recovery-Lösung für lokale und Cloud-basierte Datacenter bereit.
+
+SnapCenter Software ist über die NetApp Support Site erhältlich und kann auf Microsoft Windows Systemen installiert werden, die sich entweder in einer Domäne oder Arbeitsgruppe befinden. Ein detaillierter Planungsleitfaden und Installationsanweisungen finden Sie unter https://docs.netapp.com/us-en/snapcenter/install/install_workflow.html["NetApp Documentation Center"^].
+
+Die SnapCenter-Software ist erhältlich unter https://mysupport.netapp.com["Dieser Link"^].
+
+Nach der Installation können Sie über einen Webbrowser mit _\https://Virtual_Cluster_IP_or_FQDN:8146_ auf die SnapCenter Konsole zugreifen.
+
+Nachdem Sie sich bei der Konsole angemeldet haben, müssen Sie SnapCenter für Backup-SQL Server und Oracle-Datenbanken konfigurieren. Um dies zu tun, führen Sie die folgenden grundlegenden Schritte aus:
+
+. Hinzufügen von Storage-Controllern mit Volumes, die Applikationsdaten hosten
+. Fügen Sie Host-Systeme hinzu, die mit SnapCenter gesichert werden sollen.
+. Konfiguration von Richtlinien, die Backup-Parameter und -Zeitpläne angeben
+. Konfiguration von Ressourcengruppen mit zu sichernden Ressourcen und Richtlinien für die Backups
+
+
+
+
+== Hinzufügen von Storage-Controllern zu SnapCenter
+
+Gehen Sie wie folgt vor, um SnapCenter Storage-Controller hinzuzufügen:
+
+. Wählen Sie im linken Menü Storage Systems aus und klicken Sie dann auf Neu, um mit dem Hinzufügen Ihrer Storage Controller zu SnapCenter zu beginnen.
++
+image:dr-vmc-aws-image18.png["Fehler: Fehlendes Grafikbild"]
+
+. Fügen Sie im Dialogfeld Add Storage System die Management-IP-Adresse für den lokalen ONTAP-Cluster sowie den Benutzernamen und das Passwort hinzu. Klicken Sie dann auf Senden, um die Erkennung des Speichersystems zu starten.
++
+image:dr-vmc-aws-image19.png["Fehler: Fehlendes Grafikbild"]
+
+. Wiederholen Sie diesen Vorgang, um dem SnapCenter das FSX ONTAP-System hinzuzufügen. Wählen Sie in diesem Fall unten im Fenster „Add Storage System“ die Option „More Options“ (Weitere Optionen) aus und klicken Sie auf das Kontrollkästchen für „Secondary“ (sekundär), um das FSX-System als sekundäres Storage-System zu bezeichnen, das mit SnapMirror Kopien oder unseren primären Backup Snapshots aktualisiert wird.
++
+image:dr-vmc-aws-image20.png["Fehler: Fehlendes Grafikbild"]
+
+
+
+Weitere Informationen zum Hinzufügen von Storage-Systemen zum SnapCenter finden Sie in der Dokumentation unter https://docs.netapp.com/us-en/snapcenter/install/task_add_storage_systems.html["Dieser Link"^].
+
+
+
+== Fügen Sie Hosts zum SnapCenter hinzu
+
+Der nächste Schritt ist das Hinzufügen von Host-Applikations-Servern zu SnapCenter. Der Prozess ist sowohl für SQL Server als auch für Oracle ähnlich.
+
+. Wählen Sie im linken Menü Hosts aus und klicken Sie dann auf Hinzufügen, um mit dem Hinzufügen von Speicher-Controllern zu SnapCenter zu beginnen.
+. Fügen Sie im Fenster Hosts hinzufügen den Host-Typ, den Hostnamen und die Anmeldedaten des Host-Systems hinzu. Wählen Sie den Plug-in-Typ aus. Wählen Sie für SQL Server das Plug-in für Microsoft Windows und Microsoft SQL Server aus.
++
+image:dr-vmc-aws-image21.png["Fehler: Fehlendes Grafikbild"]
+
+. Füllen Sie für Oracle die erforderlichen Felder im Dialogfeld „Host hinzufügen“ aus, und aktivieren Sie das Kontrollkästchen für das Oracle Database Plug-in. Klicken Sie dann auf Senden, um den Erkennungsvorgang zu starten und den Host zu SnapCenter hinzuzufügen.
++
+image:dr-vmc-aws-image22.png["Fehler: Fehlendes Grafikbild"]
+
+
+
+
+
+== SnapCenter-Richtlinien erstellen
+
+Richtlinien legen die spezifischen Regeln fest, die für einen Backup-Job zu beachten sind. Dazu gehören u. a. der Backup-Zeitplan, der Replizierungstyp und die Handhabung von SnapCenter für Backup und Verkürzung der Transaktions-Logs.
+
+Sie können auf die Richtlinien im Abschnitt Einstellungen des SnapCenter-Webclients zugreifen.
+
+image:dr-vmc-aws-image23.png["Fehler: Fehlendes Grafikbild"]
+
+Vollständige Informationen zum Erstellen von Richtlinien für SQL Server-Backups finden Sie im https://docs.netapp.com/us-en/snapcenter/protect-scsql/task_create_backup_policies_for_sql_server_databases.html["SnapCenter-Dokumentation"^].
+
+Vollständige Informationen zum Erstellen von Richtlinien für Oracle-Backups finden Sie im https://docs.netapp.com/us-en/snapcenter/protect-sco/task_create_backup_policies_for_oracle_database.html["SnapCenter-Dokumentation"^].
+
+*Hinweise:*
+
+* Wenn Sie den Assistenten zur Erstellung von Richtlinien durchlaufen, beachten Sie den Abschnitt „Replikation“ besonders. In diesem Abschnitt werden die Arten von sekundären SnapMirror Kopien festgelegt, die während des Backup-Prozesses erstellt werden sollen.
+* Die Einstellung „SnapMirror aktualisieren nach dem Erstellen einer lokalen Snapshot Kopie“ bezieht sich auf die Aktualisierung einer SnapMirror Beziehung, wenn diese Beziehung zwischen zwei Storage Virtual Machines besteht, die sich auf dem gleichen Cluster befinden.
+* Die Einstellung „SnapVault aktualisieren nach Erstellen einer lokalen Snapshot Kopie“ wird verwendet, um eine SnapMirror Beziehung zu aktualisieren, die zwischen zwei separaten Clustern und zwischen einem On-Premises ONTAP System und Cloud Volumes ONTAP oder FSxN besteht.
+
+
+Die folgende Abbildung zeigt die vorhergehenden Optionen und deren Aussehen im Backup Policy Wizard.
+
+image:dr-vmc-aws-image24.png["Fehler: Fehlendes Grafikbild"]
+
+
+
+== Erstellen Sie SnapCenter-Ressourcengruppen
+
+Mit Ressourcengruppen können Sie die Datenbankressourcen auswählen, die Sie in Ihre Backups aufnehmen möchten, und die Richtlinien für diese Ressourcen.
+
+. Wechseln Sie im linken Menü zum Abschnitt Ressourcen.
+. Wählen Sie oben im Fenster den Ressourcentyp aus, mit dem Sie arbeiten möchten (in diesem Fall Microsoft SQL Server), und klicken Sie dann auf Neue Ressourcengruppe.
+
+
+image:dr-vmc-aws-image25.png["Fehler: Fehlendes Grafikbild"]
+
+Die SnapCenter-Dokumentation umfasst Schritt-für-Schritt-Details zum Erstellen von Ressourcengruppen für SQL Server und Oracle-Datenbanken.
+
+Folgen Sie zum Backup von SQL-Ressourcen https://docs.netapp.com/us-en/snapcenter/protect-scsql/task_back_up_sql_resources.html["Dieser Link"^].
+
+Folgen Sie zum Backup von Oracle Ressourcen https://docs.netapp.com/us-en/snapcenter/protect-sco/task_back_up_oracle_resources.html["Dieser Link"^].
+
+link:aws-guest-dr-config-veeam.html["Als Nächstes: Veeam Backup Server implementieren und konfigurieren."]

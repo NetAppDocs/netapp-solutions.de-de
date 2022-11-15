@@ -1,0 +1,89 @@
+= 
+:allow-uri-read: 
+
+
+In diesem Abschnitt werden die Schritte beschrieben, die zur Konfiguration der Parameter im AWX/Ansible Tower erforderlich sind, um die Umgebung für den Einsatz automatisierter NetApp Lösungen vorzubereiten.
+
+. Konfigurieren Sie den Bestand.
++
+.. Navigieren Sie zu Ressourcen → Inventar → Hinzufügen und klicken Sie auf Inventar hinzufügen.
+.. Geben Sie den Namen und die Organisationsdetails an, und klicken Sie auf „Speichern“.
+.. Klicken Sie auf der Bestandsseite auf die Ressourcen, die Sie gerade erstellt haben.
+.. Wenn es Bestandsvariablen gibt, fügen Sie diese in das Feld Variablen ein.
+.. Wechseln Sie zum Untermenü Gruppen, und klicken Sie auf Hinzufügen.
+.. Geben Sie den Namen der Gruppe ein, kopieren Sie die Gruppenvariablen (falls erforderlich), und klicken Sie auf Speichern.
+.. Klicken Sie auf die erstellte Gruppe, gehen Sie zum Untermenü Hosts und klicken Sie auf Neuen Host hinzufügen.
+.. Geben Sie den Hostnamen und die IP-Adresse des Hosts an, fügen Sie die Host-Variablen ein (falls erforderlich), und klicken Sie auf Speichern.
+
+
+. Erstellen von Anmeldungstypen. Bei Lösungen, die ONTAP, Element, VMware oder andere HTTPS-basierte Transportverbindungen umfassen, müssen Sie den Anmeldeinformationstyp entsprechend den Benutzereingaben und den Kennwörtern konfigurieren.
++
+.. Navigieren Sie zu Administration → Credential Types, und klicken Sie auf Add.
+.. Geben Sie den Namen und eine Beschreibung an.
+.. Fügen Sie den folgenden Inhalt in die Eingabekonfiguration ein:
+
+
+
+
+[listing]
+----
+fields:
+- id: username
+type: string
+label: Username
+- id: password
+type: string
+label: Password
+secret: true
+- id: vsadmin_password
+type: string
+label: vsadmin_password
+secret: true
+----
+. Fügen Sie folgenden Inhalt in die Konfiguration des Injektors ein:
+
+
+[listing]
+----
+extra_vars:
+password: '{{ password }}'
+username: '{{ username }}'
+vsadmin_password: '{{ vsadmin_password }}'
+----
+. Anmeldedaten konfigurieren.
++
+.. Navigieren Sie zu Resources → Credentials, und klicken Sie auf Add.
+.. Geben Sie den Namen und die Organisationsdetails ein.
+.. Wählen Sie den korrekten Anmeldeinformationstyp aus. Wenn Sie die Standard-SSH-Anmeldung verwenden möchten, wählen Sie den Typ Machine aus, oder wählen Sie alternativ den von Ihnen erstellten benutzerdefinierten Anmeldeinformationstyp aus.
+.. Geben Sie die anderen entsprechenden Details ein, und klicken Sie auf Speichern.
+
+
+. Konfigurieren des Projekts.
++
+.. Navigieren Sie zu Ressourcen → Projekte, und klicken Sie auf Hinzufügen.
+.. Geben Sie den Namen und die Organisationsdetails ein.
+.. Wählen Sie Git für den Credential-Typ der Versionskontrolle aus.
+.. Fügen Sie die Quell-Kontroll-URL (oder git Clone URL) ein, die der spezifischen Lösung entspricht.
+.. Wenn die Git-URL Zugriffsgesteuert ist, erstellen und hängen Sie die entsprechenden Anmeldeinformationen in der Quellenkontrolle Credential an.
+.. Klicken Sie auf Speichern .
+
+
+. Konfigurieren Sie die Jobvorlage.
++
+.. Navigieren Sie zu Ressourcen → Vorlagen → Hinzufügen, und klicken Sie auf Job Template hinzufügen.
+.. Geben Sie den Namen und die Beschreibung ein.
+.. Wählen Sie den Jobtyp aus. Führen Sie die Konfiguration des Systems auf Basis eines Playbooks durch, und prüfen Sie, ob das Playbook trocken läuft, ohne das System tatsächlich zu konfigurieren.
+.. Wählen Sie den entsprechenden Bestand, das Projekt und die Zugangsdaten für das Playbook aus.
+.. Wählen Sie das Playbook aus, das Sie als Teil der Job-Vorlage ausführen möchten.
+.. Normalerweise werden die Variablen während der Laufzeit eingefügt. Um die Eingabeaufforderung zum Befüllen der Variablen während der Laufzeit zu erhalten, müssen Sie die Checkbox-Eingabeaufforderung für Starten entsprechend dem Feld Variable aktivieren.
+.. Geben Sie ggf. weitere Details ein, und klicken Sie auf „Speichern“.
+
+
+. Starten Sie die Jobvorlage.
++
+.. Navigieren Sie zu Ressourcen → Vorlagen.
+.. Klicken Sie auf die gewünschte Vorlage und dann auf Starten.
+.. Geben Sie ggf. beim Start alle Variablen ein, und klicken Sie dann erneut auf Starten.
+
+
+

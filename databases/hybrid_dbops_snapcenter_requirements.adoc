@@ -1,0 +1,81 @@
+---
+sidebar: sidebar 
+permalink: databases/hybrid_dbops_snapcenter_requirements.html 
+summary: Die Lösung wurde für eine Hybrid-Cloud-Einstellung entwickelt, um On-Premises-Produktionsdatenbanken zu unterstützen, die für Entwicklungs-/Test- und Disaster-Recovery-Vorgänge einen Burst in die gängigen Public Clouds ausführen können. 
+keywords: requirements, virtualized, bare metal, versions, automation 
+---
+= SnapCenter-Anforderungen erfüllt
+:hardbreaks:
+:allow-uri-read: 
+:nofooter: 
+:icons: font
+:linkattrs: 
+:table-stripes: odd
+:imagesdir: ./../media/
+
+
+link:hybrid_dbops_snapcenter_architecture.html["Früher: Lösungsarchitektur."]
+
+Die Lösung wurde für eine Hybrid-Cloud-Einstellung entwickelt, um On-Premises-Produktionsdatenbanken zu unterstützen, die für Entwicklungs-/Test- und Disaster-Recovery-Vorgänge einen Burst in die gängigen Public Clouds ausführen können.
+
+Diese Lösung unterstützt alle Datenbanken, die derzeit von SnapCenter unterstützt werden, obwohl hier nur Oracle- und SQL Server-Datenbanken gezeigt werden. Diese Lösung wurde mit virtualisierten Datenbank-Workloads validiert, obwohl auch Bare-Metal-Workloads unterstützt werden.
+
+Wir gehen davon aus, dass die produktiven Datenbankserver On-Premises mit DB-Volumes gehostet werden, die von einem ONTAP-Storage-Cluster an DB-Hosts präsentiert werden. SnapCenter Software wird lokal für Datenbank-Backups und Datenreplizierung in die Cloud installiert. Ein Ansible-Controller wird empfohlen, ist aber nicht für eine Automatisierung der Datenbankbereitstellung erforderlich, oder für eine Synchronisierung des OS-Kernels und der DB-Konfiguration mit einer Standby-DR-Instanz oder Entwicklungs-/Testinstanzen in der Public Cloud.
+
+
+
+== Anforderungen
+
+[cols="3, 9"]
+|===
+| Umgebung | Anforderungen 
+
+
+.7+| *Auf dem Gelände* | Alle Datenbanken und Versionen, die von SnapCenter unterstützt werden 
+
+
+| SnapCenter Version 4.4 oder höher 
+
+
+| Ansible Version 2.09 oder höher 
+
+
+| ONTAP Cluster 9.x 
+
+
+| Intercluster LIFs konfiguriert 
+
+
+| Konnektivität von On-Premises zu einer Cloud-VPC (VPN, Interconnect usw.) 
+
+
+| Netzwerkports offen - ssh 22 - tcp 8145, 8146, 10000, 11104, 11105 
+
+
+.3+| *Cloud - AWS* | https://docs.netapp.com/us-en/occm/task_creating_connectors_aws.html["Cloud Manager Connector"^] 
+
+
+| https://docs.netapp.com/us-en/occm/task_getting_started_aws.html["Cloud Volumes ONTAP"^] 
+
+
+| Zuordnen von DB-OS-EC2-Instanzen zu On-Premises 
+
+
+.3+| *Cloud - Azure* | https://docs.netapp.com/us-en/occm/task_creating_connectors_azure.html["Cloud Manager Connector"^] 
+
+
+| https://docs.netapp.com/us-en/occm/task_getting_started_azure.html["Cloud Volumes ONTAP"^] 
+
+
+| Abgleich von DB OS Azure Virtual Machines mit On-Premises 
+
+
+.3+| *Cloud - GCP* | https://docs.netapp.com/us-en/occm/task_creating_connectors_gcp.html["Cloud Manager Connector"^] 
+
+
+| https://docs.netapp.com/us-en/occm/task_getting_started_gcp.html["Cloud Volumes ONTAP"^] 
+
+
+| Abgleich von DB OS Google Compute Engine Instanzen mit On-Premises 
+|===
+link:hybrid_dbops_snapcenter_prerequisite.html["Als Nächstes: Konfiguration der Voraussetzungen."]

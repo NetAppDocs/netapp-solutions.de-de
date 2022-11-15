@@ -1,0 +1,56 @@
+---
+sidebar: sidebar 
+permalink: vdi-vds/hcvdivds_hybrid_cloud_environment.html 
+keywords: Virtual Desktop Service, VDS, Azure, IPsec VPN 
+summary: Der NetApp Virtual Desktop Service kann bei der Konnektivität zwischen lokalen Ressourcen und Cloud-Ressourcen auf den lokalen Storage erweitert werden. Unternehmen können die Verbindung zu Microsoft Azure über Express Route oder eine IPsec-VPN-Verbindung zwischen Standorten herstellen. Sie können auch Verbindungen zu anderen Clouds auf ähnliche Weise erstellen, entweder über eine dedizierte Verbindung oder über einen IPsec VPN-Tunnel. 
+---
+= Hybrid Cloud-Umgebung
+:hardbreaks:
+:allow-uri-read: 
+:nofooter: 
+:icons: font
+:linkattrs: 
+:imagesdir: ./../media/
+
+
+Der NetApp Virtual Desktop Service kann bei der Konnektivität zwischen lokalen Ressourcen und Cloud-Ressourcen auf den lokalen Storage erweitert werden. Unternehmen können die Verbindung zu Microsoft Azure über Express Route oder eine IPsec-VPN-Verbindung zwischen Standorten herstellen. Sie können auch Verbindungen zu anderen Clouds auf ähnliche Weise erstellen, entweder über eine dedizierte Verbindung oder über einen IPsec VPN-Tunnel.
+
+Für die Lösungsvalidierung verwendeten wir die in der folgenden Abbildung dargestellte Umgebung.
+
+image:hcvdivds_image8.png["Fehler: Fehlendes Grafikbild"]
+
+Vor Ort hatten wir mehrere VLANs für das Management, Hosts zur Remote-Desktop-Session usw. Sie befanden sich im Subnetz 172.21.146-150.0/24 und wurden mithilfe des Microsoft Remote Routing Access Service an das Unternehmensnetzwerk weitergeleitet. Außerdem haben wir folgende Aufgaben ausgeführt:
+
+. Wir haben die öffentliche IP des Microsoft Routing and Remote Access Servers (RRAS; identifiziert mit IPchicken.com) festgestellt.
+. Wir haben eine Ressource für Virtual Network Gateway (Routing-basiertes VPN) auf Azure Subscription erstellt.
+. Wir haben die Verbindung erstellt, die die lokale Netzwerk-Gateway-Adresse für die öffentliche IP des Microsoft RRAS-Servers bereitstellt.
+. Wir haben die VPN-Konfiguration auf RRAS abgeschlossen, um eine virtuelle Schnittstelle mit vorgemeinsamer Authentifizierung zu erstellen, die bei der Erstellung des VPN-Gateways bereitgestellt wurde. Bei korrekter Konfiguration sollte sich das VPN im Status „Verbunden“ befinden. Anstelle von Microsoft RRAS können Sie auch pfSense oder andere relevante Tools verwenden, um den Site-to-Site IPsec VPN-Tunnel zu erstellen. Da es sich um eine Routingbasierte handelt, wird der Datenverkehr anhand der konfigurierten Subnetze umgeleitet.
+
+
+Microsoft Azure Active Directory bietet Identitätsauthentifizierung basierend auf OAuth. Für die Authentifizierung von Enterprise-Clients ist in der Regel eine NTLM- oder Kerberos-basierte Authentifizierung erforderlich. Microsoft Azure Active Directory-Domänendienste führen Passwort-Hash-Synchronisierung zwischen Azure Active Directory und lokalen Domänencontrollern mithilfe von ADConnect durch.
+
+Für diese Hybrid VDS-Lösungsvalidierung wurde zunächst in Microsoft Azure implementiert und dann noch ein zusätzlicher Standort mit vSphere hinzugefügt. Der Vorteil bei diesem Ansatz besteht darin, dass Plattformservices in Microsoft Azure implementiert und anschließend über das Portal ohne weiteres gesichert wurden. Auf Services kann von überall aus problemlos zugegriffen werden, selbst wenn die Site-Site-VPN-Verbindung nicht verfügbar ist.
+
+Zum Hinzufügen einer weiteren Site haben wir ein Tool namens DCConfig verwendet. Die Verknüpfung zur Anwendung ist auf dem Desktop der VM des Cloud Workspace Manager (CWMgr) verfügbar. Nachdem diese Anwendung gestartet wurde, navigieren Sie zur Registerkarte „DataCenter Sites“, fügen Sie den neuen Datacenter-Standort hinzu, und geben Sie die erforderlichen Informationen wie unten gezeigt ein. Die URL verweist auf die vCenter IP. Stellen Sie sicher, dass die CWMgr VM mit vCenter kommunizieren kann, bevor Sie die Konfiguration hinzufügen.
+
+
+NOTE: Stellen Sie sicher, dass vSphere PowerCLI 5.1 auf CloudWorkspace Manager installiert ist, um die Kommunikation mit VMware vSphere Umgebung zu ermöglichen.
+
+Die folgende Abbildung zeigt die Konfiguration des Datacenter-Standorts vor Ort.
+
+image:hcvdivds_image9.png["Fehler: Fehlendes Grafikbild"]
+
+Beachten Sie, dass Filteroptionen für Computing-Ressourcen auf Basis des jeweiligen Clusters, Host-Namens oder freien RAM-Speicherplatzes verfügbar sind. Die Filteroptionen für Storage-Ressourcen beinhalten den minimalen freien Speicherplatz auf Datastores oder die maximale Anzahl von VMs pro Datenspeicher. Datastores können mit regulären Ausdrücken ausgeschlossen werden. Klicken Sie auf die Schaltfläche Speichern, um die Konfiguration zu speichern.
+
+Um die Konfiguration zu validieren, klicken Sie auf die Schaltfläche Test oder klicken Sie auf Hypervisor laden und prüfen Sie die Dropdown-Liste unter vSphere. Er sollte mit entsprechenden Werten gefüllt werden. Es empfiehlt sich, den primären Hypervisor für den Standard-Bereitstellungsstandort auf „Ja“ gesetzt zu lassen.
+
+Die auf VMware vSphere erstellten VM-Vorlagen werden als Sammlungen auf VDS verwendet. Provisioning-Sammlungen haben zwei Formen: Shared IT und VDI. Der Sammeltyp für Shared Provisioning wird für Remote Desktop Services verwendet, bei denen eine einzelne Ressourcenrichtlinie auf alle Server angewendet wird. Der VDI-Typ wird für WVD-Instanzen verwendet, denen die Ressourcenrichtlinie individuell zugewiesen wird. Den Servern in einer Bereitstellungssammlung kann eine der folgenden drei Rollen zugewiesen werden:
+
+* *TSDATA.* Kombination von Terminal Services und Data Server-Rolle.
+* *TS.* Terminaldienste (Session Host).
+* * DATA.* File Server oder Database Server. Wenn Sie die Serverrolle definieren, müssen Sie die VM-Vorlage und den Storage (Datenspeicher) auswählen. Der ausgewählte Datenspeicher kann auf einen bestimmten Datenspeicher beschränkt werden. Alternativ kann die am wenigsten genutzte Option verwendet werden, bei der der Datenspeicher basierend auf der Datennutzung ausgewählt wird.
+
+
+Jede Implementierung verfügt über Standardeinstellungen für VM-Ressourcen für die Cloud-Ressourcenzuweisung basierend auf „aktiven Benutzern“, „Feste“, „Serverlast“ oder „Benutzeranzahl“.
+
+link:hcvdivds_single_server_load_test_with_login_vsi.html["Nächster: Einzelserver-Lasttest mit Login VSI"]

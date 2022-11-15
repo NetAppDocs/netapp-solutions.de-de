@@ -1,0 +1,41 @@
+---
+sidebar: sidebar 
+permalink: xcp/xcp-bp-performance-tuning.html 
+keywords: performance, tuning, operations, windows 
+summary: Dieser Abschnitt enthält einige der Tuning-Parameter, die zur Verbesserung der Leistung von XCP-Operationen beitragen. 
+---
+= Performance-Optimierung
+:hardbreaks:
+:allow-uri-read: 
+:nofooter: 
+:icons: font
+:linkattrs: 
+:imagesdir: ./../media/
+
+
+link:xcp-bp-sizing-guidelines-overview.html["Zurück: Dimensionierungsrichtlinien."]
+
+Dieser Abschnitt enthält einige der Tuning-Parameter, die zur Verbesserung der Leistung von XCP-Operationen beitragen:
+
+* Zur besseren Skalierung und Verteilung des Workloads auf mehrere XCP-Instanzen verteilen Sie die Unterordner für jede XCP-Instanz für die Migration und den Datentransfer.
+* XCP kann maximale CPU-Ressourcen nutzen – je mehr CPU-Kerne, desto besser ist die Leistung. Deshalb sollten Sie mehr CPUs im XCP-Server haben. Wir haben im Lab 128 GB RAM und 48 x Core CPUs getestet, welche eine bessere Performance boten als 8 x CPUs und 8 GB RAM.
+* XCP-Kopie mit dem `-parallel` Die Option basiert auf der Anzahl der CPUs. Die Standardanzahl paralleler Threads (sieben) reicht manchmal für die meisten XCP-Datenübertragungs- und Migrationsvorgänge aus. Bei XCP Windows ist standardmäßig die Anzahl der parallelen Prozesse gleich der Anzahl der CPUs. Die maximale Anzahl für die `-parallel` Die Option sollte kleiner als oder gleich der Anzahl der Kerne sein.
+* 10GbE ist ein guter Start für den Datentransfer. Wir haben jedoch die Tests mit 25 GbE und 100 GbE durchgeführt, die für einen besseren Datentransfer sorgen und für den Transfer großer Dateien empfohlen werden.
+* Für Azure NetApp Files variiert die Performance je nach Service-Level. Weitere Informationen finden Sie in der folgenden Tabelle, in der die Service-Level und Performance-Details von Azure NetApp Files aufgeführt sind.
+
+
+|===
+| Service-Level | Standard | Premium | Ultra 
+
+
+| Durchsatz | 16 Mbit/s/Terabyte (TB) | 64 Mbit/s/TB | 128 MB/TB 
+
+
+| Workload-Typen | Universelle Dateifreigaben, E-Mail und Web | BMS, Datenbanken und Applikationen | Latenzkritische Applikationen 
+
+
+| Erklärte Performance | Standard-Performance: 1,000 IOPS pro TB (16.000 I/O) und 16 MB/s/TB | Premium-Performance: 4,000 IOPS pro TB (16.000 I/O) und 64 MB/s/TB | Extreme Performance: 8,000 IOPS pro TB (16 KB I/O) und 128 MB/TB 
+|===
+Sie müssen das richtige Service Level basierend auf Durchsatz und Workload-Typen auswählen. Die meisten Kunden beginnen mit der Premium-Stufe und ändern je nach Workload den Service-Level.
+
+link:xcp-bp-customer-scenarios-overview.html["Dann: Kundenszenarien"]

@@ -1,0 +1,58 @@
+---
+sidebar: sidebar 
+permalink: ai/ai-protopia-overview.html 
+keywords: tr4928, 4928, introduction, overview, inferencing, confidential 
+summary: In diesem Dokument wird eine validierte Design-Lösung unter drei verschiedenen Szenarien mit und ohne Imageverschleierung beschrieben, die für den Datenschutz und die Implementierung einer verantwortungsvollen KI-Lösung relevant ist. 
+---
+= TR-4928: Verantwortungsvolle KI und vertrauliche Inferenz - NetApp AI mit Protopia Image und Data Transformation
+:hardbreaks:
+:allow-uri-read: 
+:nofooter: 
+:icons: font
+:linkattrs: 
+:imagesdir: ./../media/
+
+
+Sathish Thyagarajan, Michael Oglesby, NetApp Byung Hoon Ahn, Jennifer Cwagenberg, Protopia
+
+Visuelle Interpretationen sind zu einem integralen Bestandteil der Kommunikation mit dem Aufkommen von Bildaufnahme und Bildverarbeitung geworden. Künstliche Intelligenz (KI) in der digitalen Bildverarbeitung bietet neue Geschäftsmöglichkeiten, beispielsweise im medizinischen Bereich zur Identifizierung von Krebs oder anderen Krankheiten, in geospatialen visuellen Analysen zur Untersuchung von Umweltgefahren, in der Mustererkennung, in der Videoverarbeitung zur Kriminalitätsbekämpfung usw. Diese Gelegenheit bringt aber auch außerordentliche Verantwortung mit sich.
+
+Je mehr Entscheidungen Unternehmen mit KI in die Hände geraten, desto größer sind ihre Risiken in Bezug auf Datenschutz, -Sicherheit sowie rechtliche, ethische und regulatorische Probleme. Dabei ermöglicht verantwortungsvolle KI Unternehmen und Behörden, Vertrauen und Governance aufzubauen, die für skalierbare KI in Großunternehmen entscheidend sind. Dieses Dokument beschreibt eine von NetApp im Rahmen von drei verschiedenen Szenarien validierte Lösung zur KI-Inferenz, indem NetApp Datenmanagement-Technologien mit Protopia Datenobfuskationssoftware eingesetzt werden, um sensible Daten zu privatisieren und Risiken sowie ethische Bedenken zu verringern.
+
+Jeden Tag werden Millionen von Bildern mit verschiedenen digitalen Geräten von Kunden und Geschäftseinheiten erzeugt. Die Folge der enormen Zunahme von Daten und Computing-Workloads sind Unternehmen, die zu Cloud-Computing-Plattformen für Skalierbarkeit und Effizienz wechseln. Gleichzeitig ergeben sich bei der Übertragung in eine Public Cloud Bedenken hinsichtlich der Vertraulichkeit der vertraulichen Informationen in Bilddaten. Der Mangel an Sicherheit und Datenschutz wird zum Haupthindernis für die Implementierung bildverarbeitender KI-Systeme.
+
+Darüber hinaus gibt es das https://gdpr.eu/right-to-be-forgotten/["Recht auf Löschung"^] Gemäß der DSGVO ist ein Unternehmen berechtigt, alle personenbezogenen Daten zu löschen. Da ist auch der https://www.justice.gov/opcl/privacy-act-1974["Datenschutzgesetz"^], Die einen Code fairer Informationspraktiken festlegt. Digitale Bilder wie Fotografien können als personenbezogene Daten gemäß der DSGVO gelten, die regelt, wie Daten erhoben, verarbeitet und gelöscht werden müssen. Andernfalls muss die DSGVO nicht eingehalten werden, was zu hohen Geldstrafen führen kann, um Compliance-Vorschriften zu widerstehen, die Unternehmen ernsthaft beschädigen können. Datenschutzgrundsätze sind eines der Rückgrat der Implementierung einer verantwortungsvollen KI, die für Gerechtigkeit bei den Modellprognosen für Machine Learning (ML) und Deep Learning (DL) sorgt und die Risiken im Zusammenhang mit der Verletzung von Datenschutz oder gesetzlicher Vorschriften verringert.
+
+In diesem Dokument wird eine validierte Design-Lösung unter drei verschiedenen Szenarien mit und ohne Imageverschleierung beschrieben, die für den Datenschutz relevant ist und eine verantwortungsvolle KI-Lösung implementiert.
+
+* *Szenario 1.* On-Demand Inferenz innerhalb von Jupyter Notebook.
+* *Szenario 2.* Batch Inferenz auf Kubernetes.
+* *Szenario 3.* NVIDIA Triton Inferenzserver.
+
+
+Für diese Lösung verwenden wir den Face Detection Data Set und Benchmark (FDDB), einen Datensatz von Gesichtsregionen, die für die Untersuchung des Problems der uneingeschränkten Gesichtserkennung konzipiert wurden, kombiniert mit dem PyTorch Machine Learning Framework zur Implementierung von FaceBoxes. Dieser Datensatz enthält die Anmerkungen für 5171 Gesichter in einem Satz von 2845 Bildern verschiedener Auflösungen. Der technische Bericht enthält zudem einige Lösungsbereiche und relevante Nutzungsfälle, die von NetApp Kunden und Field Engineers in Situationen erfasst wurden, in denen diese Lösung sinnvoll ist.
+
+
+
+== Zielgruppe
+
+Dieser technische Bericht richtet sich an folgende Zielgruppen:
+
+* Führungskräfte und Enterprise-Architekten, die eine verantwortungsvolle KI entwickeln und implementieren und Probleme hinsichtlich der Datensicherung und des Datenschutzes bei der Verarbeitung von Gesichts-Images in öffentlichen Bereichen lösen möchten.
+* Data Scientists, Data Engineers, KI-/ml-Forscher (Machine Learning) und Entwickler von KI/ML-Systemen, die den Datenschutz schützen und bewahren möchten.
+* Enterprise-Architekten, die Datenverschleisslösungen für KI/ML-Modelle und Applikationen entwerfen, die gesetzliche Standards wie DSGVO, CCPA oder den Datenschutzgesetz des US-Verteidigungsministeriums (DoD) und Regierungseinrichtungen erfüllen.
+* Data Scientists und KI-Ingenieure suchen nach effizienten Möglichkeiten, Deep-Learning- (DL) und KI/ML/DL-Inferenzmodelle zu implementieren, die sensible Informationen sichern.
+* Edge-Geräte-Manager und Edge-Serveradministratoren, die für die Implementierung und das Management von Edge-Inferenzmodellen verantwortlich sind
+
+
+
+
+== Lösungsarchitektur
+
+Diese Lösung wurde entwickelt, um KI-Workloads in Echtzeit- und Batch-Inferenz auf großen Datensätzen zu verarbeiten. Dabei wird die Verarbeitungsleistung von GPUs neben herkömmlichen CPUs eingesetzt. Diese Validierung beweist, dass die Inferenz für ML geschützt ist und für Unternehmen, die einen verantwortlichen KI-Einsatz benötigen, optimales Datenmanagement erforderlich ist. Diese Lösung bietet eine Architektur für Kubernetes-Plattformen mit einzelnen oder mehreren Nodes für Edge- und Cloud-Computing und ist so mit NetApp ONTAP AI als zentrale On-Premises-Plattform, dem NetApp DataOps Toolkit und der Protopia Obfuscation Software über Jupyter Lab- und CLI-Schnittstellen verbunden. Die folgende Abbildung zeigt den Überblick über die logische Architektur der Data Fabric Vision von NetApp mit dem DataOps Toolkit und Protopia.
+
+image:ai-protopia-image1.png["Fehler: Fehlendes Grafikbild"]
+
+Die Protopia Obfuscation Software wird nahtlos auf das NetApp DataOps Toolkit ausgeführt und verändert die Daten, bevor der Storage Server verlassen wird.
+
+link:ai-protopia-solution-areas.html["Als Nächstes: Lösungsbereiche."]

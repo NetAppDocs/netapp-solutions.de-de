@@ -1,0 +1,36 @@
+---
+sidebar: sidebar 
+permalink: data-analytics/kafka-sc-performance-tests-with-produce-consume-workload-generator.html 
+keywords: data graphs, kafka throughput, s3 tiering traffic, aff a900, resource utilization 
+summary: Wir haben während eines Produzieren-Workloads mit einem AFF A900 HA-Paar NetApp Storage Controller Tiered Storage-Tests mit fünf oder acht Broker Nodes durchgeführt. Unsere Tests ergaben, dass sich die Zeit bis zur Fertigstellung und die Performance-Ergebnisse mit der Anzahl der Broker Nodes skalieren lassen, bis die Auslastung von AFF A900 Ressourcen hundertprozentig erreichte. Das Setup des ONTAP Storage Controllers benötigte mindestens ein HA-Paar. 
+---
+= Performance-Tests mit dem Produce-Consume Workload Generator
+:hardbreaks:
+:allow-uri-read: 
+:nofooter: 
+:icons: font
+:linkattrs: 
+:imagesdir: ./../media/
+
+
+link:kafka-sc-confluent-performance-validation.html["Früher: Confluent Performance Validierung."]
+
+Wir haben während eines Produzieren-Workloads mit einem AFF A900 HA-Paar NetApp Storage Controller Tiered Storage-Tests mit fünf oder acht Broker Nodes durchgeführt. Unsere Tests ergaben, dass sich die Zeit bis zur Fertigstellung und die Performance-Ergebnisse mit der Anzahl der Broker Nodes skalieren lassen, bis die Auslastung von AFF A900 Ressourcen hundertprozentig erreichte. Das Setup des ONTAP Storage Controllers benötigte mindestens ein HA-Paar.
+
+Die Performance für den S3-Abruffvorgang ist basierend auf der Anzahl der Conflient Broker Nodes linear gestiegen. Der ONTAP Storage Controller unterstützt bis zu 12 HA-Paare in einer einzelnen Implementierung.
+
+Das folgende Diagramm zeigt kombinierten S3-Tiering-Datenverkehr mit fünf oder acht Broker-Nodes. Wir maximierter die Performance eines AFF A900 Single HA-Paars.
+
+image:kafka-sc-image9.png["Dieses Diagramm zeigt kombinierten S3-Tiering-Datenverkehr mit fünf oder acht Broker-Nodes."]
+
+Im folgenden Diagramm wird der Kafka-Durchsatz bei etwa 31,74 GB/s dargestellt.
+
+image:kafka-sc-image10.png["Dieses Diagramm zeigt den Kafka-Durchsatz bei etwa 31,74 GB/s."]
+
+Außerdem beobachteten wir einen ähnlichen Durchsatz im ONTAP Storage Controller `perfstat` Bericht.
+
+....
+object_store_server:wle-mendocino-07-08:get_data:34080805907b/ s
+object_store_server:wle-mendocino-07-08:put_data:484236974b/ s
+....
+link:kafka-sc-performance-best-practice-guidelines.html["Als Nächstes: Richtlinien zu Best Practices zur Performance."]

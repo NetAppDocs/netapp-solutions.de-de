@@ -1,0 +1,40 @@
+---
+sidebar: sidebar 
+permalink: containers/baremetal-anthos/bmanthos_solution_validation.html 
+keywords: validation, google cloud, nginx 
+summary: Während die aktuelle Implementierung dieser Lösung mithilfe von Tools des Google Cloud-Teams zwei strenge Validierungsprozesse durchgeführt wurde. 
+---
+= Lösungsvalidierung
+:hardbreaks:
+:allow-uri-read: 
+:nofooter: 
+:icons: font
+:linkattrs: 
+:imagesdir: ./../../media/
+
+
+Während die aktuelle Implementierung dieser Lösung mithilfe von Tools des Google Cloud-Teams zwei strenge Validierungsprozesse durchgeführt wurde. Diese Validierungen umfassen eine Auswahl der folgenden Tests:
+
+* Partnervalidierung der Anthos-fähigen Plattform:
++
+** Vergewissern Sie sich, dass alle Anthos auf Bare-Metal-Plattform-Services installiert sind und ausgeführt werden.
+** Skalieren Sie die physischen Anthos auf Bare-Metal-Cluster von vier Worker-Nodes auf drei und dann zurück auf vier.
+** Erstellen und Löschen eines benutzerdefinierten Namespace
+** Erstellen Sie eine Bereitstellung des Nginx-Webservers, indem Sie die Bereitstellung durch Erhöhung der Anzahl der Replikate skalieren.
+** Erstellen Sie einen Ingress für die Nginx-Anwendung, und überprüfen Sie die Konnektivität durch Curling des Index.HTML.
+** Alle Test-Suite-Aktivitäten erfolgreich bereinigen und das Cluster in einen Pre-Test-Status versetzen.
+
+
+* Partnervalidierung für Anthos-fähigen Storage:
++
+** Bereitstellung mit einem persistenten Volume erstellen
+** Mit dem NetApp Astra Trident können Sie das angeforderte persistente Volume von NetApp ONTAP bereitstellen und anhängen.
+** Validieren der Trennen und Wiederanbinden von persistenten Volumes
+** Validieren Sie den schreibgeschützten, Multi-Attached Storage-Zugriff auf persistente Volumes von anderen Pods auf dem Node.
+** Validieren Sie die Größenanpassung des Offline-Volumes.
+** Überprüfung, ob das persistente Volume einen Cluster-Scale-Vorgang überlebt.
+
+
+
+
+link:bmanthos_conclusion.html["Weiter: Fazit."]

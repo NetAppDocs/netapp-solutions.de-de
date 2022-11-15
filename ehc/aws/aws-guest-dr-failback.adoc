@@ -1,0 +1,24 @@
+---
+sidebar: sidebar 
+permalink: ehc/aws/aws-guest-dr-failback.html 
+keywords: failback, mirror, on prem, ONTAP 
+summary: Sie können SnapCenter so konfigurieren, dass die Applikationsdaten-Volumes von FSX für ONTAP auf ein ONTAP Storage-System vor Ort gespiegelt werden. Ähnlich lässt sich Veeam für die Replizierung von Backup-Kopien in Amazon S3 konfigurieren. Dazu wird ein Scale-out-Backup-Repository verwendet, damit diese Backups einem Veeam Backup-Server im lokalen Datacenter zugänglich sind. 
+---
+= Failback
+:hardbreaks:
+:allow-uri-read: 
+:nofooter: 
+:icons: font
+:linkattrs: 
+:imagesdir: ./../../media/
+
+
+link:aws-guest-dr-restore-oracle-data.html["Früher: Stellen Sie Oracle Applikationsdaten wieder her."]
+
+Sobald der in dieser Lösung beschriebene Failover-Prozess erfolgreich abgeschlossen ist, setzen SnapCenter und Veeam ihre Backup-Funktionen in AWS wieder ein. FSX für ONTAP ist jetzt als primärer Storage vorgesehen und keine bestehenden SnapMirror Beziehungen zum ursprünglichen lokalen Datacenter vorhanden. Nachdem die normale Funktion wieder aufgenommen wurde, können Daten mit einem Prozess wie in dieser Dokumentation beschrieben in das lokale ONTAP Storage-System gespiegelt werden.
+
+Wie in dieser Dokumentation auch dargestellt, können Sie SnapCenter so konfigurieren, dass die Applikationsdaten-Volumes von FSX für ONTAP auf ein ONTAP Storage-System vor Ort gespiegelt werden. Ähnlich lässt sich Veeam für die Replizierung von Backup-Kopien in Amazon S3 konfigurieren. Dazu wird ein Scale-out-Backup-Repository verwendet, damit diese Backups einem Veeam Backup-Server im lokalen Datacenter zugänglich sind.
+
+Failback liegt außerhalb des Umfangs dieser Dokumentation, aber Failback unterscheidet sich wenig von dem hier beschriebenen Prozess.
+
+link:aws-guest-dr-conclusion.html["Weiter: Fazit."]

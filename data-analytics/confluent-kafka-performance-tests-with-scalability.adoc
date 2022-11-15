@@ -1,0 +1,30 @@
+---
+sidebar: sidebar 
+permalink: data-analytics/confluent-kafka-performance-tests-with-scalability.html 
+keywords: performance, tests, scalability 
+summary: Mit dem NetApp StorageGRID Setup haben wir die Tiered Storage-Tests mit drei bis vier Nodes für die Produktion und für Verbraucher durchgeführt. 
+---
+= Performance-Tests mit Skalierbarkeit
+:hardbreaks:
+:allow-uri-read: 
+:nofooter: 
+:icons: font
+:linkattrs: 
+:imagesdir: ./../media/
+
+
+link:confluent-kafka-confluent-kafka-certification.html["Früher: Confluent Überprüfung."]
+
+Wir haben die Tiered Storage-Tests mit drei bis vier Nodes für Producer und Verbraucher-Workloads mithilfe des NetApp StorageGRID Setups durchgeführt. Laut unseren Tests waren die Fertigstellungszeit und die Performance-Ergebnisse direkt proportional zur Anzahl der StorageGRID Nodes. Das StorageGRID-Setup benötigte mindestens drei Nodes.
+
+* Die Zeit bis zur Fertigstellung des Produce- und Consumer-Vorgangs sank linear, wenn die Anzahl der Storage Nodes gestiegen ist.
+
+
+image:confluent-kafka-image9.png["Fehler: Fehlendes Grafikbild"]
+
+* Die Performance für den s3-Abrufvorgang ist basierend auf der Anzahl der StorageGRID-Nodes linear gestiegen. StorageGRID unterstützt bis zu 200 StorageGRID Nodes.
+
+
+image:confluent-kafka-image10.png["Fehler: Fehlendes Grafikbild"]
+
+link:confluent-kafka-kafka-s3-connector.html["Weiter: Anschluss mit fließenden s3."]

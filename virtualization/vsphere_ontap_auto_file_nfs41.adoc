@@ -1,0 +1,76 @@
+---
+sidebar: sidebar 
+permalink: virtualization/vsphere_ontap_auto_file_nfs41.html 
+keywords: vSphere, datastore, nfs, ONTAP tools, vlan, network interface, service policy, export policy 
+summary: Auf dieser Seite finden Sie Schritte zur Bereitstellung eines NetApp ONTAP NFS Version 4-Datenspeichers in einer VMware vSphere-Umgebung. 
+---
+= VSphere NFS Datastore - Version 4.1 mit ONTAP
+:allow-uri-read: 
+
+
+
+
+== Über diese Aufgabe
+
+In diesem Abschnitt wird die Erstellung eines NFS-Version 4.1-Datenspeichers mit ONTAP-NAS-Speicher beschrieben.
+
+Verwenden Sie eines der folgenden Skripte für die automatisierte Bereitstellung: , , Oder .
+
+
+
+== Was Sie brauchen
+
+* Grundkenntnisse für das Management einer vSphere Umgebung und einer ONTAP
+* ONTAP Storage-System (FAS/AFF/CVO/ONTAP Select/Cloud Volume Service/Azure NetApp Files) mit {ontap_Version}
+* ONTAP-Anmeldedaten (SVM-Name, Benutzer-ID, Passwort)
+* ONTAP Netzwerkport, SVM und LUN-Informationen für NFS
+* link:++https://docs.netapp.com/ontap-9/topic/com.netapp.doc.exp-nfs-vaai/GUID-BBD301EF-496A-4974-B205-5F878E44BF59.html++["Ein ausgefülltes NFS-Konfigurationsarbeitsblatt"]
+* Anmeldedaten für vCenter Server
+* Informationen zu vSphere-Hosts {vsphere_Version}
+* IP-Informationen für den NFS VMkernel Adapter
+* Netzwerk-Switch(e)
++
+** Mit ONTAP System-Netzwerk-Daten-Ports, vSphere-Hosts und verbunden
+** Für NFS konfigurierte VLANs
+** (Optional) Link Aggregation konfiguriert für ONTAP Netzwerkdatenports
+
+
+* ONTAP Tools für VMware vSphere Implementierung, Konfiguration und Einsatzbereitschaft
+
+
+
+
+== Schritte
+
+* Prüfen Sie die Kompatibilität mit dem https://mysupport.netapp.com/matrix["Interoperabilitäts-Matrix-Tool (IMT):"]
++
+** link:++https://docs.netapp.com/ontap-9/topic/com.netapp.doc.exp-nfs-vaai/GUID-DA231492-F8D1-4E1B-A634-79BA906ECE76.html++["Vergewissern Sie sich, dass die NFS-Konfiguration unterstützt wird."]
+
+
+* Führen Sie die im Folgenden aufgeführten ONTAP- und vSphere-Aufgaben aus.
+
+
+
+
+== ONTAP Aufgaben
+
+. link:++https://docs.netapp.com/ontap-9/topic/com.netapp.doc.dot-cm-cmpr-980/system__license__show.html++["Überprüfen Sie die ONTAP Lizenz für NFS"]
++
+.. Einsatzthe `system license show` Befehl zum Überprüfen, ob NFS aufgelistet ist.
+.. Nutzung `license add -license-code <license code>` Um eine Lizenz hinzuzufügen.
+
+
+. link:++https://docs.netapp.com/ontap-9/topic/com.netapp.doc.pow-nfs-cg/GUID-6D7A1BB1-C672-46EF-B3DC-08EBFDCE1CD5.html++["Folgen Sie dem NFS-Konfigurations-Workflow"]
+
+
+
+
+== Aufgaben für VMware vSphere
+
+link:++https://docs.netapp.com/ontap-9/topic/com.netapp.doc.exp-nfs-vaai/GUID-D78DD9CF-12F2-4C3C-AD3A-002E5D727411.html++["Folgen Sie dem NFS Client Configuration für vSphere Workflow."]
+
+
+
+== Was kommt als Nächstes?
+
+Nach Abschluss dieser Aufgaben kann der NFS-Datenspeicher zur Bereitstellung von Virtual Machines genutzt werden.

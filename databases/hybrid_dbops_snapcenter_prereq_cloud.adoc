@@ -1,0 +1,73 @@
+---
+sidebar: sidebar 
+permalink: databases/hybrid_dbops_snapcenter_prereq_cloud.html 
+summary: Bevor wir den Cloud Manager Connector installieren und Cloud Volumes ONTAP konfigurieren und SnapMirror konfigurieren, müssen wir einige Vorbereitungen für unsere Cloud-Umgebung durchführen. Auf dieser Seite werden die erforderlichen Arbeiten sowie die Überlegungen bei der Implementierung von Cloud Volumes ONTAP beschrieben. 
+keywords: prerequisites, aws, azure, gcp, cloud central, cloud volumes ontap 
+---
+= Voraussetzungen für die Public Cloud
+:hardbreaks:
+:allow-uri-read: 
+:nofooter: 
+:icons: font
+:linkattrs: 
+:table-stripes: odd
+:imagesdir: ./../media/
+
+
+link:hybrid_dbops_snapcenter_prereq_onprem.html["Zurück: Voraussetzungen vor Ort."]
+
+Bevor wir den Cloud Manager Connector installieren und Cloud Volumes ONTAP konfigurieren und SnapMirror konfigurieren, müssen wir einige Vorbereitungen für unsere Cloud-Umgebung durchführen. Auf dieser Seite werden die erforderlichen Arbeiten sowie die Überlegungen bei der Implementierung von Cloud Volumes ONTAP beschrieben.
+
+
+
+== Checkliste zu den Implementierungsvoraussetzungen für Cloud Manager und Cloud Volumes ONTAP
+
+* NetApp Cloud Central Anmeldung
+* Netzwerkzugriff über einen Webbrowser zu mehreren Endpunkten
+* Ein Netzwerkstandort für einen Konnektor
+* Berechtigungen für Cloud-Provider
+* Vernetzung für einzelne Services
+
+
+Weitere Informationen zu den ersten Schritten erhalten Sie auf unserer https://docs.netapp.com/us-en/occm/reference_checklist_cm.html["Cloud-Dokumentation"^].
+
+
+
+== Überlegungen
+
+
+
+=== 1. Was ist ein Cloud-Manager-Konnektor?
+
+In den meisten Fällen muss ein Cloud Central Account-Administrator einen Connector in Ihrer Cloud oder Ihrem On-Premises-Netzwerk bereitstellen. Über den Connector kann Cloud Manager Ressourcen und Prozesse in Ihrer Public-Cloud-Umgebung managen.
+
+Weitere Informationen zu Connectors finden Sie auf unserer https://docs.netapp.com/us-en/occm/concept_connectors.html["Cloud-Dokumentation"^].
+
+
+
+=== 2. Dimensionierung und Architektur von Cloud Volumes ONTAP
+
+Bei der Bereitstellung von Cloud Volumes ONTAP haben Sie die Wahl zwischen einem vordefinierten Paket oder der Erstellung Ihrer eigenen Konfiguration. Obwohl sich viele dieser Werte später unterbrechungsfrei ändern lassen, müssen vor der Implementierung auf der Grundlage der zu implementierenden Workloads in der Cloud einige wichtige Entscheidungen getroffen werden.
+
+Jeder Cloud-Provider verfügt über unterschiedliche Implementierungsmöglichkeiten, und fast jeder Workload verfügt über eigene einzigartige Eigenschaften. NetApp hat eine https://cloud.netapp.com/cvo-sizer["CVO-Sizing-Tool"^] Damit können Implementierungen auf der Basis von Kapazität und Performance korrekt ausgerichtet werden. Allerdings basieren sie auf einigen grundlegenden Konzepten, die sich lohnen:
+
+* Erforderliche Kapazität
+* Netzwerkfähigkeit der Cloud Virtual Machine
+* Performance-Merkmale von Cloud-Storage
+
+
+Entscheidend ist dabei die Planung einer Konfiguration, die nicht nur die aktuellen Kapazitäts- und Performance-Anforderungen erfüllt, sondern auch das künftige Wachstum berücksichtigt. Dies wird im Allgemeinen als Kapazitätsreserve und Performance Reserve bezeichnet.
+
+Wenn Sie weitere Informationen wünschen, lesen Sie die Dokumentation zur Planung richtig für https://docs.netapp.com/us-en/occm/task_planning_your_config.html["AWS"^], https://docs.netapp.com/us-en/occm/task_planning_your_config_azure.html["Azure"^], und https://docs.netapp.com/us-en/occm/task_planning_your_config_gcp.html["GCP"^].
+
+
+
+=== 3. Single Node oder Hochverfügbarkeit?
+
+In allen Clouds besteht die Möglichkeit, CVO entweder in einem einzelnen Node oder in einem hochverfügbaren Cluster-Paar mit zwei Nodes zu implementieren. Je nach Anwendungsfall können Sie einen einzelnen Node implementieren, um Kosten zu sparen, oder ein HA-Paar, um weitere Verfügbarkeit und Redundanz zu ermöglichen.
+
+Einzelne Nodes sind für einen DR-Anwendungsfall oder das Aufsetzen von temporem Storage für Entwicklung und Tests häufig vorgängig, da die Auswirkungen eines plötzlichen zonalen beziehungsweise Infrastrukturausfalls geringer sind. Wenn sich die Daten jedoch in einem Produktionsfall nur an einem einzelnen Standort befinden oder wenn der Datensatz mehr Redundanz und Verfügbarkeit haben muss, wird Hochverfügbarkeit empfohlen.
+
+Weitere Informationen zur Architektur der Hochverfügbarkeit der einzelnen Cloud-Versionen finden Sie in der Dokumentation für https://docs.netapp.com/us-en/occm/concept_ha.html["AWS"^], https://docs.netapp.com/us-en/occm/concept_ha_azure.html["Azure"^] Und https://docs.netapp.com/us-en/occm/concept_ha_google_cloud.html["GCP"^].
+
+link:hybrid_dbops_snapcenter_getting_started.html["Weiter: Erste Schritte – Übersicht"]

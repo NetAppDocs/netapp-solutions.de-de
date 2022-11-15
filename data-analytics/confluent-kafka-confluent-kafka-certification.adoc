@@ -1,0 +1,98 @@
+---
+sidebar: sidebar 
+permalink: data-analytics/confluent-kafka-confluent-kafka-certification.html 
+keywords: certification, setup, configuration, benchmark 
+summary: Wir haben diese Zertifizierung zusammen mit Confluent Platform mit Kafka für Tiered Storage in NetApp StorageGRID durchgeführt. 
+---
+= Confluent Verification
+:hardbreaks:
+:allow-uri-read: 
+:nofooter: 
+:icons: font
+:linkattrs: 
+:imagesdir: ./../media/
+
+
+link:confluent-kafka-technology-overview.html["Zurück: Technologieübersicht."]
+
+Wir haben eine Überprüfung mit Confluent Platform 6.2 Tiered Storage in NetApp StorageGRID durchgeführt. Die NetApp und Conflient Teams haben diese Verifizierung gemeinsam durchgeführt und die für die Verifizierung erforderlichen Testfälle durchgeführt.
+
+
+
+== Plattformeinrichtung fließend
+
+Zur Überprüfung wurde folgendes Setup verwendet.
+
+Zur Überprüfung wurden drei Zookeeper, fünf Broker, fünf Testskripte mit Servern, benannte Tools mit 256 GB RAM und 16 CPUs verwendet. Für NetApp Storage haben wir StorageGRID mit einem SG1000 Load Balancer mit vier SGF6024s verwendet. Der Storage und die Broker waren über 100-GbE-Verbindungen verbunden.
+
+Die folgende Abbildung zeigt die Netzwerktopologie der Konfiguration, die für die Confluent-Überprüfung verwendet wird.
+
+image:confluent-kafka-image7.png["Fehler: Fehlendes Grafikbild"]
+
+Die Tools-Server fungieren als Anwendungsclients, die Anfragen an Confluent Nodes senden.
+
+
+
+== Fließende Tiered Storage-Konfiguration
+
+Für die Tiered Storage-Konfiguration sind in Kafka die folgenden Parameter erforderlich:
+
+....
+Confluent.tier.archiver.num.threads=16
+confluent.tier.fetcher.num.threads=32
+confluent.tier.enable=true
+confluent.tier.feature=true
+confluent.tier.backend=S3
+confluent.tier.s3.bucket=kafkasgdbucket1-2
+confluent.tier.s3.region=us-west-2
+confluent.tier.s3.cred.file.path=/data/kafka/.ssh/credentials
+confluent.tier.s3.aws.endpoint.override=http://kafkasgd.rtpppe.netapp.com:10444/
+confluent.tier.s3.force.path.style.access=true
+....
+Zur Überprüfung wurde StorageGRID mit dem HTTP-Protokoll verwendet, aber HTTPS funktioniert auch. Der Zugriffsschlüssel und der Geheimschlüssel werden im Dateinamen im gespeichert `confluent.tier.s3.cred.file.path` Parameter.
+
+
+
+== NetApp Objekt-Storage – StorageGRID
+
+Wir haben Single-Site-Konfiguration in StorageGRID für die Verifikation konfiguriert.
+
+image:confluent-kafka-image8.png["Fehler: Fehlendes Grafikbild"]
+
+
+
+== Verifizierungstests
+
+Wir haben die folgenden fünf Testfälle für die Verifizierung abgeschlossen. Diese Tests werden im Trogdor-Rahmen durchgeführt. Die ersten beiden waren Funktionstests und die verbleibenden drei waren Performance-Tests.
+
+
+
+=== Korrektheit des Objektspeichers
+
+Dieser Test bestimmt, ob alle grundlegenden Vorgänge (zum Beispiel get/put/delete) auf der Objektspeicher-API gut gemäß den Anforderungen an Tiered Storage funktionieren. Es ist ein grundlegender Test, dass jeder Objektspeicher-Service den folgenden Tests voraus sein sollte. Es handelt sich um einen durchsetzungsfähigen Test, der entweder besteht oder ausfällt.
+
+
+
+=== Funktionstest der Tiering-Funktion
+
+Dieser Test prüft, ob die End-to-End-Tiered Storage-Funktionalität einem durchsetzungsfähigen Test gut funktioniert, der entweder erfolgreich oder ausfallen sollte. Der Test erstellt ein Testthema, das standardmäßig mit aktiviertem Tiering und einer stark reduzierten Hotset-Größe konfiguriert ist. Es erzeugt einen Ereignisstrom zum neu erstellten Testthema, wartet darauf, dass die Broker die Segmente im Objektspeicher archivieren und dann den Ereignisstrom nutzt und überprüft, ob der verbrauchte Strom mit dem erzeugten Stream übereinstimmt. Die Anzahl der Nachrichten, die an den Ereignisstrom erzeugt werden, ist konfigurierbar, sodass der Benutzer je nach Testanforderungen eine ausreichend große Arbeitslast generieren kann. Die reduzierte Hotset-Größe stellt sicher, dass der Verbraucher außerhalb des aktiven Segments nur aus dem Objektspeicher bedient wird; dies hilft, die Richtigkeit des Objektspeichers auf Lesevorgänge zu prüfen. Diesen Test haben wir mit und ohne Objektspeicherfehlereinspritzung durchgeführt. Wir haben einen Node-Ausfall simuliert, indem wir den Service Manager Service in einem der Nodes in StorageGRID unterbrechen und validieren, dass die End-to-End-Funktionalität mit dem Objekt-Storage kompatibel ist.
+
+
+
+=== Tier-Fetch-Benchmark
+
+Dieser Test bestätigte die Lese-Performance des Tiered Objekt-Storage und prüfte den Bereich, in dem Leseanforderungen unter hoher Last aus vom Benchmark erzeugten Segmenten abgerufen werden. In dieser Benchmark hat Confluent benutzerdefinierte Clients entwickelt, um die Tier-fetch-Anforderungen zu erfüllen.
+
+
+
+=== Erstellen von Benchmark-Workloads für die Nutzung
+
+Dieser Test erzeugte über die Archivierung von Segmenten einen indirekten Schreib-Workload auf dem Objektspeicher. Der Lese-Workload (Segmente Lesen) wurde aus dem Objekt-Storage generiert, wenn Verbrauchergruppen die Segmente abgerufen haben. Dieser Workload wurde durch das Testskript generiert. In diesem Test wurde die Performance von Lese- und Schreibvorgängen im Objekt-Storage in parallelen Threads überprüft. Wir haben wie bei dem Tiering-Funktionstest mit und ohne Objektspeicher-Fehlereinspritzung getestet.
+
+
+
+=== Benchmarks für Retention Workloads
+
+Bei diesem Test wurde die Löschleistung eines Objektspeichers unter einem hohen Workload für die Aufbewahrung von Themen überprüft. Der Retention Workload wurde mit einem Testskript generiert, das parallel zu einem Testthema viele Nachrichten erzeugt. Das Testthema wurde mit einer aggressiven größenbasierten und zeitbasierten Aufbewahrungseinstellung konfiguriert, die dazu führte, dass der Ereignisstrom kontinuierlich aus dem Objektspeicher gelöscht wurde. Die Segmente wurden anschließend archiviert. Dies führte zu einer großen Anzahl von Löschungen im Objekt-Storage durch den Vermittler und die Sammlung der Performance bei Löschvorgängen im Objektspeicher.
+
+link:confluent-kafka-performance-tests-with-scalability.html["Weiter: Performance-Tests mit Skalierbarkeit."]

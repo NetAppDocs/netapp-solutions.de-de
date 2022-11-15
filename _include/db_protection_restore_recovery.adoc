@@ -1,0 +1,29 @@
+= 
+:hardbreaks:
+:allow-uri-read: 
+:nofooter: 
+:icons: font
+:linkattrs: 
+:imagesdir: ./../media/
+
+
+Planen des Log Replication Playbook
+
+*Konfigurieren und starten Sie die Jobvorlage.*
+
+. Kopieren Sie die zuvor erstellte Jobvorlage.
++
+.. Navigieren Sie zu Ressourcen → Vorlagen.
+.. Suchen Sie die ONTAP/CVO Setup-Vorlage und klicken Sie rechts ganz auf Copy Template
+.. Klicken Sie auf Vorlage bearbeiten auf der kopierten Vorlage, und ändern Sie den Namen in „Playbook wiederherstellen und wiederherstellen“.
+.. Behalten Sie für die Vorlage denselben Bestand, dasselbe Projekt und dieselben Anmeldeinformationen bei.
+.. Wählen Sie die ora_Recovery.yml als auszuführenden Playbook aus.
+.. Die Variablen bleiben die gleichen, aber die CVO Cluster-IP muss in der Variablen dst_Cluster_ip festgelegt werden.
+.. Klicken Sie auf Speichern .
+
+
++
+
+NOTE: Dieses Playbook wird erst ausgeführt, nachdem Sie bereit sind, Ihre Datenbank am Remote-Standort wiederherzustellen.
+
+

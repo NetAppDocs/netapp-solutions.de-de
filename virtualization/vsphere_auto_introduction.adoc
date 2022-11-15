@@ -1,0 +1,40 @@
+---
+sidebar: sidebar 
+permalink: virtualization/vsphere_auto_introduction.html 
+keywords: vSphere, cloud, hybrid cloud, AWS, Azure, Google cloud, snapmirror cloud, cloud backup service, Cloud Sync, FabricPool, ONTAP 
+summary: Auf dieser Seite werden die Vorteile der Automatisierung der grundlegenden ONTAP Funktionen in einer VMware vSphere Umgebung beschrieben. 
+---
+= Einführung in die Automatisierung für ONTAP und vSphere
+:hardbreaks:
+:allow-uri-read: 
+:nofooter: 
+:icons: font
+:linkattrs: 
+:imagesdir: ./../media/
+
+
+
+
+== VMware Automatisierung
+
+Seit den ersten Tagen von VMware ESX ist die Automatisierung ein integraler Bestandteil des Managements von VMware Umgebungen. Die Möglichkeit, Infrastruktur als Code zu implementieren und Verfahren auf private Cloud-Vorgänge auszuweiten, um Bedenken hinsichtlich Skalierbarkeit, Flexibilität, Self-Provisioning und Effizienz zu zerstreuen.
+
+Die Automatisierung kann in die folgenden Kategorien eingeteilt werden:
+
+* * Bereitstellung virtueller Infrastrukturen*
+* *Betrieb der Gastmaschine*
+* *Cloud-Betrieb*
+
+
+Administratoren stehen im Hinblick auf die Automatisierung ihrer Infrastruktur viele Optionen zur Verfügung. Ob durch die Nutzung nativer vSphere Funktionen wie Host-Profile oder Anpassungsspezifikationen für Virtual Machines über verfügbare APIs auf den VMware Software-Komponenten, Betriebssystemen und NetApp Storage-Systemen verfügen - hier sind umfangreiche Dokumentationen und Anleitungen verfügbar.
+
+Data ONTAP 8.0.1 und höher unterstützt bestimmte VMware vSphere APIs for Array Integration (VAAI)-Funktionen, wenn der ESX-Host ESX 4.1 oder höher ausführt. VAAI ist eine Reihe von APIs für die Kommunikation zwischen VMware vSphere ESXi Hosts und Storage-Geräten. Diese Funktionen helfen, Vorgänge vom ESX Host zum Storage-System zu verlagern und den Netzwerkdurchsatz zu steigern. Der ESX-Host aktiviert die Funktionen automatisch in der richtigen Umgebung. Sie können bestimmen, in welchem Umfang Ihr System VAAI-Funktionen verwendet, indem Sie die Statistiken in den VAAI-Zählern prüfen.
+
+Der häufigste Ausgangspunkt für die Automatisierung der Implementierung einer VMware-Umgebung ist die Bereitstellung von Block- oder dateibasierten Datastores. Vor der Entwicklung der entsprechenden Automatisierung ist es wichtig, die Anforderungen der eigentlichen Aufgaben abzubilden.
+
+Weitere Informationen zur Automatisierung von VMware-Umgebungen finden Sie in den folgenden Ressourcen:
+
+* https://netapp.io/configuration-management-and-automation/["„NetApp Pub“"^]. NetApp Konfigurationsmanagement und Automatisierung:
+* https://galaxy.ansible.com/community/vmware["Ansible Galaxy Community für VMware"^]. Eine Sammlung von Ansible-Ressourcen für VMware.
+* https://code.vmware.com/resources["VMware {Code} Ressourcen"^]. Ressourcen, die zum entwickeln von Lösungen für das softwaredefinierte Datacenter erforderlich sind, einschließlich Foren, Designstandards, Beispielcode und Entwickler-Tools
+

@@ -1,0 +1,161 @@
+---
+sidebar: sidebar 
+permalink: databases/hybrid_dbops_snapcenter_devtest.html 
+summary: Die Agilität der Public Cloud, die Amortisierung und die Kosteneinsparungen sind sinnvolle Vorteile für Unternehmen, die sich für die Entwicklung von Datenbankapplikationen und für Tests zur Public Cloud entscheiden. Es gibt kein besseres Werkzeug als SnapCenter, um dies in Eile Realität zu machen. Mit SnapCenter können Sie Ihre Produktionsdatenbank nicht nur lokal sichern, sondern auch schnell eine Kopie für die Entwicklung von Applikationen oder Code-Tests in der Public Cloud klonen und dabei nur sehr wenig zusätzlichen Storage belegen. Im Folgenden finden Sie Details zu Schritt-für-Schritt-Prozessen mit dem Tool. 
+keywords: hybrid cloud, database, solutions, dev/test, workflow 
+---
+= Workflow für Entwicklungs- und Test-Bursting in die Cloud
+:hardbreaks:
+:allow-uri-read: 
+:nofooter: 
+:icons: font
+:linkattrs: 
+:table-stripes: odd
+:imagesdir: ./../media/
+
+
+link:hybrid_dbops_snapcenter_getting_started_aws.html["Zurück: Erste Schritte mit der AWS Public Cloud"]
+
+Die Agilität der Public Cloud, die Amortisierung und die Kosteneinsparungen sind sinnvolle Vorteile für Unternehmen, die sich für die Entwicklung und das Testen von Datenbankapplikationen durch die Public Cloud entscheiden. Es gibt kein besseres Werkzeug als SnapCenter, um dies Wirklichkeit werden zu lassen. Mit SnapCenter können Sie Ihre Produktionsdatenbank nicht nur vor Ort schützen, sondern auch schnell eine Kopie für Applikationsentwicklung oder Code-Tests in der Public Cloud klonen und belegen gleichzeitig nur sehr wenig zusätzlichen Storage. Im Folgenden finden Sie Details zu den Schritt-für-Schritt-Prozessen für dieses Tool.
+
+
+
+== Klonen einer Oracle Datenbank für Entwicklungs- und Testzwecke aus einem replizierten Snapshot Backup
+
+. Melden Sie sich mit einer Datenbank-Management-Benutzer-ID für Oracle bei SnapCenter an. Öffnen Sie die Registerkarte Ressourcen, auf der die von SnapCenter geschützten Oracle-Datenbanken angezeigt werden.
++
+image:snapctr_ora_clone_01.PNG["Fehler: Fehlendes Grafikbild"]
+
+. Klicken Sie auf den gewünschten Namen der lokalen Datenbank für die Backup-Topologie und die detaillierte Ansicht. Wenn ein sekundärer replizierter Standort aktiviert ist, werden verknüpfte Spiegelsicherungen angezeigt.
++
+image:snapctr_ora_clone_02.PNG["Fehler: Fehlendes Grafikbild"]
+
+. Klicken Sie auf „gespiegelte Backups“, um zur Ansicht „gespiegelte Backups“ zu gelangen. Anschließend werden die Backup(s) der sekundären Spiegelung angezeigt.
++
+image:snapctr_ora_clone_03.PNG["Fehler: Fehlendes Grafikbild"]
+
+. Wählen Sie eine gespiegelte sekundäre Datenbank-Backup-Kopie, die geklont werden soll, und legen Sie einen Recovery-Zeitpunkt entweder nach Zeit- und Systemänderungsnummer oder nach SCN fest. Im Allgemeinen sollte der Recovery-Zeitpunkt hinter der vollständigen Datenbank-Backup-Zeit zurückliegen oder SCN zum Klonen stehen. Nach der Entscheidung für einen Wiederherstellungspunkt muss die erforderliche Protokolldatei-Sicherung für die Wiederherstellung eingebunden werden. Die Sicherung der Protokolldatei sollte auf dem Ziel-DB-Server gemountet werden, auf dem die Klondatenbank gehostet werden soll.
++
+image:snapctr_ora_clone_04.PNG["Fehler: Fehlendes Grafikbild"]
+
++
+image:snapctr_ora_clone_05.PNG["Fehler: Fehlendes Grafikbild"]
+
++
+
+NOTE: Wenn die Protokollbeschneidung aktiviert ist und der Wiederherstellungspunkt über den letzten Protokollschnitt hinaus erweitert wird, müssen möglicherweise mehrere Archiv-Log-Backups eingebunden werden.
+
+. Markieren Sie die vollständige Datenbank-Backup-Kopie, die geklont werden soll, und klicken Sie dann auf die Schaltfläche Klonen, um den DB-Klon-Workflow zu starten.
++
+image:snapctr_ora_clone_06.PNG["Fehler: Fehlendes Grafikbild"]
+
+. Wählen Sie eine geeignete Klon-DB-SID für eine vollständige Container-Datenbank oder einen CDB-Klon.
++
+image:snapctr_ora_clone_07.PNG["Fehler: Fehlendes Grafikbild"]
+
+. Wählen Sie den Zielklonhost in der Cloud aus, und Datendatei, Kontrolldatei und Wiederherstellungsprotokolle werden vom Klon-Workflow erstellt.
++
+image:snapctr_ora_clone_08.PNG["Fehler: Fehlendes Grafikbild"]
+
+. Der Name für keine Anmeldeinformationen wird für die BS-basierte Authentifizierung verwendet, wodurch der Datenbankport irrelevant wird. Geben Sie die korrekte Oracle Home, Oracle OS User und Oracle OS Group ein, wie im Klon-DB-Server konfiguriert.
++
+image:snapctr_ora_clone_09.PNG["Fehler: Fehlendes Grafikbild"]
+
+. Geben Sie die vor dem Klonvorgang zu ausführenden Skripte an. Vor allem kann hier der Parameter der Datenbankinstanz angepasst oder definiert werden.
++
+image:snapctr_ora_clone_10.PNG["Fehler: Fehlendes Grafikbild"]
+
+. Geben Sie den Wiederherstellungspunkt entweder mit Datum und Uhrzeit oder mit SCN an. Bis Abbrechen die Datenbank bis zu den verfügbaren Archivprotokollen wiederherstellt. Geben Sie den externen Speicherort für das Archivprotokoll vom Zielhost an, auf dem das Archiv-Protokoll-Volume angehängt ist. Wenn sich der Oracle-Eigentümer des Zielservers von dem lokalen Produktionsserver unterscheidet, überprüfen Sie, ob das Archivprotokollverzeichnis vom Oracle Eigentümer des Zielservers lesbar ist.
++
+image:snapctr_ora_clone_11.PNG["Fehler: Fehlendes Grafikbild"]
+
++
+image:snapctr_ora_clone_12.PNG["Fehler: Fehlendes Grafikbild"]
+
+. Konfigurieren Sie bei Bedarf den SMTP-Server für E-Mail-Benachrichtigungen.
++
+image:snapctr_ora_clone_13.PNG["Fehler: Fehlendes Grafikbild"]
+
+. Zusammenfassung des Klons:
++
+image:snapctr_ora_clone_14.PNG["Fehler: Fehlendes Grafikbild"]
+
+. Sie sollten nach dem Klonen validieren, um sicherzustellen, dass die geklonte Datenbank funktionsfähig ist. Einige zusätzliche Aufgaben, wie z. B. das Starten des Listeners oder das Deaktivieren des DB-Log-Archivmodus, können an der Entwicklungs-/Testdatenbank ausgeführt werden.
++
+image:snapctr_ora_clone_15.PNG["Fehler: Fehlendes Grafikbild"]
+
+
+
+
+
+== Klonen einer SQL Datenbank für Entwicklungs- und Testzwecke aus einem replizierten Snapshot Backup
+
+. Melden Sie sich mit einer Datenbank-Management-Benutzer-ID für SQL Server bei SnapCenter an. Navigieren Sie zur Registerkarte Ressourcen, die die SQL Server-Benutzerdatenbanken anzeigt, die durch SnapCenter geschützt sind, und eine Ziel-Standby-SQL-Instanz in der Public Cloud.
++
+image:snapctr_sql_clone_01.PNG["Fehler: Fehlendes Grafikbild"]
+
+. Klicken Sie auf den gewünschten lokalen Namen der SQL Server-Benutzerdatenbank für die Backup-Topologie und die detaillierte Ansicht. Wenn ein sekundärer replizierter Standort aktiviert ist, werden verknüpfte Spiegelsicherungen angezeigt.
++
+image:snapctr_sql_clone_02.PNG["Fehler: Fehlendes Grafikbild"]
+
+. Wechseln Sie zur Ansicht gespiegelte Backups, indem Sie auf gespiegelte Backups klicken. Sekundäre Spiegelsicherung(en) werden angezeigt. Da SnapCenter das Transaktions-Log von SQL Server auf einem dedizierten Laufwerk für die Wiederherstellung sichert, werden hier nur vollständige Datenbank-Backups angezeigt.
++
+image:snapctr_sql_clone_03.PNG["Fehler: Fehlendes Grafikbild"]
+
+. Wählen Sie eine Backup-Kopie aus, und klicken Sie dann auf die Schaltfläche Klonen, um den Klon aus dem Backup-Workflow zu starten.
++
+image:snapctr_sql_clone_04_1.PNG["Fehler: Fehlendes Grafikbild"]
+
++
+image:snapctr_sql_clone_04.PNG["Fehler: Fehlendes Grafikbild"]
+
+. Wählen Sie einen Cloud-Server als Ziel-Klonserver, als Kloninstanz und als Name der Klondatenbank aus. Wählen Sie entweder einen Mount-Punkt für die automatische Zuweisung oder einen benutzerdefinierten Mount-Point-Pfad.
++
+image:snapctr_sql_clone_05.PNG["Fehler: Fehlendes Grafikbild"]
+
+. Legen Sie einen Recovery-Zeitpunkt entweder um eine Backup-Zeit für das Protokoll oder um ein bestimmtes Datum und eine bestimmte Uhrzeit fest.
++
+image:snapctr_sql_clone_06.PNG["Fehler: Fehlendes Grafikbild"]
+
+. Legen Sie optionale Skripte fest, die vor und nach dem Klonvorgang ausgeführt werden sollen.
++
+image:snapctr_sql_clone_07.PNG["Fehler: Fehlendes Grafikbild"]
+
+. Konfigurieren Sie einen SMTP-Server, wenn eine E-Mail-Benachrichtigung gewünscht wird.
++
+image:snapctr_sql_clone_08.PNG["Fehler: Fehlendes Grafikbild"]
+
+. Zusammenfassung Klonen.
++
+image:snapctr_sql_clone_09.PNG["Fehler: Fehlendes Grafikbild"]
+
+. Überwachen Sie den Job-Status und überprüfen Sie, ob die vorgesehene Benutzerdatenbank mit einer Ziel-SQL-Instanz im Cloud-Klon-Server verbunden wurde.
++
+image:snapctr_sql_clone_10.PNG["Fehler: Fehlendes Grafikbild"]
+
+
+
+
+
+== Konfiguration nach dem Klonen
+
+. Eine lokale Oracle Produktionsdatenbank wird normalerweise im Protokollarchivierungsmodus ausgeführt. Dieser Modus ist für eine Entwicklungs- oder Testdatenbank nicht erforderlich. Um den Protokollarchivmodus zu deaktivieren, melden Sie sich als sysdba in der Oracle DB an, führen Sie einen Änderungsbefehl für den Protokollmodus aus, und starten Sie die Datenbank für den Zugriff.
+. Konfigurieren Sie einen Oracle-Listener oder registrieren Sie die neu geklonte DB für den Benutzerzugriff mit einem vorhandenen Listener.
+. Ändern Sie für SQL Server den Protokollmodus von „voll“ in „einfach“, sodass die SQL Server Entwicklungs-/Test-Protokolldatei problemlos verkleinert werden kann, wenn sie das Protokoll-Volume füllt.
+
+
+
+
+== Klondatenbank aktualisieren
+
+. Ablegen geklonter Datenbanken und Bereinigen der Serverumgebung der Cloud-Datenbanken. Anschließend sollten Sie eine neue DB mit frischen Daten klonen. Das Klonen einer neuen Datenbank dauert nur wenige Minuten.
+. Fahren Sie die Klondatenbank herunter, führen Sie mit der CLI einen Befehl zur Klonaktualisierung aus. Einzelheiten finden Sie in der folgenden SnapCenter-Dokumentation: link:https://docs.netapp.com/us-en/snapcenter/protect-sco/task_refresh_a_clone.html["Aktualisieren Sie einen Klon"^].
+
+
+
+
+== Wo Hilfe benötigt wird?
+
+Wenn Sie Hilfe bei dieser Lösung und bei den Anwendungsfällen benötigen, treten Sie dem bei link:https://netapppub.slack.com/archives/C021R4WC0LC["NetApp Solution Automation Community unterstützt Slack-Channel"] Und suchen Sie den Kanal zur Lösungsautomatisierung, um Ihre Fragen zu stellen oder zu fragen.
+
+link:hybrid_dbops_snapcenter_dr.html["Weiter: Disaster-Recovery-Workflow."]

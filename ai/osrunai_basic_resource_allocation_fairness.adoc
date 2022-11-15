@@ -1,0 +1,30 @@
+---
+sidebar: sidebar 
+permalink: ai/osrunai_basic_resource_allocation_fairness.html 
+keywords:  
+summary:  
+---
+= Gerechtigkeit Bei Der Grundlegenden Ressourcenzuweisung
+:hardbreaks:
+:allow-uri-read: 
+:nofooter: 
+:icons: font
+:linkattrs: 
+:imagesdir: ./../media/
+
+
+In diesem Abschnitt zeigen wir das, wann `team-d` Fragt nach mehr GPUs (sie sind unter ihrem Kontingent), unterbricht das System die Workloads von `team-b` Und `team-c` Und bewegt sie in einen auslaufenden Staat auf faire Weise.
+
+Details, einschließlich Stellenausschreibungen, verwendete Container-Images und ausgeführte Befehlssequenzen, finden Sie im Abschnitt link:osrunai_testing_details_for_section_4.9.html["Testdetails für Abschnitt 4.9"].
+
+Die folgende Abbildung zeigt die resultierende Cluster-Auslastung, die pro Team zugewiesenen GPUs und ausstehende Aufgaben aufgrund von automatischem Lastausgleich und präventivem Scheduling. Wir können beobachten, dass, wenn die Gesamtzahl der GPUs, die von allen Team-Workloads angefordert werden, die Gesamtzahl der verfügbaren GPUs im Cluster übersteigt, Run:der interne Fairness-Algorithmus von AI für jeden einen Job unterbricht `team-b` Und `team-c` Weil sie ihre Projektquote erreicht haben. So lässt sich eine insgesamt hohe Cluster-Auslastung erzielen, während Data-Science-Teams nach wie vor unter von einem Administrator festgelegten Ressourcenbeschränkungen arbeiten.
+
+image:osrunai_image9.png["Fehler: Fehlendes Grafikbild"]
+
+Die Ergebnisse dieses Testszenarios zeigen Folgendes:
+
+* *Automatischer Lastenausgleich.* das System gleicht die Quote der GPUs automatisch aus, so dass jedes Team jetzt seine Quote nutzt. Die Workloads, die angehalten wurden, gehören zu Teams, die ihr Kontingent überschreiten.
+* *Fair Share Pause.* das System wählt, die Arbeitsbelastung eines Teams zu stoppen, das über seiner Quote war und dann die Arbeitsbelastung des anderen Teams zu stoppen. Run:AI hat interne Fairness-Algorithmen.
+
+
+link:osrunai_over-quota_fairness.html["Weiter: Gerechtigkeit Wegen Überquoten"]

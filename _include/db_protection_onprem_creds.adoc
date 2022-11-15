@@ -1,0 +1,67 @@
+= 
+:hardbreaks:
+:allow-uri-read: 
+:nofooter: 
+:icons: font
+:linkattrs: 
+:imagesdir: ./../media/
+
+
+. Konfigurieren Sie die Anmeldedaten.
+. Credential-Typen Erstellen. Bei Lösungen, die ONTAP verwenden, müssen Sie den Anmeldeinformationstyp so konfigurieren, dass er mit den Einträgen für Benutzernamen und Kennwort übereinstimmt.
++
+.. Navigieren Sie zu Administration → Credential Types, und klicken Sie auf Add.
+.. Geben Sie den Namen und eine Beschreibung an.
+.. Fügen Sie den folgenden Inhalt in die Eingabekonfiguration ein:
++
+[source, cli]
+----
+fields:
+  - id: dst_cluster_username
+    type: string
+    label: Destination Cluster Username
+  - id: dst_cluster_password
+    type: string
+    label: Destination Cluster Password
+    secret: true
+  - id: src_cluster_username
+    type: string
+    label: Source Cluster Username
+  - id: src_cluster_password
+    type: string
+    label: Source Cluster Password
+    secret: true
+----
+.. Fügen Sie den folgenden Inhalt in die Konfiguration des Injektors ein, und klicken Sie dann auf Speichern:
++
+[source, cli]
+----
+extra_vars:
+  dst_cluster_username: '{{ dst_cluster_username }}'
+  dst_cluster_password: '{{ dst_cluster_password }}'
+  src_cluster_username: '{{ src_cluster_username }}'
+  src_cluster_password: '{{ src_cluster_password }}'
+----
+
+
+. Credential für ONTAP erstellen
++
+.. Navigieren Sie zu Resources → Credentials, und klicken Sie auf Add.
+.. Geben Sie den Namen und die Organisationsdetails für die ONTAP Credentials ein
+.. Wählen Sie den im vorherigen Schritt erstellten Anmeldeinformationstyp aus.
+.. Geben Sie unter „Typdetails“ den Benutzernamen und das Kennwort für Ihre Quell- und Zielcluster ein.
+.. Klicken Sie Auf Speichern
+
+
+. Credential für Oracle erstellen
++
+.. Navigieren Sie zu Resources → Credentials, und klicken Sie auf Add.
+.. Geben Sie den Namen und die Organisationsdetails für Oracle ein
+.. Wählen Sie den Typ der Geräteanmeldeinformationen aus.
+.. Geben Sie unter „Typdetails“ den Benutzernamen und das Kennwort für die Oracle-Hosts ein.
+.. Wählen Sie die richtige Privilege-Eskalationsmethode aus, und geben Sie Benutzernamen und Kennwort ein.
+.. Klicken Sie Auf Speichern
+.. Wiederholen Sie den Vorgang, falls dies für eine andere Anmeldedaten für den dr_oracle-Host erforderlich ist.
+
+
+

@@ -1,0 +1,59 @@
+---
+sidebar: sidebar 
+permalink: ai/ai-sent-use-cases.html 
+keywords: assessment, call performance, pipeline, speech to text, target audience 
+summary: Aktueller Stand der Technik, vortrainierte Modellierungs-Tools, die von NVIDIA, AWS, Google und anderen veröffentlicht werden, lässt sich nun eine End-to-End-Pipeline mit komplexen Modellen aufbauen und relativ einfach anpassen. 
+---
+= Anwendungsfälle
+:hardbreaks:
+:allow-uri-read: 
+:nofooter: 
+:icons: font
+:linkattrs: 
+:imagesdir: ./../media/
+
+
+link:ai-sent-support-center-analytics.html["Früher: Support Center-Analysen."]
+
+Aufgrund der Anzahl der Anrufe, die diese Support-Center bearbeiten, kann die Beurteilung der Anrufleistung bei manueller Durchführung viel Zeit in Anspruch nehmen. Traditionelle Methoden wie das Zählen von Bag-of-Words und andere Methoden können einige Automatisierung erreichen, aber diese Methoden erfassen nicht mehr differenzierte Aspekte und semantischen Kontext der dynamischen Sprache. Mithilfe von KI-Modellierungstechniken können einige dieser differenzierteren Analysen automatisiert durchgeführt werden. Angesichts des aktuellen Stand der Technik, von vortrainierten Modellierungs-Tools, die von NVIDIA, AWS, Google und anderen veröffentlicht werden, lässt sich zudem eine End-to-End-Pipeline mit komplexen Modellen aufbauen und relativ einfach anpassen.
+
+Eine End-to-End-Pipeline für die Sentimentanalyse des Support Centers speist Audiodateien in Echtzeit ein, während die Mitarbeiter mit Anrufern kommunizieren. Anschließend werden diese Audiodateien für die Verwendung in der sprach-zu-Text-Komponente verarbeitet, die sie in ein Textformat konvertiert. Jeder Satz im Gespräch erhält ein Etikett, das die Stimmung anzeigt (positiv, negativ oder neutral).
+
+Die Sentimentanalyse kann einen wesentlichen Aspekt der Gespräche zur Beurteilung der Call-Performance liefern. Diese Gefühle verleihen den Interaktionen zwischen Mitarbeitern und Anrufern eine zusätzliche Tiefe. Das KI-gestützte Sentiment Dashboard bietet Führungskräften eine Echtzeit-Nachverfolgung der Stimmung innerhalb eines Gesprächs sowie eine rückblickende Analyse der vergangenen Anrufe des Mitarbeiters.
+
+Es gibt vordefinierte Tools, die auf leistungsstarke Weise kombiniert werden können, um schnell eine End-to-End-KI-Pipeline für die Lösung dieses Problems zu erstellen. In diesem Fall kann die NVIDIA RIVA-Bibliothek verwendet werden, um die beiden in-Serie-Aufgaben durchzuführen: Audio-Transkription und Sentiment-Analyse. Der erste ist ein überwachtes Lernsignal-Processing-Algorithmus und der zweite ist ein überwachtes Lernen-NLP-Klassifizierungsalgorithmus. Diese Out-of-the-Box-Algorithmen können über das NVIDIA TAO Toolkit für jeden relevanten Anwendungsfall mit geschäftlichen Daten optimiert werden. Die Folge sind präzisere und leistungsfähigere Lösungen, die nur zu einem Bruchteil der Kosten und der Ressourcen entwickelt werden. Kunden können die einbinden https://developer.nvidia.com/maxine["NVIDIA Maxine"^] Framework für GPU-beschleunigte Videokonferenzanwendungen in ihrem Support Center-Design.
+
+Die folgenden Anwendungsfälle bilden den Kern dieser Lösung. Beide Anwendungsfälle verwenden das TAO Toolkit für die Modelloptimierung und RIVA für die Modellbereitstellung.
+
+* Sprache-zu-Text
+* Sentimentanalyse
+
+
+Um die Interaktion zwischen Mitarbeitern und Kunden im Support Center zu analysieren, kann jedes Kundengespräch in Form von Audio-Anrufen über die Pipeline geführt werden, um Sentenebenen zu gewinnen. Diese Gefühle können dann von einem Menschen bestätigt werden, um die Gefühle zu rechtfertigen oder sie nach Bedarf anzupassen. Die markierten Daten werden dann an den Feinabstimmung-Schritt zur Verbesserung der Sentimentprognosen weitergeleitet. Falls bereits gekennzeichnete Stimmungsdaten vorliegen, kann eine Modelloptimierung beschleunigt werden. In beiden Fällen ist die Pipeline zu anderen Lösungen generierbar, die die Aufnahme von Audio und die Klassifizierung von Sätzen erfordern.
+
+image:ai-sent-image1.png["Fehler: Fehlendes Grafikbild"]
+
+Die Ausgaben für die KI-Einschätzung werden entweder in eine externe Cloud-Datenbank oder in ein vom Unternehmen gemanagtes Storage-System hochgeladen. Die Sentiment-Ergebnisse werden aus dieser größeren Datenbank in den lokalen Speicher übertragen, der zur Nutzung innerhalb des Dashboards zur Anzeige der Sentimentanalyse für Manager verwendet wird. Die primäre Funktionalität des Dashboards ist die Schnittstelle mit dem Kundendienstmitarbeiter in Echtzeit. Manager können die Mitarbeiter während ihrer Anrufe anhand von Live-Updates der Stimmung jedes Satzes bewerten und Feedback geben sowie eine historische Überprüfung der bisherigen Performance oder Kundenreaktionen des Mitarbeiters durchführen.
+
+image:ai-sent-image2.png["Fehler: Fehlendes Grafikbild"]
+
+Der link:https://github.com/NetApp/netapp-dataops-toolkit/releases/tag/v2.0.0["NetApp DataOps Toolkit"^] Auch nach der RIVA Inferenzpipeline können die Storage-Systeme weiterhin gemanagt werden, um Sentiment-Labels zu generieren. Diese KI-Ergebnisse können auf ein Datenspeichersystem hochgeladen werden, das vom NetApp DataOps Toolkit verwaltet wird. Die Storage-Systeme müssen Hunderte von Inserts managen können und jede Minute auswählt. Das lokale Gerätelagersystem fragt den größeren Datenspeicher in Echtzeit zur Extraktion ab. Auch größere Storage-Instanzen können nach Archivdaten abgefragt werden, um das Dashboard noch effizienter zu gestalten. Das NetApp DataOps Toolkit fördert beide Nutzungszwecke durch schnelles Klonen von Daten und Verteilung über alle Konsolen, die die Daten nutzen.
+
+
+
+== Zielgruppe
+
+Die Zielgruppe für die Lösung umfasst die folgenden Gruppen:
+
+* Mitarbeitermanager
+* Data Engineers/Data Scientists
+* IT-Administratoren (lokal, in der Cloud oder Hybrid)
+
+
+Das Nachverfolgen von Empfindungen im Gespräch ist ein wertvolles Werkzeug zur Beurteilung der Mitarbeiterleistung. Über das KI-Dashboard können Manager sehen, wie Mitarbeiter und Anrufer ihre Gefühle in Echtzeit verändern und so Live-Bewertungen und Ratensitzungen ermöglichen. Darüber hinaus erhalten Unternehmen wertvolle Einblicke aus Kunden, die sich mit vokalen Gesprächen, Text-Chatbots und Videokonferenzen befassen. Bei derartigen Kundenanalysen kommen moderne, hochmoderne KI-Modelle und Workflows zum Einsatz, da die multimodale Verarbeitung nach Maß erfolgt.
+
+Auf der Datenseite wird täglich eine große Anzahl von Audiodateien vom Support Center verarbeitet. Das NetApp DataOps Toolkit erleichtert diese Datenhandhabung sowohl bei der regelmäßigen Optimierung der Modelle als auch bei den Dashboards für die Sentiment-Analyse.
+
+IT-Administratoren profitieren außerdem vom NetApp DataOps Toolkit, da es ihnen ermöglicht, Daten schnell zwischen Implementierungs- und Produktionsumgebungen zu verschieben. Außerdem müssen die NVIDIA-Umgebungen und -Server gemanagt und verteilt werden, um Echtzeitinformationen zu ermöglichen.
+
+link:ai-sent-architecture.html["Als Nächstes: Architektur."]

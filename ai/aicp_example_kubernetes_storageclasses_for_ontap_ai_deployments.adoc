@@ -1,0 +1,106 @@
+---
+sidebar: sidebar 
+permalink: ai/aicp_example_kubernetes_storageclasses_for_ontap_ai_deployments.html 
+keywords: Kubernetes, StorageClasses, ONTAP, Deployment, Trident 
+summary: Bevor Trident zur dynamischen Provisionierung von Storage-Ressourcen innerhalb Ihres Kubernetes-Clusters verwendet werden kann, müssen Sie einen oder mehrere Kubernetes StorageClasses erstellen. Die Beispiele auf dieser Seite stellen verschiedene Arten von StorageClasses dar, die Sie möglicherweise erstellen möchten, wenn Sie die NetApp AI Control Plane Lösung auf einem ONTAP AI Pod implementieren. 
+---
+= Beispiel: Kubernetes StorageClasses für ONTAP KI-Implementierungen
+:hardbreaks:
+:allow-uri-read: 
+:nofooter: 
+:icons: font
+:linkattrs: 
+:imagesdir: ./../media/
+
+
+[role="lead"]
+Bevor Trident zur dynamischen Provisionierung von Storage-Ressourcen innerhalb Ihres Kubernetes-Clusters verwendet werden kann, müssen Sie einen oder mehrere Kubernetes StorageClasses erstellen. Die folgenden Beispiele stellen verschiedene Arten von StorageClasses dar, die Sie möglicherweise erstellen möchten, wenn Sie die NetApp AI Control Plane Lösung auf einem ONTAP AI POD implementieren. Weitere Informationen zu StorageClasses finden Sie im https://netapp-trident.readthedocs.io/["Trident Dokumentation"^].
+
+. NetApp empfiehlt, für jedes FlexGroup-fähige Trident Back-End, das Sie im Abschnitt erstellt haben, eine separate StorageClass zu erstellen link:aicp_example_trident_backends_for_ontap_ai_deployments.html["Beispiel Trident Back-Ends für ONTAP KI-Implementierungen"], Schritt 1. Mit diesen granularen StorageClasses können Sie NFS-Mounts hinzufügen, die bestimmten LIFs entsprechen (die LIFs, die Sie beim Erstellen der Trident Back-Ends angegeben haben), als ein bestimmtes Back-End, das in der StorageClass Spec-Datei angegeben ist. Die folgenden Beispielbefehle zeigen die Erstellung von zwei StorageClasses, die den beiden Beispiel Backends entsprechen, die im Abschnitt erstellt wurden link:aicp_example_trident_backends_for_ontap_ai_deployments.html["Beispiel Trident Back-Ends für ONTAP KI-Implementierungen"], Schritt 1. Weitere Informationen zu StorageClasses finden Sie im https://netapp-trident.readthedocs.io/["Trident Dokumentation"^].
++
+Damit ein anhaltendes Volume nicht gelöscht wird, wenn das entsprechende PersistenzVolumeClaim (PVC) gelöscht wird, verwendet das folgende Beispiel ein `reclaimPolicy` Der Wert von `Retain`. Weitere Informationen zum `reclaimPolicy` Feld, siehe den offiziellen https://kubernetes.io/docs/concepts/storage/storage-classes/["Kubernetes-Dokumentation"^].
+
++
+....
+$ cat << EOF > ./storage-class-ontap-ai-flexgroups-retain-iface1.yaml
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: ontap-ai-flexgroups-retain-iface1
+provisioner: netapp.io/trident
+parameters:
+  backendType: "ontap-nas-flexgroup"
+  storagePools: "ontap-ai-flexgroups-iface1:.*"
+reclaimPolicy: Retain
+EOF
+$ kubectl create -f ./storage-class-ontap-ai-flexgroups-retain-iface1.yaml
+storageclass.storage.k8s.io/ontap-ai-flexgroups-retain-iface1 created
+$ cat << EOF > ./storage-class-ontap-ai-flexgroups-retain-iface2.yaml
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: ontap-ai-flexgroups-retain-iface2
+provisioner: netapp.io/trident
+parameters:
+  backendType: "ontap-nas-flexgroup"
+  storagePools: "ontap-ai-flexgroups-iface2:.*"
+reclaimPolicy: Retain
+EOF
+$ kubectl create -f ./storage-class-ontap-ai-flexgroups-retain-iface2.yaml
+storageclass.storage.k8s.io/ontap-ai-flexgroups-retain-iface2 created
+$ kubectl get storageclass
+NAME                                PROVISIONER         AGE
+ontap-ai-flexgroups-retain-iface1   netapp.io/trident   0m
+ontap-ai-flexgroups-retain-iface2   netapp.io/trident   0m
+....
+. NetApp empfiehlt außerdem die Erstellung einer StorageClass, die dem FlexVol-fähigen Trident Back-End entspricht, das Sie im Abschnitt erstellt haben link:aicp_example_trident_backends_for_ontap_ai_deployments.html["Beispiel Trident Back-Ends für ONTAP KI-Implementierungen"], Schritt 2. Die folgenden Beispielbefehle zeigen die Erstellung einer einzelnen StorageClass für FlexVol Volumes.
++
+Im folgenden Beispiel wird in der StorageClass-Definitionsdatei kein bestimmtes Back-End angegeben, da nur ein FlexVol-fähiges Trident-Backend erstellt wurde. Wenn Sie Volumes mit Kubernetes verwalten, die diese StorageClass verwenden, versucht Trident, jedes verfügbare Backend zu verwenden, das den verwendet `ontap-nas` Treiber.
+
++
+....
+$ cat << EOF > ./storage-class-ontap-ai-flexvols-retain.yaml
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: ontap-ai-flexvols-retain
+provisioner: netapp.io/trident
+parameters:
+  backendType: "ontap-nas"
+reclaimPolicy: Retain
+EOF
+$ kubectl create -f ./storage-class-ontap-ai-flexvols-retain.yaml
+storageclass.storage.k8s.io/ontap-ai-flexvols-retain created
+$ kubectl get storageclass
+NAME                                PROVISIONER         AGE
+ontap-ai-flexgroups-retain-iface1   netapp.io/trident   1m
+ontap-ai-flexgroups-retain-iface2   netapp.io/trident   1m
+ontap-ai-flexvols-retain            netapp.io/trident   0m
+....
+. NetApp empfiehlt außerdem, eine generische StorageClass für FlexGroup Volumes zu erstellen. Die folgenden Beispielbefehle zeigen die Erstellung eines einzelnen allgemeinen StorageClass für FlexGroup Volumes.
++
+Beachten Sie, dass in der StorageClass-Definitionsdatei kein bestimmtes Backend angegeben ist. Wenn Sie daher Kubernetes für die Administration von Volumes verwenden, die diese StorageClass verwenden, versucht Trident, jedes verfügbare Back-End zu verwenden, das die verwendet `ontap-nas-flexgroup` Treiber.
+
+
+
+....
+$ cat << EOF > ./storage-class-ontap-ai-flexgroups-retain.yaml
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: ontap-ai-flexgroups-retain
+provisioner: netapp.io/trident
+parameters:
+  backendType: "ontap-nas-flexgroup"
+reclaimPolicy: Retain
+EOF
+$ kubectl create -f ./storage-class-ontap-ai-flexgroups-retain.yaml
+storageclass.storage.k8s.io/ontap-ai-flexgroups-retain created
+$ kubectl get storageclass
+NAME                                PROVISIONER         AGE
+ontap-ai-flexgroups-retain          netapp.io/trident   0m
+ontap-ai-flexgroups-retain-iface1   netapp.io/trident   2m
+ontap-ai-flexgroups-retain-iface2   netapp.io/trident   2m
+ontap-ai-flexvols-retain            netapp.io/trident   1m
+....
+link:aicp_kubeflow_deployment_overview.html["Weiter: Übersicht Über Die Kubeflow Deployment."]

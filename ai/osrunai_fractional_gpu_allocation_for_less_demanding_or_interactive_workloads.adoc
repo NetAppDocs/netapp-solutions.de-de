@@ -1,0 +1,26 @@
+---
+sidebar: sidebar 
+permalink: ai/osrunai_fractional_gpu_allocation_for_less_demanding_or_interactive_workloads.html 
+keywords:  
+summary:  
+---
+= Zuweisung von fraktionalen GPUs für weniger anspruchsvolle oder interaktive Workloads
+:hardbreaks:
+:allow-uri-read: 
+:nofooter: 
+:icons: font
+:linkattrs: 
+:imagesdir: ./../media/
+
+
+Wenn Forscher und Entwickler an ihren Modellen arbeiten, sei es in der Entwicklung, im Hyperparameter-Tuning oder in der Debugging-Phase, sind für solche Workloads in der Regel weniger Computing-Ressourcen erforderlich. Daher ist es effizienter, fraktionale GPU und Speicher so bereitzustellen, dass dieselbe GPU gleichzeitig anderen Workloads zugewiesen werden kann. Run:die KI-Orchestrierungslösung bietet ein fraktionaler GPU-Sharing-System für Container-Workloads auf Kubernetes. Das System unterstützt Workloads mit CUDA-Programmen und eignet sich insbesondere für schlanke KI-Aufgaben wie Inferenz und Modellbau. Das fraktionale GPU-System ermöglicht Data-Science- und KI-Engineering-Teams die gleichzeitige Ausführung mehrerer Workloads auf einer einzelnen GPU. Auf diese Weise können Unternehmen mehr Workloads ausführen, wie Computervision, Spracherkennung und natürliche Sprachverarbeitung auf derselben Hardware, wodurch sich die Kosten senken lassen.
+
+Run:das fraktionale GPU-System von AI erstellt effektiv virtualisierte logische GPUs mit eigenem Speicher und Computerraum, den Container nutzen und so zugreifen können, als wären sie eigenständige Prozessoren. So können mehrere Workloads in Containern parallel auf derselben GPU ausgeführt werden, ohne dass sie sich gegenseitig stören. Die Lösung ist transparent, einfach und tragbar und erfordert keine Änderungen an den Containern selbst.
+
+Eine typische Usease könnte zwei bis acht Jobs auf derselben GPU sehen, was bedeutet, dass Sie die achtfache Arbeit mit der gleichen Hardware erledigen können.
+
+Für den Job `frac05` Zu Projekt gehören `team-d` Die folgende Abbildung zeigt, dass die Anzahl der zugewiesenen GPUs 0.50 war. Dies wird weiter durch die überprüft `nvidia-smi` Befehl, der zeigt, dass der für den Container verfügbare GPU-Speicher 16,255 MB betrug: Die Hälfte der 32 GB pro V100 GPU im DGX-1-Node.
+
+image:osrunai_image7.png["Fehler: Fehlendes Grafikbild"]
+
+link:osrunai_achieving_high_cluster_utilization_with_over-uota_gpu_allocation.html["Nächster Schritt: Hohe Cluster-Auslastung mit GPU-Zuweisung über Kontingente"]

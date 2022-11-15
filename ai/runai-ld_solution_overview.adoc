@@ -1,0 +1,106 @@
+---
+sidebar: sidebar 
+permalink: ai/runai-ld_solution_overview.html 
+keywords: azure, lane, detection, architecture, ai, run, machine learning 
+summary: 'In dieser Architektur liegt der Schwerpunkt auf dem rechenintensivsten Teil des verteilten Trainingsprozesses von Lane-Erkennung durch KI oder Machine Learning (ML).' 
+---
+= Lösungsüberblick
+:hardbreaks:
+:allow-uri-read: 
+:nofooter: 
+:icons: font
+:linkattrs: 
+:imagesdir: ./../media/
+
+
+In dieser Architektur liegt der Schwerpunkt auf dem rechenintensivsten Teil des verteilten Trainingsprozesses von Lane-Erkennung durch KI oder Machine Learning (ML). Fahrspurerkennung ist eine der wichtigsten Aufgaben im autonomen Fahren, die hilft, Fahrzeuge durch Lokalisierung der Fahrspurmarkierungen zu führen. Statische Bauteile wie Fahrspurmarkierungen führen das Fahrzeug dazu, interaktiv und sicher auf der Autobahn zu fahren.
+
+Convolutional Neural Network (CNN)-basierte Ansätze haben das Verständnis und die Segmentierung von Szenen auf eine neue Ebene verschoben. Auch wenn es nicht gut funktioniert für Objekte mit langen Strukturen und Regionen, die verdeckt werden könnten (z. B. Pole, Schatten auf der Spur, und so weiter). Das Spatial Convolutional Neural Network (SNN) verallgemeinert die CNN auf eine reiche räumliche Ebene. Es ermöglicht die Informationsverbreitung zwischen Neuronen in der gleichen Schicht, was es am besten für strukturierte Objekte wie Lanes, Pole oder LKW mit Oktazionen geeignet macht. Diese Kompatibilität ist, weil die räumliche Information verstärkt werden kann, und es bewahrt Glätte und Kontinuität.
+
+Tausende von Szenenbildern müssen im System injiziert werden, damit das Modell die verschiedenen Komponenten im Datensatz erlernen und unterscheiden kann. Diese Bilder umfassen Wetter, tagsüber oder nachts, Mehrspurstraßen und andere Verkehrsbedingungen.
+
+Aus dem Training werden gute Qualität und Quantität der Daten benötigt. Eine einzelne GPU oder mehrere GPUs können Tage bis Wochen dauern, bis das Training abgeschlossen ist. Das Training mit verteilten Daten kann den Prozess mithilfe von GPUs mit mehreren Nodes beschleunigen. Horovod ist ein solches Framework, das verteiltes Training gewährt, aber das Lesen von Daten über GPUs Cluster hinweg kann als Hindernis fungieren. Azure NetApp Files bietet einen extrem hohen Durchsatz und kontinuierlich niedrige Latenz, um Funktionen für die horizontale und vertikale Skalierung bereitzustellen, sodass GPUs optimal auf die Computing-Kapazität eingesetzt werden. Unsere Experimente bestätigten, dass alle GPUs im Cluster durchschnittlich mehr als 96 % beim Training der Lane-Erkennung mit SNN verwendet werden.
+
+
+
+== Zielgruppe
+
+Data Science beinhaltet mehrere Disziplinen in IT und Business, weshalb mehrere Personas Teil unserer Zielgruppe sind:
+
+* Die Data Scientists benötigen die Flexibilität, die Tools und Bibliotheken ihrer Wahl einzusetzen.
+* Data Engineers müssen wissen, wie die Daten fließen und wo sie sich befinden.
+* Autonomes Fahren – Fallexperten.
+* Cloud-Administratoren und -Architekten, um Cloud-Ressourcen (Azure) einzurichten und zu managen
+* DevOps-Engineers benötigen die Tools, um neue KI/ML-Applikationen in ihre Continuous Integration und Continuous Deployment (CI/CD)-Pipelines zu integrieren.
+* Geschäftsanwender möchten auf KI-/ML-Applikationen zugreifen können.
+
+
+In diesem Dokument beschreiben wir, wie Azure NetApp Files, RUN: AI und Microsoft Azure jeder dieser Rollen einen Mehrwert für das Unternehmen bieten können.
+
+
+
+== Lösungstechnologie
+
+In diesem Abschnitt werden die technologischen Anforderungen für die Lane-Erkennung erläutert. Hierzu wird eine verteilte Trainingslösung in großem Umfang implementiert, die in der Azure Cloud ausgeführt wird. Die Abbildung unten bietet einen Überblick über die Lösungsarchitektur.
+
+Folgende Elemente werden in dieser Lösung verwendet:
+
+* Azure Kubernetes-Service (AKS)
+* Azure Computing SKUs mit NVIDIA GPUs
+* Azure NetApp Dateien
+* AUSFÜHREN: KI
+* NetApp Trident
+
+
+Links zu allen hier genannten Elementen sind im aufgeführt link:runai-ld_additional_information.html["Weitere Informationen"] Abschnitt.
+
+image:runai-ld_image2.png["Fehler: Fehlendes Grafikbild"]
+
+
+
+== Cloud-Ressourcen und -Serviceanforderungen
+
+In der folgenden Tabelle werden die Hardwarekomponenten aufgeführt, die für die Implementierung der Lösung erforderlich sind. Je nach den Anforderungen des Kunden können die Cloud-Komponenten, die in einer beliebigen Implementierung dieser Lösung verwendet werden, variieren.
+
+|===
+| Cloud | Menge 
+
+
+| AKS | Mindestens drei System-Nodes und drei GPU-Worker-Nodes 
+
+
+| VM (Virtual Machine) SKU-System-Nodes | Drei Standard_DS2_v2 
+
+
+| VM-SKU-GPU-Worker-Nodes | Drei Standard_NC6s_v3 
+
+
+| Azure NetApp Dateien | 4 TB Standard Tier 
+|===
+
+
+== Softwareanforderungen
+
+In der folgenden Tabelle werden die Softwarekomponenten aufgeführt, die für die Implementierung der Lösung erforderlich sind. Je nach den Anforderungen des Kunden können die in einer beliebigen Implementierung dieser Lösung verwendeten Softwarekomponenten abweichen.
+
+|===
+| Software | Version oder andere Informationen 
+
+
+| AKS - Kubernetes-Version | 1.18.14 
+
+
+| AUSFÜHREN:AI-CLI | Version 2.2.25 
+
+
+| RUN:AI Orchestration Kubernetes Operator Version | 1.0.109 
+
+
+| Horovod | 0.21.2 
+
+
+| NetApp Trident | 20.01.1 
+
+
+| Helm | 3.0.0 
+|===

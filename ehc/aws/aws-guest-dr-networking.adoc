@@ -1,0 +1,136 @@
+---
+sidebar: sidebar 
+permalink: ehc/aws/aws-guest-dr-networking.html 
+keywords: on premises, client networks, Storage networks, Cloud connectivity, VPN, direct connect, Transit gateway, security groups 
+summary: Diese Lösung erfordert eine erfolgreiche Kommunikation zwischen dem lokalen ONTAP Cluster und AWS FSX für die NetApp ONTAP Interconnect Cluster-Netzwerkadressen, die den NetApp SyncMirror Betrieb durchführen. Außerdem muss ein Veeam-Backup-Server auf einen AWS S3-Bucket zugreifen können. Anstelle des Internetverkehrs kann ein vorhandener VPN- oder Direct Connect-Link als private Verbindung zu einem S3-Bucket verwendet werden. 
+---
+= Netzwerkbetrieb
+:hardbreaks:
+:allow-uri-read: 
+:nofooter: 
+:icons: font
+:linkattrs: 
+:imagesdir: ./../../media/
+
+
+link:aws-guest-dr-requirements.html["Zurück: Anforderungen."]
+
+Diese Lösung erfordert eine erfolgreiche Kommunikation zwischen dem lokalen ONTAP Cluster und AWS FSX für die NetApp ONTAP Interconnect Cluster-Netzwerkadressen, die den NetApp SyncMirror Betrieb durchführen. Außerdem muss ein Veeam-Backup-Server auf einen AWS S3-Bucket zugreifen können. Anstelle des Internetverkehrs kann ein vorhandener VPN- oder Direct Connect-Link als private Verbindung zu einem S3-Bucket verwendet werden.
+
+
+
+== On-Premises
+
+ONTAP unterstützt alle wichtigen Storage-Protokolle für die Virtualisierung, einschließlich iSCSI, Fibre Channel (FC), Fibre Channel over Ethernet (FCoE) und Non-Volatile Memory Express over Fibre Channel (NVMe/FC) für SAN-Umgebungen. ONTAP unterstützt außerdem NFS (v3 und v4.1) und SMB oder S3 für Gastverbindungen. Sie können die für Ihre Umgebung am besten geeigneten Protokolle auswählen und sie nach Bedarf in einem einzigen System kombinieren. Sie können beispielsweise die allgemeine Nutzung von NFS-Datenspeichern mit einigen iSCSI-LUNs oder Gast-Shares erweitern.
+
+Diese Lösung nutzt NFS-Datenspeicher für lokale Datenspeicher für Gast-VMDKs sowie iSCSI und NFS für Gast-Applikationsdaten.
+
+
+
+=== Client-Netzwerke
+
+VMkernel-Netzwerkports und softwaredefinierte Netzwerke ermöglichen Konnektivität zu ESXi Hosts und ermöglichen die Kommunikation mit Elementen außerhalb der VMware Umgebung. Konnektivität ist abhängig von der Art der verwendeten VMkernel-Schnittstellen.
+
+Für diese Lösung wurden die folgenden VMkernel Schnittstellen konfiguriert:
+
+* Vereinfachtes
+* VMotion
+* NFS
+* ISCSI
+
+
+
+
+=== Bereitgestellte Storage-Netzwerke
+
+Eine LIF (logische Schnittstelle) stellt einen Netzwerkzugriffspunkt für einen Node im Cluster dar. Dies ermöglicht die Kommunikation mit Storage Virtual Machines, die die Daten enthalten, auf die Kunden zugreifen. Sie können LIFs an Ports konfigurieren, über die das Cluster Kommunikation über das Netzwerk sendet und empfängt.
+
+Für diese Lösung sind LIFs für die folgenden Storage-Protokolle konfiguriert:
+
+* NFS
+* ISCSI
+
+
+
+
+== Cloud-Konnektivitätsoptionen
+
+Bei der Anbindung von On-Premises-Umgebungen an Cloud-Ressourcen stehen Kunden zahlreiche Optionen zur Verfügung, einschließlich der Implementierung von VPN- oder Direct Connect-Topologien.
+
+
+
+=== Virtuelles privates Netzwerk (VPN)
+
+VPNs (Virtual Private Networks) werden häufig verwendet, um einen sicheren IPSec-Tunnel mit internetbasierten oder privaten MPLS-Netzwerken zu erstellen. Ein VPN ist einfach einzurichten, aber es fehlt an Zuverlässigkeit (wenn Internet-basiert) und Geschwindigkeit. Der Endpunkt kann über die AWS VPC oder beim VMware Cloud SDDC beendet werden. Für diese Disaster-Recovery-Lösung wurde über das lokale Netzwerk eine Konnektivität mit AWS FSX für NetApp ONTAP hergestellt. Somit kann sie an der AWS VPC (Virtual Private Gateway oder Transit Gateway) gekündigt werden, mit der FSX für NetApp ONTAP verbunden ist.
+
+VPN-Einrichtung kann auf Routen oder Richtlinien basieren. Bei einem routingbasierten Setup tauschen die Endpunkte die Routen automatisch aus und Setup lernt die Route zu den neu erstellten Subnetzen. Bei einem richtlinienbasierten Setup müssen Sie die lokalen und Remote-Subnetze definieren. Wenn neue Subnetze hinzugefügt werden und im IPSec-Tunnel kommunizieren dürfen, müssen Sie die Routen aktualisieren.
+
+
+NOTE: Wenn der IPSec-VPN-Tunnel nicht auf dem Standard-Gateway erstellt wird, müssen Remote-Netzwerk-Routen in Routingtabellen über den lokalen VPN-Tunnel-Endpunkt definiert werden.
+
+Die folgende Abbildung zeigt typische VPN-Verbindungsoptionen.
+
+image:dr-vmc-aws-image3.png["Fehler: Fehlendes Grafikbild"]
+
+
+
+=== Direktverbindung
+
+Direct Connect bietet eine dedizierte Verbindung zum AWS Netzwerk. Durch dedizierte Verbindungen werden Links zu AWS über einen Ethernet-Port mit 1 Gbit/s, 10 Gbit/s oder 100 Gbit/s erstellt. AWS Direct Connect Partner bieten gehostete Verbindungen über vordefinierte Netzwerkverbindungen zwischen sich und AWS und sind von 50 MBit/s bis zu 10 Gbit/s verfügbar. Standardmäßig wird der Datenverkehr unverschlüsselt. Für den sicheren Datenverkehr mit MACsec oder IPsec stehen jedoch Optionen zur Verfügung. MACsec bietet Layer-2-Verschlüsselung, während IPsec Layer-3-Verschlüsselung ermöglicht. MACsec bietet eine bessere Sicherheit, indem die Kommunikationsmittel der Geräte verschleiert werden.
+
+Die Router-Ausrüstung des Kunden muss sich an einem AWS Direct Connect-Standort befinden. Um diese Einrichtung einzurichten, können Sie mit dem AWS Partner Network (APN) zusammenarbeiten. Zwischen diesem Router und dem AWS Router wird eine physische Verbindung hergestellt. Damit der Zugriff auf FSX für NetApp ONTAP in VPC möglich ist, müssen Sie entweder über eine private virtuelle Schnittstelle oder eine Transit-virtuelle Schnittstelle von Direct Connect zu einer VPC verfügen. Bei einer privaten virtuellen Schnittstelle ist die Skalierbarkeit der Direct Connect to VPC Verbindung eingeschränkt.
+
+Die folgende Abbildung zeigt die Optionen für die Direct Connect-Schnittstelle.
+
+image:dr-vmc-aws-image4.png["Fehler: Fehlendes Grafikbild"]
+
+
+
+=== Transit Gateway
+
+Das Transit-Gateway ist ein Konstrukt auf Regionalebene, das eine erhöhte Skalierbarkeit einer Direct Connect-to-VPC-Verbindung innerhalb einer Region ermöglicht. Wenn eine länderübergreifende Verbindung erforderlich ist, müssen die Transit-Gateways gepeiert werden. Weitere Informationen finden Sie im https://docs.aws.amazon.com/directconnect/latest/UserGuide/Welcome.html["Dokumentation zu AWS Direct Connect"^].
+
+
+
+== Überlegungen zum Cloud-Netzwerk
+
+In der Cloud wird die zugrunde liegende Netzwerkinfrastruktur vom Cloud-Service-Provider gemanagt, während Kunden die VPC-Netzwerke, Subnetze, Routing-Tabellen usw. in AWS managen müssen. Außerdem müssen sie NSX-Netzwerksegmente am Computing-Edge managen. SDDC gruppiert Routen für die externe VPC und Transit Connect.
+
+Wird FSX für NetApp ONTAP mit Verfügbarkeit von mehreren Verfügbarkeitszonen auf einer mit VMware Cloud verbundenen VPC implementiert, erhält der iSCSI-Traffic die nötigen Updates für die Routing-Tabelle, um die Kommunikation zu ermöglichen. Standardmäßig ist keine Route von VMware Cloud zum FSX ONTAP-NFS/SMB-Subnetz auf der verbundenen VPC für eine Multi-AZ-Implementierung verfügbar. Für die Definition dieser Route haben wir die VMware Cloud SDDC-Gruppe verwendet, die ein von VMware gemanagtes Transit Gateway ist, um die Kommunikation zwischen den VMware Cloud SDDCs in derselben Region sowie externen VPCs und anderen Transit Gateways zu ermöglichen.
+
+
+NOTE: Die Kosten für die Datenübertragung sind für die Verwendung eines Transit-Gateways anfallen. Weitere Informationen zu den Kosten für eine Region finden Sie unter https://aws.amazon.com/transit-gateway/pricing/["Dieser Link"^].
+
+VMware Cloud SDDC kann in einer einzelnen Verfügbarkeitszone implementiert werden, so wie bei einem einzelnen Datacenter. Es ist auch eine Stretch-Cluster-Option verfügbar, die wie eine NetApp MetroCluster-Lösung aussieht, die bei Ausfällen in der Verfügbarkeitszone eine höhere Verfügbarkeit und weniger Ausfallzeiten bietet.
+
+Um die Datentransferkosten zu minimieren, sollten VMware Cloud SDDC und AWS Instanzen oder Services in derselben Verfügbarkeitszone gehalten werden. NetApp ist besser mit einer Verfügbarkeitszone-ID und nicht mit einem Namen abzustimmen, da AWS die auf das Konto spezifische AZ-Auftragsliste bereitstellt, um die Last über Verfügbarkeitszonen zu verteilen. Ein Konto (US-Ost-1a) könnte beispielsweise auf die AZ-ID 1 verweisen, ein anderer Account (US-Ost-1c) könnte auf die AZ-ID 1 verweisen. Die Verfügbarkeitszone-ID kann auf verschiedene Weise abgerufen werden. Im folgenden Beispiel haben wir die AZ-ID aus dem VPC-Subnetz abgerufen.
+
+image:dr-vmc-aws-image5.png["Fehler: Fehlendes Grafikbild"]
+
+Im VMware Cloud SDDC wird die Netzwerkumgebung über NSX gemanagt. Das Edge-Gateway (Tier-0 Router) für den Nord-Süd-Traffic-Uplink-Port ist mit der AWS VPC verbunden. Das Computing-Gateway und die Management Gateways (Tier-1 Router) verarbeiten Ost-West-Datenverkehr. Wenn die Uplink-Ports des Edge stark verwendet werden, können Sie Traffic-Gruppen erstellen, die mit bestimmten Host-IPs oder Subnetzen verknüpft werden. Durch die Erstellung einer Datenverkehrsgruppe werden zusätzliche Edge-Nodes zum Trennen des Datenverkehrs erstellt. Prüfen Sie die https://docs.vmware.com/en/VMware-Cloud-on-AWS/services/com.vmware.vmc-aws-networking-security/GUID-306D3EDC-F94E-4216-B306-413905A4A784.html["VMware Dokumentation"^] Wählen Sie die Mindestanzahl der vSphere Hosts aus, die für die Verwendung eines MultiEdge-Setups erforderlich sind.
+
+
+
+=== Client-Netzwerke
+
+Wenn Sie VMware Cloud SDDC bereitstellen, sind die VMkernel-Ports bereits konfiguriert und können sofort verwendet werden. VMware managt diese Ports, und es müssen keine Updates durchgeführt werden.
+
+Folgende Abbildung zeigt Beispielinformationen für den Host VMkernel.
+
+image:dr-vmc-aws-image6.png["Fehler: Fehlendes Grafikbild"]
+
+
+
+=== Bereitgestellte Storage-Netzwerke (iSCSI, NFS)
+
+Für VM-Gast-Storage-Netzwerke erstellen wir normalerweise Port-Gruppen. Mit NSX erstellen wir Segmente, die in vCenter als Port-Gruppen verwendet werden. Da sich Speichernetzwerke in einem routingfähigen Subnetz befinden, können Sie auf die LUNs zugreifen oder die NFS-Exporte mithilfe der Standard-NIC mounten, ohne separate Netzwerksegmente zu erstellen. Zur Trennung des Speicherdatenverkehrs können Sie weitere Segmente erstellen, Regeln definieren und die MTU-Größe für diese Segmente steuern. Um Fehlertoleranz zu schaffen, ist es besser, mindestens zwei Segmente für das Storage-Netzwerk bereitzustellen. Wenn eine Uplink-Bandbreite ein Problem wird, können Sie wie bereits erwähnt Traffic-Gruppen erstellen und IP-Präfixe und Gateways zuweisen, um ein quellbasiertes Routing durchzuführen.
+
+Wir empfehlen, die Segmente im DR SDDC mit der Quellumgebung abzustimmen, um zu verhindern, dass beim Failover Netzwerksegmente zugeordnet werden.
+
+
+
+=== Sicherheitsgruppen
+
+Viele Sicherheitsoptionen bieten eine sichere Kommunikation zwischen der AWS VPC und dem VMware Cloud SDDC-Netzwerk. Innerhalb des VMware Cloud SDDC-Netzwerks kann der NSX Trace-Flow verwendet werden, um den Pfad einschließlich der verwendeten Regeln zu identifizieren. Anschließend können Sie mithilfe eines Netzwerkanalysators im VPC-Netzwerk den Pfad identifizieren, einschließlich der Routingtabellen, Sicherheitsgruppen und Listen der Netzwerkzugriffssteuerung, die während des Flusses verbraucht werden.
+
+link:aws-guest-dr-storage.html["Weiter: Storage."]

@@ -1,0 +1,63 @@
+---
+sidebar: sidebar 
+permalink: ai/hcaios_hardware_and_software_requirements.html 
+keywords: Hardware, Software, Requirements, NVIDIA, Kubernetes, cnvrg.io, ONTAP 
+summary:  
+---
+= Hardware- und Software-Anforderungen
+:hardbreaks:
+:allow-uri-read: 
+:nofooter: 
+:icons: font
+:linkattrs: 
+:imagesdir: ./../media/
+
+
+[role="lead"]
+In diesem Abschnitt werden die Technologieanforderungen für die ONTAP AI Lösung erläutert.
+
+
+
+== Hardwareanforderungen
+
+Obwohl die Hardwareanforderungen von bestimmten Kunden-Workloads abhängen, kann ONTAP AI in jedem Umfang für das Data Engineering, das Modelltraining und die Produktionserwartung von einer einzelnen GPU bis zu Rack-Scale-Konfigurationen für umfangreiche ML/DL-Operationen implementiert werden. Weitere Informationen zu ONTAP AI finden Sie im https://www.netapp.com/us/products/ontap-ai.aspx["ONTAP AI Website"^].
+
+Diese Lösung wurde mit einem DGX-1-System für Computing, einem NetApp AFF A800 Storage-System und Cisco Nexus 3232C für die Netzwerk-Konnektivität validiert. Die in dieser Validierung verwendete AFF A800 kann bis zu 10 DGX-1-Systeme für die meisten ML/DL-Workloads unterstützen. Die folgende Abbildung zeigt die in dieser Validierung verwendete ONTAP KI-Topologie für das Modelltraining.
+
+image:hcaios_image6.png["Fehler: Fehlendes Grafikbild"]
+
+Um diese Lösung auf eine Public Cloud zu erweitern, lässt sich Cloud Volumes ONTAP zusammen mit Cloud-GPU-Computing-Ressourcen implementieren und in eine Hybrid Cloud Data Fabric integrieren. Damit können Kunden die für jeden Workload geeigneten Ressourcen verwenden.
+
+
+
+== Softwareanforderungen
+
+In der folgenden Tabelle sind die spezifischen Softwareversionen aufgeführt, die in dieser Lösungsvalidierung verwendet werden.
+
+|===
+| Komponente | Version 
+
+
+| Ubuntu | 18.04.4 LTS 
+
+
+| NVIDIA DGX-BETRIEBSSYSTEM | 4.4.0 
+
+
+| NVIDIA DeepOps | 20.02.1 
+
+
+| Kubernetes | 1.15 
+
+
+| Helm | 3.1.0 
+
+
+| Cnvrg.io | 3.0.0 
+
+
+| NetApp ONTAP | 9.6P4 
+|===
+Kubernetes wurde für diese Lösungsvalidierung als Single-Node-Cluster auf dem DGX-1-System implementiert. Bei groß angelegten Implementierungen sollten unabhängige Kubernetes-Master-Nodes implementiert werden, um für Hochverfügbarkeit der Managementservices zu sorgen und wertvolle DGX-Ressourcen für ML- und DL-Workloads zu reservieren.
+
+link:hcaios_solution_deployment_and_validation_details.html["Weiter – Details zur Lösungsimplementierung und -Validierung"]

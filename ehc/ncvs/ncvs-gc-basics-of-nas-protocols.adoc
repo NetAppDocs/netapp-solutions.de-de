@@ -1,0 +1,28 @@
+---
+sidebar: sidebar 
+permalink: ehc/ncvs/ncvs-gc-basics-of-nas-protocols.html 
+keywords: nas, basics, gcp, nfs, smb 
+summary: NAS-Protokolle sind Möglichkeiten für mehrere Clients im Netzwerk, um auf dieselben Daten in einem Storage-System zuzugreifen, beispielsweise auf Cloud Volumes Service in GCP. NFS und SMB sind die definierten NAS-Protokolle und werden auf Client-/Server-Basis ausgeführt, wobei Cloud Volumes Service als Server fungiert. 
+---
+= Grundlagen der NAS-Protokolle
+:hardbreaks:
+:allow-uri-read: 
+:nofooter: 
+:icons: font
+:linkattrs: 
+:imagesdir: ./../../media/
+
+
+link:ncvs-gc-nas-protocols_overview.html["Früher: NAS-Protokolle – Übersicht"]
+
+NAS-Protokolle sind Möglichkeiten für mehrere Clients im Netzwerk, um auf dieselben Daten in einem Storage-System zuzugreifen, beispielsweise auf Cloud Volumes Service in GCP. NFS und SMB sind die definierten NAS-Protokolle und werden auf Client-/Server-Basis ausgeführt, wobei Cloud Volumes Service als Server fungiert. Clients senden Zugriffs-, Lese- und Schreibanfragen an den Server, und der Server ist für die Koordinierung der Sperrmechanismen für Dateien, die Speicherung von Berechtigungen und die Bearbeitung von Identitäts- und Authentifizierungsanforderungen zuständig.
+
+Der folgende allgemeine Prozess wird beispielsweise verfolgt, wenn ein NAS-Client eine neue Datei in einem Ordner erstellen möchte.
+
+. Der Client fragt den Server nach Informationen zum Verzeichnis (Berechtigungen, Eigentümer, Gruppe, Datei-ID, verfügbarer Speicherplatz, Und so weiter); der Server antwortet mit den Informationen, wenn der anfragende Client und der Benutzer die erforderlichen Berechtigungen für den übergeordneten Ordner haben.
+. Wenn die Berechtigungen im Verzeichnis den Zugriff zulassen, fragt der Client den Server, ob der erstellte Dateiname bereits im Dateisystem vorhanden ist. Wenn der Dateiname bereits verwendet wird, schlägt die Erstellung fehl. Wenn der Dateiname nicht vorhanden ist, lässt der Server dem Client wissen, dass er fortgesetzt werden kann.
+. Der Client ruft den Server aus, um die Datei mit dem Verzeichnis-Handle und dem Dateinamen zu erstellen, und legt die Zugriffszeiten und die geänderten Zeiten fest. Der Server gibt eine eindeutige Datei-ID für die Datei aus, um sicherzustellen, dass keine anderen Dateien mit derselben Datei-ID erstellt werden.
+. Der Client sendet einen Anruf, um Dateiattribute vor DEM SCHREIBVORGANG zu überprüfen. Falls dies durch Berechtigungen möglich ist, schreibt der Client die neue Datei. Falls das Protokoll oder die Applikation gesperrt wird, fordert der Client den Server zur Sperrung auf, um zu verhindern, dass andere Clients auf die Datei zugreifen können, während diese gesperrt ist, um Datenbeschädigungen zu verhindern.
+
+
+link:ncvs-gc-nfs.html["Weiter: NFS."]

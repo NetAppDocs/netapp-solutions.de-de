@@ -1,0 +1,79 @@
+---
+sidebar: sidebar 
+permalink: containers/rh-os-n_openshift_BM.html 
+keywords: OpenShift, bare metal, IPI 
+summary:  
+---
+= OpenShift auf Bare Metal
+:allow-uri-read: 
+
+
+OpenShift auf Bare Metal ermöglicht eine automatisierte Bereitstellung der OpenShift Container Platform auf Standard-Servern.
+
+OpenShift auf Bare Metal ähnelt den virtuellen OpenShift-Implementierungen, die eine einfache Implementierung, schnelle Provisionierung und Skalierung von OpenShift-Clustern ermöglichen. Gleichzeitig werden virtualisierte Workloads für Applikationen unterstützt, die nicht containerisiert werden können. Durch die Implementierung auf Bare Metal-Servern ist neben der OpenShift-Umgebung kein zusätzlicher Overhead für das Management der Host-Hypervisor-Umgebung erforderlich. Durch die direkte Bereitstellung auf Bare Metal-Servern sind zudem weniger physische Overhead-Einschränkungen möglich, wenn Ressourcen zwischen dem Host und der OpenShift-Umgebung gemeinsam genutzt werden müssen.
+
+
+
+== OpenShift auf Bare Metal bietet folgende Funktionen:
+
+* *IPI oder Assisted Installer-Bereitstellung.* mit einem OpenShift-Cluster, der von Installer Provisioned Infrastructure (IPI) auf Bare-Metal-Servern bereitgestellt wird, können Kunden eine vielseitig skalierbare OpenShift-Umgebung direkt auf herkömmlichen Servern bereitstellen, ohne eine Hypervisor-Ebene verwalten zu müssen.
+* *Kompaktes Cluster-Design.* um die Hardwareanforderungen zu minimieren, ermöglicht OpenShift auf Bare Metal den Benutzern die Bereitstellung von Clustern mit nur 3 Knoten, indem die OpenShift Control Plane Nodes auch als Worker Nodes und Host Container fungieren können.
+* * OpenShift Virtualisierung.* OpenShift kann virtuelle Maschinen innerhalb von Containern mit OpenShift Virtualization ausführen. Bei dieser Container-nativen Virtualisierung wird der KVM-Hypervisor innerhalb eines Containers ausgeführt und persistente Volumes für den VM-Storage angebunden.
+* *KI/ML-optimierte Infrastruktur.* Einsatz von Anwendungen wie Kubeflow für Machine-Learning-Anwendungen durch die Integration GPU-basierter Worker-Nodes in Ihre OpenShift-Umgebung und Nutzung von OpenShift Advanced Scheduling.
+
+
+
+
+== Netzwerkdesign
+
+Die Red hat OpenShift on NetApp Lösung verwendet zwei Daten-Switches für die primäre Datenkonnektivität mit 25 Gbit/s. Zudem werden zwei Management-Switches mit 1 Gbit/s für in-Band-Management der Storage-Nodes und bandexternen Management für IPMI-Funktionen verwendet.
+
+Für eine Bare-Metal-IPI-Bereitstellung mit OpenShift müssen Sie einen bereitstellungsknoten erstellen, einen Red hat Enterprise Linux 8-Rechner, für den Netzwerkschnittstellen mit separaten Netzwerken verbunden sein müssen.
+
+* *Provisioning-Netzwerk.* Dieses Netzwerk wird verwendet, um die Bare-Metal-Knoten zu booten und die notwendigen Images und Pakete zu installieren, um den OpenShift-Cluster bereitzustellen.
+* *Bare-Metal-Netzwerk.* Dieses Netzwerk wird nach seiner Bereitstellung für die Kommunikation mit öffentlichen Einrichtungen des Clusters verwendet.
+
+
+Für das Setup des bereitstellungsknoten erstellt der Kunde Bridge-Schnittstellen, die es dem Traffic ermöglichen, auf dem Node selbst und auf der Bootstrap-VM, die für Bereitstellungszwecke bereitgestellt wird, ordnungsgemäß zu leiten. Nach der Bereitstellung des Clusters werden die API- und Ingress-VIP-Adressen vom Bootstrap-Node zum neu implementierten Cluster migriert.
+
+Die folgenden Bilder zeigen die Umgebung sowohl während der IPI-Bereitstellung als auch nach Abschluss der Bereitstellung.
+
+image:redhat_openshift_image36.png["Fehler: Fehlendes Grafikbild"]
+
+image:redhat_openshift_image37.png["Fehler: Fehlendes Grafikbild"]
+
+
+
+=== VLAN-Anforderungen
+
+Die Lösung Red hat OpenShift mit NetApp wurde speziell zur logischen Trennung des Netzwerk-Traffic für unterschiedliche Zwecke mithilfe von Virtual Local Area Networks (VLANs) entwickelt.
+
+|===
+
+
+| VLANs | Zweck | VLAN-ID 
+
+
+| Out-of-Band-Managementnetzwerk | Management für Bare-Metal-Nodes und IPMI | 16 
+
+
+| Bare-Metal-Netzwerk | Netzwerk für OpenShift-Services, sobald Cluster verfügbar ist | 181 
+
+
+| Bereitstellung von Netzwerken | Netzwerk für PXE-Boot und Installation von Bare Metal-Knoten über IPI | 3485 
+|===
+
+NOTE: Obwohl jedes dieser Netzwerke virtuell durch VLANs getrennt ist, muss jeder physische Port im Zugriffsmodus mit dem zugewiesenen primären VLAN eingerichtet werden, da es während einer PXE-Startsequenz keine Möglichkeit gibt, ein VLAN-Tag zu übergeben.
+
+
+
+=== Support-Ressourcen für die Netzwerkinfrastruktur
+
+Vor der Bereitstellung der OpenShift-Container-Plattform sollte die folgende Infrastruktur vorhanden sein:
+
+* Mindestens ein DNS-Server, der eine vollständige Host-Name-Auflösung bietet, auf die über das bandinterne Managementnetzwerk und das VM-Netzwerk zugegriffen werden kann.
+* Mindestens ein NTP-Server, auf den über das bandinterne Managementnetzwerk und das VM-Netzwerk zugegriffen werden kann.
+* (Optional) ausgehende Internetverbindung sowohl für das bandinterne Managementnetzwerk als auch für das VM-Netzwerk.
+
+
+link:rh-os-n_overview_netapp.html["Als Nächstes: NetApp Storage – Überblick"]

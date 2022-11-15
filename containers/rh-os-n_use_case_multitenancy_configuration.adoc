@@ -1,0 +1,56 @@
+---
+sidebar: sidebar 
+permalink: containers/rh-os-n_use_case_multitenancy_configuration.html 
+keywords: OpenShift, OCP, Astra Trident, NetApp ONTAP, Red Hat OpenShift, Multitenancy, Multi-tenancy 
+summary: Konfiguration der Mandantenfähigkeit auf Red hat OpenShift mit NetApp 
+---
+= Konfiguration
+:hardbreaks:
+:allow-uri-read: 
+:nofooter: 
+:icons: font
+:linkattrs: 
+:imagesdir: ./../media/
+
+
+Bei mandantenfähigen Lösungen kann der Benutzer nicht auf mehr Cluster-Ressourcen zugreifen, als erforderlich ist. So sind alle Ressourcen, die als Teil der mandantenfähige Konfiguration konfiguriert werden müssen, in die Bereiche Cluster-Admin, Storage-Admin und Entwickler unterteilt, die an den einzelnen Projekten arbeiten.
+
+In der folgenden Tabelle sind die verschiedenen Aufgaben aufgeführt, die von verschiedenen Benutzern ausgeführt werden müssen:
+
+|===
+| Rolle | Aufgaben 
+
+
+.4+| * Cluster-Admin* | Erstellung von Projekten für verschiedene Applikationen oder Workloads 
+
+
+| ClusterRoles and Roles Bindings für Storage-Admin erstellen 
+
+
+| Erstellen Sie Rollen und RolleBindungen für Entwickler, die bestimmten Projekten Zugriff zuweisen 
+
+
+| [Optional] Konfigurieren Sie Projekte, um PODs für bestimmte Nodes zu planen 
+
+
+.4+| * Storage-Admin* | SVMs auf NetApp ONTAP erstellen 
+
+
+| Erstellen von Trident Back-Ends 
+
+
+| Erstellen von StorageClasses 
+
+
+| Erstellen von Storage-RessourcenQuotas 
+
+
+.3+| *Entwickler* | Validieren des Zugriffs zum Erstellen oder Patchen von PVCs oder Pods im zugewiesenen Projekt 
+
+
+| Validieren des Zugriffs zum Erstellen oder Patchen von PVCs oder Pods in einem anderen Projekt 
+
+
+| Validieren des Zugriffs zum Anzeigen oder Bearbeiten von Projekten, ResourceQuotas und StorageClasses 
+|===
+link:rh-os-n_use_case_multitenancy_configuration_prerequisites.html["Weiter: Voraussetzungen."]

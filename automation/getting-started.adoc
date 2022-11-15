@@ -1,0 +1,234 @@
+---
+sidebar: sidebar 
+permalink: automation/getting-started.html 
+summary: Die Automatisierung von NetApp Lösungen ermöglicht Kunden die Automatisierung von Implementierung, Konfiguration und Ausführung vieler gängiger Infrastruktur- und Applikationsaufgaben. 
+keywords: netapp, awx, tower, ansible tower, solutions, automation, ansible, getting, started 
+---
+= Erste Schritte mit der Automatisierung von NetApp Lösungen
+:hardbreaks:
+:allow-uri-read: 
+:nofooter: 
+:icons: font
+:linkattrs: 
+:table-stripes: odd
+:imagesdir: ./../media/
+
+
+[role="lead"]
+Automatisierung von NetApp Lösungen bietet Einfachheit und Zuverlässigkeit für viele der Routineaufgaben, die NetApp Lösungen verwenden.
+
+Bevor Sie eine Lösung automatisieren, muss die Umgebung entsprechend der Durchführung der Automatisierung konfiguriert werden. Es gibt Optionen, die Automatisierung von der Befehlszeile aus oder über ein Werkzeug wie AWX oder Tower auszuführen.
+
+Die folgenden Abschnitte beschreiben die Schritte zur Konfiguration der Umgebung für jede der angegebenen Umgebungen.
+
+.Ansible Control Node für CLI-Implementierungen auf RHEL/CentOS einrichten
+====
+. Anforderungen für den Ansible-Kontroll-Node:
++
+.. Eine RHEL/CentOS Maschine mit den folgenden Paketen installiert:
++
+... Python3
+... Pip3
+... Ansible (Version größer als 2.10.0)
+... Git
+
+
+
+
+
+
+Wenn Sie eine neue RHEL/CentOS Maschine ohne die oben genannten Anforderungen installiert haben, führen Sie die folgenden Schritte aus, um diese Maschine als Ansible-Steuerungsknoten einzurichten:
+
+. Ansible-Repository für RHEL-8/RHEL-7 aktivieren
++
+.. Für RHEL-8 (führen Sie den folgenden Befehl als root aus)
++
+[source, cli]
+----
+subscription-manager repos --enable ansible-2.9-for-rhel-8-x86_64-rpms
+----
+.. Für RHEL-7 (führen Sie den folgenden Befehl als root aus)
++
+[source, cli]
+----
+subscription-manager repos --enable rhel-7-server-ansible-2.9-rpms
+----
+
+
+. Erstellen Sie eine .sh-Datei
++
+[source, cli]
+----
+vi setup.sh
+----
+. Fügen Sie den nachstehenden Inhalt in die Datei ein
++
+[source, cli]
+----
+#!/bin/bash
+echo "Installing Python ------>"
+sudo yum -y install python3 >/dev/null
+echo "Installing Python Pip ------>"
+sudo yum -y install python3-pip >/dev/null
+echo "Installing Ansible ------>"
+python3 -W ignore -m pip --disable-pip-version-check install ansible >/dev/null
+echo "Installing git ------>"
+sudo yum -y install git >/dev/null
+----
+. Machen Sie die Datei ausführbar
++
+[source, cli]
+----
+chmod +x setup.sh
+----
+. Das Skript ausführen (als root)
++
+[source, cli]
+----
+./setup.sh
+----
+
+
+====
+.Richten Sie den Ansible-Steuerungsknoten für CLI-Bereitstellungen auf Ubuntu / Debian ein
+====
+. Anforderungen für den Ansible-Kontroll-Node:
++
+.. Eine Ubuntu/Debian-Maschine mit den folgenden Paketen installiert:
++
+... Python3
+... Pip3
+... Ansible (Version größer als 2.10.0)
+... Git
+
+
+
+
+
+
+Wenn Sie einen neuen Ubuntu/Debian-Rechner ohne die oben genannten Anforderungen installiert haben, führen Sie die folgenden Schritte aus, um diesen Rechner als den Ansible-Steuerungsknoten einzurichten:
+
+. Erstellen Sie eine .sh-Datei
++
+[source, cli]
+----
+vi setup.sh
+----
+. Fügen Sie den nachstehenden Inhalt in die Datei ein
++
+[source, cli]
+----
+#!/bin/bash
+echo "Installing Python ------>"
+sudo apt-get -y install python3 >/dev/null
+echo "Installing Python Pip ------>"
+sudo apt-get -y install python3-pip >/dev/null
+echo "Installing Ansible ------>"
+python3 -W ignore -m pip --disable-pip-version-check install ansible >/dev/null
+echo "Installing git ------>"
+sudo apt-get -y install git >/dev/null
+----
+. Machen Sie die Datei ausführbar
++
+[source, cli]
+----
+chmod +x setup.sh
+----
+. Das Skript ausführen (als root)
++
+[source, cli]
+----
+./setup.sh
+----
+
+
+====
+.Ansible Tower oder AWX für Tower-/AWX-Implementierungen einrichten
+====
+In diesem Abschnitt werden die Schritte beschrieben, die zur Konfiguration der Parameter im AWX/Ansible Tower erforderlich sind, um die Umgebung für den Einsatz automatisierter NetApp Lösungen vorzubereiten.
+
+. Konfigurieren Sie den Bestand.
++
+.. Navigieren Sie zu Ressourcen → Inventar → Hinzufügen und klicken Sie auf Inventar hinzufügen.
+.. Geben Sie den Namen und die Organisationsdetails an, und klicken Sie auf „Speichern“.
+.. Klicken Sie auf der Bestandsseite auf die Ressourcen, die Sie gerade erstellt haben.
+.. Wenn es Bestandsvariablen gibt, fügen Sie diese in das Feld Variablen ein.
+.. Wechseln Sie zum Untermenü Gruppen, und klicken Sie auf Hinzufügen.
+.. Geben Sie den Namen der Gruppe ein, kopieren Sie die Gruppenvariablen (falls erforderlich), und klicken Sie auf Speichern.
+.. Klicken Sie auf die erstellte Gruppe, gehen Sie zum Untermenü Hosts und klicken Sie auf Neuen Host hinzufügen.
+.. Geben Sie den Hostnamen und die IP-Adresse des Hosts an, fügen Sie die Host-Variablen ein (falls erforderlich), und klicken Sie auf Speichern.
+
+
+. Erstellen von Anmeldungstypen. Bei Lösungen, die ONTAP, Element, VMware oder andere HTTPS-basierte Transportverbindungen umfassen, müssen Sie den Anmeldeinformationstyp entsprechend den Benutzereingaben und den Kennwörtern konfigurieren.
++
+.. Navigieren Sie zu Administration → Credential Types, und klicken Sie auf Add.
+.. Geben Sie den Namen und eine Beschreibung an.
+.. Fügen Sie den folgenden Inhalt in die Eingabekonfiguration ein:
+
+
+
+
+[listing]
+----
+fields:
+- id: username
+type: string
+label: Username
+- id: password
+type: string
+label: Password
+secret: true
+- id: vsadmin_password
+type: string
+label: vsadmin_password
+secret: true
+----
+. Fügen Sie folgenden Inhalt in die Konfiguration des Injektors ein:
+
+
+[listing]
+----
+extra_vars:
+password: '{{ password }}'
+username: '{{ username }}'
+vsadmin_password: '{{ vsadmin_password }}'
+----
+. Anmeldedaten konfigurieren.
++
+.. Navigieren Sie zu Resources → Credentials, und klicken Sie auf Add.
+.. Geben Sie den Namen und die Organisationsdetails ein.
+.. Wählen Sie den korrekten Anmeldeinformationstyp aus. Wenn Sie die Standard-SSH-Anmeldung verwenden möchten, wählen Sie den Typ Machine aus, oder wählen Sie alternativ den von Ihnen erstellten benutzerdefinierten Anmeldeinformationstyp aus.
+.. Geben Sie die anderen entsprechenden Details ein, und klicken Sie auf Speichern.
+
+
+. Konfigurieren des Projekts.
++
+.. Navigieren Sie zu Ressourcen → Projekte, und klicken Sie auf Hinzufügen.
+.. Geben Sie den Namen und die Organisationsdetails ein.
+.. Wählen Sie Git für den Credential-Typ der Versionskontrolle aus.
+.. Fügen Sie die Quell-Kontroll-URL (oder git Clone URL) ein, die der spezifischen Lösung entspricht.
+.. Wenn die Git-URL Zugriffsgesteuert ist, erstellen und hängen Sie die entsprechenden Anmeldeinformationen in der Quellenkontrolle Credential an.
+.. Klicken Sie auf Speichern .
+
+
+. Konfigurieren Sie die Jobvorlage.
++
+.. Navigieren Sie zu Ressourcen → Vorlagen → Hinzufügen, und klicken Sie auf Job Template hinzufügen.
+.. Geben Sie den Namen und die Beschreibung ein.
+.. Wählen Sie den Jobtyp aus. Führen Sie die Konfiguration des Systems auf Basis eines Playbooks durch, und prüfen Sie, ob das Playbook trocken läuft, ohne das System tatsächlich zu konfigurieren.
+.. Wählen Sie den entsprechenden Bestand, das Projekt und die Zugangsdaten für das Playbook aus.
+.. Wählen Sie das Playbook aus, das Sie als Teil der Job-Vorlage ausführen möchten.
+.. Normalerweise werden die Variablen während der Laufzeit eingefügt. Um die Eingabeaufforderung zum Befüllen der Variablen während der Laufzeit zu erhalten, müssen Sie die Checkbox-Eingabeaufforderung für Starten entsprechend dem Feld Variable aktivieren.
+.. Geben Sie ggf. weitere Details ein, und klicken Sie auf „Speichern“.
+
+
+. Starten Sie die Jobvorlage.
++
+.. Navigieren Sie zu Ressourcen → Vorlagen.
+.. Klicken Sie auf die gewünschte Vorlage und dann auf Starten.
+.. Geben Sie ggf. beim Start alle Variablen ein, und klicken Sie dann erneut auf Starten.
+
+
+
+
+====

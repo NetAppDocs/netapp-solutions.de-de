@@ -1,0 +1,66 @@
+---
+sidebar: sidebar 
+permalink: xcp/xcp-bp-sizing-guidelines-overview.html 
+keywords: test, time estimate, copy, sync, rename, append, delete 
+summary: In diesem Abschnitt wird die ungefähre Zeit zur Durchführung der XCP-Kopiervorgänge und der XCP-Synchronisierung mit einer anderen Dateigröße von einer Million Dateien für NFS erläutert. 
+---
+= Richtlinien für die Dimensionierung
+:hardbreaks:
+:allow-uri-read: 
+:nofooter: 
+:icons: font
+:linkattrs: 
+:imagesdir: ./../media/
+
+
+link:xcp-bp-deployment-steps.html["Zurück – Implementierungsschritte."]
+
+In diesem Abschnitt wird die ungefähre Zeit zur Durchführung der XCP-Kopiervorgänge und der XCP-Synchronisierung mit einer anderen Dateigröße von einer Million Dateien für NFS erläutert.
+
+
+
+== Zeitschätzung basierend auf Tests
+
+Bei den Tests für die XCP-Kopier- und Synchronisierungsvorgänge wurde dieselbe Testumgebung verwendet, die für die Implementierung verwendet wurde. Eine Million Dateien mit drei Sets von 8K-, 16K- und 1-MB-Dateien wurden erstellt und die Änderungen wurden in Echtzeit durchgeführt. Die XCP-Synchronisationsfunktion führte die differenziellen inkrementellen Updates von der Quelle zum Ziel auf Dateiebene durch. Die inkrementelle Aktualisierung ist eine oder mehrere der folgenden vier Vorgänge: Benennen Sie vorhandene Dateien und Ordner um, fügen Sie Daten an vorhandene Dateien an, löschen Sie Dateien und Ordner und enthalten zusätzliche Hard-, Soft- und Multilinks. Zu Testzwecken konzentrieren wir uns auf die Vorgänge Umbenennen, Anhängen, Löschen und Links. Mit anderen Worten: Für eine Million Dateien wurden Änderungsvorgänge wie Umbenennen, Anhängen und Löschen mit einer Änderungsrate von 10 % bis 90 % durchgeführt.
+
+Die folgende Abbildung zeigt die Ergebnisse des XCP-Kopiervorgangs.
+
+image:xcp-bp_image10.png["Fehler: Fehlendes Grafikbild"]
+
+Die folgende Abbildung zeigt die Ergebnisse der XCP Sync-Umbenennung und -Verknüpfung.
+
+image:xcp-bp_image8.png["Fehler: Fehlendes Grafikbild"]
+
+Die Dateigröße ist nicht propositionell zum `xcp sync` Die Zeit zum Abschluss der Übertragung der umbenannten Quelldateien; die Diagramme sind linear.
+
+Die Verbindungstypen sind Soft Links, Hard Links und Multi-Links. Soft Links gelten als normale Dateien. Die Größe der Dateien ist für die Zeit zum Abschließen des XCP-Synchronisierungsvorgangs nicht relevant.
+
+Die folgenden Abbildungen zeigen die Ergebnisse der XCP-Sync-Prozesse zum Anhängen und Löschen.
+
+image:xcp-bp_image9.png["Fehler: Fehlendes Grafikbild"]
+
+Beim Anhängen- und Löschvorgang nehmen große Dateigrößen mehr Zeit in Anspruch als kleine Dateigrößen. Die Zeit zum Abschließen des Vorgangs ist linear zum Prozentsatz der Änderungen an Anhängen und Löschen.
+
+
+
+== Vergleich von XCP 1.6.1 mit XCP 1.5
+
+Im Vergleich zu früheren Versionen bietet XCP 1.6.3 und 1.7 eine verbesserte Leistung. Der folgende Abschnitt zeigt einen synchronen Leistungsvergleich zwischen XCP 1.6.3 und 1.7 für 8K-, 16K- und 1MB-Größen von einer Million Dateien.
+
+Die folgenden Abbildungen zeigen die Ergebnisse der XCP-Synchronleistung für XCP 1.6.3 gegenüber 1.7 (mit einer Größe von 8K einer Million Dateien).
+
+image:xcp-bp_image11.png["Fehler: Fehlendes Grafikbild"]
+
+Die folgende Abbildung zeigt die Ergebnisse der XCP-Synchronleistung für XCP 1.6.1 gegenüber 1.5 (mit einer Größe von 16.000 Dateien).
+
+image:xcp-bp_image12.png["Fehler: Fehlendes Grafikbild"]
+
+Die folgende Abbildung zeigt die Ergebnisse der XCP-Sync-Leistung für XCP 1.6.1 gegenüber 1.5 mit einer Größe von 1 MB für eine Million Dateien.
+
+image:xcp-bp_image13.png["Fehler: Fehlendes Grafikbild"]
+
+Im Durchschnitt verbesserte sich die XCP 1.7-Leistung an oder war ähnlich wie bei XCP 1.6.3 für die `xcp sync` Differenzielles inkrementelles Update: Benennen, Anhängen, Verknüpfen und Löschen von Vorgängen mit einer Größe von 1 MB mit einer Million Dateien um.
+
+Aufgrund dieser Performance-Validierung empfiehlt NetApp den Einsatz von XCP 1.7 für die Datenmigration vor Ort und in der Cloud.
+
+link:xcp-bp-performance-tuning.html["Weiter: Performance-Tuning."]

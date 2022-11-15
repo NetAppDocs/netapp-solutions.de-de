@@ -1,0 +1,62 @@
+---
+sidebar: sidebar 
+permalink: ai/aks-anf_introduction.html 
+keywords: introduction, tr-4904, 4904, tr4904, kubernetes, azure, anf, rapids, dask, ml, ai, machine learning, artificial intelligence, 
+summary: 'Diese Lösung folgt dem Lebenszyklus einer KI/ML-Applikation. Wir beginnen mit der Arbeit von Data Scientists, um die verschiedenen Schritte zu definieren, die für die Vorbereitung von Daten und das Training von Modellen erforderlich sind. Durch die Nutzung VON RAPIDS on DASK führen wir Distributed Training für den Azure Kubernetes Service (AKS) Cluster durch, um die Trainingszeit im Vergleich zum herkömmlichen Python-Scikit-Learn-Ansatz deutlich zu reduzieren. Um den gesamten Zyklus abzuschließen, haben wir die Pipeline mit Azure NetApp Files integriert.' 
+---
+= TR-4904: Distributed Training in Azure - Click-Through Rate Prediction
+:hardbreaks:
+:allow-uri-read: 
+:nofooter: 
+:icons: font
+:linkattrs: 
+:imagesdir: ./../media/
+
+
+Rick Huang, Verron Martina, Muneer Ahmad, NetApp
+
+Der Fokus der Arbeit eines Datenwissenschaftlers sollte auf das Training und Tuning von ml- (Machine Learning) und künstlicher Intelligenz (KI)-Modellen liegen. Laut einer Untersuchung von Google verbringen Data Scientists jedoch etwa 80 Prozent ihrer Zeit damit, herauszufinden, wie ihre Modelle mit Enterprise-Applikationen funktionieren und im großen Maßstab laufen lassen können.
+
+Für das Management von End-to-End-KI/ML-Projekten ist ein umfassenderes Verständnis von Unternehmenskomponenten erforderlich. Obwohl DevOps die Definition, Integration und Implementierung übernommen hat, zielen diese Komponententypen IM ML-Betrieb auf einen ähnlichen Flow ab, der auch KI-/ML-Projekte umfasst. Eine Vorstellung der Merkmale einer End-to-End-KI/ML-Pipeline im Unternehmen erhalten Sie in der folgenden Liste der erforderlichen Komponenten:
+
+* Storage
+* Netzwerkbetrieb
+* Datenbanken
+* File-Systeme
+* Container
+* CI/CD-Pipeline (Continuous Integration und Continuous Deployment
+* Integrierte Entwicklungsumgebung (IDE)
+* Sicherheit
+* Datenzugriffsrichtlinien
+* Trennt
+* Cloud
+* Einheitliche
+* Toolsets und Bibliotheken für Data Science
+
+
+
+
+== Zielgruppe
+
+Die Welt der Datenwissenschaft berührt mehrere Disziplinen in IT und Business:
+
+* Der Data Scientist benötigt die Flexibilität, ihre Tools und Bibliotheken einzusetzen.
+* Der Data Engineer muss wissen, wie die Daten fließen und wo sie sich befinden.
+* DevOps-Engineers benötigen die Tools, um neue KI/ML-Applikationen in ihre CI/CD-Pipelines zu integrieren.
+* Cloud-Administratoren und -Architekten müssen in der Lage sein, Azure-Ressourcen einzurichten und zu managen.
+* Geschäftsanwender möchten auf KI-/ML-Applikationen zugreifen können.
+
+
+In diesem technischen Bericht beschreiben wir, wie Azure NetApp Files, RAPIDS KI, DASK und Azure jede dieser Rollen unterstützen, ihren geschäftlichen Nutzen zu steigern.
+
+
+
+== Lösungsüberblick
+
+Diese Lösung folgt dem Lebenszyklus einer KI/ML-Applikation. Wir beginnen mit der Arbeit von Data Scientists, um die verschiedenen Schritte zu definieren, die für die Vorbereitung von Daten und das Training von Modellen erforderlich sind. Durch die Nutzung VON RAPIDS on DASK führen wir Distributed Training für den Azure Kubernetes Service (AKS) Cluster durch, um die Trainingszeit im Vergleich zum herkömmlichen Python-Scikit-Learn-Ansatz deutlich zu reduzieren. Um den gesamten Zyklus abzuschließen, haben wir die Pipeline mit Azure NetApp Files integriert.
+
+Azure NetApp Files bietet verschiedene Performance-Tiers. Kunden können mit einer Standardebene beginnen und unterbrechungsfrei auf eine hochperformante Tier skalieren, ohne Daten verschieben zu müssen. Auf diese Weise können Data Scientists Modelle nach Maß ohne Performance-Probleme trainieren und dabei Datensilos im gesamten Cluster vermeiden, wie in der Abbildung unten gezeigt.
+
+image:aks-anf_image1.png["Fehler: Fehlendes Grafikbild"]
+
+link:aks-anf_technology_overview.html["Weiter: Technologische Übersicht."]

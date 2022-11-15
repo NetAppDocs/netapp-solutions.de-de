@@ -1,0 +1,95 @@
+---
+sidebar: sidebar 
+permalink: databases/aws_ora_fsx_ec2_factors.html 
+summary: Dieser Abschnitt enthält Details zu den Faktoren, die bei der Implementierung einer Oracle Datenbank auf AWS EC2 Instance und FSX-Storage zu berücksichtigen sind. 
+keywords: HA, DR, database, Oracle, RDS, AWS, SnapCenter 
+---
+= Für die Implementierung von Oracle Database sind Faktoren zu berücksichtigen
+:hardbreaks:
+:allow-uri-read: 
+:nofooter: 
+:icons: font
+:linkattrs: 
+:table-stripes: odd
+:imagesdir: ./../media/
+
+
+link:aws_ora_fsx_ec2_architecture.html["Früher: Lösungsarchitektur."]
+
+Eine Public Cloud bietet eine große Auswahl an Computing- und Storage-Ressourcen. Der Einsatz der richtigen Computing-Instanz und der richtigen Storage Engine ist ein guter Ausgangspunkt für die Datenbankimplementierung. Wählen Sie außerdem Computing- und Storage-Konfigurationen aus, die für Oracle Datenbanken optimiert sind.
+
+In den folgenden Abschnitten werden die wichtigsten Aspekte bei der Implementierung von Oracle Datenbanken in einer AWS Public Cloud auf einer EC2 Instanz mit FSX Storage beschrieben.
+
+
+
+== VM-Performance
+
+Für die optimale Performance einer relationalen Datenbank in einer Public Cloud ist die Auswahl der richtigen VM-Größe wichtig. Um eine bessere Performance zu erzielen, empfiehlt NetApp die Verwendung einer EC2 M5 Series Instanz für die Oracle Implementierung, die für Datenbank-Workloads optimiert ist. Derselbe Instanztyp wird auch verwendet, um eine RDS-Instanz für Oracle von AWS zu versorgen.
+
+* Wählen Sie basierend auf Workload-Merkmalen die richtige vCPU- und RAM-Kombination aus.
+* Fügen Sie Swap-Speicherplatz zu einer VM hinzu. Die Standard-Implementierung der EC2-Instanz erstellt keinen Swap-Speicherplatz, der nicht optimal für eine Datenbank ist.
+
+
+
+
+== Storage-Layout und -Einstellungen
+
+NetApp empfiehlt das folgende Storage Layout:
+
+* Für NFS-Storage besteht das empfohlene Volume-Layout aus drei Volumes: Eines für die Oracle-Binärdatei, eines für Oracle-Daten und einer doppelten Kontrolldatei und eines für das aktive Protokoll, archiviertes Protokoll und die Kontrolldatei von Oracle.
++
+image:aws_ora_fsx_ec2_stor_12.PNG["Fehler: Fehlendes Grafikbild"]
+
+* Für iSCSI-Storage empfiehlt sich das Volume-Layout aus drei Volumes: Eines für die Oracle-Binärdatei, eines für Oracle-Daten und einer doppelten Kontrolldatei und eines für das aktive Protokoll, Archivprotokoll und die Kontrolldatei von Oracle. Allerdings sollte jede Daten- und Protokoll-Volume idealerweise vier LUNs enthalten. Die LUNs sind idealerweise auf den HA Cluster Nodes ausgeglichen.
++
+image:aws_ora_fsx_ec2_stor_13.PNG["Fehler: Fehlendes Grafikbild"]
+
+* Für Storage-IOPS und -Durchsatz können Sie den Schwellenwert für bereitgestellte IOPS und Durchsatz für den FSX Storage-Cluster festlegen. Die Parameter können spontan angepasst werden, wann sich der Workload ändert.
++
+** Die automatische IOPS-Einstellung beträgt drei IOPS pro gib der zugewiesenen Storage-Kapazität oder den benutzerdefinierten Storage bis zu 80,000.
+** Der Durchsatz wird wie folgt erhöht: 128, 256, 512, 1024, 2045 Mbps.
+
+
+
+
+Überprüfen Sie die link:https://docs.aws.amazon.com/fsx/latest/ONTAPGuide/performance.html["Amazon FSX für die Performance von NetApp ONTAP"^] Dokumentation bei der Größenbestimmung von Durchsatz und IOPS.
+
+
+
+== NFS-Konfiguration
+
+Linux, das gängigste Betriebssystem, umfasst native NFS-Funktionen. Oracle bietet den direkten NFS-Client (dNFS), der nativ in Oracle integriert ist. Oracle unterstützt NFSv3 seit über 20 Jahren, und NFSv4 wird mit Oracle 12.1.0.2 und höher unterstützt. Die automatisierte Oracle-Implementierung mit dem NetApp Automatisierungs-Toolkit konfiguriert dNFS auf NFSv3 automatisch.
+
+Weitere Faktoren, die berücksichtigt werden sollten:
+
+* TCP-Slot-Tabellen entsprechen dem NFS-Äquivalent zur Warteschlangentiefe des Host-Bus-Adapters (HBA). Diese Tabellen steuern die Anzahl der NFS-Vorgänge, die zu einem beliebigen Zeitpunkt ausstehen können. Der Standardwert ist normalerweise 16, was für eine optimale Performance viel zu niedrig ist. Das entgegengesetzte Problem tritt auf neueren Linux-Kerneln auf, die automatisch die Begrenzung der TCP-Slot-Tabelle auf ein Niveau erhöhen können, das den NFS-Server mit Anforderungen sättigt.
++
+Um eine optimale Performance zu erzielen und Performance-Probleme zu vermeiden, passen Sie die Kernel-Parameter an, die die TCP-Slot-Tabellen steuern, auf 128 an.
+
++
+[source, cli]
+----
+sysctl -a | grep tcp.*.slot_table
+----
+* Die folgende Tabelle enthält die empfohlenen NFS-Mount-Optionen für Linux NFSv3 – Single-Instance.
++
+image:aws_ora_fsx_ec2_nfs_01.PNG["Fehler: Fehlendes Grafikbild"]
+
+
+
+
+NOTE: Überprüfen Sie vor der Verwendung von dNFS, ob die in Oracle Doc 1495104.1 beschriebenen Patches installiert sind. DNFS unterstützt ab Oracle 12c NFSv3, NFSv4 und NFSv4.1. NetApp Support-Richtlinien decken v3 und v4 für alle Clients ab. Zum Zeitpunkt der Erstellung dieses Berichts wurde NFSv4.1 jedoch nicht für die Verwendung mit Oracle dNFS unterstützt.
+
+
+
+== Hochverfügbarkeit
+
+Wie in der Lösungsarchitektur angegeben, wird HA auf der Replizierung auf Storage-Ebene aufgebaut. Somit sind Start und Verfügbarkeit von Oracle davon abhängig, wie schnell Computing- und Storage-Ressourcen aufgerufen und wiederhergestellt werden können. Die folgenden wichtigen Faktoren sind wichtig:
+
+* Eine Standby-Computing-Instanz ist bereit und mit dem primären über das parallele Ansible-Update zu beiden Hosts synchronisiert.
+* Replizieren Sie das Binärvolumen aus dem primären Standby-Modus, damit Sie Oracle in letzter Minute nicht installieren und herausfinden müssen, was installiert und gepatcht werden muss.
+* Die Replizierungsfrequenz bestimmt, wie schnell die Oracle-Datenbank wiederhergestellt werden kann, damit der Service verfügbar ist. Zwischen der Replizierungshäufigkeit und dem Storage-Verbrauch besteht ein Kompromiss.
+* Nutzen Sie die Automatisierung, um das Recovery zu beschleunigen und den Wechsel auf Standby schnell und frei von menschlichen Fehlern zu machen. NetApp stellt zu diesem Zweck ein Automatisierungs-Toolkit zur Verfügung.
+
+
+link:aws_ora_fsx_ec2_procedures.html["Als Nächstes: Implementierungsverfahren"]

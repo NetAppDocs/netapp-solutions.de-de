@@ -1,0 +1,149 @@
+---
+sidebar: sidebar 
+permalink: ai/ai-edge-introduction.html 
+keywords: tr-4886, tr4886, 4886, introduction, netapp, ai, inferencing, lenovo, thinksystem, solution, design 
+summary: 'Dieses Dokument beschreibt eine Computing- und Storage-Architektur, um GPU-basierte Inferenz (KI) auf NetApp Storage-Controllern und Lenovo ThinkSystem Servern in einer Edge-Umgebung zu implementieren, die auf neue Applikationsszenarien zugeschnitten ist.' 
+---
+= TR-4886: KI-Inferenzierung am Edge - NetApp mit Lenovo ThinkSystem - Solution Design
+:hardbreaks:
+:allow-uri-read: 
+:nofooter: 
+:icons: font
+:linkattrs: 
+:imagesdir: ./../media/
+
+
+Sathish Thyagarajan, NetApp Miroslav Hodak, Lenovo
+
+
+
+== Zusammenfassung
+
+Verschiedene neue Applikationsszenarien, etwa durch erweiterte Treiberassistenzsysteme (ADAS), Industrie 4.0, Smart Cities und Internet of Things (IoT), erfordern die Verarbeitung von kontinuierlichen Datenströmen bei nahezu null Latenz. In diesem Dokument wird eine Computing- und Storage-Architektur beschrieben, um GPU-basierte Inferenz (KI) auf NetApp Storage-Controllern und Lenovo ThinkSystem Servern in einer Edge-Umgebung zu implementieren, die diese Anforderungen erfüllt. Dieses Dokument bietet auch Performance-Daten für die branchenübliche MLPerf Inferenz-Benchmark. Hierbei werden verschiedene Inferenzaufgaben auf Edge-Servern mit NVIDIA T4-GPUs evaluiert. Wir untersuchen die Performance von Offline-, Single-Stream- und Multistream-Inferenzszenarien und zeigen, dass die Architektur mit einem kostengünstigen Shared-Networked Storage-System eine hohe Performance aufweist und einen zentralen Datenstandort- und Modellmanagement für mehrere Edge-Server ermöglicht.
+
+
+
+== Einführung
+
+Unternehmen generieren immer mehr riesige Datenmengen am Netzwerkrand. Um Smart-Sensoren und IoT-Daten optimal zu nutzen, suchen Unternehmen eine Echtzeit-Ereignis-Streaming-Lösung, die Edge-Computing ermöglicht. Rechenanspruchsvolle Jobs werden daher zunehmend außerhalb des Datacenters am Edge ausgeführt. KI-Inferenz ist einer der Faktoren für diesen Trend. Edge-Server liefern für diese Workloads genügend Rechenleistung, insbesondere wenn Beschleuniger zum Einsatz kommen. Doch häufig stellt begrenzter Storage ein Problem dar, insbesondere in Umgebungen mit mehreren Servern. In diesem Dokument zeigen wir, wie ein Shared-Storage-System in der Edge-Umgebung implementiert werden kann und wie es von KI-Inferenz-Workloads profitiert, ohne dass sich die Performance beeinträchtigt.
+
+In diesem Dokument wird eine Referenzarchitektur für KI-Inferenz im Edge-Bereich beschrieben. Es kombiniert mehrere Lenovo ThinkSystem Edge Server mit einem NetApp Storage-System zu einer Lösung, die einfach zu implementieren und zu managen ist. Es soll als Basishandbuch für den praktischen Einsatz in verschiedenen Situationen dienen, wie zum Beispiel der Fabrikhalle mit mehreren Kameras und industriellen Sensoren, Point-of-Sale-Systeme (POS) im Einzelhandel oder Full Self-Driving (FSD)-Systeme, die visuelle Anomalien in autonomen Fahrzeugen identifizieren.
+
+Dieses Dokument behandelt Tests und Validierungen einer Computing- und Storage-Konfiguration, die aus Lenovo ThinkSystem SE350 Edge Server sowie einem Storage-System der Einstiegsklasse von NetApp AFF und EF-Series besteht. Die Referenzarchitekturen sind eine effiziente und kostengünstige Lösung für KI-Implementierungen. Gleichzeitig bieten sie umfassende Datenservices, integrierte Datensicherung, nahtlose Skalierbarkeit und Cloud-vernetzten Storage mit NetApp ONTAP und der Datenmanagement-Software NetApp SANtricity.
+
+
+
+=== Zielgruppe
+
+Dieses Dokument richtet sich an folgende Zielgruppen:
+
+* Führungskräfte und Enterprise-Architekten, die KI im Edge-Bereich productieren möchten
+* Data Scientists, Data Engineers, KI/Machine Learning-Forscher (ML) und Entwickler von KI-Systemen.
+* Enterprise-Architekten, die Lösungen für die Entwicklung von KI/ML-Modellen und -Applikationen entwickeln
+* Data Scientists und KI-Ingenieure, die nach effizienten Möglichkeiten suchen, Deep-Learning- (DL) und ML-Modelle zu implementieren.
+* Edge-Geräte-Manager und Edge-Serveradministratoren, die für die Implementierung und das Management von Edge-Inferenzmodellen verantwortlich sind
+
+
+
+
+=== Lösungsarchitektur
+
+Dieser Lenovo ThinkSystem Server und die NetApp ONTAP oder NetApp SANtricity Storage-Lösung wurden entwickelt, um KI-Inferenz auf großen Datensätzen zu verarbeiten. Dabei wird die Verarbeitungsleistung von GPUs neben herkömmlichen CPUs verwendet. Diese Validierung belegt eine hohe Performance und ein optimales Datenmanagement mit einer Architektur, die entweder einzelne oder mehrere Lenovo SR350 Edge-Server verwendet, die mit einem einzelnen NetApp AFF-Storage-System verbunden sind, wie in den folgenden beiden Abbildungen dargestellt.
+
+image:ai-edge-image2.jpg["Fehler: Fehlendes Grafikbild"]
+
+image:ai-edge-image17.png["Fehler: Fehlendes Grafikbild"]
+
+Die logische Architekturübersicht in der folgenden Abbildung zeigt die Rollen der Computing- und Storage-Elemente in dieser Architektur. Sie zeigt im Detail Folgendes:
+
+* Edge-Computing-Geräte führen Inferenz für die Daten durch, die von Kameras, Sensoren usw. empfangen werden.
+* Ein Shared-Storage-Element, das mehrere Zwecke erfüllt:
++
+** Ermöglicht den Inferenz-Modelle und andere Daten, die zu Vorgänge erforderlich sind. Compute-Server greifen direkt auf den Storage zu und nutzen Inferenzmodelle im gesamten Netzwerk, ohne dass diese lokal kopiert werden müssen.
+** Aktualisierte Modelle werden hier geschoben.
+** Archivierung von Eingabedaten, die Edge-Server für eine spätere Analyse erhalten Wenn beispielsweise die Edge-Geräte an Kameras angeschlossen sind, speichert das Speicherelement die von den Kameras erfassten Videos.
+
+
+
+
+image:ai-edge-image3.png["Fehler: Fehlendes Grafikbild"]
+
+|===
+
+
+| Rot | Blau 
+
+
+| Lenovo Computing-System | NetApp AFF Storage-System 
+
+
+| Edge-Geräte, die Inferenz auf Eingänge von Kameras, Sensoren usw. durchführen. | Inferenzmodelle und Daten von Edge-Geräten für Shared Storage werden zur späteren Analyse gespeichert. 
+|===
+Diese Lösung von NetApp und Lenovo bietet folgende wichtige Vorteile:
+
+* GPU-beschleunigtes Computing im Edge-Bereich.
+* Implementierung mehrerer Edge-Server, unterstützt und über einen Shared Storage gemanagt
+* Robuste Datensicherung zur Einhaltung niedriger Recovery-Zeitpunkte (RPOs) und Recovery-Zeiten (RTOs) ohne Datenverluste
+* Optimiertes Datenmanagement mit NetApp Snapshot Kopien und Klonen zur Optimierung von Entwicklungs-Workflows
+
+
+
+
+=== Wie diese Architektur zu nutzen
+
+Dieses Dokument validiert das Design und die Performance der vorgeschlagenen Architektur. Bestimmte Software-Level-Komponenten wie Container-, Workload- oder Modellmanagement und Datensynchronisation mit On-Premises-Cloud- oder Datacentern haben wir jedoch noch nicht getestet, da sie für ein Implementierungsszenario spezifisch sind. Hier gibt es mehrere Möglichkeiten.
+
+Auf der Ebene der Containerverwaltung ist die Kubernetes-Containerverwaltung eine gute Wahl und wird sowohl in einer vollwertigen Version (Canonical) als auch in einer modifizierten Version unterstützt, die für Enterprise-Bereitstellungen (Red hat) geeignet ist. Der link:https://docs.netapp.com/us-en/netapp-solutions/ai/aicp_introduction.html["NetApp AI Control Plane"^] Welches NetApp Trident und die neu hinzugefügte nutzt https://github.com/NetApp/netapp-dataops-toolkit/releases/tag/v2.0.0["NetApp DataOps Toolkit"^] Bietet integrierte Rückverfolgbarkeit, Datenmanagementfunktionen, Schnittstellen und Tools für Data Scientists und Data Engineers zur Integration in NetApp Storage. Kubeflow, das ML-Toolkit für Kubernetes, bietet zusätzliche KI-Funktionen sowie Unterstützung für Modellversionierung und KFServing auf mehreren Plattformen wie TensorFlow Serving oder NVIDIA Triton Inferenz Server. Eine weitere Option ist die NVIDIA EGX Plattform, die Workload-Management zusammen mit Zugriff auf einen Katalog von GPU-fähigen KI-Inferenz-Containern ermöglicht. Für diese Optionen ist jedoch unter Umständen ein erheblicher Aufwand und große Fachkenntnisse für die Produktion erforderlich, wobei unter Umständen die Unterstützung eines unabhängigen Softwareanbieters (ISV) oder eines Beraters durch Drittanbieter erforderlich ist.
+
+
+
+=== Lösungsbereiche
+
+Der Hauptvorteil von KI-Inferenz und Edge-Computing ist die Möglichkeit von Geräten, Daten zu berechnen, zu verarbeiten und zu analysieren – ohne Latenz. Es gibt viel zu viele Beispiele für Edge-Computing-Anwendungsfälle, die in diesem Dokument beschrieben werden. Es gibt jedoch einige prominente Beispiele:
+
+
+
+==== Automobile: Autonome Fahrzeuge
+
+Die klassische Edge Computing-Abbildung zeigt sich in den fortschrittlichen Fahrerassistenzsystemen (ADAS) in autonomen Fahrzeugen (AV). Die KI in selbstfahrenden Autos muss schnell viele Daten von Kameras und Sensoren verarbeiten, um ein erfolgreicher und sicherer Treiber zu sein. Es dauert zu lange, zwischen einem Objekt und einem Menschen zu interpretieren, kann Leben oder Tod bedeuten, daher ist es entscheidend, dass Daten so nah wie möglich am Fahrzeug verarbeitet werden können. In diesem Fall übernimmt ein oder mehrere Edge-Computing-Server die Eingaben von Kameras, RADAR, LiDAR und anderen Sensoren, während Shared Storage Inferenzmodelle enthält und die Eingangsdaten von Sensoren speichert.
+
+
+
+==== Gesundheitswesen: Patientenüberwachung
+
+Einer der größten Auswirkungen von KI und Edge-Computing ist die Fähigkeit, die kontinuierliche Überwachung von Patienten auf chronische Krankheiten zu verbessern, und zwar sowohl in der häuslichen Pflege als auch in Intensivstationen. Daten von Edge-Geräten, die Insulinspiegel, Atmung, neurologische Aktivität, Herzrhythmus und gastrointestinale Funktionen überwachen, erfordern eine sofortige Analyse von Daten, die sofort gehandelt werden müssen, weil es begrenzte Zeit zum Handeln gibt, um das Leben eines Menschen zu retten.
+
+
+
+==== Einzelhandel: Kassierer-lose Zahlung
+
+Edge-Computing unterstützt KI und ML und hilft Einzelhändlern dabei, die Kasse zu verkürzen und den Platzbedarf zu steigern. Kassierer-lose Systeme unterstützen verschiedene Komponenten, wie z. B.:
+
+* Und -Zugriff. Verbinden des physischen Käuferkontos mit einem validierten Konto und Zulassen des Zugangs zu den Einzelhandelsflächen.
+* Bestandsüberwachung: Mithilfe von Sensoren, RFID-Tags und Computer-Vision-Systemen können Sie die Auswahl oder das Abwählen von Artikeln durch Kunden bestätigen.
++
+Hier sind alle Edge-Server für jeden Kassenzähler zuständig, und das gemeinsam genutzte Speichersystem dient als zentraler Synchronisationspunkt.
+
+
+
+
+
+==== Finanzdienstleistungen: Menschliche Sicherheit an Kiosken und Betrugsprävention
+
+Bankwesen setzen KI und Edge-Computing ein, um Innovationen voranzutreiben und ein personalisiertes Banking zu ermöglichen. Mithilfe von interaktiven Kiosks, die Datenanalysen in Echtzeit und KI-Inferenz ermöglichen, sind Geldautomaten nun nicht nur in der Lage, Geld zu ziehen, sondern überwachen Kiosksysteme proaktiv über die von Kameras erfassten Bilder, um Risiken für die menschliche Sicherheit oder das betrügerische Verhalten zu erkennen. In diesem Szenario sind Edge-Computing-Server und Shared-Storage-Systeme mit interaktiven Kiosken und Kameras verbunden. So können Banken Daten mit KI-Inferenzmodellen erfassen und verarbeiten.
+
+
+
+==== Fertigung: Industrie 4.0
+
+Die vierte industrielle Revolution (Industrie 4.0) hat begonnen, zusammen mit neuen Trends wie Smart Factory und 3D-Druck. Für die Vorbereitung auf eine datengesteuerte Zukunft werden umfassende Kommunikation zwischen Machine und Machine (M2M) und IoT integriert, um die Automatisierung zu steigern, ohne menschliches Eingreifen erforderlich zu sein. Die Fertigung ist bereits hochautomatisiert und das Hinzufügen von KI-Funktionen stellt eine natürliche Fortsetzung des langfristigen Trends dar. KI ermöglicht automatische Vorgänge, die mit Hilfe der Computervision und anderer KI-Funktionen automatisiert werden können. Sie können die Qualitätskontrolle oder Aufgaben automatisieren, die auf menschliche Vision oder Entscheidungsfindung beruhen, um schnellere Analysen von Materialien auf Montagelinien in Fabrikböden durchzuführen, um Fertigungsstätten dabei zu unterstützen, die geforderten ISO-Standards des Sicherheits- und Qualitätsmanagements zu erfüllen. Jeder Compute-Edge-Server ist hier mit einer Reihe von Sensoren verbunden, die den Fertigungsprozess überwachen und nach Bedarf aktualisierte Inferenzmodelle in den Shared Storage verschieben.
+
+
+
+==== Telekommunikation: Rosterkennung, Turmüberwachung und Netzwerkoptimierung
+
+Die Telekommunikationsbranche nutzt Computer Vision und KI-Techniken, um Bilder zu verarbeiten, die automatisch Rost erkennen und Zelltürme identifizieren, die Korrosion enthalten, und daher weitere Inspektionen erfordern. Die Verwendung von Drohnenbildern und KI-Modellen zur Identifizierung verschiedener Bereiche eines Turms zur Analyse von Rost, Oberflächenrissen und Korrosion hat in den letzten Jahren zugenommen. Die Nachfrage nach KI-Technologien wächst weiter, mit denen Telekommunikationsinfrastruktur und Zelltürme effizient untersucht, regelmäßig auf Abbaumaßnahmen bewertet und bei Bedarf zeitnah repariert werden können.
+
+Ein weiterer neuer Anwendungsfall in der Telekommunikation ist der Einsatz von KI- und ML-Algorithmen zur Vorhersage von Datenverkehrsmustern, zum Erkennen von 5G-fähigen Geräten sowie zur Automatisierung und Erweiterung des Energiemanagements bei mehreren Eingängen und Mehrfachausgängen (MIMO). MIMO-Hardware wird in Funktürmen verwendet, um die Netzwerkkapazität zu erhöhen; dies ist jedoch mit zusätzlichen Energiekosten verbunden. ML-Modelle für den „MIMO-Schlafmodus“, der an Zellstandorten eingesetzt wird, können die effiziente Nutzung von Funkgeräten vorhersagen und dazu beitragen, die Energiekosten für Mobilfunknetzbetreiber (MNOs) zu senken. Mithilfe von KI-Inferenz- und Edge-Computing-Lösungen können MNOs die Menge der zu Datacentern übertragenen Daten reduzieren, ihre TCO senken, den Netzwerkbetrieb optimieren und die allgemeine Performance für Endbenutzer verbessern.
+
+link:ai-edge-technology-overview.html["Weiter: Technologische Übersicht."]

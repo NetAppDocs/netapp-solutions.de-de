@@ -1,0 +1,30 @@
+---
+sidebar: sidebar 
+permalink: ai/hcaios_kubernetes_deployment.html 
+keywords: Kubernetes, Deployment, NVIDIA, DeepOps 
+summary:  
+---
+= Kubernetes Deployment
+:hardbreaks:
+:allow-uri-read: 
+:nofooter: 
+:icons: font
+:linkattrs: 
+:imagesdir: ./../media/
+
+
+[role="lead"]
+Um Ihren Kubernetes-Cluster mit NVIDIA DeepOps zu implementieren und zu konfigurieren, führen Sie die folgenden Aufgaben über einen Bereitstellungs-Jump-Host aus:
+
+. Laden Sie NVIDIA DeepOps herunter, indem Sie den Anweisungen auf der folgen https://github.com/NVIDIA/deepops/blob/master/docs/getting-started.md["Erste Schritte"^] Auf der NVIDIA DeepOps GitHub Website.
+. Implementieren Sie Kubernetes in Ihrem Cluster, indem Sie die Anweisungen auf dem befolgen https://github.com/NVIDIA/deepops/blob/master/docs/kubernetes-cluster.md["Kubernetes Deployment Guide"^] Auf der NVIDIA DeepOps GitHub Website.
+
+
+
+NOTE: Damit die Implementierung von DeepOps Kubernetes funktioniert, muss auf allen Kubernetes Master- und Worker-Nodes derselbe Benutzer vorhanden sein.
+
+Wenn die Bereitstellung fehlschlägt, ändern Sie den Wert von `kubectl_localhost` Mit FALSE innen `deepops/config/group_vars/k8s-cluster.yml` Und wiederholen Sie Schritt 2. Der `Copy kubectl binary to ansible host` Aufgabe, die nur dann ausgeführt wird, wenn der Wert von `kubectl_localhost` Stimmt. Es basiert auf dem fetch Ansible-Modul, das bekannte Probleme bei der Speichernutzung hat. Diese Probleme mit der Speichernutzung können manchmal dazu führen, dass die Aufgabe nicht ausgeführt wird. Wenn die Aufgabe aufgrund eines Speicherproblems ausfällt, wird der restliche Bereitstellungsvorgang nicht erfolgreich abgeschlossen.
+
+Wenn die Bereitstellung erfolgreich abgeschlossen wurde, nachdem Sie den Wert von geändert haben `kubectl_localhost` Bis `false`, Dann müssen Sie die manuell kopieren `kubectl binary` Von einem Kubernetes-Master-Node zu dem Bereitstellungs-Jump-Host Sie finden den Standort des `kubectl binary` Auf einem bestimmten Master-Knoten, indem Sie den ausführen `which kubectl` Befehl direkt auf diesem Node.
+
+link:hcaios_cnvrg.io_deployment.html["Weiter: Implementierung von Cnvrg.io"]

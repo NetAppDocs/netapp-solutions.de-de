@@ -1,0 +1,63 @@
+---
+sidebar: sidebar 
+permalink: ai/ai-protopia-inferencing-accuracy-comparison.html 
+keywords: faceboxes, alpha value, accuracy, comparison 
+summary: Für diese Validierung haben wir mithilfe eines Satzes an RAW-Bildern Inferenz für einen Anwendungsfall der Bilderkennung durchgeführt. Dann führten wir dieselbe Inferenzaufgabe auf demselben Bildersatz durch, wobei vor der Inferenz die Protopia-Obfuskation hinzugefügt wurde. Wir haben die Aufgabe mit unterschiedlichen Werten VON ALPHA für die Komponente Protopia obfuscation wiederholt. 
+---
+= Vergleich der Inferenzgenauigkeit
+:hardbreaks:
+:allow-uri-read: 
+:nofooter: 
+:icons: font
+:linkattrs: 
+:imagesdir: ./../media/
+
+
+link:ai-protopia-test-procedure.html["Zurück: Testverfahren."]
+
+Für diese Validierung haben wir mithilfe eines Satzes an RAW-Bildern Inferenz für einen Anwendungsfall der Bilderkennung durchgeführt. Dann führten wir dieselbe Inferenzaufgabe auf demselben Bildersatz durch, wobei vor der Inferenz die Protopia-Obfuskation hinzugefügt wurde. Wir haben die Aufgabe mit unterschiedlichen Werten VON ALPHA für die Komponente Protopia obfuscation wiederholt. Im Zusammenhang mit der Protopia-Obfuskation stellt der ALPHA-Wert die Menge der aufgetragenen Obfuskation dar, wobei ein höherer ALPHA-Wert ein höheres Maß an Obfuskation darstellt. Dann haben wir die Genauigkeit der Inferenz in diesen verschiedenen Durchläufen verglichen.
+
+Die folgenden beiden Tabellen enthalten Details zu unserem Anwendungsfall und geben die Ergebnisse an.
+
+Protopia arbeitet direkt mit den Kunden zusammen, um den passenden ALPHA-Wert für einen bestimmten Anwendungsfall zu ermitteln.
+
+|===
+| Komponente | Details 
+
+
+| Modell | FaceBoxes (PyTorch) - 
+
+
+| Datensatz | FDDB-Datensatz 
+|===
+|===
+| Protopia obfuscation | ALPHA | Genauigkeit 
+
+
+| Nein | K. A. | 0.9337148153739079 
+
+
+| Ja. | 0.05 | 0.9028766627325002 
+
+
+| Ja. | 0.1 | 0.9024301009661478 
+
+
+| Ja. | 0.2 | 0.9081836283186224 
+
+
+| Ja. | 0.4 | 0.9073066107482036 
+
+
+| Ja. | 0.6 | 0.8847816568680239 
+
+
+| Ja. | 0.8 | 0.8841195749171925 
+
+
+| Ja. | 0.9 | 0.8455427675252052 
+
+
+| Ja. | 0.95 | 0.8455427675252052 
+|===
+link:ai-protopia-obfuscation-speed.html["Weiter: Obfuskationsgeschwindigkeit."]

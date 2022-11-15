@@ -1,0 +1,120 @@
+---
+sidebar: sidebar 
+permalink: ehc/aws/aws-guest-dr-config-veeam.html 
+keywords:  
+summary:  
+---
+= Bereitstellung und Konfiguration von Veeam Backup Server
+:hardbreaks:
+:allow-uri-read: 
+:nofooter: 
+:icons: font
+:linkattrs: 
+:imagesdir: ./../../media/
+
+
+link:aws-guest-dr-config-snapcenter.html["Früher: Implementieren und konfigurieren Sie Windows SnapCenter Server vor Ort."]
+
+Veeam Backup & Replication Software verwendet in dieser Lösung das Backup unserer Virtual Machines für Applikationen und die Archivierung einer Kopie der Backups in einem Amazon S3 Bucket mithilfe eines Veeam Scale-Out-Backup-Repositorys (SOBR). Veeam wird auf einem Windows-Server in dieser Lösung implementiert. Eine Anleitung zur Implementierung von Veeam finden Sie im https://www.veeam.com/documentation-guides-datasheets.html["Technische Dokumentation des Veeam Help Center"^].
+
+
+
+== Veeam Scale-out-Backup-Repository konfigurieren
+
+Nachdem Sie die Software implementiert und lizenziert haben, können Sie ein Scale-out Backup Repository (SOBR) als Ziel-Storage für Backup-Jobs erstellen. Außerdem sollten Sie einen S3-Bucket als Backup von VM-Daten für die Disaster Recovery extern berücksichtigen.
+
+Lesen Sie die folgenden Voraussetzungen, bevor Sie beginnen.
+
+. Erstellen einer SMB-Dateifreigabe auf Ihrem lokalen ONTAP System als Ziel-Storage für Backups
+. Erstellen eines Amazon S3-Buckets, der in den SOBR aufgenommen werden soll Es handelt sich um ein Repository für die externen Backups.
+
+
+
+
+=== Fügen Sie ONTAP Storage zu Veeam hinzu
+
+Zunächst fügen Sie den ONTAP Storage-Cluster und das zugehörige SMB/NFS-Dateisystem als Storage-Infrastruktur in Veeam hinzu.
+
+. Öffnen Sie die Veeam-Konsole, und melden Sie sich an. Navigieren Sie zu Storage Infrastructure, und wählen Sie Add Storage aus.
++
+image:dr-vmc-aws-image26.png["Fehler: Fehlendes Grafikbild"]
+
+. Wählen Sie im Assistenten zum Hinzufügen von Storage NetApp als Storage-Anbieter aus, und wählen Sie dann Data ONTAP aus.
+. Geben Sie die Management-IP-Adresse ein und aktivieren Sie das Kontrollkästchen NAS-Filer. Klicken Sie Auf Weiter.
++
+image:dr-vmc-aws-image27.png["Fehler: Fehlendes Grafikbild"]
+
+. Fügen Sie Ihre Zugangsdaten ein, um auf das ONTAP Cluster zuzugreifen.
++
+image:dr-vmc-aws-image28.png["Fehler: Fehlendes Grafikbild"]
+
+. Wählen Sie auf der Seite NAS Filer die gewünschten Protokolle zum Scannen aus und wählen Sie Weiter.
++
+image:dr-vmc-aws-image29.png["Fehler: Fehlendes Grafikbild"]
+
+. Schließen Sie die Seiten „Übernehmen“ und „Zusammenfassung“ des Assistenten ab, und klicken Sie auf „Fertig stellen“, um den Speicherermittlungsprozess zu starten. Nach Abschluss des Scans wird das ONTAP-Cluster zusammen mit den NAS-Filern als verfügbare Ressourcen hinzugefügt.
++
+image:dr-vmc-aws-image30.png["Fehler: Fehlendes Grafikbild"]
+
+. Erstellen Sie ein Backup-Repository mithilfe der neu erkannten NAS-Freigaben. Wählen Sie in Backup Infrastructure die Option Backup Repositories aus, und klicken Sie auf das Menüelement Add Repository.
++
+image:dr-vmc-aws-image31.png["Fehler: Fehlendes Grafikbild"]
+
+. Führen Sie alle Schritte im Assistenten für das Neue Backup-Repository aus, um das Repository zu erstellen. Detaillierte Informationen zum Erstellen von Veeam Backup Repositorys finden Sie im https://www.veeam.com/documentation-guides-datasheets.html["Veeam-Dokumentation"^].
++
+image:dr-vmc-aws-image32.png["Fehler: Fehlendes Grafikbild"]
+
+
+
+
+
+=== Fügen Sie den Amazon S3-Bucket als Backup-Repository hinzu
+
+Im nächsten Schritt wird der Amazon S3-Storage als Backup-Repository hinzugefügt.
+
+. Navigieren Sie zu Backup Infrastructure > Backup Repositorys. Klicken Sie Auf Repository Hinzufügen.
++
+image:dr-vmc-aws-image33.png["Fehler: Fehlendes Grafikbild"]
+
+. Wählen Sie im Assistenten zum Hinzufügen von Backup-Repositorys Objekt-Storage und anschließend Amazon S3 aus. Daraufhin wird der Assistent für das Neue Objekt-Speicher-Repository gestartet.
++
+image:dr-vmc-aws-image34.png["Fehler: Fehlendes Grafikbild"]
+
+. Geben Sie einen Namen für das Objekt-Storage-Repository an, und klicken Sie auf Weiter.
+. Geben Sie im nächsten Abschnitt Ihre Anmeldedaten ein. Sie benötigen einen AWS-Zugriffsschlüssel und einen geheimen Schlüssel.
++
+image:dr-vmc-aws-image35.png["Fehler: Fehlendes Grafikbild"]
+
+. Wählen Sie nach dem Laden der Amazon Konfiguration Ihr Datacenter, Ihren Bucket und den Ordner aus und klicken Sie auf Anwenden. Klicken Sie abschließend auf Fertig stellen, um den Assistenten zu schließen.
+
+
+
+
+=== Scale-out-Backup-Repository erstellen
+
+Nachdem wir jetzt unsere Storage Repositorys zu Veeam hinzugefügt haben, können wir das SOBR erstellen, um Backup-Kopien automatisch in unseren externen Amazon S3 Objekt-Storage zu Disaster Recovery-Zwecken zu verschieben.
+
+. Wählen Sie in Backup Infrastructure die Option Scale-Out Repositorys aus, und klicken Sie dann auf das Menüelement Scale-Out Repository hinzufügen.
++
+image:dr-vmc-aws-image37.png["Fehler: Fehlendes Grafikbild"]
+
+. Geben Sie im neuen Scale-Out Backup Repository einen Namen für den SOBR ein, und klicken Sie auf Weiter.
+. Wählen Sie für die Performance-Ebene das Backup-Repository mit der SMB-Freigabe in Ihrem lokalen ONTAP Cluster aus.
++
+image:dr-vmc-aws-image38.png["Fehler: Fehlendes Grafikbild"]
+
+. Wählen Sie für die Richtlinie zur Platzierung entweder Data Locality oder Performance basierend auf Ihren Anforderungen aus. Wählen Sie weiter.
+. Für Kapazitäts-Tiers erweitern wir den SOBR auf Amazon S3 Objekt-Storage. Für Disaster Recovery wählen Sie „Copy Backups to Object Storage“, sobald sie erstellt werden, um unsere sekundären Backups rechtzeitig bereitzustellen.
++
+image:dr-vmc-aws-image39.png["Fehler: Fehlendes Grafikbild"]
+
+. Wählen Sie schließlich Übernehmen und Beenden, um die Erstellung des SOBR abzuschließen.
+
+
+
+
+=== Erstellen Sie die Scale-out-Backup-Repository-Jobs
+
+Der letzte Schritt zur Konfiguration von Veeam ist die Erstellung von Backup-Jobs anhand des neu erstellten SOBR als Backup-Ziel. Das Erstellen von Backupjobs ist ein normaler Teil des Repertoires eines Speicheradministrators und wir decken die einzelnen Schritte hier nicht ab. Nähere Informationen zum Erstellen von Backup-Jobs in Veeam finden Sie auf der https://www.veeam.com/documentation-guides-datasheets.html["Technische Dokumentation Des Veeam Help Center"^].
+
+link:aws-guest-dr-cloud-backup-config.html["Als Nächstes: Backup-Tools und -Konfiguration zur Cloud."]

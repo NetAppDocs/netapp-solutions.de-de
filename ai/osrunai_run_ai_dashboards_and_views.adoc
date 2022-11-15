@@ -1,0 +1,24 @@
+---
+sidebar: sidebar 
+permalink: ai/osrunai_run_ai_dashboards_and_views.html 
+keywords:  
+summary:  
+---
+= Run:AI Dashboards und Ansichten
+:hardbreaks:
+:allow-uri-read: 
+:nofooter: 
+:icons: font
+:linkattrs: 
+:imagesdir: ./../media/
+
+
+Nach der Installation von Run:AI auf dem Kubernetes-Cluster und der korrekten Konfiguration der Container werden die folgenden Dashboards und Ansichten auf angezeigt https://app.run.ai/["https://app.run.ai"^] Im Browser, wie in der folgenden Abbildung dargestellt.
+
+image:osrunai_image3.png["Fehler: Fehlendes Grafikbild"]
+
+Es gibt insgesamt 16 GPUs im Cluster, die von zwei DGX-1-Nodes bereitgestellt werden. Sie sehen die Anzahl der Nodes, die insgesamt verfügbaren GPUs, die zugewiesenen GPUs, die Workloads zugewiesen werden, die Gesamtzahl der ausgeführten Jobs, ausstehende Jobs und inaktive GPUs. Rechts im Balkendiagramm werden GPUs pro Projekt angezeigt, die die Verwendung der Cluster-Ressource durch die verschiedenen Teams zusammenfassen. In der Mitte befindet sich die Liste der aktuell ausgeführten Jobs mit Jobdetails, einschließlich Jobname, Projekt, Benutzer, Jobtyp, Der Node, auf dem jeder Job ausgeführt wird, die Anzahl der für diesen Job zugewiesenen GPU(s), die aktuelle Laufzeit des Jobs, der Job-Fortschritt in Prozent und die GPU-Auslastung für diesen Job. Beachten Sie, dass das Cluster nicht ausgelastet ist (GPU-Auslastung bei 23 %), da nur drei laufende Jobs von einem einzigen Team eingereicht werden (`team-a`).
+
+Im folgenden Abschnitt zeigen wir, wie auf der Registerkarte „Projekte“ mehrere Teams erstellt und jedem Team GPUs zugewiesen werden können, um die Cluster-Auslastung zu maximieren und Ressourcen zu managen, wenn pro Cluster mehrere Benutzer vorhanden sind. Die Testszenarien nachahmen Enterprise-Umgebungen, in denen Speicher- und GPU-Ressourcen unter Training, Inferenz und interaktiven Workloads gemeinsam genutzt werden.
+
+link:osrunai_creating_projects_for_data_science_teams_and_allocating_gpus.html["Weiter: Projekte für Data Science Teams erstellen und GPUs zuweisen"]

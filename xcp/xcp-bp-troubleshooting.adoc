@@ -1,0 +1,61 @@
+---
+sidebar: sidebar 
+permalink: xcp/xcp-bp-troubleshooting.html 
+keywords: troubleshooting, problems, error 70, 
+summary: Dieser Abschnitt enthält Anleitungen zur Fehlerbehebung für die Datenmigration mit NetApp XCP. 
+---
+= Fehlerbehebung
+:hardbreaks:
+:allow-uri-read: 
+:nofooter: 
+:icons: font
+:linkattrs: 
+:imagesdir: ./../media/
+
+
+link:xcp-bp-best-practice-guidelines-and-recommendations.html["Früher: Best Practice-Richtlinien und -Empfehlungen."]
+
+
+
+== Fehler 1: XCP fehlgeschlagen mit nfs3 Fehler 70: Inaktivität von Dateihandle Fehler in der xcp.log
+
+*Grund und Anleitung.*
+
+Mounten Sie den Quellordner und überprüfen Sie, ob der Ordner vorhanden ist. Wenn es nicht existiert oder entfernt wurde, erhalten Sie ein `stale filehandle` Fehler, in diesem Fall können Sie den Fehler ignorieren.
+
+
+
+== Fehler 2: NetApp NFS Ziel-Volume hat Platz, aber XCP ist fehlgeschlagen mit nfs3 Fehler 28: Kein Speicherplatz mehr auf dem Gerät
+
+*Grund und Anleitung.*
+
+. Überprüfen Sie den Speicherplatz des NFS-Ziel-Volumes, indem Sie das ausführen `df` Befehl oder Prüfung des Speichers.
++
+....
+root@workr-140: USER3# df -h /xcpdest
+Filesystem                 Size  Used Avail Use% Mounted on
+10.63.150.127:/xcpsrc_vol  4.3T  1.7T  2.6T  40% /xcpsrc_vol
+....
+. Überprüfen Sie die Inodes im Speicher-Controller.
++
+....
+A800-Node1-2::> volume show -volume xcpdest -fields files,files-used
+vserver        volume  files    files-used
+-------------- ------- -------- ----------
+A800-Node1_vs1 xcpdest 21251126 21251126
+A800-Node1-2::>
+....
+. Wenn Inode verwendet wird, erhöhen Sie die Anzahl von Inodes, indem Sie den folgenden Befehl ausführen:
++
+....
+A800-Node1-2::> volume modify -volume xcpdest -vserver A800-Node1_vs1 -files 40000000
+Volume modify successful on volume xcpdest of Vserver A800-Node1_vs1.
+A800-Node1-2::> volume show -volume xcpdest -fields files,files-used
+vserver        volume  files    files-used
+-------------- ------- -------- ----------
+A800-Node1_vs1 xcpdest 39999990 21251126
+A800-Node1-2::>
+....
+
+
+link:xcp-bp-where-to-find-additional-information.html["Weiter: Wo finden Sie zusätzliche Informationen."]

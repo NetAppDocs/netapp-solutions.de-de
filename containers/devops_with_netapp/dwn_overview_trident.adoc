@@ -1,0 +1,34 @@
+---
+sidebar: sidebar 
+permalink: containers/devops_with_netapp/dwn_overview_trident.html 
+keywords: Trident, Astra Trident, Helm, Operator, iSCSI, NFS, DevOps 
+summary: Astra Trident ist ein Open-Source- und vollständig unterstützter Storage-Orchestrator für Container und Kubernetes-Distributionen, einschließlich Red hat OpenShift. 
+---
+= Astra Trident – Überblick
+:hardbreaks:
+:allow-uri-read: 
+:nofooter: 
+:icons: font
+:linkattrs: 
+:imagesdir: ./../../media/
+:k8s_distribution_name: Red Hat OpenShift, VMware Tanzu, Anthos by Google Cloud, Rancher etc
+
+
+[role="normal"]
+Astra Trident ist ein vollständig unterstützter Open-Source-Storage-Orchestrator für Container und Kubernetes-Distributionen wie {k8s_Distribution_Name}. Trident kann mit dem gesamten NetApp Storage-Portfolio eingesetzt werden, einschließlich NetApp ONTAP und Element Storage-Systeme. Es unterstützt auch NFS- und iSCSI-Verbindungen. Trident beschleunigt den DevOps-Workflow, da Endbenutzer Storage über ihre NetApp Storage-Systeme bereitstellen und managen können, ohne dass ein Storage-Administrator eingreifen muss.
+
+Ein Administrator kann verschiedene Storage-Back-Ends basierend auf den Projektanforderungen und Storage-Systemmodellen konfigurieren, die erweiterte Storage-Funktionen wie Komprimierung, bestimmte Festplattentypen oder QoS-Level ermöglichen, die eine bestimmte Performance garantieren. Nach ihrer Definition können diese Back-Ends von Entwicklern in ihren Projekten verwendet werden, um persistente Volume Claims (PVCs) zu erstellen und persistenten Storage nach Bedarf an ihre Container anzubinden.
+
+image:redhat_openshift_image2.png["Fehler: Fehlendes Grafikbild"]
+
+Astra Trident führt einen schnellen Entwicklungszyklus durch, und, wie Kubernetes, wird viermal im Jahr veröffentlicht.
+
+Die neueste Version von Astra Trident ist 22.04. April 2022. Eine Support-Matrix, in der die Version von Trident getestet wurde, mit der Kubernetes Distribution zu finden ist https://docs.netapp.com/us-en/trident/trident-get-started/requirements.html#supported-frontends-orchestrators["Hier"].
+
+Ab Version 20.04 wird die Trident-Einrichtung vom Trident Operator durchgeführt. Der Operator vereinfacht umfangreiche Implementierungen und bietet zusätzlichen Support. Durch die Selbstreparatur für Pods, die im Rahmen der Trident-Installation implementiert werden, wird damit das Selbstreparaturverfahren ermöglicht.
+
+In der Version 21.01 wurde ein Helm Chart zur Erleichterung der Installation des Trident Operators zur Verfügung gestellt.
+
+Siehe Dokumentation link:https://docs.netapp.com/us-en/trident/trident-get-started/kubernetes-deploy-operator.html["Hier"^] Für die Installation und Verwendung von Astra Trident.
+
+link:dwn_use_cases_overview.html["Weiter: Use-Case Validierungen: DevOps mit NetApp Astra."]

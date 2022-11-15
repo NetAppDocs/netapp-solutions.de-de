@@ -1,0 +1,94 @@
+---
+sidebar: sidebar 
+permalink: containers/tanzu_with_netapp/vtwn_astra_protect.html 
+summary: Nachdem die Applikations-Workloads vom Astra Control Center gemanagt wurden, können Sie die Sicherungseinstellungen für diese Workloads konfigurieren. 
+keywords: NetApp Astra Control, Astra Control Center, Application, Trident, Astra Trident, Helm, Operator, ONTAP, Tanzu, Tanzu Kubernetes clusters, VMware Tanzu 
+---
+= Sichern Sie Ihre Applikationen
+:allow-uri-read: 
+
+
+Nachdem die Applikations-Workloads vom Astra Control Center gemanagt wurden, können Sie die Sicherungseinstellungen für diese Workloads konfigurieren.
+
+
+
+== Erstellen Sie einen Anwendungs-Snapshot
+
+Ein Snapshot einer Applikation erstellt eine ONTAP Snapshot Kopie und eine Kopie der Applikationsmetadaten, mit denen Sie die Applikation auf Basis dieser Snapshot Kopie einem bestimmten Zeitpunkt wiederherstellen oder klonen können.
+
+. Um einen Snapshot der Anwendung zu erstellen, navigieren Sie zur Registerkarte Apps > Managed und klicken Sie auf die Anwendung, von der Sie eine Snapshot Kopie erstellen möchten. Klicken Sie auf das Dropdown-Menü neben dem Anwendungsnamen, und klicken Sie auf Snapshot.
++
+image::vtwn_image18.jpg[Astra Control Center: Snapshot-Schaltfläche]
+
+. Geben Sie die Snapshot-Details ein, klicken Sie auf Weiter und klicken Sie dann auf Snapshot. Es dauert etwa eine Minute, um den Snapshot zu erstellen, und der Status wird verfügbar, nachdem der Snapshot erfolgreich erstellt wurde.
++
+image::vtwn_image19.jpg[Astra Control Center erstellt eine Momentaufnahme]
+
+
+
+
+
+== Erstellen eines Applikations-Backups
+
+Ein Backup einer Applikation erfasst den aktiven Status der Applikation und die Konfiguration der Ressourcen des IT-Systems, deckt sie in Dateien ab und speichert sie in einem Remote-Objekt-Storage-Bucket.
+
+. Für die Sicherung und Wiederherstellung von verwalteten Anwendungen im Astra Control Center müssen Sie die Superuser-Einstellungen für die ONTAP-Systeme als Voraussetzung konfigurieren. Geben Sie dazu die folgenden Befehle ein.
++
+[listing]
+----
+ONTAP::> export-policy rule modify -vserver ocp-trident -policyname default -ruleindex 1 -superuser sys
+ONTAP::> export-policy rule modify -policyname default -ruleindex 1 -anon 65534 -vserver ocp-trident
+----
+. Um ein Backup der verwalteten Anwendung im Astra Control Center zu erstellen, navigieren Sie zur Registerkarte Apps > Managed und klicken Sie auf die Anwendung, von der Sie ein Backup durchführen möchten. Klicken Sie auf das Dropdown-Menü neben dem Anwendungsnamen, und klicken Sie auf Backup.
++
+image::vtwn_image18.jpg[Astra Control Center Backup-Schaltfläche]
+
+. Geben Sie die Backup-Details ein, wählen Sie den Objekt-Storage-Bucket aus, der die Backup-Dateien enthält, klicken Sie auf Weiter und klicken Sie nach Überprüfung der Details auf Backup. Abhängig von der Größe der Applikation und den Daten kann das Backup mehrere Minuten dauern und der Status des Backups wird nach erfolgreichem Abschluss des Backups wieder verfügbar.
+
+
+image::vtwn_image20.jpg[Astra Control Center erstellen Backup]
+
+
+
+== Wiederherstellen einer Anwendung
+
+Auf Knopfdruck können Sie eine Applikation zum Zwecke der Applikationssicherung und Disaster Recovery im selben Cluster oder zu einem Remote-Cluster wiederherstellen, was den Namespace Ursprung im selben Cluster hat.
+
+. Um eine Anwendung wiederherzustellen, navigieren Sie zur Registerkarte Apps > Managed und klicken Sie auf die betreffende Anwendung. Klicken Sie auf das Dropdown-Menü neben dem Anwendungsnamen, und klicken Sie auf Wiederherstellen.
++
+image::vtwn_image18.jpg[Astra Control Center Clone-Schaltfläche]
+
+. Geben Sie den Namen des Restore Namespace ein, wählen Sie den Cluster aus, in dem Sie ihn wiederherstellen möchten, und wählen Sie aus einem vorhandenen Snapshot oder aus einem Backup der Applikation aus, ob Sie ihn wiederherstellen möchten. Klicken Sie Auf Weiter.
++
+image::vtwn_image21.jpg[Astra Control Center Restore]
+
+. Geben Sie im Prüfungsfenster ein `restore` Und klicken Sie auf Wiederherstellen, nachdem Sie die Details geprüft haben.
++
+image::vtwn_image22.jpg[Astra Control Center – Wiederherstellungsüberprüfung]
+
+. Die neue Applikation geht in den Status Wiederherstellen, während Astra Control Center die Anwendung auf dem ausgewählten Cluster wiederherstellt. Nachdem alle Ressourcen der Anwendung installiert und von Astra erkannt wurden, geht die Anwendung in den verfügbaren Zustand.
+
+
+image::vtwn_image17.jpg[Astra Control Center hat eine neue App entdeckt]
+
+
+
+== Klonen einer Applikation
+
+Sie können eine Applikation zu Entwicklungs-/Testzwecken oder zur Sicherung von Applikationen und Disaster Recovery in einem entfernten Cluster klonen. Das Klonen einer Applikation im selben Cluster im selben Storage-Back-End nutzt die NetApp FlexClone Technologie, die VES sofort klont und Storage-Platz einspart.
+
+. Um eine Anwendung zu klonen, navigieren Sie zur Registerkarte Apps > Managed und klicken Sie auf die betreffende Anwendung. Klicken Sie auf das Dropdown-Menü neben dem Anwendungsnamen und klicken Sie auf Klonen.
++
+image::vtwn_image18.jpg[Astra Control Center Clone-Schaltfläche]
+
+. Geben Sie die Details zum neuen Namespace ein, wählen Sie den Cluster aus, in dem Sie ihn klonen möchten, und legen Sie fest, ob er aus einem vorhandenen Snapshot, aus einem Backup oder aus dem aktuellen Status der Applikation geklont werden soll. Klicken Sie auf Weiter, und klicken Sie dann im Prüfungsfenster auf Klonen, nachdem Sie die Details geprüft haben.
++
+image:vtwn_image23.jpg["Astra Control Center Restore"]
+
+. Die neue Applikation geht in den Entdeckungszustand, während Astra Control Center die Anwendung im ausgewählten Cluster erstellt. Nachdem alle Ressourcen der Anwendung installiert und von Astra erkannt wurden, geht die Anwendung in den verfügbaren Zustand.
++
+image:vtwn_image24.jpg["Astra Control Center hat eine neue App entdeckt"]
+
+
+
+link:vtwn_videos_and_demos.html["Weiter: Videos und Demos: VMware Tanzu mit NetApp."]

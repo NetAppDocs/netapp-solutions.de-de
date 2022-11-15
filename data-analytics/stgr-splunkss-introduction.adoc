@@ -1,0 +1,73 @@
+---
+sidebar: sidebar 
+permalink: data-analytics/stgr-splunkss-introduction.html 
+keywords: introduction, executive summary, tr4869, 4869, storagegrid, smartstore, splunk, 
+summary: In diesem technischen Bericht werden die Vorteile beschrieben, die NetApp einer Splunk SmartStore-Lösung bietet und zugleich ein Framework für die Entwicklung und Dimensionierung von Splunk SmartStore in Ihrer Umgebung demonstriert. Das Ergebnis ist eine einfache, skalierbare und ausfallsichere Lösung mit überzeugender TCO. 
+---
+= TR-4869: NetApp StorageGRID with Splunk SmartStore
+:hardbreaks:
+:allow-uri-read: 
+:nofooter: 
+:icons: font
+:linkattrs: 
+:imagesdir: ./../media/
+
+
+Karthikeyan Nagalingam, Bobby Oommen, Joseph Kandatilparambil
+
+Splunk Enterprise ist die marktführende SIEM-Lösung (Security Information and Event Management), die Resultate in allen Sicherheits-, IT- und DevOps-Teams erzielt. Datenvolumen wachsen weiterhin exponentiell, wodurch Unternehmen enorme Chancen nutzen können, diese enorme Ressource zu nutzen. Splunk Enterprise wird in einer Vielzahl von Anwendungsfällen weiter eingesetzt. Mit den wachsenden Anwendungsfällen nimmt auch die Menge der von Splunk Enterprise aufgenommenen und -Prozesse zu. Die herkömmliche Architektur von Splunk Enterprise ist ein verteiltes Scale-out-Design und bietet hervorragende Datenzugriff und -Verfügbarkeit. Allerdings sehen sich Unternehmen, die diese Architektur verwenden, mit steigenden Kosten konfrontiert, die durch Skalierung entstehen, um das schnell wachsende Datenvolumen zu bewältigen.
+
+Splunk SmartStore mit NetApp StorageGRID löst diese Herausforderung durch die Bereitstellung eines neuen Implementierungsmodells, in dem Computing und Storage entkoppelt sind. Mit dieser Lösung können Splunk Enterprise-Umgebungen nicht nur eine hervorragende Skalierbarkeit und Flexibilität bieten, sondern sie ermöglicht es Unternehmen, über einzelne und mehrere Standorte hinweg zu skalieren. Gleichzeitig sinken die Kosten, da Computing und Storage unabhängig skaliert werden können und intelligentes Tiering zu kostengünstigem Cloud- basiertem S3 Objekt-Storage hinzugefügt wird.
+
+Die Lösung optimiert das Datenvolumen im lokalen Storage und sorgt gleichzeitig für eine bessere Such-Performance, sodass Computing und Storage nach Bedarf skaliert werden können. SmartStore wertet Datenzugriffsmuster automatisch aus, um zu ermitteln, welche Daten für Echtzeitanalysen zur Verfügung stehen müssen und welche Daten im kostengünstigen S3-Objekt-Storage gespeichert werden sollten.
+
+In diesem technischen Bericht werden die Vorteile beschrieben, die NetApp einer Splunk SmartStore-Lösung bietet und zugleich ein Framework für die Entwicklung und Dimensionierung von Splunk SmartStore in Ihrer Umgebung demonstriert. Das Ergebnis ist eine einfache, skalierbare und ausfallsichere Lösung mit überzeugender TCO. StorageGRID bietet das skalierbare und kostengünstige S3-Protokoll/API-basierten Objekt-Storage, auch Remote-Storage genannt, mit dem Unternehmen ihre Splunk Lösung zu niedrigeren Kosten skalieren und gleichzeitig die Ausfallsicherheit verbessern können.
+
+
+NOTE: Splunk SmartStore bezieht sich auf Objekt-Storage als Remote-Stores oder Remote-Storage-Tiers.
+
+
+
+== Über NetApp StorageGRID
+
+NetApp StorageGRID ist eine softwaredefinierte Objekt-Storage-Lösung für große Archive, Medien-Repositorys und Web-Datastores. Mit StorageGRID verfügt NetApp über zwei Jahrzehnte Erfahrung in der Bereitstellung branchenführender innovativer Datenmanagement- und Innovationslösungen, die Unternehmen dabei unterstützen, ihre Informationen sowohl vor Ort als auch in Public-, Private- oder Hybrid-Cloud-Implementierungen zu managen und optimal auszunutzen.
+
+StorageGRID bietet sicheren, langlebigen Storage für unstrukturierte Daten jeder Größenordnung. Die integrierten, metadatengestützten Lifecycle Management-Richtlinien optimieren den Speicherort Ihrer Daten während ihrer gesamten Lebensdauer. Inhalte werden zur richtigen Zeit am richtigen Ort und auf der richtigen Storage-Tier platziert, um Kosten zu senken. Dank eines Single Namespace können Daten unabhängig vom geografischen Standort des StorageGRID Storage über einen einzelnen Anruf abgerufen werden. Kunden können mehrere StorageGRID Instanzen zwischen Datacentern und in der Cloud-Infrastruktur implementieren und managen.
+
+Ein StorageGRID System besteht aus weltweit verteilten, redundanten und heterogenen Nodes, die sich sowohl in vorhandene als auch in Client-Applikationen der nächsten Generation integrieren lassen.
+
+image:stgr-splunkss-image1.png["Fehler: Fehlendes Grafikbild"]
+
+IDC MarketScape: Kürzlich hat NetApp im neuesten Bericht „IDC MarketScape: Worldwide Object-Based Storage 2019 Vendor Assessment“ unter den Marktführern gelistet. StorageGRID wurde bereits seit fast 20 Jahren erfolgreich in Produktionsumgebungen in den anspruchsvollsten Branchen implementiert und ist ein führender Anbieter unstrukturierter Daten.
+
+StorageGRID bietet folgende Vorteile:
+
+* Implementierung mehrerer StorageGRID-Instanzen zum Zugriff auf Daten von jedem Standort zwischen Datacentern und der Cloud über einen einzelnen Namespace, der leicht auf Hunderte Petabyte skaliert werden kann
+* Flexibles Implementieren und zentrales Management über Infrastrukturübergreifend
+* Durch mehrstufiges Erasure Coding (EC) sorgen Sie für eine beispiellose Datenaufbewahrung mit einer Verfügbarkeit von durchschnittlich 99,999 %.
+* Mehr Hybrid-Multi-Cloud-Funktionen mit validierten Integrationen in Amazon S3 Glacier und Azure Blob
+* Erfüllen Sie gesetzliche Vorgaben und erleichtern Sie die Compliance durch manipulationssichere Datenaufbewahrung, ohne proprietäre APIs oder die Festlegung auf einen Anbieter.
+
+
+Weitere Informationen dazu, wie StorageGRID Sie bei der Lösung komplexerer Management-Probleme unstrukturierter Daten unterstützt, finden Sie im https://www.netapp.com/data-storage/storagegrid/["NetApp StorageGRID Startseite"^].
+
+
+
+== Informationen Zu Splunk Enterprise
+
+Splunk Enterprise ist eine Plattform, mit der Daten genutzt werden können. Daten, die von verschiedenen Quellen wie Log-Dateien, Websites, Geräten, Sensoren und Applikationen generiert werden, werden an Splunk Indexer gesendet und analysiert. So erhalten Sie umfassende Einblicke aus den Daten. Sie kann Verletzungen des Datenschutzes erkennen, Kunden- und Produkttrends aufzeigen, Chancen finden, die Infrastruktur zu optimieren oder umsetzbare Erkenntnisse für eine Vielzahl von Anwendungsfällen gewinnen.
+
+
+
+== Über Splunk SmartStore
+
+Splunk SmartStore erschließt die Vorteile der Splunk Architektur und vereinfacht zugleich eine kostengünstige Skalierung. Die Abkopplung von Computing- und Storage-Ressourcen führt zu einem für I/O optimierten Indexer-Node mit deutlich geringerem Storage-Bedarf, da nur eine Teilmenge an Daten als Cache gespeichert wird. Sie müssen keinen zusätzlichen Rechen- oder Storage-Ressourcen hinzufügen, wenn nur eine dieser Ressourcen benötigt wird, was Ihnen erhebliche Kosteneinsparungen ermöglicht. Sie können kostengünstigen und einfach skalierbaren S3-basierten Objekt-Storage verwenden, der die Umgebung weiter vereinfacht, Kosten senkt und einen massiveren Datensatz ermöglicht.
+
+Splunk SmartStore bietet Unternehmen einen erheblichen Mehrwert, darunter:
+
+* Senkung der Storage-Kosten durch Verschieben von warmen Daten auf kostenoptimierten S3 Objekt-Storage
+* Nahtlose Skalierbarkeit dank Abkopplung von Storage und Computing
+* Vereinfachung von Business Continuity durch Einsatz von stabilem Cloud-nativem Storage
+
+
+link:stgr-splunkss-benefits-of-this-solution.html["Als Nächstes: Die Vorteile dieser Lösung."]

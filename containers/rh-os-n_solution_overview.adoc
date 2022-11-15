@@ -1,0 +1,121 @@
+---
+sidebar: sidebar 
+permalink: containers/rh-os-n_solution_overview.html 
+keywords: NVA-1160, Red Hat, OpenShift, Netapp, Astra Trident 
+summary: 'Dieses Referenzdokument validiert die Red hat OpenShift-Lösung, die über IPI (Installer Provisioned Infrastructure) in verschiedenen Datacenter-Umgebungen bereitgestellt wird, wie von NetApp validiert. Sie Details zur Storage-Integration in NetApp Storage-Systeme dank des Astra Trident Storage-Orchestrator für das Management von persistentem Storage. Abschließend werden eine Reihe von Validierungen von Lösungen und Anwendungsbeispiele aus der Praxis untersucht und dokumentiert.' 
+---
+= NVA-1160: Red hat OpenShift mit NetApp
+:hardbreaks:
+:allow-uri-read: 
+:nofooter: 
+:icons: font
+:linkattrs: 
+:imagesdir: ./../media/
+
+
+Alan Cowles und Nikhil M Kulkarni, NetApp
+
+Dieses Referenzdokument validiert die Red hat OpenShift-Lösung, die über IPI (Installer Provisioned Infrastructure) in verschiedenen Datacenter-Umgebungen bereitgestellt wird, wie von NetApp validiert. Sie Details zur Storage-Integration in NetApp Storage-Systeme dank des Astra Trident Storage-Orchestrator für das Management von persistentem Storage. Abschließend werden eine Reihe von Validierungen von Lösungen und Anwendungsbeispiele aus der Praxis untersucht und dokumentiert.
+
+
+
+== Anwendungsfälle
+
+Die Architektur von Red hat OpenShift mit NetApp bietet Kunden folgende Vorteile:
+
+* Einfache Bereitstellung und Verwaltung von Red hat OpenShift, bereitgestellt mit IPI (Installer Provisioned Infrastructure) auf Bare Metal, Red hat OpenStack Platform, Red hat Virtualization und VMware vSphere.
+* Kombinierte Leistung von Enterprise-Containern und virtualisierten Workloads mit Red hat OpenShift, die virtuell auf OSP, RHV oder vSphere oder Bare Metal mit OpenShift Virtualization bereitgestellt wird
+* Konfigurationsmöglichkeiten in der Praxis und Anwendungsfälle, in denen die Funktionen von Red hat OpenShift im Einsatz mit NetApp Storage und Astra Trident, dem Open-Source-Storage-Orchestrator für Kubernetes, hervorgehoben werden.
+
+
+
+
+== Geschäftlicher Nutzen
+
+Unternehmen führen zunehmend DevOps-Praktiken ein, um neue Produkte zu erstellen, Release-Zyklen zu verkürzen und neue Funktionen hinzuzufügen. Dank ihrer angeborenen Agilität spielen Container und Microservices eine entscheidende Rolle bei der Unterstützung von DevOps-Praktiken. Das Praktizieren von DevOps auf Produktionsskala in einer Enterprise-Umgebung stellt jedoch ihre eigenen Herausforderungen und stellt bestimmte Anforderungen an die zugrunde liegende Infrastruktur, wie beispielsweise die folgenden:
+
+* Hochverfügbarkeit auf allen Ebenen im Stack
+* Einfache Implementierungsverfahren
+* Unterbrechungsfreier Betrieb und Upgrades
+* API-gestützte, programmierbare Infrastruktur, um die Flexibilität von Microservices Schritt zu halten
+* Mandantenfähigkeit mit garantierter Performance
+* Gleichzeitige Ausführung virtualisierter und Container-Workloads
+* Unabhängige Skalierung der Infrastruktur je nach Workload-Anforderungen
+
+
+Red hat OpenShift mit NetApp kennt diese Herausforderungen und präsentiert eine Lösung, mit der sich alle Bedenken lösen lassen. Hierzu wird die vollständig automatisierte Implementierung von RedHat OpenShift IPI in der vom Kunden gewünschten Datacenter-Umgebung implementiert.
+
+
+
+== Technologieüberblick
+
+Die Lösung Red hat OpenShift mit NetApp umfasst die folgenden Hauptkomponenten:
+
+
+
+=== Red hat OpenShift Container Platform
+
+Die Container-Plattform Red hat OpenShift ist eine vollständig unterstützte Kubernetes-Plattform für Unternehmen. Red hat verbessert Open-Source-Kubernetes und stellt damit eine Applikationsplattform bereit, die vollständig integriert ist, um Container-Applikationen zu erstellen, bereitzustellen und zu managen.
+
+Weitere Informationen finden Sie auf der OpenShift Website https://www.openshift.com["Hier"].
+
+
+
+=== NetApp Storage-Systeme
+
+NetApp verfügt über verschiedene Storage-Systeme, die sich perfekt für Enterprise Datacenter und Hybrid-Cloud-Implementierungen eignen. Das NetApp Portfolio umfasst NetApp ONTAP, NetApp Element und NetApp E-Series Storage-Systeme, die persistenten Storage für Container-Applikationen bereitstellen können.
+
+Weitere Informationen finden Sie auf der NetApp Website https://www.netapp.com["Hier"].
+
+
+
+=== NetApp Storage-Integrationen
+
+Das NetApp Astra Control Center bietet eine umfassende Auswahl an Storage- und applikationsspezifischen Datenmanagement-Services für zustandsorientierte Kubernetes Workloads, die in einer On-Premises-Umgebung implementiert und mit der bewährten NetApp Datensicherungstechnologie unterstützt werden.
+
+Weitere Informationen finden Sie auf der NetApp Astra Website https://cloud.netapp.com/astra["Hier"].
+
+Astra Trident ist ein Open-Source- und vollständig unterstützter Storage-Orchestrator für Container und Kubernetes-Distributionen, einschließlich Red hat OpenShift.
+
+Weitere Informationen finden Sie auf der Astra Trident Website https://docs.netapp.com/us-en/trident/index.html["Hier"].
+
+
+
+== Erweiterte Konfigurationsoptionen
+
+Dieser Abschnitt richtet sich an Anpassungen, die reale Benutzer wahrscheinlich bei der Implementierung dieser Lösung in der Produktion ausführen müssen, wie z. B. die Erstellung einer dedizierten privaten Image-Registrierung oder die Implementierung benutzerdefinierter Load Balancer-Instanzen.
+
+
+
+== Aktuelle Support-Matrix für validierte Versionen
+
+|===
+
+
+| Technologie | Zweck | Softwareversion 
+
+
+| NetApp ONTAP | Storage | 9.8, 9.9.1 
+
+
+| NetApp Element | Storage | 12.3 
+
+
+| NetApp Astra Control Center | Applikationsspezifisches Datenmanagement | 21.12.60 
+
+
+| NetApp Astra Trident | Storage-Orchestrierung | 22.01.0 
+
+
+| Red hat OpenShift | Container-Orchestrierung | 4.6 EUS, 4.7, 4.8 
+
+
+| Red hat OpenStack Platform | Private Cloud-Infrastruktur | 16.1 
+
+
+| Red Hat Virtualization | Datacenter-Virtualisierung | 4.4 
+
+
+| VMware vSphere | Datacenter-Virtualisierung | 6.7U3 
+|===
+link:rh-os-n_overview_openshift.html["Weiter: Übersicht über Red hat OpenShift."]

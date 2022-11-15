@@ -1,0 +1,41 @@
+---
+sidebar: sidebar 
+permalink: xcp/xcp-bp-creating-a-csv-file-from-smb-cifs-share.html 
+keywords: csv, data dump 
+summary: Der Befehl in diesem Abschnitt lädt die Daten im CSV-Format ab. Sie können die Spalte „Größe“ zusammenfassen, um die Gesamtgröße der Daten zu erhalten. 
+---
+= Erstellen einer CSV-Datei aus SMB/CIFS-Freigabe
+:hardbreaks:
+:allow-uri-read: 
+:nofooter: 
+:icons: font
+:linkattrs: 
+:imagesdir: ./../media/
+
+
+link:xcp-bp-specific-date-based-scan-and-copy-of-data.html["Zurück: Spezifische datumbasierte Scan und Kopie von Daten."]
+
+Mit dem folgenden Befehl werden Daten im CSV-Format ablädt. Sie können die Spalte „Größe“ zusammenfassen, um die Gesamtgröße der Daten zu erhalten.
+
+....
+xcp scan -match "((now-x.atime) / 3600) > 31*day" -fmt "'{}, {}, {}, {}'.format(relpath, name, strftime(x.atime, '%y-%m-%d-%H:%M:%S'), humanize_size(size))" -preserve-atime  >file.csv
+....
+Die Ausgabe sollte ähnlich wie bei diesem Beispiel aussehen:
+
+....
+erase\report_av_fp_cdot_crosstab.csvreport_av_fp_cdot_crosstab.csv20-01-29-10:26:2449.6MiB
+....
+Um bis in die Tiefe von drei Unterverzeichnissen zu scannen und das Ergebnis in Sortierreihenfolge bereitzustellen, führen Sie den aus `xcp -du` Befehl und Dump der Größe auf jeder Verzeichnisebene bis in die Tiefe von drei Unterverzeichnissen.
+
+....
+./xcp  scan -du -depth 3 NFS_Server_IP:/source_vol
+ 
+....
+Zum Sortieren geben Sie die Informationen in eine CSV-Datei ein und sortieren die Informationen.
+
+....
+xcp scan -match “type == d” -depth 3 -fmt "'{}, {}, {}, {}'.format(name, relpath, size)" NFS_Server_IP:/share > directory_report.csv
+....
+Dieser benutzerdefinierte Bericht verwendet den `-fmt` Befehl. Er scannt alle Verzeichnisse und lädt den Namen des Verzeichnisses, Pfads und der Größe des Verzeichnisses in eine CSV-Datei ein. Sie können die Spalte Größe aus der Tabellenkalkulationsanwendung sortieren.
+
+link:xcp-bp-data-migration-from-7-mode-to-ontap.html["Weiter: Datenmigration von 7-Mode zu ONTAP."]

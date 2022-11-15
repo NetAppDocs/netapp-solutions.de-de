@@ -1,0 +1,186 @@
+---
+sidebar: sidebar 
+permalink: containers/rh-os-n_use_case_multitenancy_cluster_admin_tasks.html 
+keywords: OpenShift, OCP, Astra Trident, NetApp ONTAP, Red Hat OpenShift, Multitenancy, Multi-tenancy 
+summary: Konfiguration der Mandantenfähigkeit auf Red hat OpenShift mit NetApp 
+---
+= Konfiguration: Aufgaben für den Cluster-Admin
+:hardbreaks:
+:allow-uri-read: 
+:nofooter: 
+:icons: font
+:linkattrs: 
+:imagesdir: ./../media/
+
+
+Die folgenden Aufgaben werden vom Red hat OpenShift Cluster-Admin ausgeführt:
+
+. Melden Sie sich als Cluster-Administrator beim Red hat OpenShift-Cluster an.
+. Erstellen Sie zwei Projekte, die unterschiedlichen Projekten entsprechen.
++
+[source, console]
+----
+oc create namespace project-1
+oc create namespace project-2
+----
+. Erstellen Sie die Entwicklerrolle für Projekt-1.
++
+[source, console]
+----
+cat << EOF | oc create -f -
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  namespace: project-1
+  name: developer-project-1
+rules:
+  - verbs:
+      - '*'
+    apiGroups:
+      - apps
+      - batch
+      - autoscaling
+      - extensions
+      - networking.k8s.io
+      - policy
+      - apps.openshift.io
+      - build.openshift.io
+      - image.openshift.io
+      - ingress.operator.openshift.io
+      - route.openshift.io
+      - snapshot.storage.k8s.io
+      - template.openshift.io
+    resources:
+      - '*'
+  - verbs:
+      - '*'
+    apiGroups:
+      - ''
+    resources:
+      - bindings
+      - configmaps
+      - endpoints
+      - events
+      - persistentvolumeclaims
+      - pods
+      - pods/log
+      - pods/attach
+      - podtemplates
+      - replicationcontrollers
+      - services
+      - limitranges
+      - namespaces
+      - componentstatuses
+      - nodes
+  - verbs:
+      - '*'
+    apiGroups:
+      - trident.netapp.io
+    resources:
+      - tridentsnapshots
+EOF
+----
+
+
+
+NOTE: Die in diesem Abschnitt angegebene Rollendefinition ist nur ein Beispiel. Entwicklerrollen müssen auf Basis von Anforderungen des Endanwenders definiert werden.
+
+. Erstellen Sie in ähnlicher Weise Entwicklerrollen für Project-2.
+. Alle OpenShift- und NetApp-Storage-Ressourcen werden in der Regel durch einen Storage-Administrator gemanagt. Der Zugriff für Storage-Administratoren wird durch die bei der Installation von Trident erstellte Trident-Rolle gesteuert. Darüber hinaus benötigt der Storage Administrator Zugriff auf ResourceQuotas, um den Storage-Verbrauch zu steuern.
+. Erstellen Sie eine Rolle zum Verwalten von ResourceQuotas in allen Projekten im Cluster, um sie an den Storage-Administrator anzuschließen.
++
+[source, console]
+----
+cat << EOF | oc create -f -
+kind: ClusterRole
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: resource-quotas-role
+rules:
+  - verbs:
+      - '*'
+    apiGroups:
+      - ''
+    resources:
+      - resourcequotas
+  - verbs:
+      - '*'
+    apiGroups:
+      - quota.openshift.io
+    resources:
+      - '*'
+EOF
+----
+. Stellen Sie sicher, dass der Cluster mit dem Identitätsanbieter der Organisation integriert ist und dass Benutzergruppen mit Clustergruppen synchronisiert werden. Das folgende Beispiel zeigt, dass der Identitäts-Provider in das Cluster integriert und mit den Benutzergruppen synchronisiert wurde.
+
+
+....
+$ oc get groups
+NAME                        USERS
+ocp-netapp-storage-admins   ocp-netapp-storage-admin
+ocp-project-1               ocp-project-1-user
+ocp-project-2               ocp-project-2-user
+....
+. Clusterrollenbinden für Storage-Administratoren konfigurieren.
++
+[source, console]
+----
+cat << EOF | oc create -f -
+kind: ClusterRoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: netapp-storage-admin-trident-operator
+subjects:
+  - kind: Group
+    apiGroup: rbac.authorization.k8s.io
+    name: ocp-netapp-storage-admins
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: trident-operator
+---
+kind: ClusterRoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: netapp-storage-admin-resource-quotas-cr
+subjects:
+  - kind: Group
+    apiGroup: rbac.authorization.k8s.io
+    name: ocp-netapp-storage-admins
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: resource-quotas-role
+EOF
+----
+
+
+
+NOTE: Für Storage-Administratoren müssen zwei Rollen gebunden sein: trident-Operator und Ressourcen-Quotas.
+
+. Erstellen Sie RoleBindungen für Entwickler, die die Rolle Entwickler-Projekt-1 an die entsprechende Gruppe (ocp-Projekt-1) in Projekt-1 binden.
++
+[source, console]
+----
+cat << EOF | oc create -f -
+kind: RoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: project-1-developer
+  namespace: project-1
+subjects:
+  - kind: Group
+    apiGroup: rbac.authorization.k8s.io
+    name: ocp-project-1
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: developer-project-1
+EOF
+----
+
+
+. Erstellen Sie in Projekt-2 auch Rollen für Entwickler, die die Entwicklerrollen an die entsprechende Benutzergruppe binden.
+
+
+link:rh-os-n_use_case_multitenancy_storage_admin_tasks.html["Weiter: Storage-Administratoren."]

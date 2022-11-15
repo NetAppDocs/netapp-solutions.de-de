@@ -1,0 +1,73 @@
+---
+sidebar: sidebar 
+permalink: ai/aicp_provision_a_jupyter_notebook_workspace_for_data_scientist_or_developer_use.html 
+keywords: Jupyter, Notebook, Workspace, Kubeflow 
+summary: Kubeflow ist in der Lage, neue Jupyter Notebook-Server schnell als Data Scientist-Workspaces bereitzustellen. Um einen neuen Jupyter Notebook-Server mit Kubeflow bereitzustellen, führen Sie die auf dieser Seite aufgeführten Aufgaben aus. 
+---
+= Bereitstellen eines Jupyter Notebook Workspace für Data Scientist oder Entwickler
+:hardbreaks:
+:allow-uri-read: 
+:nofooter: 
+:icons: font
+:linkattrs: 
+:imagesdir: ./../media/
+
+
+Kubeflow ist in der Lage, neue Jupyter Notebook-Server schnell als Data Scientist-Workspaces bereitzustellen. Um einen neuen Jupyter Notebook-Server mit Kubeflow bereitzustellen, führen Sie die folgenden Aufgaben aus. Weitere Informationen zu Jupyter Notebooks im Kubeflow-Kontext finden Sie im https://www.kubeflow.org/docs/components/notebooks/["Offizielle Dokumentation von Kubeflow"^].
+
+. Klicken Sie im zentralen Kubeflow Dashboard im Hauptmenü auf Notebook-Server, um zur Jupyter Notebook-Serververwaltungsseite zu navigieren.
++
+image:aicp_image9.png["Fehler: Fehlendes Grafikbild"]
+
+. Klicken Sie auf Neuer Server, um einen neuen Jupyter Notebook-Server bereitzustellen.
++
+image:aicp_image10.png["Fehler: Fehlendes Grafikbild"]
+
+. Geben Sie Ihrem neuen Server einen Namen, wählen Sie das Docker-Image aus, auf dem Ihr Server basieren soll, und geben Sie die CPU- und RAM-Größe an, die von Ihrem Server reserviert werden soll. Wenn das Namespace-Feld leer ist, wählen Sie über das Menü Namespace auswählen in der Seitenüberschrift einen Namespace aus. Das Namespace-Feld wird dann automatisch mit dem ausgewählten Namespace gefüllt.
++
+Im folgenden Beispiel wird der verwendet `kubeflow-anonymous` Namespace ausgewählt. Darüber hinaus werden die Standardwerte für das Docker Image, die CPU und den RAM akzeptiert.
+
++
+image:aicp_image11.png["Fehler: Fehlendes Grafikbild"]
+
+. Geben Sie die Einzelheiten zum Workspace-Volumen an. Wenn Sie ein neues Volume erstellen möchten, wird dieses Volume oder PVC mithilfe der Standard-StorageClass bereitgestellt. Da ein StorageClass mit Trident als Standard-StorageClass in diesem Abschnitt festgelegt wurde link:aicp_kubeflow_deployment_overview.html["Kubeflow Deployment"], Das Volume oder die PVC wird mit Trident bereitgestellt. Dieses Volume wird automatisch als Standardarbeitsbereich im Jupyter Notebook Server-Container bereitgestellt. Alle Notebooks, die ein Benutzer auf dem Server erstellt, die nicht in einem separaten Datenvolumen gespeichert werden, werden automatisch in diesem Workspace-Volume gespeichert. Daher bleiben die Notebooks auch bei Neustarts erhalten.
++
+image:aicp_image12.png["Fehler: Fehlendes Grafikbild"]
+
+. Hinzufügen von Daten-Volumes Im folgenden Beispiel wird ein vorhandenes PVC mit dem Namen „pb-fg-all“ angegeben und der Standard-Bereitstellungspunkt akzeptiert.
++
+image:aicp_image13.png["Fehler: Fehlendes Grafikbild"]
+
+. *Optional:* Anfrage, dass die gewünschte Anzahl von GPUs Ihrem Notebook-Server zugewiesen wird. Im folgenden Beispiel wird eine GPU angefordert.
++
+image:aicp_image14.png["Fehler: Fehlendes Grafikbild"]
+
+. Klicken Sie auf Starten, um Ihren neuen Notebook-Server bereitzustellen.
+. Warten Sie, bis Ihr Notebook-Server vollständig bereitgestellt ist. Dies kann einige Minuten dauern, wenn Sie noch keinen Server mit dem von Ihnen angegebenen Docker-Image bereitgestellt haben, da das Image heruntergeladen werden muss. Wenn Ihr Server vollständig bereitgestellt wurde, wird in der Spalte Status auf der Seite Jupyter Notebook Server Administration ein grünes Häkchen angezeigt.
++
+image:aicp_image15.png["Fehler: Fehlendes Grafikbild"]
+
+. Klicken Sie auf Verbinden, um eine Verbindung mit der neuen Server-Webschnittstelle herzustellen.
+. Vergewissern Sie sich, dass das in Schritt 6 angegebene Datensatz-Volume auf dem Server installiert ist. Beachten Sie, dass dieses Volume standardmäßig im Standardarbeitsbereich bereitgestellt wird. Aus der Perspektive des Benutzers ist dies nur ein weiterer Ordner im Arbeitsbereich. Der Anwender, der wahrscheinlich ein Data Scientist ist und nicht ein Infrastruktur-Experte ist, muss nicht über Storage-Fachkenntnisse verfügen, um dieses Volumen zu nutzen.
++
+image:aicp_image16.png["Fehler: Fehlendes Grafikbild"]
+
++
+image:aicp_image17.png["Fehler: Fehlendes Grafikbild"]
+
+. Öffnen Sie ein Terminal und, vorausgesetzt, dass ein neues Volume in Schritt 5 angefordert wurde, führen Sie aus `df -h` So bestätigen Sie, dass ein neues persistentes Volume mit Trident-Bereitstellung als Standardarbeitsbereich gemountet wird.
++
+Das Standard-Workspace-Verzeichnis ist das Basisverzeichnis, mit dem Sie angezeigt werden, wenn Sie zum ersten Mal auf die Web-Schnittstelle des Servers zugreifen. Auf diesem persistenten Volume durch Trident werden daher alle mit der Web-Schnittstelle erstellten Artefakte gespeichert.
+
++
+image:aicp_image18.png["Fehler: Fehlendes Grafikbild"]
+
++
+image:aicp_image19.png["Fehler: Fehlendes Grafikbild"]
+
+. Führen Sie mit dem Terminal aus `nvidia-smi` Um zu bestätigen, dass dem Notebook-Server die korrekte Anzahl an GPUs zugewiesen wurde. Im folgenden Beispiel wurde dem Notebook-Server eine GPU zugewiesen, wie in Schritt 7 angefordert.
+
+
+image:aicp_image20.png["Fehler: Fehlendes Grafikbild"]
+
+link:aicp_example_notebooks_and_pipelines.html["Weiter: Beispiel Notebooks und Pipelines."]

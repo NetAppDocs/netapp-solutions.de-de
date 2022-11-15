@@ -1,0 +1,144 @@
+---
+sidebar: sidebar 
+permalink: ai/aks-anf_install_trident.html 
+keywords:  
+summary:  
+---
+= Installation Von Trident
+:hardbreaks:
+:allow-uri-read: 
+:nofooter: 
+:icons: font
+:linkattrs: 
+:imagesdir: ./../media/
+
+
+link:aks-anf_peer_aks_vnet_and_azure_netapp_files_vnet.html["Früher: Peer AKS vnet und Azure NetApp Files vnet."]
+
+So installieren Sie Trident mithilfe von Helm:
+
+. Installieren Sie Helm (Installationsanweisungen finden Sie im https://helm.sh/docs/intro/install/["Quelle"^]).
+. Laden Sie das Trident 20.01.1-Installationsprogramm herunter und extrahieren Sie es.
++
+....
+$wget
+$tar -xf trident-installer-21.01.1.tar.gz
+....
+. Ändern Sie das Verzeichnis in `trident-installer`.
++
+....
+$cd trident-installer
+....
+. Kopieren `tridentctl` In ein Verzeichnis im System `$PATH`.
++
+....
+$sudo cp ./tridentctl /usr/local/bin
+....
+. Installation von Trident auf dem Kubernetes (K8s) Cluster mit Helm ( https://scaleoutsean.github.io/2021/02/02/trident-21.01-install-with-helm-on-netapp-hci.html["Quelle"^]):
++
+.. Ändern Sie das Verzeichnis in `helm` Verzeichnis.
++
+....
+$cd helm
+....
+.. Installation Von Trident:
++
+....
+$helm install trident trident-operator-21.01.1.tgz --namespace trident --create-namespace
+....
+.. Überprüfen Sie den Status von Trident Pods.
++
+....
+$kubectl -n trident get pods
+....
++
+Wenn alle Pods betriebsbereit sind, ist Trident installiert und Sie können weitergehen.
+
+
+
+. Richten Sie das Azure NetApp Files Backend und die Speicherklasse für AKS ein.
++
+.. Erstellen eines Azure-Service-Prinzips.
++
+Der Service-Principal ist die Art, wie Trident mit Azure kommuniziert, um die Azure NetApp Files-Ressourcen zu manipulieren.
+
++
+....
+$az ad sp create-for-rbac --name ""
+....
++
+Die Ausgabe sollte wie im folgenden Beispiel aussehen:
+
++
+....
+{
+"appId": "xxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx", 
+"displayName": "netapptrident", 
+"name": "", 
+"password": "xxxxxxxxxxxxxxx.xxxxxxxxxxxxxx", 
+"tenant": "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxx"
+} 
+....
+
+
+. Erstellen einer json-Datei mit dem Trident-Back-End, Beispielname `anf-backend.json`.
+. Füllen Sie mithilfe Ihres bevorzugten Texteditors die folgenden Felder im aus `anf-backend.json` Datei:
++
+....
+{
+    "version": 1,
+    "storageDriverName": "azure-netapp-files",
+    "subscriptionID": "fakec765-4774-fake-ae98-a721add4fake",
+    "tenantID": "fakef836-edc1-fake-bff9-b2d865eefake",
+    "clientID": "fake0f63-bf8e-fake-8076-8de91e57fake",
+    "clientSecret": "SECRET",
+    "location": "westeurope",
+    "serviceLevel": "Standard",
+    "virtualNetwork": "anf-vnet",
+    "subnet": "default",
+    "nfsMountOptions": "vers=3,proto=tcp",
+    "limitVolumeSize": "500Gi",
+    "defaults": {
+    "exportRule": "0.0.0.0/0",
+    "size": "200Gi"
+}
+....
+. Ersetzen Sie die folgenden Felder:
++
+** `subscriptionID`. Ihre Azure Abonnement-ID.
+** `tenantID`. Ihre Azure Mandanten-ID von der Ausgabe von `az ad sp` Im vorherigen Schritt.
+** `clientID`. Ihre appID von der Ausgabe von `az ad sp` Im vorherigen Schritt.
+** `clientSecret`. Ihr Kennwort für die Ausgabe von `az ad sp` Im vorherigen Schritt.
+
+
+. Weisen Sie Trident an, das Azure NetApp Files-Backend im zu erstellen `trident` Namespace mit `anf-backend.json` Als Konfigurationsdatei:
++
+....
+$tridentctl create backend -f anf-backend.json -n trident
+....
++
+image:aks-anf_image8.png["Fehler: Fehlendes Grafikbild"]
+
+. Erstellen Sie eine Speicherklasse. Kubernetes Benutzer stellen Volumes mithilfe von PVCs bereit, die eine Storage-Klasse nach Namen angeben. Weisen Sie K8s an, eine Speicherklasse zu erstellen `azurenetappfiles` Damit wird auf das im vorherigen Schritt erstellte Trident Back-End Bezug gezogen.
+. Erstellen Sie ein YAML (`anf-storage-class.yaml`) Datei für Speicherklasse und kopieren.
++
+....
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+name: azurenetappfiles
+provisioner: netapp.io/trident
+parameters:
+backendType: "azure-netapp-files"
+$kubectl create -f anf-storage-class.yaml
+....
+. Überprüfen Sie, ob die Speicherklasse erstellt wurde.
++
+....
+kubectl get sc azurenetappfiles
+....
+
+
+image:aks-anf_image9.png["Fehler: Fehlendes Grafikbild"]
+
+link:aks-anf_set_up_dask_with_rapids_deployment_on_aks_using_helm.html["Als Nächstes: „Dask with RAPIDS Deployment“ auf AKS mit Helm einrichten."]

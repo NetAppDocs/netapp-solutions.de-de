@@ -1,0 +1,37 @@
+---
+sidebar: sidebar 
+permalink: ai/hciai_edge_validation_results.html 
+keywords:  
+summary:  
+---
+= Validierungsergebnisse
+:hardbreaks:
+:allow-uri-read: 
+:nofooter: 
+:icons: font
+:linkattrs: 
+:imagesdir: ./../media/
+
+
+[role="lead"]
+Gehen Sie wie folgt vor, um eine Probe-Inferenzanforderung auszuführen:
+
+. Holen Sie eine Shell zum Client-Container/POD.
++
+....
+kubectl exec --stdin --tty <<client_pod_name>> -- /bin/bash
+....
+. Führen Sie eine Beispielanfrage für Inferenz aus.
++
+....
+image_client -m resnet50_netdef -s INCEPTION -u <<LoadBalancer_IP_recorded earlier>>:8000 -c 3 images/mug.jpg
+....
++
+image:hciaiedge_image24.png["Fehler: Fehlendes Grafikbild"]
+
++
+Diese Inferenzanforderung nennt den `resnet50_netdef` Modell, das für die Bilderkennung verwendet wird. Andere Clients können Inferenzanfragen gleichzeitig senden, indem sie einen ähnlichen Ansatz verfolgen und das entsprechende Modell aufrufen.
+
+
+
+link:hciai_edge_additional_information.html["Weiter: Weitere Informationen"]

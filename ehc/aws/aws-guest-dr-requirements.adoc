@@ -1,0 +1,299 @@
+---
+sidebar: sidebar 
+permalink: ehc/aws/aws-guest-dr-requirements.html 
+keywords: adminstrative, ESXi hosts, VMware vCenter, nsx, MS SQL, oracle, Veeam, cloud, aws, Amazon FSx, vmc 
+summary: In diesem Abschnitt werden die Anforderungen für den Zugriff und die Konfiguration von On-Premises-Ressourcen, VMware Cloud und Amazon FSX ONTAP erläutert. 
+---
+= Anforderungen
+:hardbreaks:
+:allow-uri-read: 
+:nofooter: 
+:icons: font
+:linkattrs: 
+:imagesdir: ./../../media/
+
+
+link:aws-guest-dr-overview.html["Zurück: Übersicht - AWS Disaster Recovery mit Gast-Anbindung"]
+
+In diesem Abschnitt werden die Anforderungen für den Zugriff und die Konfiguration von On-Premises-Ressourcen, VMware Cloud und Amazon FSX ONTAP erläutert.
+
+
+
+== Fähigkeiten und Wissen
+
+Für den Zugriff auf Cloud Volumes Service für AWS sind die folgenden Fähigkeiten und Informationen erforderlich:
+
+* Zugriff auf und Know-how der On-Premises-Umgebung von VMware und ONTAP
+* Zugang zu und Wissen über VMware Cloud und AWS
+* Zugriff auf und Wissen zu AWS und Amazon FSX ONTAP.
+* Kenntnis Ihrer SDDC und AWS Ressourcen
+* Wissen über die Netzwerkverbindung zwischen Ihren lokalen und Cloud-Ressourcen
+* Kenntnisse über Disaster-Recovery-Szenarien.
+* Wissen über die auf VMware implementierten Applikationen
+
+
+
+
+== Administration
+
+Unabhängig davon, ob Benutzer und Administratoren mit Ressourcen vor Ort oder in der Cloud interagieren, müssen sie die Möglichkeit und die Berechtigungen haben, diese Ressourcen je nach Bedarf je nach Bedarf an den gewünschten Stellen bereitzustellen. Die Interaktion Ihrer Rollen und Berechtigungen für Ihre On-Premises-Systeme, einschließlich ONTAP und VMware, sowie Ihrer Cloud-Ressourcen wie VMware Cloud und AWS ist für eine erfolgreiche Hybrid-Cloud-Implementierung von entscheidender Bedeutung.
+
+Die folgenden Administrationsaufgaben müssen zum Aufbau einer DR-Lösung mit VMware und ONTAP On-Premises, VMware Cloud auf AWS und FSX ONTAP ausgeführt werden.
+
+* Rollen und Accounts ermöglichen die Bereitstellung folgender Funktionen:
++
+** ONTAP Storage-Ressourcen
+** VMware VMs, Datenspeicher usw.
+** AWS VPC und Sicherheitsgruppen
+
+
+* Bereitstellung einer lokalen VMware Umgebung und von ONTAP
+* VMware Cloud-Umgebung
+* Ein Filesystem von Amazon für FSX für ONTAP
+* Konnektivität zwischen Ihrer lokalen Umgebung und AWS
+* Konnektivität für die AWS VPC
+
+
+
+
+== On-Premises
+
+In der virtuellen VMware Umgebung sind Lizenzen für ESXi Hosts, VMware vCenter Server, NSX-Netzwerke und andere Komponenten enthalten, wie dies in der folgenden Abbildung zu sehen ist. Sie werden alle unterschiedlich lizenziert. Es ist wichtig zu verstehen, wie die zugrunde liegenden Komponenten die verfügbare lizenzierte Kapazität nutzen.
+
+image:dr-vmc-aws-image2.png["Fehler: Fehlendes Grafikbild"]
+
+
+
+=== ESXi-Hosts
+
+Compute-Hosts in einer VMware Umgebung werden mit ESXi implementiert. Bei einer Lizenzierung mit vSphere in verschiedenen Kapazitätsebenen können Virtual Machines die physischen CPUs auf jedem Host und die entsprechenden Merkmale nutzen.
+
+
+
+=== VMware vCenter
+
+Das Management von ESXi-Hosts und -Storage ist eine der vielen Funktionen, die VMware Administratoren über vCenter Server zur Verfügung gestellt werden. Ab VMware vCenter 7.0 sind je nach Lizenz drei Versionen von VMware vCenter verfügbar:
+
+* VCenter Server Essentials
+* VCenter Server Foundation
+* VCenter Server Standard
+
+
+
+
+=== VMware NSX
+
+VMware NSX bietet Administratoren die Flexibilität, die sie für erweiterte Funktionen benötigen. Die Funktionen sind abhängig von der lizenzierten Version der NSX-T Edition aktiviert:
+
+* Professionell
+* Erweitert
+* Enterprise Plus
+* Remote Office/Zweigstelle
+
+
+
+
+=== NetApp ONTAP
+
+Bei der Lizenzierung mit NetApp ONTAP wird darauf hingewiesen, wie Administratoren Zugriff auf verschiedene Funktionen innerhalb des NetApp Storage erhalten. Eine Lizenz ist ein Datensatz mit einem oder mehreren Softwareberechtigungen. Durch das Installieren von Lizenzschlüsseln, auch bekannt als Lizenzcodes, können Sie bestimmte Funktionen oder Services auf Ihrem Speichersystem verwenden. ONTAP unterstützt beispielsweise alle wichtigen branchenüblichen Client-Protokolle (NFS, SMB, FC, FCoE, iSCSI, Und NVMe/FC) durch Lizenzierung.
+
+Data ONTAP Funktionslizenzen werden als Pakete ausgegeben, von denen jede mehrere Funktionen oder eine einzelne Funktion enthält. Für ein Paket ist ein Lizenzschlüssel erforderlich, und durch die Installation des Schlüssels können Sie auf alle Funktionen des Pakets zugreifen.
+
+Lizenztypen sind wie folgt:
+
+* *Node-Locked-Lizenz.* die Installation einer Node-Locked-Lizenz berechtigt einen Knoten zur lizenzierten Funktionalität. Damit der Cluster die lizenzierte Funktion nutzen kann, muss mindestens ein Node für die Funktionalität lizenziert sein.
+* *Master/Site-Lizenz.* Eine Master- oder Site-Lizenz ist nicht an eine bestimmte System-Seriennummer gebunden. Bei der Installation einer Standortlizenz haben alle Knoten im Cluster Anspruch auf die lizenzierte Funktionalität.
+* *Demo/temporäre Lizenz.* eine Demo- oder temporäre Lizenz läuft nach einer bestimmten Zeit ab. Mit dieser Lizenz können Sie bestimmte Software-Funktionen ohne Erwerb einer Berechtigung testen.
+* *Kapazitätslizenz (nur ONTAP Select und FabricPool).* eine ONTAP Select-Instanz wird entsprechend der Datenmenge lizenziert, die der Benutzer verwalten möchte. Ab ONTAP 9.4 erfordert FabricPool eine Kapazitätslizenz zur Verwendung mit einer Storage-Ebene eines Drittanbieters (beispielsweise AWS).
+
+
+
+
+=== NetApp SnapCenter
+
+Für die Aktivierung von Datensicherungsvorgängen SnapCenter sind mehrere Lizenzen erforderlich. Die Art der installierten SnapCenter Lizenzen hängt von Ihrer Storage-Umgebung und den gewünschten Funktionen ab. Die Standardlizenz von SnapCenter schützt Applikationen, Datenbanken, Dateisysteme und Virtual Machines. Bevor Sie SnapCenter ein Speichersystem hinzufügen, müssen Sie eine oder mehrere SnapCenter-Lizenzen installieren.
+
+Um den Schutz von Applikationen, Datenbanken, Dateisystemen und Virtual Machines zu ermöglichen, muss entweder eine Controller-basierte Standardlizenz auf Ihrem FAS- oder AFF-Speichersystem installiert sein oder eine auf den ONTAP Select und Cloud Volumes ONTAP Plattformen installierte Standardkapazitätsbasierte Lizenz.
+
+Für diese Lösung finden Sie die folgenden Voraussetzungen zur SnapCenter-Sicherung:
+
+* Ein auf dem lokalen ONTAP-System erstelltes Volume- und SMB-Share, um die gesicherten Datenbank- und Konfigurationsdateien zu lokalisieren.
+* Eine SnapMirror Beziehung zwischen dem lokalen ONTAP System und FSX oder CVO im AWS-Konto Verwendet für den Transport des Snapshots mit der gesicherten SnapCenter Datenbank und den Konfigurationsdateien.
+* Windows Server wird im Cloud-Konto installiert, entweder auf einer EC2 Instanz oder auf einer VM im VMware Cloud SDDC.
+* SnapCenter installiert auf der Windows EC2 Instanz oder VM in VMware Cloud.
+
+
+
+
+=== MS SQL
+
+Im Rahmen dieser Lösungsvalidierung setzen wir MS SQL auf, um das Disaster Recovery zu demonstrieren.
+
+Weitere Informationen zu Best Practices für MS SQL und NetApp ONTAP finden Sie im folgenden Bericht https://www.netapp.com/media/8585-tr4590.pdf["Dieser Link"^].
+
+
+
+=== Oracle
+
+Im Rahmen dieser Lösungsvalidierung demonstrieren wir ORACLE das Disaster Recovery. Weitere Informationen zu Best Practices mit ORACLE und NetApp ONTAP finden Sie im folgenden https://www.netapp.com/media/8744-tr3633.pdf["Dieser Link"^].
+
+
+
+=== Veeam
+
+Im Rahmen dieser Lösungsvalidierung setzen wir Veeam für die Demonstration der Disaster Recovery ein. Weitere Informationen zu den Best Practices für Veeam und NetApp ONTAP finden Sie im folgenden Bericht https://www.veeam.com/wp-netapp-configuration-best-practices-guide.html["Dieser Link"^].
+
+
+
+== Cloud
+
+
+
+=== AWS
+
+Sie müssen die folgenden Aufgaben ausführen können:
+
+* Implementieren und Konfigurieren von Domain Services
+* Implementieren von FSX-ONTAP je Applikationsanforderungen in einer bestimmten VPC
+* Konfigurieren Sie VMware Cloud auf dem AWS Computing-Gateway, um den Datenverkehr von FSX ONTAP zu ermöglichen.
+* Konfigurieren einer AWS-Sicherheitsgruppe, um die Kommunikation zwischen VMware Cloud on AWS-Subnetzen und den AWS VPC-Subnetzen zu ermöglichen, bei denen der FSX ONTAP-Service implementiert wird.
+
+
+
+
+=== VMware Cloud
+
+Sie müssen die folgenden Aufgaben ausführen können:
+
+* Konfiguration der VMware Cloud auf AWS SDDC
+
+
+
+
+=== Kontoüberprüfung bei Cloud Manager
+
+Ressourcen müssen mit NetApp Cloud Manager implementiert werden können. Führen Sie die folgenden Aufgaben aus, um zu überprüfen, ob Sie können:
+
+* https://docs.netapp.com/us-en/cloud-manager-setup-admin/task-signing-up.html["Melden Sie sich für Cloud Central an"^] Wenn Sie noch nicht.
+* https://docs.netapp.com/us-en/cloud-manager-setup-admin/task-logging-in.html["Melden Sie sich bei Cloud Manager an"^].
+* https://docs.netapp.com/us-en/cloud-manager-setup-admin/task-setting-up-netapp-accounts.html["Einrichten von Arbeitsbereichen und Benutzern"^].
+* https://docs.netapp.com/us-en/cloud-manager-setup-admin/concept-connectors.html["Einen Konnektor erstellen"^].
+
+
+
+
+=== Amazon FSX für NetApp ONTAP
+
+Sie müssen die folgende Aufgabe ausführen können, nachdem Sie über ein AWS Konto verfügen:
+
+* Erstellung eines IAM-Administrationsbenutzers zur Bereitstellung von Amazon FSX für das Filesystem von NetApp ONTAP
+
+
+
+
+== Konfigurationsvoraussetzungen
+
+Angesichts der verschiedenen Topologien der Kunden konzentriert sich dieser Abschnitt auf die Ports, die für die Kommunikation von lokalen zu Cloud-Ressourcen erforderlich sind.
+
+
+
+=== Erforderliche Ports und Firewall-Überlegungen
+
+In den folgenden Tabellen werden die Ports beschrieben, die in Ihrer Infrastruktur aktiviert werden müssen.
+
+Eine ausführlichere Liste der erforderlichen Ports für die Veeam Backup & Replication-Software finden Sie im folgenden https://helpcenter.veeam.com/docs/backup/vsphere/used_ports.html?zoom_highlight=port+requirements&ver=110["Dieser Link"^].
+
+Eine ausführlichere Liste der Portanforderungen für SnapCenter finden Sie im folgenden https://docs.netapp.com/ocsc-41/index.jsp?topic=%2Fcom.netapp.doc.ocsc-isg%2FGUID-6B5E4464-FE9A-4D2A-B526-E6F4298C9550.html["Dieser Link"^].
+
+In der folgenden Tabelle sind die Veeam Portanforderungen für Microsoft Windows Server aufgeführt.
+
+|===
+| Von | Bis | Protokoll | Port | Hinweise 
+
+
+| Backup Server | Microsoft Windows Server | TCP | 445 | Port für die Implementierung von Veeam Backup & Replication Komponenten erforderlich. 
+
+
+| Backup-Proxy |  | TCP | 6160 | Der vom Veeam Installer Service verwendete Standardport. 
+
+
+| Backup-Repository |  | TCP | 2500 bis 3500 | Standardbereich von Ports, die als Datenübertragungskanäle und zur Erfassung von Protokolldateien verwendet werden. 
+
+
+| Mounten Sie den Server |  | TCP | 6162 | Standardport, der vom Veeam Data Mover verwendet wird. 
+|===
+
+NOTE: Für jede TCP-Verbindung, die ein Job verwendet, wird ein Port aus diesem Bereich zugewiesen.
+
+In der folgenden Tabelle sind die Anforderungen an Veeam-Ports für Linux Server aufgeführt.
+
+|===
+| Von | Bis | Protokoll | Port | Hinweise 
+
+
+| Backup Server | Linux Server | TCP | 22 | Port, der als Kontrollkanal von der Konsole zum Ziel-Linux-Host verwendet wird. 
+
+
+|  |  | TCP | 6162 | Standardport, der vom Veeam Data Mover verwendet wird. 
+
+
+|  |  | TCP | 2500 bis 3500 | Standardbereich von Ports, die als Datenübertragungskanäle und zur Erfassung von Protokolldateien verwendet werden. 
+|===
+
+NOTE: Für jede TCP-Verbindung, die ein Job verwendet, wird ein Port aus diesem Bereich zugewiesen.
+
+In der folgenden Tabelle sind die Portanforderungen für Veeam Backup Server aufgeführt.
+
+|===
+| Von | Bis | Protokoll | Port | Hinweise 
+
+
+| Backup Server | VCenter Server | HTTPS, TCP | 443 | Standardport für Verbindungen mit vCenter Server. Port, der als Kontrollkanal von der Konsole zum Ziel-Linux-Host verwendet wird. 
+
+
+|  | Microsoft SQL Server, der die Veeam Backup & Replication Konfigurationsdatenbank hostet | TCP | 1443 | Port, der für die Kommunikation mit Microsoft SQL Server verwendet wird, auf dem die Veeam Backup & Replication Konfigurationsdatenbank bereitgestellt wird (wenn Sie eine Standardinstanz von Microsoft SQL Server verwenden). 
+
+
+|  | DNS-Server mit Namensauflösung aller Backup-Server | TCP | 3389 | Port, der für die Kommunikation mit dem DNS-Server verwendet wird 
+|===
+
+NOTE: Wenn Sie vCloud Director nutzen, öffnen Sie Port 443 auf den zugrunde liegenden vCenter Servern.
+
+In der folgenden Tabelle sind die Anforderungen für Veeam Backup Proxy-Port aufgeführt.
+
+|===
+| Von | Bis | Protokoll | Port | Hinweise 
+
+
+| Backup Server | Backup-Proxy | TCP | 6210 | Standardport, der vom Veeam Backup VSS Integration Service für das Erstellen eines VSS-Snapshots während des SMB-Dateifreigabedatenstains verwendet wird. 
+
+
+| Backup-Proxy | VCenter Server | TCP | 1443 | Der standardmäßige VMware Web Service-Port kann in vCenter-Einstellungen angepasst werden. 
+|===
+In der folgenden Tabelle sind die Anforderungen an SnapCenter-Ports aufgeführt.
+
+|===
+| Porttyp | Protokoll | Port | Hinweise 
+
+
+| SnapCenter Management-Port | HTTPS | 8146 | Dieser Port wird für die Kommunikation zwischen dem SnapCenter-Client (dem SnapCenter-Benutzer) und dem SnapCenter-Server verwendet. Wird auch zur Kommunikation von den Plug-in-Hosts mit dem SnapCenter-Server verwendet. 
+
+
+| SnapCenter SMCore-Kommunikations-Port | HTTPS | 8043 | Dieser Port wird für die Kommunikation zwischen dem SnapCenter-Server und den Hosts verwendet, auf denen die SnapCenter-Plug-ins installiert sind. 
+
+
+| Installation von Windows-Plug-in-Hosts | TCP | 135, 445 | Diese Ports dienen zur Kommunikation zwischen dem SnapCenter-Server und dem Host, auf dem das Plug-in installiert wird. Die Ports können nach der Installation geschlossen werden. Darüber hinaus sucht Windows Instrumentation Services die Ports 49152 bis 65535, die geöffnet sein müssen. 
+
+
+| Installation durch Linux-Plug-in-Hosts | SSH | 22 | Diese Ports dienen zur Kommunikation zwischen dem SnapCenter-Server und dem Host, auf dem das Plug-in installiert wird. Die Ports werden von SnapCenter verwendet, um Plug-in-Binärdateien auf Linux Plug-in-Hosts zu kopieren. 
+
+
+| SnapCenter-Plug-ins-Paket für Windows/Linux | HTTPS | 8145 | Dieser Port wird für die Kommunikation zwischen SMCore und Hosts verwendet, auf denen die SnapCenter-Plug-ins installiert sind. 
+
+
+| VMware vSphere vCenter Server Port | HTTPS | 443 | Dieser Port wird für die Kommunikation zwischen dem SnapCenter Plug-in für VMware vSphere und vCenter Server verwendet. 
+
+
+| SnapCenter Plug-in für VMware vSphere Port | HTTPS | 8144 | Dieser Port wird für die Kommunikation vom vCenter vSphere Web-Client und vom SnapCenter-Server verwendet. 
+|===
+link:aws-guest-dr-networking.html["Weiter: Networking."]

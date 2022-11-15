@@ -1,0 +1,99 @@
+---
+sidebar: sidebar 
+permalink: xcp/xcp-bp-netapp-xcp-overview.html 
+keywords: multithread, nas, analytics, directory tree, deletion, delete, prerequisites 
+summary: 'Beim NetApp XCP werden Daten mithilfe von Multithreads und anpassbaren Funktionen übertragen. Es wurde für drei große Anwendungsfälle entwickelt: Datenverschiebung oder -Migration, Dateisystemanalysen und schnelles Löschen von Verzeichnisbäumen.' 
+---
+= NetApp XCP
+:hardbreaks:
+:allow-uri-read: 
+:nofooter: 
+:icons: font
+:linkattrs: 
+:imagesdir: ./../media/
+
+
+link:xcp-bp-introduction.html["Zurück: Einführung."]
+
+Beim NetApp XCP werden Daten mithilfe von Multithreads und anpassbaren Funktionen übertragen. Es ist für drei große Anwendungsfälle gedacht: Datenverschiebung oder -Migration, Dateisystemanalysen und schnelles Löschen von Verzeichnisbäumen.
+
+
+
+== Datenverschiebung oder -Migration
+
+Bei NetApp XCP werden Daten von jedem beliebigen NAS zu NetApp NAS übertragen. Dieser Prozess setzt sich aus vier Hauptvorgängen zusammen: Scannen, Kopieren, Synchronisieren und Verifizieren. Einige weitere Funktionen unterstützen das Monitoring und Übertragen von Daten:
+
+* *Scan.* bietet ein Layout von NAS- und MapR/HDFS-Daten auf hoher Ebene.
+* *Copy.* führt einen Basistransfer der Daten durch.
+* *Sync.* führt die inkrementelle Datenübertragung durch.
+* * Verify.* führt eine gründliche Überprüfung des Ziels durch.
+* *Zeige (optional).* ermittelt NAS-Freigaben.
+
+
+Die folgende Abbildung zeigt die XCP-Datenmigration und Replikationsvorgänge.
+
+image:xcp-bp_image1.png["Fehler: Fehlendes Grafikbild"]
+
+
+
+== Filesystem-Analysen
+
+Mit NetApp XCP können Sie unstrukturierte Daten nativ identifizieren, prüfen und analysieren und so Erkenntnisse gewinnen. Das ist eine wichtige Anforderung für Enterprise-Kunden, die diese Erkenntnisse für eine bessere Planung, den Betrieb hochwertiger digitaler Ressourcen und für Data Governance durch Berichterstellung und Bewertung nutzen möchten.
+
+Kunden, die sensible Daten verwenden, können mit NetApp XCP typische betriebliche Fragen beantworten, beispielsweise die folgenden:
+
+* Wo befinden sich meine Daten?
+* Wie viele Daten und welche Arten von Dateien haben wir?
+* Welche Daten werden aktiv genutzt und wie viele Daten inaktiv sind?
+
+
+Die folgende Abbildung zeigt die Kommunikation zwischen NetApp XCP-Dateianalysen von der GUI.
+
+image:xcp-bp_image2.png["Fehler: Fehlendes Grafikbild"]
+
+
+
+== Löschen
+
+Storage-Teams und EDA (Electronic Design Automation)-Workloads können große Verzeichnisse vor eine enorme Herausforderung stellen, ganz gleich, ob es sich um veraltete Daten oder um Testdaten handelt, die bereinigt werden müssen, um Speicherplatz freizugeben. XCP bietet eine Funktion zum schnellen Löschen, mit der eine vollständige Verzeichnisstruktur gelöscht werden kann. Die NetApp XCP Delete Funktion entfernt Dateien und Ordner aus einem bestimmten NAS-Pfad. Sie können die Match-Filter nutzen, um bestimmte Dateien und Ordner zu löschen. Für eine große Anzahl von Dateien und Ordnern können Sie die Option Kraft verwenden, die keine Bestätigung zum Löschen erfordert.
+
+
+
+== Live Source Migration Support
+
+Die Live Source Migration unterstützt XCP 1.7 und ermöglicht die Migration von einer Datenquelle, die in aktiver Verwendung ist (Lese- und Schreibaktivität). XCP verlässt Dateien, die während des Migrationsauftrags verwendet werden, wie zum Beispiel das Kopieren und Synchronisieren, und übersprungene Dateien werden im XCP-Protokoll erfasst.
+
+Diese Funktion unterstützt Änderungen an der Quelle, unterstützt jedoch keine Änderungen am Ziel. Während der Migration sollte das Ziel nicht aktiv sein. Der Support für die Live-Source-Migration ist nur für NFS-Migrationen verfügbar.
+
+
+NOTE: Für Live-Source-Migrationen sind keine besonderen Einstellungen erforderlich.
+
+
+
+== Voraussetzungen für XCP
+
+Vor der Implementierung von NetApp XCP müssen die folgenden Voraussetzungen erfüllt sein:
+
+. Überprüfen Sie die vom NFS-Server verwendeten NFS-Ports, indem Sie folgenden Befehl ausführen:
++
+....
+rpcinfo -p < NAS IP or on-prem nfs data LIF ip >
+....
+. Um Zugriff auf den Speicherort zu erhalten, an dem Sie die XCP Vorgänge ausführen, z. B. On-Premises- oder Cloud-Instanzen (z. B. Azure, AWS oder Google Virtual Machine [VM] Instanzen), öffnen Sie die Firewall-Ports für die NFS-Ports.
+. Überprüfen Sie, ob der NFS-Port über den XCP-Server mit dem Telnet-Befehl erreichbar ist `<on-prem nfs data LIF ip or NAS IP > 2049`. Der Standardport ist 2049. Wenn Ihre Umgebung einen anderen Port hat, verwenden Sie diese IP.
+. Stellen Sie für NFS sicher, dass über den XCP-Server auf die Freigaben zugegriffen werden kann. Verwenden Sie dazu die `showmount -e < NAS IP >` Befehl.
+. Erhöhen Sie die Anzahl von Inodes auf dem Zielvolume auf mehr als die Anzahl der Dateien (Anzahl der Dateien) auf den Quelldateien.
+. Laden Sie die XCP-Lizenz von der herunter https://xcp.netapp.com/license/xcp.xwic["NetApp XCP Lizenzportal"^].
++
+.. Sie benötigen ein NetApp Konto in mysupport.netapp.com oder Sie können sich kostenlos registrieren.
+.. Laden Sie die Lizenz herunter, und lassen Sie sie sich vorbereiten.
+
+
+. Erstellen Sie für jedes Azure NetApp Volume vor Ort eine NFS-Freigabe oder für den Cloud Volume Service (Premium-Service-Level) in der Cloud für den XCP-Katalog.
+. Erstellen Sie ein NAS-Volume, und konfigurieren Sie die Freigabe für das Datenziel.
+. Für mehrere XCP-Instanzen müssen Sie über einen oder mehrere Server oder Cloud-Instanzen verfügen, um die Daten von mehreren Quellordnern oder Dateien an das Ziel zu übertragen.
+. Die maxdir-Größe (Standard ist 308 MB) definiert die maximale Dateianzahl (ca. eine Million) in einem einzigen Ordner. Erhöhen Sie den maxdir-Größenwert, um die Anzahl der Dateien zu erhöhen. Eine Erhöhung des Werts hat Auswirkungen auf zusätzliche CPU-Zyklen.
+. In der Cloud empfiehlt NetApp die Verwendung von ExpressRoute (Azure), Direct Connect (AWS) oder Cloud Interconnect (GCP) zwischen On-Premises und der Cloud.
+
+
+link:xcp-bp-migration-workflow-overview.html["Als Nächstes: Migrations-Workflow."]

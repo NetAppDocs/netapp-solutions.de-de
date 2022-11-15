@@ -1,0 +1,69 @@
+---
+sidebar: sidebar 
+permalink: ehc/aws/aws-guest-dr-cloud-backup-config.html 
+keywords: secondary, windows, snapcenter server, veeam server 
+summary: Um ein Failover von Applikations-VMs und Datenbank-Volumes auf VMware Cloud Volume-Services durchzuführen, die in AWS ausgeführt werden, müssen Sie eine laufende Instanz von SnapCenter Server sowie Veeam Backup and Replication Server installieren und konfigurieren. Nach Abschluss des Failover müssen diese Tools auch so konfiguriert werden, dass sie den normalen Backup-Betrieb fortsetzen, bis ein Failback zum lokalen Datacenter geplant und ausgeführt wird. 
+---
+= Cloud-Backup-Tools und -Konfiguration
+:hardbreaks:
+:allow-uri-read: 
+:nofooter: 
+:icons: font
+:linkattrs: 
+:imagesdir: ./../../media/
+
+
+link:aws-guest-dr-config-veeam.html["Früher – Bereitstellen und Konfigurieren von Veeam Backup Server."]
+
+Um ein Failover von Applikations-VMs und Datenbank-Volumes auf VMware Cloud Volume-Services durchzuführen, die in AWS ausgeführt werden, müssen Sie eine laufende Instanz von SnapCenter Server sowie Veeam Backup and Replication Server installieren und konfigurieren. Nach Abschluss des Failover müssen diese Tools auch so konfiguriert werden, dass sie den normalen Backup-Betrieb fortsetzen, bis ein Failback zum lokalen Datacenter geplant und ausgeführt wird.
+
+
+
+== Implementieren Sie sekundären Windows SnapCenter Server
+
+SnapCenter Server wird im VMware Cloud SDDC implementiert oder auf einer EC2 Instanz in einer VPC mit Netzwerkkonnektivität für die VMware Cloud-Umgebung installiert.
+
+SnapCenter Software ist über die NetApp Support Site erhältlich und kann auf Microsoft Windows Systemen installiert werden, die sich entweder in einer Domäne oder Arbeitsgruppe befinden. Ein detaillierter Planungsleitfaden und Installationsanweisungen finden Sie unter https://docs.netapp.com/us-en/snapcenter/install/install_workflow.html["NetApp Dokumentationszentrum"^].
+
+Die Software von SnapCenter finden Sie unter https://mysupport.netapp.com["Dieser Link"^].
+
+
+
+== Konfigurieren Sie den sekundären Windows SnapCenter-Server
+
+Zur Wiederherstellung der Applikationsdaten, die auf FSX ONTAP gespiegelt werden, müssen Sie zuerst eine vollständige Wiederherstellung der lokalen SnapCenter-Datenbank durchführen. Nach Abschluss dieses Prozesses wird die Kommunikation mit den VMs wieder hergestellt, und Backups von Applikationen können nun mithilfe von FSX ONTAP als Primär-Storage wieder aufgenommen werden.
+
+Dazu müssen Sie die folgenden Elemente auf dem SnapCenter-Server ausführen:
+
+. Konfigurieren Sie den Computernamen so, dass er mit dem ursprünglichen lokalen SnapCenter-Server identisch ist.
+. Konfigurieren Sie das Networking für die Kommunikation mit VMware Cloud und der FSX ONTAP-Instanz.
+. Führen Sie das Verfahren aus, um die SnapCenter-Datenbank wiederherzustellen.
+. Vergewissern Sie sich, dass sich SnapCenter im Disaster Recovery-Modus befindet, um sicherzustellen, dass FSX jetzt der primäre Storage für Backups ist.
+. Vergewissern Sie sich, dass die Kommunikation mit den wiederhergestellten virtuellen Maschinen wiederhergestellt wird.
+
+
+Weitere Informationen zum Durchführen dieser Schritte finden Sie im Abschnitt link:aws-guest-dr-failover.html#snapcenter-database-restore-process["SnapCenter Datenbankwiederherstellungsvorgang"].
+
+
+
+== Bereitstellung eines sekundären Veeam Backup & Replication Servers
+
+Sie können den Veeam Backup & Replication Server auf einem Windows-Server in der VMware Cloud auf AWS oder in einer EC2-Instanz installieren. Eine detaillierte Anleitung zur Implementierung finden Sie im https://www.veeam.com/documentation-guides-datasheets.html["Technische Dokumentation Des Veeam Help Center"^].
+
+
+
+== Konfigurieren Sie den sekundären Veeam Backup & Replication Server
+
+Zum Wiederherstellen von Virtual Machines, die auf Amazon S3 Storage gesichert wurden, müssen Sie den Veeam Server auf einem Windows Server installieren und für die Kommunikation mit VMware Cloud, FSX ONTAP und dem S3-Bucket konfigurieren, der das ursprüngliche Backup-Repository enthält. Außerdem muss auf FSX ONTAP ein neues Backup Repository konfiguriert werden, um nach der Wiederherstellung neue Backups der VMs durchzuführen.
+
+Um diesen Prozess durchzuführen, müssen die folgenden Punkte abgeschlossen sein:
+
+. Konfigurieren Sie das Networking für die Kommunikation mit VMware Cloud, FSX ONTAP und dem S3 Bucket mit dem ursprünglichen Backup-Repository.
+. Konfigurieren Sie eine SMB-Freigabe auf FSX ONTAP als neues Backup Repository.
+. Binden Sie den ursprünglichen S3-Bucket ein, der als Teil des Scale-out-Backup-Repositorys vor Ort verwendet wurde.
+. Nach dem Restore der VM neue Backup-Jobs zum Schutz von SQL und Oracle VMs einrichten.
+
+
+Weitere Informationen zum Wiederherstellen von VMs mit Veeam finden Sie im Abschnitt link:aws-guest-dr-restore-veeam-full.html["Wiederherstellung von Applikations-VMs mit Veeam Full Restore"].
+
+link:aws-guest-dr-snapcenter-db-backup.html["Nächster Schritt: Backup von SnapCenter Datenbanken für Disaster Recovery."]

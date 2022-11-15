@@ -1,0 +1,33 @@
+---
+sidebar: sidebar 
+permalink: virtualization/vsphere_admin_storage_efficiencies.html 
+keywords: vSphere, efficiency, efficiencies, deduplication, compaction, compression, zero-block, inline, flexclone, adp, disk partitioning, ONTAP 
+summary: Auf dieser Seite wird die ONTAP Storage-Effizienz beschrieben. 
+---
+= ONTAP Storage-Effizienzfunktionen
+:hardbreaks:
+:allow-uri-read: 
+:nofooter: 
+:icons: font
+:linkattrs: 
+:imagesdir: ./../media/
+
+
+
+
+== Über Storage-Effizienz
+
+NetApp stellte als erster Anbieter die Deduplizierung für Produktions-Workloads bereit, allerdings war diese Innovation weder die erste noch die letzte in diesem Bereich. Es begann mit ONTAP Snapshot Kopien, einem platzsparenden Datensicherungsmechanismus ohne Performance-Effekt, sowie mit FlexClone Technologie, bei der sofort Lese-/Schreibkopien von VMs für die Produktion und die Nutzung von Backups erstellt werden können. Danach stellte NetApp Inline-Funktionen bereit, darunter Deduplizierung, Komprimierung und Zero-Block-Deduplizierung, mit denen sich der Storage kostspieliger SSDs maximal ausschöpfen lässt. Kürzlich hat ONTAP die Data-Compaction hinzugefügt, um unsere Storage-Effizienz zu verbessern.
+
+* *Inline-Zero-Block-Deduplizierung.* vermeidet die Verschwendung von Speicherplatz durch All-Zero-Blöcke.
+* *Inline-Komprimierung.* komprimiert Datenblöcke, um den erforderlichen physischen Speicher zu verringern.
+* *Inline-Deduplizierung.* eliminiert eingehende Blöcke mit vorhandenen Blöcken auf der Festplatte.
+* * Inline-Data-Compaction.* packt kleinere I/O-Vorgänge und Dateien in jeden physischen Block.
+
+
+image:vsphere_admin_storage_efficiencies.png["Storage-Effizienz"]
+
+Deduplizierung, Datenkomprimierung und Data-Compaction können zusammen oder unabhängig durchgeführt werden, um die optimale Speicherersparnis auf einem FlexVol Volume zu erzielen. Dank der Kombination dieser Funktionen verzeichnen Kunden Einsparungen im Verhältnis von bis zu 5:1 für VSI und von bis zu 30:1 für VDI.
+
+
+NOTE: Weitere Informationen zu ONTAP Storage-Effizienz finden Sie unter https://docs.netapp.com/ontap-9/index.jsp["Mittels Deduplizierung, Datenkomprimierung und Data-Compaction wird die Storage-Effizienz verbessert"] Im Dokumentationszentrum ONTAP 9.

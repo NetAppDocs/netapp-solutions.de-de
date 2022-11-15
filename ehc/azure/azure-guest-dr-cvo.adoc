@@ -1,0 +1,435 @@
+---
+sidebar: sidebar 
+permalink: ehc/azure/azure-guest-dr-cvo.html 
+keywords: tr4935, 4935, azure, avs, jetstream, guest connect, dr, disaster recovery 
+summary: Disaster Recovery in die Cloud ist eine stabile und kostengünstige Möglichkeit zum Schutz von Workloads vor Standortausfällen und Datenbeschädigungen wie Ransomware. Mit NetApp SnapMirror können lokale VMware Workloads, die einen mit dem Gast verbundenen Storage verwenden, auf NetApp Cloud Volumes ONTAP in Azure repliziert werden. 
+---
+= Disaster Recovery mit CVO und AVS (Storage mit Anbindung an den Gast)
+:hardbreaks:
+:allow-uri-read: 
+:nofooter: 
+:icons: font
+:linkattrs: 
+:imagesdir: ./../../media/
+
+
+
+
+== Überblick
+
+Autoren: Ravi BCB und Niyaz Mohamed, NetApp
+
+Disaster Recovery in die Cloud ist eine stabile und kostengünstige Möglichkeit zum Schutz von Workloads vor Standortausfällen und Datenbeschädigungen wie Ransomware. Mit NetApp SnapMirror können lokale VMware Workloads, die einen mit dem Gast verbundenen Storage verwenden, auf NetApp Cloud Volumes ONTAP in Azure repliziert werden. Dies bezieht sich auf Applikationsdaten, doch was ist mit den eigentlichen VMs selbst. Disaster Recovery sollte alle abhängigen Komponenten, einschließlich Virtual Machines, VMDKs, Applikationsdaten und mehr, abdecken. Zu diesem Zweck kann SnapMirror zusammen mit Jetstream verwendet werden, um Workloads, die von On-Premises zu Cloud Volumes ONTAP repliziert wurden, nahtlos wiederherzustellen und gleichzeitig vSAN Storage für VM-VMDKs zu verwenden.
+
+Dieses Dokument bietet einen Schritt-für-Schritt-Ansatz zur Einrichtung und Durchführung von Disaster Recovery mit NetApp SnapMirror, JetStream und der Azure VMware Lösung (AVS).
+
+image:dr-cvo-avs-image1.png["Fehler: Fehlendes Grafikbild"]
+
+
+
+== Voraussetzungen
+
+Dieses Dokument konzentriert sich auf den Gast-Storage für Applikationsdaten (auch als Gastsystem bekannt) und wir gehen davon aus, dass die On-Premises-Umgebung SnapCenter für applikationskonsistente Backups verwendet.
+
+
+NOTE: Dieses Dokument bezieht sich auf jede Backup- oder Recovery-Lösung eines Drittanbieters. Je nach der in der Umgebung verwendeten Lösung befolgen Sie Best Practices, um Backup-Richtlinien zu erstellen, die die SLAs des Unternehmens erfüllen.
+
+Für die Konnektivität zwischen der On-Premises-Umgebung und dem virtuellen Azure-Netzwerk nutzen Sie die globale Express Route oder ein virtuelles WAN mit einem VPN-Gateway. Segmente sollten basierend auf dem lokalen VLAN-Design erstellt werden.
+
+
+NOTE: Es gibt mehrere Optionen, um On-Premises-Datacenter mit Azure zu verbinden, sodass wir nicht einen bestimmten Workflow in diesem Dokument beschreiben können. Die entsprechende On-Premises-zu-Azure-Konnektivitätsmethode finden Sie in der Azure-Dokumentation.
+
+
+
+== Implementieren der DR-Lösung
+
+
+
+=== Übersicht Zur Lösungsimplementierung
+
+. Stellen Sie sicher, dass die Applikationsdaten mit SnapCenter zusammen mit den erforderlichen RPO-Anforderungen gesichert werden.
+. Stellen Sie mithilfe von Cloud Manager Cloud Volumes ONTAP mit der richtigen Instanzgröße innerhalb des entsprechenden Abonnements und des virtuellen Netzwerks bereit.
++
+.. Konfiguration von SnapMirror für die entsprechenden Applikations-Volumes
+.. Aktualisieren Sie die Backup-Richtlinien in SnapCenter, um SnapMirror Updates nach den geplanten Aufgaben auszulösen.
+
+
+. Installieren Sie die JetStream DR-Software im lokalen Datacenter, und beginnen Sie mit dem Schutz für Virtual Machines.
+. Installieren Sie die JetStream DR-Software in der Private Cloud der Azure VMware Lösung.
+. Bei einem Notfall können Sie die SnapMirror Beziehung mithilfe von Cloud Manager unterbrechen und das Failover von Virtual Machines zu Azure NetApp Files oder zu vSAN Datastores im vorgesehenen AVS-DR-Standort auslösen.
++
+.. Schließen Sie die ISCSI-LUNs und NFS-Mounts für die Applikations-VMs wieder an.
+
+
+. Rufen Sie Failback auf den geschützten Standort auf, indem Sie SnapMirror nach der Wiederherstellung des primären Standorts erneut resynchronisieren.
+
+
+
+
+=== Einzelheiten Zur Bereitstellung
+
+.Konfiguration von CVO auf Azure und Replizierung von Volumes zu CVO
+====
+Als ersten Schritt müssen Sie Cloud Volumes ONTAP auf Azure konfigurieren (https://docs.netapp.com/us-en/netapp-solutions/ehc/azure/azure-guest.html["Verlinken"^]) Und replizieren Sie die gewünschten Volumen zu Cloud Volumes ONTAP mit den gewünschten Frequenzen und Snapshot-Aufbewahrung.
+
+image:dr-cvo-avs-image2.png["Fehler: Fehlendes Grafikbild"]
+
+====
+.Konfigurieren Sie AVS-Hosts und CVO-Datenzugriff
+====
+Zwei wichtige Faktoren, die bei der Implementierung des SDDC berücksichtigt werden müssen, sind die Größe des SDDC-Clusters in der Azure VMware Lösung und die Dauer des SDDC im Service. Diese beiden wichtigen Überlegungen für eine Disaster-Recovery-Lösung tragen zur Senkung der Gesamtbetriebskosten bei. Das SDDC kann mit nur drei Hosts eingerichtet sein und bis hin zu einem Cluster mit mehreren Hosts in einer umfassenden Implementierung.
+
+Die Entscheidung für die Implementierung eines AVS-Clusters hängt in erster Linie von den RPO/RTO-Anforderungen ab. Mit der Azure VMware Lösung kann das SDDC bereits rechtzeitig zur Verfügung gestellt werden, um entweder für das Testen oder für ein tatsächliches Notfallereignis zu sorgen. Ein durch die Just-in-time-Implementierung implementierter SDDC spart ESXi Hostkosten, wenn Sie keine Katastrophe mehr haben. Diese Form der Implementierung wirkt sich jedoch auf das RTO um einige Stunden aus, während das SDDC bereitgestellt wird.
+
+Am häufigsten implementiert wird die SDDC-Option in einem Pilot-Light-Modus, der immer aktiviert ist. Diese Option bietet einen kleinen Platzbedarf von drei Hosts, die immer verfügbar sind. Außerdem werden Recovery-Vorgänge durch eine Basis für Simulationsaktivitäten und Compliance-Prüfungen beschleunigt, sodass das Risiko einer operativen Abweichungen zwischen dem Produktions- und dem DR-Standort vermieden wird. Der Pilot-Light-Cluster kann bei Bedarf schnell auf das gewünschte Niveau skaliert werden, um tatsächliche DR-Ereignisse zu bewältigen.
+
+Informationen zur Konfiguration des AVS SDDC (ob On-Demand oder im Pilot-Light-Modus) finden Sie unter https://docs.netapp.com/us-en/netapp-solutions/ehc/azure/azure-setup.html["Implementieren und Konfigurieren der Virtualisierungsumgebung auf Azure"^]. Überprüfen Sie als Voraussetzung, ob die Gast-VMs auf den AVS-Hosts nach dem Einrichten der Konnektivität Daten von Cloud Volumes ONTAP nutzen können.
+
+Nach der ordnungsgemäßen Konfiguration von Cloud Volumes ONTAP und AVS beginnen Sie mit der Konfiguration des Jetstream zur Automatisierung der Wiederherstellung lokaler Workloads auf AVS (VMs mit Applikations-VMDKs und VMs mit in-Guest-Storage) mithilfe des VAIO Mechanismus und durch Nutzung von SnapMirror für Applikations-Volumes-Kopien auf Cloud Volumes ONTAP.
+
+====
+.Installieren Sie JetStream DR im lokalen Datacenter
+====
+Die Jetstream DR-Software besteht aus drei Hauptkomponenten: Der JetStream DR Management Server Virtual Appliance (MSA), der DR Virtual Appliance (DRVA) und den Host-Komponenten (I/O-Filterpakete). Mit dem MSA-System werden Hostkomponenten auf dem Compute-Cluster installiert und konfiguriert und JetStream DR-Software verwaltet. Die Installation erfolgt wie folgt:
+
+. Voraussetzungen prüfen.
+. Nutzen Sie das Kapazitätsplanungs-Tool für Ressourcen- und Konfigurationsempfehlungen.
+. Implementieren Sie JetStream DR MSA auf jedem vSphere-Host im zugewiesenen Cluster.
+. Starten Sie das MSA-Produkt mit dem DNS-Namen in einem Browser.
+. Registrieren Sie den vCenter-Server mit dem MSA.
+. Nachdem JetStream DR MSA implementiert und der vCenter Server registriert wurde, navigieren Sie zum JetStream DR Plug-in mit dem vSphere Web Client. Dazu können Sie im Datacenter > Configure > JetStream DR navigieren.
++
+image:dr-cvo-avs-image3.png["Fehler: Fehlendes Grafikbild"]
+
+. Führen Sie über die JetStream DR-Schnittstelle die folgenden Aufgaben aus:
++
+.. Konfigurieren Sie das Cluster mit dem I/O-Filterpaket.
++
+image:dr-cvo-avs-image4.png["Fehler: Fehlendes Grafikbild"]
+
+.. Fügen Sie den Azure Blob-Storage am Recovery-Standort hinzu.
++
+image:dr-cvo-avs-image5.png["Fehler: Fehlendes Grafikbild"]
+
+
+
+. Stellen Sie die erforderliche Anzahl an DR Virtual Appliances (DRVAs) über die Registerkarte Appliances bereit.
++
+
+NOTE: Verwenden Sie das Kapazitätsplanungs-Tool, um die Anzahl der benötigten DRVAs zu ermitteln.
+
++
+image:dr-cvo-avs-image6.png["Fehler: Fehlendes Grafikbild"]
+
++
+image:dr-cvo-avs-image7.png["Fehler: Fehlendes Grafikbild"]
+
+. Erstellen Sie Protokoll-Volumes für jedes DRVA unter Verwendung der VMDK aus den verfügbaren Datenspeichern oder dem unabhängigen gemeinsamen iSCSI-Speicherpool.
++
+image:dr-cvo-avs-image8.png["Fehler: Fehlendes Grafikbild"]
+
+. Erstellen Sie auf der Registerkarte geschützte Domänen die erforderliche Anzahl geschützter Domänen mithilfe von Informationen über die Azure Blob Storage-Site, die DRVA-Instanz und das Replikationsprotokoll. Eine geschützte Domäne definiert eine bestimmte VM oder einen Satz von Applikations-VMs innerhalb des Clusters, die gemeinsam gesichert werden und einer Prioritätsreihenfolge für Failover-/Failback-Vorgänge zugewiesen ist.
++
+image:dr-cvo-avs-image9.png["Fehler: Fehlendes Grafikbild"]
+
++
+image:dr-cvo-avs-image10.png["Fehler: Fehlendes Grafikbild"]
+
+. Wählen Sie die zu sichernden VMs aus und gruppieren Sie die VMs je nach Abhängigkeit in Applikationsgruppen. Anhand von Applikationsdefinitionen können Gruppen von VMs zu logischen Gruppen gruppiert werden, die ihre Boot-Aufträge, Boot-Verzögerungen und optionale Applikationsvalidierungen enthalten, die nach der Recovery ausgeführt werden können.
++
+
+NOTE: Vergewissern Sie sich, dass derselbe Sicherungsmodus für alle VMs in einer geschützten Domäne verwendet wird.
+
++
+
+NOTE: Write Back(VMDK)-Modus bietet eine höhere Performance.
+
++
+image:dr-cvo-avs-image11.png["Fehler: Fehlendes Grafikbild"]
+
+. Stellen Sie sicher, dass Replizierungs-Protokoll-Volumes auf hochperformanten Storage platziert werden.
++
+image:dr-cvo-avs-image12.png["Fehler: Fehlendes Grafikbild"]
+
+. Klicken Sie nach dem Abschluss auf Schutz für die geschützte Domäne starten. Damit wird die Datenreplizierung für die ausgewählten VMs auf den zugewiesenen Blob-Speicher gestartet.
++
+image:dr-cvo-avs-image13.png["Fehler: Fehlendes Grafikbild"]
+
+. Nach Abschluss der Replizierung wird der Sicherungsstatus der VM als wiederherstellbar markiert.
++
+image:dr-cvo-avs-image14.png["Fehler: Fehlendes Grafikbild"]
+
++
+
+NOTE: Failover-Runbooks können so konfiguriert werden, dass sie die VMs gruppieren (so genannte Recovery-Gruppe), die Boot-Reihenfolge festlegen und die CPU-/Speichereinstellungen zusammen mit den IP-Konfigurationen ändern.
+
+. Klicken Sie auf Einstellungen und dann auf den Link Runbook Configure, um die Runbook-Gruppe zu konfigurieren.
++
+image:dr-cvo-avs-image15.png["Fehler: Fehlendes Grafikbild"]
+
+. Klicken Sie auf die Schaltfläche Gruppe erstellen, um mit der Erstellung einer neuen Runbook-Gruppe zu beginnen.
++
+
+NOTE: Falls erforderlich, wenden Sie im unteren Teil des Bildschirms benutzerdefinierte Pre-scripts und Post-scripts an, um automatisch vor und nach dem Betrieb der Runbook-Gruppe auszuführen. Stellen Sie sicher, dass die Runbook-Skripte auf dem Management-Server residieren.
+
++
+image:dr-cvo-avs-image16.png["Fehler: Fehlendes Grafikbild"]
+
+. Bearbeiten Sie die VM-Einstellungen nach Bedarf. Geben Sie die Parameter für die Wiederherstellung der VMs an, einschließlich der Boot-Sequenz, der Boot-Verzögerung (angegeben in Sekunden), der Anzahl der CPUs und der zuzuzuzuzuzuzuzuzuzuzuzuzuzuweist. Ändern Sie die Boot-Sequenz der VMs, indem Sie auf die Pfeile nach oben oder unten klicken. Zur Aufbewahrung von MAC stehen auch Optionen zur Verfügung.
++
+image:dr-cvo-avs-image17.png["Fehler: Fehlendes Grafikbild"]
+
+. Statische IP-Adressen können manuell für die einzelnen VMs der Gruppe konfiguriert werden. Klicken Sie auf den Link „NIC-Ansicht“ einer VM, um die IP-Adresseinstellungen manuell zu konfigurieren.
++
+image:dr-cvo-avs-image18.png["Fehler: Fehlendes Grafikbild"]
+
+. Klicken Sie auf die Schaltfläche Konfigurieren, um die NIC-Einstellungen für die jeweiligen VMs zu speichern.
++
+image:dr-cvo-avs-image19.png["Fehler: Fehlendes Grafikbild"]
+
++
+image:dr-cvo-avs-image20.png["Fehler: Fehlendes Grafikbild"]
+
+
+
+Der Status der Failover- und Failback-Runbooks wird nun als konfiguriert aufgeführt. Failover- und Failback-Runbook-Gruppen werden paarweise erstellt, wobei dieselbe erste Gruppe von VMs und Einstellungen verwendet wird. Bei Bedarf können die Einstellungen einer Runbook-Gruppe individuell angepasst werden, indem Sie auf den entsprechenden Link Details klicken und Änderungen vornehmen.
+
+====
+.Installieren Sie JetStream DR für AVS in der Private Cloud
+====
+Eine Best Practice für einen Recovery-Standort (AVS) ist die Erstellung eines Pilotlichtclusters mit drei Knoten im Voraus. Dadurch kann die Infrastruktur am Recovery-Standort vorkonfiguriert werden, einschließlich:
+
+* Netzwerkzielsegmente, Firewalls, Services wie DHCP und DNS usw.
+* Installation von JetStream DR für AVS
+* Konfiguration von ANF-Volumes als Datastores und mehr
+
+
+Jetstream DR unterstützt einen RTO-Modus von nahezu null für geschäftskritische Domänen. In diesen Domänen sollte der Ziel-Storage vorinstalliert sein. ANF ist in diesem Fall ein empfohlener Speichertyp.
+
+
+NOTE: Die Netzwerkkonfiguration einschließlich der Segmenterstellung sollte auf dem AVS-Cluster entsprechend den Anforderungen vor Ort konfiguriert werden.
+
+
+NOTE: Je nach SLA- und RTO-Anforderungen können Sie einen kontinuierlichen Failover oder einen normalen (Standard-) Failover-Modus verwenden. Bei einer RTO von nahezu null sollten Sie am Recovery-Standort mit der kontinuierlichen Rehydrierung beginnen.
+
+. Verwenden Sie den Befehl Ausführen, um JetStream DR für AVS auf einer privaten Cloud der Azure VMware-Lösung zu installieren. Wählen Sie im Azure-Portal zur Azure VMware-Lösung die Private Cloud aus und wählen Sie Ausführen Command > Packages > JSDR.Configuration.
++
+
+NOTE: Der CloudAdmin-Standardbenutzer der Azure VMware-Lösung verfügt nicht über ausreichende Berechtigungen, um JetStream DR für AVS zu installieren. Die Azure VMware Lösung ermöglicht eine vereinfachte und automatisierte Installation von JetStream DR durch Aufrufen des Befehls Azure VMware Solution Run für JetStream DR.
+
++
+Der folgende Screenshot zeigt die Installation mithilfe einer DHCP-basierten IP-Adresse.
+
++
+image:dr-cvo-avs-image21.png["Fehler: Fehlendes Grafikbild"]
+
+. Nachdem die JetStream DR für AVS-Installation abgeschlossen ist, aktualisieren Sie den Browser. Um auf die JetStream DR-UI zuzugreifen, wechseln Sie zum SDDC Datacenter > Configure > JetStream DR.
++
+image:dr-cvo-avs-image22.png["Fehler: Fehlendes Grafikbild"]
+
+. Führen Sie über die JetStream DR-Schnittstelle die folgenden Aufgaben aus:
++
+.. Fügen Sie das Azure Blob Storage-Konto hinzu, das zur Sicherung des lokalen Clusters als Storage-Standort verwendet wurde, und starten Sie dann die Option Scan Domains.
+.. Wählen Sie im angezeigten Popup-Dialogfeld die zu importierende geschützte Domäne aus, und klicken Sie anschließend auf den Link Importieren.
++
+image:dr-cvo-avs-image23.png["Fehler: Fehlendes Grafikbild"]
+
+
+
+. Die Domäne wird zur Wiederherstellung importiert. Gehen Sie auf die Registerkarte geschützte Domänen und überprüfen Sie, ob die vorgesehene Domäne ausgewählt wurde, oder wählen Sie die gewünschte aus dem Menü geschützte Domäne auswählen aus. Eine Liste der wiederherstellbaren VMs in der geschützten Domäne wird angezeigt.
++
+image:dr-cvo-avs-image24.png["Fehler: Fehlendes Grafikbild"]
+
+. Nachdem die geschützten Domains importiert wurden, sollten DRVA-Appliances bereitgestellt werden.
++
+
+NOTE: Diese Schritte können auch mithilfe von CPT- erstellten Plänen automatisiert werden.
+
+. Verwenden von verfügbaren vSAN oder ANF-Datastores für Replizierungsprotokolle erstellen
+. Importieren Sie die geschützten Domänen und konfigurieren Sie die Recovery-VA, um einen ANF-Datenspeicher für VM-Platzierungen zu verwenden.
++
+image:dr-cvo-avs-image25.png["Fehler: Fehlendes Grafikbild"]
+
++
+
+NOTE: Stellen Sie sicher, dass DHCP für das ausgewählte Segment aktiviert ist und genügend IP-Adressen verfügbar sind. Dynamische IPs werden vorübergehend verwendet, während Domänen sich wiederherstellen. Jede wiederherzuckernde VM (einschließlich kontinuierlicher Rehydrierung) erfordert eine individuelle dynamische IP-Adresse. Nach Abschluss der Wiederherstellung wird die IP freigegeben und kann wiederverwendet werden.
+
+. Wählen Sie die entsprechende Failover-Option (Continuous Failover oder Failover) aus. In diesem Beispiel wird die kontinuierliche Rehydrierung (kontinuierliches Failover) ausgewählt.
++
+
+NOTE: Obwohl sich der kontinuierliche Failover- und Failover-Modus bei der Konfiguration unterscheiden, werden beide Failover-Modi mit den gleichen Schritten konfiguriert. Failover-Schritte werden als Reaktion auf ein Notfall konfiguriert und durchgeführt. Ein kontinuierlicher Failover kann jederzeit konfiguriert werden und dann im Hintergrund während des normalen Systembetriebs ausgeführt werden. Nach einem Zwischenfall wird der fortlaufende Failover abgeschlossen, sodass die Eigentümerschaft der geschützten VMs direkt auf den Recovery-Standort übertragen wird (RTO von nahezu null).
+
++
+image:dr-cvo-avs-image26.png["Fehler: Fehlendes Grafikbild"]
+
+
+
+Der kontinuierliche Failover-Prozess beginnt und der Fortschritt kann über die UI überwacht werden. Durch Klicken auf das blaue Symbol im Abschnitt „Aktueller Schritt“ wird ein Popup-Fenster angezeigt, in dem Details zum aktuellen Schritt des Failover-Prozesses angezeigt werden.
+
+====
+.Failover und Failback
+====
+. Nach einem Ausfall im geschützten Cluster der lokalen Umgebung (teilweiser oder kompletter Ausfall) können Sie das Failover für VMs auslösen. Dazu verwenden Sie Jetstream, nachdem die SnapMirror Beziehung für die jeweiligen Applikations-Volumes unterbrochen wurde.
++
+image:dr-cvo-avs-image27.png["Fehler: Fehlendes Grafikbild"]
+
++
+image:dr-cvo-avs-image28.png["Fehler: Fehlendes Grafikbild"]
+
++
+
+NOTE: Dieser Schritt kann zur Erleichterung des Recovery-Prozesses einfach automatisiert werden.
+
+. Greifen Sie auf die Jetstream UI auf dem AVS SDDC (Zielseite) zu und lösen Sie die Failover-Option aus, um den Failover abzuschließen. Die Taskleiste zeigt den Fortschritt für Failover-Aktivitäten an.
++
+Im Dialogfeld, das beim Abschluss des Failover angezeigt wird, kann die Failover-Aufgabe als geplant oder als erzwungen angegeben werden.
+
++
+image:dr-cvo-avs-image29.png["Fehler: Fehlendes Grafikbild"]
+
++
+image:dr-cvo-avs-image30.png["Fehler: Fehlendes Grafikbild"]
+
++
+Erzwungenes Failover geht davon aus, dass auf den primären Standort nicht mehr zugegriffen werden kann und die Eigentümerschaft der geschützten Domäne direkt vom Recovery-Standort übernommen werden muss.
+
++
+image:dr-cvo-avs-image31.png["Fehler: Fehlendes Grafikbild"]
+
++
+image:dr-cvo-avs-image32.png["Fehler: Fehlendes Grafikbild"]
+
+. Nachdem der kontinuierliche Failover abgeschlossen ist, wird eine Meldung angezeigt, die den Abschluss der Aufgabe bestätigt. Nach Abschluss der Aufgabe greifen Sie auf die wiederhergestellten VMs zu, um ISCSI- oder NFS-Sitzungen zu konfigurieren.
++
+
+NOTE: Der Failover-Modus wird in Failover ausgeführt, und der Status der VM ist wiederherstellbar. Alle VMs der geschützten Domäne werden jetzt am Recovery-Standort in dem von den Failover-Runbook-Einstellungen angegebenen Zustand ausgeführt.
+
++
+
+NOTE: Um die Failover-Konfiguration und die Infrastruktur zu überprüfen, kann JetStream DR im Testmodus (Option Test Failover) betrieben werden, um die Wiederherstellung von Virtual Machines und deren Daten vom Objektspeicher in einer Test-Recovery-Umgebung zu beobachten. Wenn ein Failover-Verfahren im Testmodus ausgeführt wird, ähnelt sein Vorgang einem tatsächlichen Failover-Prozess.
+
++
+image:dr-cvo-avs-image33.png["Fehler: Fehlendes Grafikbild"]
+
+. Sobald die Virtual Machines wiederhergestellt sind, wird Disaster Recovery für Storage auf dem Gast-Storage eingesetzt. Um diesen Prozess zu demonstrieren, wird SQL-Server in diesem Beispiel verwendet.
+. Melden Sie sich bei der wiederhergestellten SnapCenter-VM auf dem AVS SDDC an und aktivieren Sie den DR-Modus.
++
+.. Greifen Sie über Browsern auf die SnapCenter-Benutzeroberfläche zu.
++
+image:dr-cvo-avs-image34.png["Fehler: Fehlendes Grafikbild"]
+
+.. Navigieren Sie auf der Seite Einstellungen zu Einstellungen > Globale Einstellungen > Disaster Recovery.
+.. Wählen Sie Disaster Recovery Aktivieren.
+.. Klicken Sie Auf Anwenden.
++
+image:dr-cvo-avs-image35.png["Fehler: Fehlendes Grafikbild"]
+
+.. Überprüfen Sie, ob der DR-Job aktiviert ist, indem Sie auf Überwachen > Jobs klicken.
++
+
+NOTE: Für das Storage Disaster Recovery sollte NetApp SnapCenter 4.6 oder höher verwendet werden. Frühere Versionen sollten applikationskonsistente Snapshots (replizierte mit SnapMirror) verwenden und ein manuelles Recovery ausführen, falls frühere Backups am Disaster Recovery-Standort wiederhergestellt werden müssen.
+
+
+
+. Stellen Sie sicher, dass die SnapMirror Beziehung beschädigt ist.
++
+image:dr-cvo-avs-image36.png["Fehler: Fehlendes Grafikbild"]
+
+. Verbinden Sie die LUN aus Cloud Volumes ONTAP mit der wiederhergestellten SQL Gast-VM mit gleichen Laufwerksbuchstaben.
++
+image:dr-cvo-avs-image37.png["Fehler: Fehlendes Grafikbild"]
+
+. Öffnen Sie den iSCSI-Initiator, löschen Sie die vorherige getrennte Sitzung und fügen Sie das neue Ziel zusammen mit Multipath für die replizierten Cloud Volumes ONTAP Volumes hinzu.
++
+image:dr-cvo-avs-image38.png["Fehler: Fehlendes Grafikbild"]
+
+. Stellen Sie sicher, dass alle Laufwerke mit denselben Laufwerksbuchstaben verbunden sind, die vor DR verwendet wurden.
++
+image:dr-cvo-avs-image39.png["Fehler: Fehlendes Grafikbild"]
+
+. Starten Sie den MSSQL-Serverdienst neu.
++
+image:dr-cvo-avs-image40.png["Fehler: Fehlendes Grafikbild"]
+
+. Stellen Sie sicher, dass die SQL-Ressourcen wieder online sind.
++
+image:dr-cvo-avs-image41.png["Fehler: Fehlendes Grafikbild"]
+
++
+
+NOTE: Hängen Sie im Fall von NFS die Volumes mit dem Mount-Befehl an, und aktualisieren Sie die `/etc/fstab` Einträge.
+
++
+An diesem Punkt können Betriebsabläufe ausgeführt werden und der Geschäftsbetrieb normal weiterläuft.
+
++
+
+NOTE: Am NSX-T-Ende kann ein separates, dediziertes Tier-1 Gateway zur Simulation von Failover-Szenarien erstellt werden. So ist sichergestellt, dass alle Workloads miteinander kommunizieren können, dass jedoch kein Traffic in die bzw. aus der Umgebung geleitet werden kann. So können alle Triage-, Containment- oder Härteaufgaben ohne das Risiko einer Kreuzkontamination durchgeführt werden. Dieser Vorgang ist außerhalb des Anwendungsbereichs dieses Dokuments, kann aber problemlos zur Simulation der Isolation durchgeführt werden.
+
+
+
+Wenn der primäre Standort wieder in Betrieb ist, können Sie ein Failback durchführen. Die VM-Sicherung wird durch Jetstream fortgesetzt, und die SnapMirror Beziehung muss umgekehrt werden.
+
+. Wiederherstellung der lokalen Umgebung Je nach Art des Notfalleinfalls sind möglicherweise die Wiederherstellung und/oder Überprüfung der Konfiguration des geschützten Clusters erforderlich. Falls erforderlich, muss die JetStream DR-Software möglicherweise erneut installiert werden.
+. Greifen Sie auf die wiederhergestellte On-Premises-Umgebung zu, rufen Sie die Jetstream DR UI auf und wählen Sie die entsprechende geschützte Domäne aus. Nachdem der geschützte Standort für Failback bereit ist, wählen Sie die Failback-Option in der UI aus.
++
+
+NOTE: Mit dem CPT-generierten Failback-Plan kann außerdem die Rückgabe der VMs und ihrer Daten aus dem Objektspeicher in die ursprüngliche VMware Umgebung initiiert werden.
+
++
+image:dr-cvo-avs-image42.png["Fehler: Fehlendes Grafikbild"]
+
++
+
+NOTE: Geben Sie die maximale Verzögerung an, nachdem Sie die VMs am Recovery-Standort angehalten und am geschützten Standort neu gestartet haben. Die zum Abschluss dieses Prozesses erforderliche Zeit umfasst das Abschließen der Replizierung nach dem Stoppen von Failover-VMs, die zum Reinigen des Recovery-Standorts benötigte Zeit und die Zeit zur Wiederherstellung von VMs am geschützten Standort. NetApp empfiehlt 10 Minuten.
+
++
+image:dr-cvo-avs-image43.png["Fehler: Fehlendes Grafikbild"]
+
+. Schließen Sie den Failback-Prozess ab, und bestätigen Sie anschließend die Wiederaufnahme des VM-Schutzes und der Datenkonsistenz.
++
+image:dr-cvo-avs-image44.png["Fehler: Fehlendes Grafikbild"]
+
+. Nachdem die VMs wiederhergestellt wurden, trennen Sie den sekundären Storage vom Host und stellen eine Verbindung zum primären Storage her.
++
+image:dr-cvo-avs-image45.png["Fehler: Fehlendes Grafikbild"]
+
++
+image:dr-cvo-avs-image46.png["Fehler: Fehlendes Grafikbild"]
+
+. Starten Sie den MSSQL-Serverdienst neu.
+. Vergewissern Sie sich, dass die SQL-Ressourcen wieder online sind.
++
+image:dr-cvo-avs-image47.png["Fehler: Fehlendes Grafikbild"]
+
++
+
+NOTE: Für ein Failback auf den primären Storage sollten Sie sicherstellen, dass die Beziehungsrichtung vor dem Failover unverändert bleibt, indem Sie einen umgekehrten Resynchronisierungsvorgang durchführen.
+
++
+
+NOTE: Um die Rollen des primären und sekundären Storage nach der umgekehrten Resynchronisierung beizubehalten, führen Sie den umgekehrten Resync-Vorgang erneut aus.
+
+
+
+Dieser Prozess gilt für andere Applikationen wie Oracle, ähnliche Datenbankumgebungen und andere Applikationen, die mit Gast-vernetztem Storage verwenden.
+
+Testen Sie wie immer die Schritte zur Wiederherstellung der kritischen Workloads, bevor Sie sie in die Produktionsumgebung portieren.
+
+====
+
+
+== Vorteile dieser Lösung
+
+* Nutzt die effiziente und ausfallsichere Replizierung von SnapMirror
+* Wiederherstellung zu beliebigen verfügbaren Zeitpunkten mit ONTAP Snapshot Aufbewahrung
+* Eine vollständige Automatisierung steht für alle erforderlichen Schritte zur Wiederherstellung von Hunderten bis Tausenden von VMs zur Verfügung – von den Schritten für Storage, Computing, Netzwerk und Applikationen.
+* SnapCenter nutzt Klonmechanismen, die das replizierte Volume nicht ändern.
++
+** So wird das Risiko einer Beschädigung von Daten von Volumes und Snapshots vermieden.
+** Keine Replizierungsunterbrechungen während der DR-Test-Workflows
+** Nutzung der DR-Daten für Workflows über DR hinaus, wie Entwicklung/Test, Sicherheitstests, Patch- und Upgrade-Tests und Korrekturtests
+
+
+* CPU- und RAM-Optimierung können die Cloud-Kosten senken, indem Recovery auf kleinere Computing-Cluster ermöglicht wird.
+

@@ -1,0 +1,43 @@
+---
+sidebar: sidebar 
+permalink: vdi-vds/hcvdivds_gpu_considerations.html 
+keywords: GPU, Azure, NVIDIA, Tesla M60, 
+summary: 'GPUs werden normalerweise für die Grafikvisualisierung (Rendering) verwendet, indem repetitive Rechenberechnungen durchgeführt werden. Diese sich wiederholende Computing-Funktion wird häufig für KI- und Deep-Learning-Anwendungsfälle eingesetzt.' 
+---
+= Überlegungen zu GPUs
+:hardbreaks:
+:allow-uri-read: 
+:nofooter: 
+:icons: font
+:linkattrs: 
+:imagesdir: ./../media/
+
+
+GPUs werden normalerweise für die Grafikvisualisierung (Rendering) verwendet, indem repetitive Rechenberechnungen durchgeführt werden. Diese sich wiederholende Computing-Funktion wird häufig für KI- und Deep-Learning-Anwendungsfälle eingesetzt.
+
+Für grafikintensive Anwendungen bietet Microsoft Azure die NV Serie auf Basis der NVIDIA Tesla M60 Karte mit einem bis vier GPUs pro VM an. Jede NVIDIA Tesla M60 Karte verfügt über zwei Maxwell-basierte GPUs mit jeweils 8 GB GDDR5-Speicher und insgesamt 16 GB.
+
+
+NOTE: Eine NVIDIA-Lizenz ist in der NV Serie enthalten.
+
+image:hcvdivds_image37.png["Fehler: Fehlendes Grafikbild"]
+
+Bei NetApp HCI enthält die H615C GPU drei NVIDIA Tesla T4-Karten. Jede NVIDIA Tesla T4-Karte verfügt über eine Touring-basierte GPU mit 16 GB GDDR6-Speicher. Wenn sie in einer VMware vSphere Umgebung verwendet werden, können Virtual Machines die GPU gemeinsam nutzen, wobei jede VM einen dedizierten Frame-Puffer-Speicher hat. Die GPUs auf dem NetApp HCI H615C sind für Ray-Tracing verfügbar, um realistische Bilder einschließlich Lichtreflexionen herzustellen. Bitte beachten Sie, dass Sie einen NVIDIA-Lizenzserver mit einer Lizenz für GPU-Funktionen benötigen.
+
+image:hcvdivds_image38.png["Fehler: Fehlendes Grafikbild"]
+
+Um die GPU zu verwenden, müssen Sie den entsprechenden Treiber installieren, der vom NVIDIA-Lizenzportal heruntergeladen werden kann. In einer Azure-Umgebung ist der NVIDIA-Treiber als GPU-Treiber-Erweiterung verfügbar. Als Nächstes müssen die Gruppenrichtlinien im folgenden Screenshot aktualisiert werden, um GPU-Hardware für Remote-Desktop-Service-Sessions zu verwenden. Sie sollten den H.264-Grafikmodus priorisieren und die Encoder-Funktionalität aktivieren.
+
+image:hcvdivds_image39.png["Fehler: Fehlendes Grafikbild"]
+
+Validierung der GPU-Performance-Überwachung mit Task Manager oder mithilfe der nvidia-smi-CLI bei der Ausführung von WebGL-Samples. Stellen Sie sicher, dass GPU-, Arbeitsspeicher- und Encoderressourcen verbraucht werden.
+
+image:hcvdivds_image40.png["Fehler: Fehlendes Grafikbild"]
+
+Um sicherzustellen, dass die Virtual Machine in der NetApp HCI H615C mit Virtual Desktop Service implementiert wird, definieren Sie eine Site mit der vCenter Cluster-Ressource, die H615C Hosts enthält. Die VM-Vorlage muss das erforderliche vGPU-Profil aufweisen.
+
+In Shared-Umgebungen mit mehreren Sitzungen sollten mehrere homogene vGPU-Profile zugewiesen werden. Bei professionellen High-End-Grafikapplikationen ist es jedoch besser, jede VM dediziert einem Benutzer zu haben, um VMs voneinander zu isolieren.
+
+Der GPU-Prozessor kann durch eine QoS-Richtlinie gesteuert werden, und jedes vGPU-Profil kann über dedizierte Frame-Puffer verfügen. Der Encoder und der Decoder werden jedoch für jede Karte freigegeben. Die Platzierung eines vGPU-Profils auf einer GPU-Karte wird von der GPU-Zuweisungsrichtlinie des vSphere Hosts gesteuert, die die Performance (Spread VMs) oder die Konsolidierung (Gruppen-VMs) hervorheben kann.
+
+link:hcvdivds_solutions_for_industry.html["Als Nächstes: Lösungen für die Branche."]

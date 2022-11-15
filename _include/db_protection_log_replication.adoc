@@ -1,0 +1,36 @@
+= 
+:hardbreaks:
+:allow-uri-read: 
+:nofooter: 
+:icons: font
+:linkattrs: 
+:imagesdir: ./../media/
+
+
+Planen des Log Replication Playbook
+
+*Konfigurieren und starten Sie die Jobvorlage.*
+
+. Kopieren Sie die zuvor erstellte Jobvorlage.
++
+.. Navigieren Sie zu Ressourcen → Vorlagen.
+.. Suchen Sie die ONTAP/CVO Setup-Vorlage und klicken Sie rechts ganz auf Copy Template
+.. Klicken Sie auf Vorlage bearbeiten in der kopierten Vorlage, und ändern Sie den Namen in Log Replication Playbook.
+.. Behalten Sie für die Vorlage denselben Bestand, dasselbe Projekt und dieselben Anmeldeinformationen bei.
+.. Wählen Sie als auszuführenden Playbook die ora_Replication_logs.yml aus.
+.. Die Variablen bleiben die gleichen, aber die CVO Cluster-IP muss in der Variablen dst_Cluster_ip festgelegt werden.
+.. Klicken Sie auf Speichern .
+
+
+. Planen Sie die Jobvorlage.
++
+.. Navigieren Sie zu Ressourcen → Vorlagen.
+.. Klicken Sie auf die Playbook-Vorlage für Protokollreplikation, und klicken Sie anschließend oben auf „Schedules“.
+.. Klicken Sie auf Hinzufügen, fügen Sie den Namensplan für die Protokollreplizierung hinzu, wählen Sie das Startdatum/die Startzeit am Beginn der Stunde, wählen Sie die Zeitzone Lokal und die Häufigkeit der Ausführung aus. Ausführungshäufigkeit wird häufig aktualisiert, dass die SnapMirror Replizierung aktualisiert wird.
+
+
++
+
+NOTE: Es wird empfohlen, den Protokollplan so einzustellen, dass er jede Stunde aktualisiert wird, um sicherzustellen, dass die Wiederherstellung auf die letzte stündliche Aktualisierung erfolgt.
+
+

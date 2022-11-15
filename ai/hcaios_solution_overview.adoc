@@ -1,0 +1,59 @@
+---
+sidebar: sidebar 
+permalink: ai/hcaios_solution_overview.html 
+keywords: NetApp, Solution, Overview, ML 
+summary:  
+---
+= Lösungsüberblick
+:hardbreaks:
+:allow-uri-read: 
+:nofooter: 
+:icons: font
+:linkattrs: 
+:imagesdir: ./../media/
+
+
+[role="lead"]
+In diesem Abschnitt werden eine konventionelle Datenwissenschaftspipeline und ihre Nachteile überprüft. Sie stellt außerdem die Architektur der vorgeschlagenen Lösung für das Datensatz-Caching dar.
+
+
+
+== Herkömmliche Data Science-Pipeline und Nachteile
+
+Eine typische Sequenz der ENTWICKLUNG und Bereitstellung VON ML-Modellen umfasst iterative Schritte, die Folgendes beinhalten:
+
+* Datenaufnahme
+* Datenvorverarbeitung (Erstellung mehrerer Versionen der Datensätze)
+* Durchführung mehrerer Experimente mit Hyperparameter-Optimierung, verschiedenen Modellen usw.
+* Einsatz
+* Monitoringcnvrg.io hat eine umfassende Plattform entwickelt, um alle Aufgaben von der Forschung bis zur Bereitstellung zu automatisieren. In der folgenden Abbildung ist ein kleiner Ausschnitt von Dashboard-Screenshots zu der Pipeline dargestellt.
+
+
+image:hcaios_image2.png["Fehler: Fehlendes Grafikbild"]
+
+In der Handhabung sind mehrere Datensätze häufig aus öffentlichen Repositorys und privaten Daten wiedergegeben. Darüber hinaus verfügt jeder Datensatz wahrscheinlich über mehrere Versionen, die sich aus der Datenbereinigung oder dem Feature Engineering ergeben. Eine Konsole, die einen Datensatz-Hub und einen VersionHub bereitstellt, ist erforderlich, um sicherzustellen, dass dem Team Collaboration- und Konsistenztools zur Verfügung stehen, wie in der folgenden Abbildung zu sehen sind.
+
+image:hcaios_image3.png["Fehler: Fehlendes Grafikbild"]
+
+Der nächste Schritt in der Pipeline ist das Training. Es erfordert mehrere parallele Instanzen von Trainingsmodellen, die jeweils mit einem Datensatz und einer bestimmten Computing-Instanz verknüpft sind. Die Bindung eines Datensatzes an ein bestimmtes Experiment mit einer bestimmten Computing-Instanz ist eine Herausforderung, da es möglich ist, dass einige Experimente mit GPU-Instanzen von Amazon Web Services (AWS) durchgeführt werden, während andere Experimente vor Ort durch DGX-1 oder DGX-2-Instanzen durchgeführt werden. Andere Experimente können auf den CPU-Servern in GCP ausgeführt werden, während der Speicherort des Datensatzes nicht in angemessenem Umfang zu den Computing-Ressourcen liegt, die das Training durchführen. In angemessener Nähe wären volle 10 GbE oder mehr Konnektivität mit niedriger Latenz vom Datensatz-Storage zur Computing-Instanz.
+
+Data Scientists können den Datensatz in die Computing-Instanz herunterladen, die das Training durchführt und das Experiment ausführt. Allerdings gibt es bei diesem Ansatz mehrere potenzielle Probleme:
+
+* Wenn der Data Scientist den Datensatz auf eine Computing-Instanz herunterlädt, gibt es keine Garantie für eine hohe Performance des integrierten Computing-Storage (ein Beispiel für ein hochperformantes System wäre die ONTAP AFF A800 NVMe Lösung).
+* Wenn sich der heruntergeladene Datensatz in einem Computing-Node befindet, kann Storage zum Engpass werden, wenn verteilte Modelle über mehrere Nodes ausgeführt werden (im Gegensatz zu dem hochperformanten verteilten ONTAP Storage von NetApp).
+* Die nächste Iteration des Trainingsexperiments kann in einer anderen Computing-Instanz aufgrund von Warteschlangenkonflikten oder Prioritäten durchgeführt werden, was erneut zu einer beträchtlichen Netzwerkdistanz vom Datensatz zum Computing-Standort führt.
+* Andere Teammitglieder, die Trainingsexperimente auf demselben Computing Cluster ausführen, können diesen Datensatz nicht gemeinsam nutzen. Jeder einzelne von einem beliebigen Ort aus kann den (kostspieligen) Download des Datensatzes durchführen.
+* Wenn andere Datensätze oder Versionen desselben Datensatzes für die nachfolgenden Trainingsaufgaben benötigt werden, müssen die Datenanalysten erneut den (teuren) Download des Datensatzes auf die Computing-Instanz durchführen, die die training.NetApp und cnvrg.io ausführt, eine neue Caching-Lösung für Datensätze erstellt haben, die diese Hürden beseitigt. Die Lösung sorgt für eine schnellere Ausführung der ML-Pipeline und speichert häufig abgerufene Datensätze auf dem hochperformanten ONTAP Storage-System. Bei ONTAP NFS werden die Datensätze nur einmal (und nur einmal) in einer Data Fabric von NetApp (wie AFF A800) zwischengespeichert, die mit den Computing-Ressourcen verbunden ist. Da der Hochgeschwindigkeits-Storage NetApp ONTAP NFS mehrere ML-Computing-Nodes verarbeiten kann, wird die Performance der Trainingsmodelle optimiert. Dadurch können dem Unternehmen Kosteneinsparungen, Produktivität und betriebliche Effizienz erzielt werden.
+
+
+
+
+== Lösungsarchitektur
+
+Diese Lösung von NetApp und cnvrg.io bietet Datensatz-Caching, wie in der folgenden Abbildung dargestellt. Beim Datensatz-Caching können Data Scientists einen gewünschten Datensatz oder eine Datensatzversion auswählen und diesen in den ONTAP NFS-Cache verschieben, der sich in der Nähe des ML-Computing-Clusters befindet. Der Data Scientist kann nun mehrere Experimente ausführen, ohne dass es zu Verzögerungen oder Downloads kommt. Zudem können alle gemeinsam genutzten Engineers denselben Datensatz mit dem angeschlossenen Computing-Cluster verwenden (bei freier Auswahl eines beliebigen Nodes), ohne dass weitere Downloads aus dem Data Lake erforderlich sind. Die Data Scientists erhalten ein Dashboard, das alle Datensätze und Versionen überwacht und eine Ansicht darüber liefert, welche Datensätze im Cache gespeichert wurden.
+
+Die cnvrg.io-Plattform erkennt automatisch ältere Datensätze, die für eine bestimmte Zeit nicht verwendet wurden, und entfernt sie aus dem Cache. Diese behält freien NFS-Cache-Speicherplatz für häufiger verwendete Datensätze bei. Hierbei ist zu beachten, dass das Datensatz-Caching mit ONTAP in der Cloud und on-Premises funktioniert und somit maximale Flexibilität bietet.
+
+image:hcaios_image4.png["Fehler: Fehlendes Grafikbild"]
+
+link:hcaios_concepts_and_components.html["Weiter: Konzepte und Komponenten"]

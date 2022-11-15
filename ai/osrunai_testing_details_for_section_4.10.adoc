@@ -1,0 +1,64 @@
+---
+sidebar: sidebar 
+permalink: ai/osrunai_testing_details_for_section_4.10.html 
+keywords:  
+summary:  
+---
+= Testdetails für Abschnitt 4.10
+:hardbreaks:
+:allow-uri-read: 
+:nofooter: 
+:icons: font
+:linkattrs: 
+:imagesdir: ./../media/
+
+
+Dieser Abschnitt enthält Testdetails für den Abschnitt link:osrunai_over-quota_fairness.html["Gerechtigkeit Wegen Zu Viel Quoten"].
+
+Senden von Jobs in der folgenden Reihenfolge für `team-a`, `team-b`, und `team-c`:
+
+|===
+| Projekt | # GPUs | Gesamt | Kommentar 
+
+
+| Team A | 2 | 4/4 | 1 Workload in Warteschlange 
+
+
+| Team A | 2 | 4/4 | 2 Workloads in Warteschlange 
+
+
+| Team b | 2 | 2/2 | 2 Workloads in Warteschlange 
+
+
+| Team c | 2 | 2/2 | 2 Workloads in Warteschlange 
+|===
+Die folgende ausgeführte Befehlssequenz ist zu beachten:
+
+....
+$ runai submit a-3-gg -i gcr.io/run-ai-demo/quickstart -g 2 -p team-a$ runai submit a-4-gg -i gcr.io/run-ai-demo/quickstart -g 2 -p team-a$ runai submit b-5-gg -i gcr.io/run-ai-demo/quickstart -g 2 -p team-b$ runai submit c-6-gg -i gcr.io/run-ai-demo/quickstart -g 2 -p team-c
+....
+An dieser Stelle sollten Sie folgende Zustände haben:
+
+|===
+| Projekt | GPUs zugewiesen | Workloads In Die Warteschlange 
+
+
+| Team A | 4/4 | Zwei Workloads erfordern GPUs (je zwei) 
+
+
+| Team b | 2/2 | Zwei Workloads erfordern jeweils zwei GPUs 
+
+
+| Team c | 2/2 | Zwei Workloads erfordern jeweils zwei GPUs 
+
+
+| Team d | 8/8 | Keine 
+|===
+Löschen Sie dann alle Workloads für `team-d`:
+
+....
+$ runai delete -p team-d d-1-gggg d-2-gg d-3-gg
+....
+Siehe Abschnitt link:osrunai_over-quota_fairness.html["Gerechtigkeit Wegen Zu Viel Quoten"], Für Diskussionen über das Fortsetzen des Testszenarios.
+
+link:osrunai_where_to_find_additional_information.html["Weiter: Weitere Informationen"]

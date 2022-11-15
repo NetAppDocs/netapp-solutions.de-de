@@ -1,0 +1,92 @@
+---
+sidebar: sidebar 
+permalink: ai/ai-edge-test-results.html 
+keywords: test, results, aff, offline, single-stream, ef 
+summary: 'Zur Bewertung der Performance der vorgeschlagenen Architektur wurden zahlreiche Tests durchgeführt. Es gibt sechs verschiedene Workloads (Bildklassifizierung, Objekterkennung [klein], Objekterkennung [groß], medizinische Bildgebung, Speech-to-Text, Und natürliche Sprachverarbeitung [NLP]), die Sie in drei verschiedenen Szenarien ausführen können - offline, Single Stream und Multistream.' 
+---
+= Testergebnisse
+:hardbreaks:
+:allow-uri-read: 
+:nofooter: 
+:icons: font
+:linkattrs: 
+:imagesdir: ./../media/
+
+
+link:ai-edge-test-procedure.html["Zurück: Testverfahren."]
+
+
+
+== Testergebnisse für AFF
+
+Zur Bewertung der Performance der vorgeschlagenen Architektur wurden zahlreiche Tests durchgeführt. Es gibt sechs verschiedene Workloads (Bildklassifizierung, Objekterkennung [klein], Objekterkennung [groß], medizinische Bildgebung, Speech-to-Text, Und natürliche Sprachverarbeitung [NLP]), die Sie in drei verschiedenen Szenarien ausführen können: Offline, Single Stream und Multistream.
+
+
+NOTE: Das letzte Szenario wird nur für die Bildklassifizierung und Objekterkennung implementiert.
+
+Dies ergibt 15 mögliche Workloads, die alle unter drei verschiedenen Setups getestet wurden:
+
+* Einzelner Server/lokaler Storage
+* Einzelner Server/Netzwerk-Storage
+* Multi-Server-/Netzwerk-Storage
+
+
+Die Ergebnisse werden in den folgenden Abschnitten beschrieben.
+
+
+
+=== KI-Inferenz für AFF im Offline-Szenario
+
+In diesem Szenario waren alle Daten dem Server zur Verfügung und die Zeit, die für die Verarbeitung aller Proben erforderlich war, wurde gemessen. Als Ergebnisse der Tests berichten wir Bandbreiten in Proben pro Sekunde. Wenn mehr als ein Server verwendet wurde, berichten wir über die gesamte Bandbreite, die über alle Server zusammengefasst wurde. Die Ergebnisse für alle drei Anwendungsfälle sind in der folgenden Abbildung dargestellt. Für den Fall mit zwei Servern wird die kombinierte Bandbreite von beiden Servern angegeben.
+
+image:ai-edge-image12.png["Fehler: Fehlendes Grafikbild"]
+
+Die Ergebnisse zeigen, dass Netzwerkspeicher sich nicht negativ auf die Performance auswirken – die Änderung ist minimal und bei einigen Aufgaben wird keine gefunden. Beim Hinzufügen des zweiten Servers wird die Gesamtbandbreite entweder genau verdoppelt oder im schlimmsten Fall ist die Änderung weniger als 1 %.
+
+
+
+=== KI-Inferenz in einem einzelnen Stream-Szenario für AFF
+
+Dieser Benchmark misst die Latenz. Für den Fall mehrerer Computing-Server wird die durchschnittliche Latenz angegeben. Die Ergebnisse für die Aufgabensuite finden Sie in der folgenden Abbildung. Bei zwei Servern wird die durchschnittliche Latenz von beiden Servern angegeben.
+
+image:ai-edge-image13.png["Fehler: Fehlendes Grafikbild"]
+
+Die Ergebnisse zeigen auch hier, dass der Netzwerkspeicher ausreichend ist, um die Aufgaben zu bewältigen. Der Unterschied zwischen lokalem und Netzwerk-Speicher in einem Server-Fall ist minimal oder nicht. Gleiches gilt, wenn zwei Server denselben Storage nutzen – die Latenz auf beiden Servern bleibt bei sehr geringen Änderungen gleich.
+
+
+
+=== KI-Inferenz in Multistream-Szenario für AFF
+
+In diesem Fall führt das System zu der Anzahl der Streams, die das System verarbeiten kann, und erfüllt gleichzeitig die QoS-Einschränkung. Das Ergebnis ist also immer eine ganze Zahl. Für mehrere Server wird die Gesamtanzahl der Streams, die über alle Server zusammengefasst wurden, angegeben. Nicht alle Workloads unterstützen dieses Szenario, aber wir haben sie auch ausgeführt. Die Ergebnisse unserer Tests sind in der folgenden Abbildung zusammengefasst. Im Fall von zwei Servern wird die kombinierte Anzahl von Streams beider Server angegeben.
+
+image:ai-edge-image14.png["Fehler: Fehlendes Grafikbild"]
+
+Die Ergebnisse zeigen die perfekte Performance der Einrichtung: Lokaler Speicher und Netzwerk-Storage liefern die gleichen Ergebnisse, und mit dem zweiten Server verdoppelt sich die Anzahl der Streams, die durch das vorgeschlagene Setup bewältigt werden können.
+
+
+
+== Testergebnisse für EF
+
+Zur Bewertung der Performance der vorgeschlagenen Architektur wurden zahlreiche Tests durchgeführt. Es gibt sechs verschiedene Workloads (Bildklassifizierung, Objekterkennung [klein], Objekterkennung [groß], medizinische Bildgebung, Speech-to-Text, Und natürliche Sprachverarbeitung [NLP]), die in zwei verschiedenen Szenarien ausgeführt wurden: Offline und Single Stream. Die Ergebnisse werden in den folgenden Abschnitten beschrieben.
+
+
+
+=== KI-Inferenz im Offline-Szenario für EF
+
+In diesem Szenario waren alle Daten dem Server zur Verfügung und die Zeit, die für die Verarbeitung aller Proben erforderlich war, wurde gemessen. Als Ergebnisse der Tests berichten wir Bandbreiten in Proben pro Sekunde. Für Einzelknoten-Ausführung berichten wir über den Durchschnitt beider Server, während für zwei Server-Ausführung die gesamte Bandbreite über alle Server zusammengefasst angegeben wird. Die Ergebnisse für Anwendungsfälle sind in der Abbildung unten dargestellt.
+
+image:ai-edge-image15.png["Fehler: Fehlendes Grafikbild"]
+
+Die Ergebnisse zeigen, dass Netzwerkspeicher sich nicht negativ auf die Performance auswirken – die Änderung ist minimal und bei einigen Aufgaben wird keine gefunden. Beim Hinzufügen des zweiten Servers wird die Gesamtbandbreite entweder genau verdoppelt oder im schlimmsten Fall ist die Änderung weniger als 1 %.
+
+
+
+=== KI-Inferenz in einem einzelnen Stream-Szenario für die EF-Series
+
+Dieser Benchmark misst die Latenz. In allen Fällen wird die durchschnittliche Latenz über alle Server angegeben, die in den Ausführung involviert sind. Die Ergebnisse für die Aufgabensuite sind gegeben.
+
+image:ai-edge-image16.png["Fehler: Fehlendes Grafikbild"]
+
+Die Ergebnisse zeigen wieder, dass der Netzwerkspeicher zur Bewältigung der Aufgaben ausreicht. Der Unterschied zwischen dem lokalen Speicher und dem Netzwerk-Speicher in einem Server-Fall ist minimal oder gar nicht. Gleiches gilt, wenn zwei Server denselben Storage nutzen – die Latenz auf beiden Servern bleibt bei sehr geringen Änderungen gleich.
+
+link:ai-edge-architecture-sizing-options.html["Als Nächstes: Optionen zur Dimensionierung der Architektur."]

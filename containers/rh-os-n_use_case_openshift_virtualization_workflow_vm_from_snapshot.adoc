@@ -1,0 +1,61 @@
+---
+sidebar: sidebar 
+permalink: containers/rh-os-n_use_case_openshift_virtualization_workflow_vm_from_snapshot.html 
+keywords: OpenShift, OCP, Astra Trident, NetApp ONTAP, Red Hat OpenShift, OpenShift Virtualization, CNV, Container Native Virtualization, Red Hat OpenShift Virtualization 
+summary: Red hat OpenShift Virtualisierung mit NetApp ONTAP 
+---
+= Workflows: Red hat OpenShift Virtualisierung mit NetApp ONTAP
+:allow-uri-read: 
+
+
+
+
+== Erstellen Sie eine VM aus einem Snapshot
+
+Mit Astra Trident und Red hat OpenShift können Benutzer in von ihr bereitgestellten Storage-Klassen einen Snapshot eines persistenten Volumes erstellen. Mit dieser Funktion können Benutzer eine zeitpunktgenaue Kopie eines Volumes erstellen oder dasselbe Volume in einen vorherigen Zustand zurückversetzen. Ob Rollback, Klonen oder Datenwiederherstellung – lassen sich in unterschiedlichen Anwendungsfällen einsetzen.
+
+Für Snapshot-Vorgänge in OpenShift müssen die Ressourcen VolumeSnapshotClass, VolumeSnapshot und VolumeSnapshotContent definiert werden.
+
+* Ein VolumeSnapshotContent ist der tatsächliche Snapshot, der von einem Volume im Cluster erstellt wurde. Es handelt sich um eine Cluster-weite Ressource, die dem PersistenzVolume für Storage gleicht.
+* Ein VolumeSnapshot ist eine Anforderung zum Erstellen des Snapshots eines Volumes. Es ist analog zu einem PersistentVolumeClaim.
+* Mit VolumeSnapshotClass kann der Administrator verschiedene Attribute für einen VolumeSnapshot festlegen. Damit können Sie unterschiedliche Attribute für verschiedene Snapshots haben, die vom selben Volume erstellt wurden.
+
+
+image::redhat_openshift_image60.jpg[VM aus der Snapshot Architektur]
+
+Um einen Snapshot einer VM zu erstellen, führen Sie die folgenden Schritte aus:
+
+. Erstellen Sie eine VolumeSnapshotKlasse, die dann zum Erstellen eines VolumeSnapshots verwendet werden kann. Navigieren Sie zu Storage > VolumeSnapshotClasses und klicken Sie auf Create VolumeSnapshotClass.
+. Geben Sie den Namen der Snapshot-Klasse ein, geben Sie csi.trident.netapp.io für den Treiber ein, und klicken Sie auf Erstellen.
++
+image::redhat_openshift_image61.JPG[Erstellen Sie die Snapshot-Klasse]
+
+. Identifizieren Sie die PVC, die an die Quell-VM angeschlossen ist, und erstellen Sie dann einen Snapshot dieser PVC. Navigieren Sie zu `Storage > VolumeSnapshots` Und klicken Sie auf VolumeSnapshots erstellen.
+. Wählen Sie das PVC aus, für das Sie den Snapshot erstellen möchten, geben Sie den Namen des Snapshots ein oder übernehmen Sie den Standardwert, und wählen Sie die entsprechende VolumeSnapshotClass aus. Klicken Sie dann auf Erstellen.
++
+image::redhat_openshift_image62.JPG[Erstellen Sie Snapshot]
+
+. Dadurch wird die Momentaufnahme des PVC zu diesem Zeitpunkt erstellt.
+
+
+
+
+== Erstellen Sie aus dem Snapshot eine neue VM
+
+. Stellen Sie zuerst den Snapshot in einer neuen PVC wieder her. Navigieren Sie zu „Storage“ > „VolumeSnapshots“, klicken Sie auf die Ellipsen neben dem Snapshot, den Sie wiederherstellen möchten, und klicken Sie auf „als neues PVC wiederherstellen“.
+. Geben Sie die Details des neuen PVC ein, und klicken Sie auf Wiederherstellen. Dadurch wird ein neues PVC erzeugt.
++
+image::redhat_openshift_image63.JPG[Wiederherstellung des Snapshots in einer neuen PVC]
+
+. Erstellen Sie dann eine neue VM aus diesem PVC. Navigieren Sie zu Workloads > Virtualisierung > Virtuelle Maschinen, und klicken Sie auf Erstellen > mit YAML.
+. Geben Sie im Abschnitt Spec > Template > spec > Volumes das neue PVC an, das aus Snapshot erstellt wurde, anstatt von der Container-Festplatte aus. Geben Sie alle anderen Details für die neue VM nach Ihren Anforderungen an.
++
+[source, cli]
+----
+- name: rootdisk
+  persistentVolumeClaim:
+    claimName: rhel8-short-frog-rootdisk-28dvb-snapshot-restore
+----
+. Klicken Sie auf Erstellen, um die neue VM zu erstellen.
+. Nachdem die VM erfolgreich erstellt wurde, können Sie auf die neue VM zugreifen und diese überprüfen, ob sie denselben Status hat wie die VM, deren PVC zum Zeitpunkt der Snapshot-Erstellung verwendet wurde.
+

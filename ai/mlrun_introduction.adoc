@@ -1,0 +1,63 @@
+---
+sidebar: sidebar 
+permalink: ai/mlrun_introduction.html 
+keywords: NetApp, MLRun, Introduction, Audience, Solution 
+summary:  
+---
+= TR-4834: NetApp und Iguazio für MLRun Pipeline
+:hardbreaks:
+:allow-uri-read: 
+:nofooter: 
+:icons: font
+:linkattrs: 
+:imagesdir: ./../media/
+
+
+Rick Huang, David Arnette, NetApp Marcelo Litovsky, Iguazio
+
+In diesem Dokument werden die Details der MLRun-Pipeline unter Verwendung von NetApp ONTAP AI, der NetApp AI Control Plane, der NetApp Cloud Volumes Software und der Iguazio Data Science Platform behandelt. Wir verwendeten Nuclio serverlose Funktion, Kubernetes Persistent Volumes, NetApp Cloud Volumes, NetApp Snapshot Kopien, Grafana Dashboard, Und andere Dienste auf der Iguazio-Plattform, um eine End-to-End-Daten-Pipeline für die Simulation von Netzwerkausfall Erkennung zu bauen. Die Technologien von Iguazio und NetApp wurden integriert, um schnelle Modellbereitstellung, Datenreplizierung und Produktionsüberwachungsfunktionen vor Ort und in der Cloud zu ermöglichen.
+
+Der Fokus der Arbeit eines Datenwissenschaftlers sollte auf das Training und Tuning von ml- (Machine Learning) und künstlicher Intelligenz (KI)-Modellen liegen. Allerdings verbringen Data Scientists nach Untersuchungen von Google ~80 % ihrer Zeit damit, herauszufinden, wie ihre Modelle mit Enterprise-Applikationen funktionieren und im Maßstab laufen lassen können, wie in der folgenden Abbildung dargestellt, die Modellentwicklung im AI/ML-Workflow.
+
+image:mlrun_image1.png["Fehler: Fehlendes Grafikbild"]
+
+Für das Management von End-to-End-KI/ML-Projekten ist ein umfassenderes Verständnis von Unternehmenskomponenten erforderlich. Obwohl DevOps die Definition, Integration und Implementierung dieser Typen von Komponenten übernommen hat, zielen Machine-Learning-Vorgänge auf einen ähnlichen Flow ab, der KI/ML-Projekte umfasst. Eine Vorstellung der Merkmale einer End-to-End-KI/ML-Pipeline im Unternehmen erhalten Sie in der folgenden Liste der erforderlichen Komponenten:
+
+* Storage
+* Netzwerkbetrieb
+* Datenbanken
+* File-Systeme
+* Container
+* CI/CD-Pipeline (Continuous Integration und Continuous Deployment
+* Integrierte Entwicklungsumgebung (IDE)
+* Sicherheit
+* Datenzugriffsrichtlinien
+* Trennt
+* Cloud
+* Einheitliche
+* Toolsets und Bibliotheken für Data Science
+
+
+In diesem Whitepaper zeigen wir, wie die Partnerschaft zwischen NetApp und Iguazio die Entwicklung einer End-to-End-KI/ML-Pipeline deutlich vereinfacht. Dadurch wird die Markteinführungszeit für alle Ihre KI/ML-Applikationen verkürzt.
+
+
+
+== Zielgruppe
+
+Die Welt der Datenwissenschaft berührt mehrere Disziplinen in der Informationstechnologie und im Business.
+
+* Der Data Scientist benötigt die Flexibilität, ihre Tools und Bibliotheken einzusetzen.
+* Der Data Engineer muss wissen, wie die Daten fließen und wo sie sich befinden.
+* DevOps-Engineers benötigen die Tools, um neue KI/ML-Applikationen in ihre CI/CD-Pipelines zu integrieren.
+* Geschäftsanwender möchten auf KI-/ML-Applikationen zugreifen können. Wir beschreiben, wie NetApp und Iguazio jede dieser Rollen unterstützen, mit unseren Plattformen einen Mehrwert für das Unternehmen zu schaffen.
+
+
+
+
+== Lösungsüberblick
+
+Diese Lösung folgt dem Lebenszyklus einer KI/ML-Applikation. Zunächst legen wir die Arbeit der Datenanalysten fest, welche Schritte für die Datenvorbereitung und das Training und die Implementierung der Modelle erforderlich sind. Wir befolgen die erforderlichen Arbeiten, um eine vollständige Pipeline zu erstellen mit der Möglichkeit, Artefakte zu verfolgen, mit der Durchführung zu experimentieren und sich nach Kubeflow zu implementieren. Um den gesamten Zyklus abzuschließen, integrieren wir die Pipeline mit NetApp Cloud Volumes, um die Datenversionierung zu ermöglichen, wie im folgenden Bild zu sehen ist.
+
+image:mlrun_image2.png["Fehler: Fehlendes Grafikbild"]
+
+link:mlrun_technology_overview.html["Weiter: Technologischer Überblick"]

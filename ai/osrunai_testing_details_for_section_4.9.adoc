@@ -1,0 +1,53 @@
+---
+sidebar: sidebar 
+permalink: ai/osrunai_testing_details_for_section_4.9.html 
+keywords:  
+summary:  
+---
+= Testdetails für Abschnitt 4.9
+:hardbreaks:
+:allow-uri-read: 
+:nofooter: 
+:icons: font
+:linkattrs: 
+:imagesdir: ./../media/
+
+
+Dieser Abschnitt enthält Testdetails für den Abschnitt link:osrunai_basic_resource_allocation_fairness.html["Gerechtigkeit Bei Der Grundlegenden Ressourcenzuweisung"].
+
+Senden von Jobs in folgender Reihenfolge:
+
+|===
+| Projekt | # GPUs | Gesamt | Kommentar 
+
+
+| Team d | 2 | 6/8 | Workload zwischen Team und b/c wird angehalten und wird verschoben `pending`. 
+
+
+| Team d | 2 | 8/8 | Andere Team-Workloads (b/c) unterbrechen und verschieben sich in `pending`. 
+|===
+Die folgende ausgeführte Befehlssequenz ist zu beachten:
+
+....
+$ runai submit d-2-gg -i gcr.io/run-ai-demo/quickstart -g 2 -p team-d$ runai submit d-3-gg -i gcr.io/run-ai-demo/quickstart -g 2 -p team-d
+....
+An dieser Stelle sollten Sie folgende Zustände haben:
+
+|===
+| Projekt | GPUs zugewiesen | Workloads In Die Warteschlange 
+
+
+| Team A | 4/4 | Keine 
+
+
+| Team b | 2/2 | Keine 
+
+
+| Team c | 2/2 | Keine 
+
+
+| Team d | 8/8 | Keine 
+|===
+Siehe Abschnitt link:osrunai_basic_resource_allocation_fairness.html["Gerechtigkeit Bei Der Grundlegenden Ressourcenzuweisung"] Für eine Diskussion über das Fortsetzen des Testszenarios.
+
+link:osrunai_testing_details_for_section_4.10.html["Weiter: Testdetails für Abschnitt 4.10"]

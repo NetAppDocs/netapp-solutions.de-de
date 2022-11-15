@@ -1,0 +1,43 @@
+---
+sidebar: sidebar 
+permalink: ai/osrunai_saving_data_to_a_trident-provisioned_persistentvolume.html 
+keywords:  
+summary:  
+---
+= Speichern von Daten in einem mit Trident bereitgestellten PersistenzVolume
+:hardbreaks:
+:allow-uri-read: 
+:nofooter: 
+:icons: font
+:linkattrs: 
+:imagesdir: ./../media/
+
+
+NetApp Trident ist ein vollständig unterstütztes Open-Source-Projekt, damit Sie die anspruchsvollen Persistenzanforderungen Ihrer Container-Applikationen erfüllen können. Daten können in ein mit Trident bereitgestelltes Kubernetes PersistentVolume (PV) gelesen und geschrieben werden. Hinzu kommen Daten-Tiering, Verschlüsselung, NetApp Snapshot Technologie, Compliance und hohe Performance der Datenmanagement-Software NetApp ONTAP.
+
+
+
+== Verwendung von PVCs in einem vorhandenen Namespace
+
+Bei größeren KI-Projekten könnte es effizienter sein, dass unterschiedliche Container Daten in dasselbe Kubernetes PV lesen und schreiben. Zur Wiederverwendung einer Kubernetes Persistent Volume Claim (PVC) muss der Anwender bereits eine PVC erstellt haben. Siehe https://netapp-trident.readthedocs.io/["NetApp Trident Dokumentation"^] Für Details zur Erstellung eines PVC. Hier ein Beispiel für die Wiederverwendung einer vorhandenen PVC:
+
+....
+$ runai submit pvc-test -p team-a --pvc test:/tmp/pvc1mount -i gcr.io/run-ai-demo/quickstart -g 1
+....
+Führen Sie den folgenden Befehl aus, um den Status des Jobs anzuzeigen `pvc-test` Für Projekt `team-a`:
+
+....
+$ runai get pvc-test -p team-a
+....
+Sie sollten die PV /tmp/pvc1Mount auf sehen `team-a` Job `pvc-test`. Auf diese Weise können mehrere Container aus demselben Volume gelesen werden. Das ist hilfreich, wenn es mehrere konkurrierende Modelle in der Entwicklung oder in der Produktion gibt. Data Scientists können ein Modellensemble aufbauen und dann Vorhersageergebnisse durch Mehrheitsvotum oder andere Techniken kombinieren.
+
+Verwenden Sie Folgendes für den Zugriff auf die Container-Shell:
+
+....
+$ runai bash pvc-test -p team-a
+....
+Anschließend können Sie das gemountete Volume prüfen und auf Ihre Daten innerhalb des Containers zugreifen.
+
+Diese Funktion zur Wiederverwendung von VES funktioniert mit NetApp FlexVol Volumes und NetApp ONTAP FlexGroup Volumes. Damit können Data Engineers flexiblere und robustere Datenmanagement-Optionen nutzen, um die NetApp Data Fabric nutzen zu können.
+
+link:osrunai_conclusion.html["Weiter: Fazit"]

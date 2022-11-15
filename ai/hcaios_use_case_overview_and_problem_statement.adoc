@@ -1,0 +1,45 @@
+---
+sidebar: sidebar 
+permalink: ai/hcaios_use_case_overview_and_problem_statement.html 
+keywords: NetApp, Case, Overview, Problem, Statement 
+summary:  
+---
+= Fallübersicht zu Anwendungsfall und Problembeschreibung
+:hardbreaks:
+:allow-uri-read: 
+:nofooter: 
+:icons: font
+:linkattrs: 
+:imagesdir: ./../media/
+
+
+[role="lead"]
+Datensätze und Datensatzversionen befinden sich normalerweise in einem Data Lake, wie z. B. objektbasierter NetApp StorageGRID Storage, der geringere Kosten und andere betriebliche Vorteile bietet. Die Data Scientists erhalten diese Datensätze in mehreren Schritten, um sie für das Training mit einem bestimmten Modell vorzubereiten. Oft erstellen sie dabei mehrere Versionen. Im nächsten Schritt muss der Data Scientist optimierte Computing-Ressourcen (GPUs, High-End-CPU-Instanzen, On-Premises-Cluster usw.) auswählen, um das Modell auszuführen. Die folgende Abbildung zeigt den Mangel an Dataset-Nähe in einer ML-Computing-Umgebung.
+
+image:hcaios_image1.png["Fehler: Fehlendes Grafikbild"]
+
+Mehrere Trainingsversuche müssen jedoch parallel in verschiedenen Computing-Umgebungen ausgeführt werden, von denen jeder einen Download des Datensatzes aus dem Data Lake erfordert, was ein kostspieliger und zeitaufwendiger Prozess ist. Die Nähe des Datensatzes zur Computing-Umgebung (insbesondere bei einer Hybrid Cloud) ist nicht garantiert. Außerdem müssen andere Teammitglieder, die ihre eigenen Experimente mit demselben Datensatz durchführen, denselben mühsamen Prozess durchlaufen. Neben dem offensichtlichen langsamen Datenzugriff sind Probleme bei der Nachverfolgung von Datensatzversionen, der Datensatzfreigabe, der Zusammenarbeit und der Reproduzierbarkeit zu überwinden.
+
+
+
+== Kundenanforderungen
+
+Die Kundenanforderungen können variieren, um bei effizienter Nutzung von Ressourcen hochperformante ML-Durchläufe zu erreichen. Kunden benötigen beispielsweise Folgendes:
+
+* Schneller Zugriff auf Datensätze von jeder Computing-Instanz, die das Trainingsmodell ausführt, ohne dass teure Downloads und der Datenzugriff komplexer werden
+* Die Verwendung von Compute-Instanzen (GPU oder CPU) in der Cloud oder lokal, ohne sich um den Speicherort der Datensätze zu kümmern
+* Höhere Effizienz und Produktivität, da mehrere Trainingsversuche parallel mit unterschiedlichen Computing-Ressourcen auf demselben Datensatz durchgeführt werden können ohne unnötige Verzögerungen und Datenlatenz
+* Minimale Kosten für Computing-Instanzen
+* Verbesserte Reproduzierbarkeit mit Tools, mit denen Datensätze, deren Herkunft, Versionen und andere Metadatendetails aufgezeichnet werden können
+* Verbessertes Sharing und Zusammenarbeit, sodass autorisierte Teammitglieder auf die Datensätze zugreifen und Experimente ausführen können
+
+
+Zur Implementierung von Datensatz-Caching mit NetApp ONTAP Datenmanagement-Software müssen Kunden die folgenden Aufgaben durchführen:
+
+* Konfigurieren Sie den NFS-Storage, der den Computing-Ressourcen am nächsten ist, und legen Sie ihn fest.
+* Bestimmen Sie, welche Datensätze und Version im Cache gespeichert werden sollen.
+* Überwachen Sie den gesamten Arbeitsspeicher, der in Cache-Datensätzen gespeichert ist, und wie viel NFS-Speicher für zusätzliche Cache-Commits zur Verfügung steht (beispielsweise Cache-Management).
+* Alter aus Datensätzen im Cache, wenn sie in einer bestimmten Zeit nicht verwendet wurden. Die Standardeinstellung ist ein Tag; weitere Konfigurationsoptionen sind verfügbar.
+
+
+link:hcaios_solution_overview.html["Weiter: Lösungsübersicht"]

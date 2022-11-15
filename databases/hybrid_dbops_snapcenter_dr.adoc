@@ -1,0 +1,186 @@
+---
+sidebar: sidebar 
+permalink: databases/hybrid_dbops_snapcenter_dr.html 
+summary: Hybrid-Cloud-Datenbanklösungen mit SnapCenter DR-Workflow 
+keywords: 'netapp, solutions, database, SnapCenter, DR, "business continuity", "disaster recovery"' 
+---
+= Disaster-Recovery-Workflow
+:hardbreaks:
+:allow-uri-read: 
+:nofooter: 
+:icons: font
+:linkattrs: 
+:table-stripes: odd
+:imagesdir: ./../media/
+
+
+link:hybrid_dbops_snapcenter_devtest.html["Früher: Workflow für Entwicklungs- und Test-Bursting in die Cloud."]
+
+Unternehmen nutzen die Public Cloud als praktikable Ressource und Ziel für die Disaster Recovery. SnapCenter macht diesen Prozess so nahtlos wie möglich. Dieser Disaster-Recovery-Workflow ähnelt dem Klon-Workflow sehr, doch die Datenbank-Recovery wird durch das letzte verfügbare Protokoll durchgeführt, das in die Cloud repliziert wurde, um alle möglichen Geschäftstransaktionen wiederherzustellen. Für Disaster Recovery gibt es jedoch noch weitere für die Konfiguration und die Nachbearbeitung ergänzende Schritte.
+
+
+
+== Klonen einer lokalen Oracle-Produktionsdatenbank in die Cloud für DR
+
+. Um zu überprüfen, ob die Klonwiederherstellung das letzte verfügbare Protokoll durchlaufen hat, haben wir eine kleine Testtabelle erstellt und eine Zeile eingefügt. Die Testdaten würden nach einer vollständigen Wiederherstellung des letzten verfügbaren Protokolls wiederhergestellt.
++
+image:snapctr_ora_dr_01.PNG["Fehler: Fehlendes Grafikbild"]
+
+. Melden Sie sich bei SnapCenter als Benutzer-ID für das Datenbankmanagement für Oracle an. Öffnen Sie die Registerkarte Ressourcen, auf der die von SnapCenter geschützten Oracle-Datenbanken angezeigt werden.
++
+image:snapctr_ora_dr_02.PNG["Fehler: Fehlendes Grafikbild"]
+
+. Wählen Sie die Oracle-Protokollressourcengruppe aus, und klicken Sie auf Jetzt sichern, um manuell ein Oracle-Protokoll-Backup auszuführen, um die letzte Transaktion zum Ziel in der Cloud zu bereinigen. In einem echten DR-Szenario hängt die letzte wiederherstellbare Transaktion von der Replizierungshäufigkeit des Datenbank-Protokoll-Volumes in die Cloud ab, was wiederum von der RTO- oder RPO-Richtlinie des Unternehmens abhängt.
++
+image:snapctr_ora_dr_03.PNG["Fehler: Fehlendes Grafikbild"]
+
++
+image:snapctr_ora_dr_04.PNG["Fehler: Fehlendes Grafikbild"]
+
++
+
+NOTE: Asynchronous SnapMirror verliert im Rahmen eines Disaster-Recovery-Szenarios Daten, die sie nicht zum Cloud-Ziel gemacht haben. Zur Minimierung von Datenverlusten können häufigere Protokoll-Backups geplant werden. Allerdings gibt es eine Begrenzung auf die technisch machbar Backup Log-Frequenz.
+
+. Wählen Sie das letzte Protokoll-Backup auf den sekundären Spiegelsicherungs(s) aus, und mounten Sie das Protokoll-Backup.
++
+image:snapctr_ora_dr_05.PNG["Fehler: Fehlendes Grafikbild"]
+
++
+image:snapctr_ora_dr_06.PNG["Fehler: Fehlendes Grafikbild"]
+
+. Wählen Sie das letzte vollständige Datenbank-Backup aus und klicken Sie auf Klonen, um den Klon-Workflow zu initiieren.
++
+image:snapctr_ora_dr_07.PNG["Fehler: Fehlendes Grafikbild"]
+
+. Wählen Sie eine eindeutige Clone-DB-ID auf dem Host aus.
++
+image:snapctr_ora_dr_08.PNG["Fehler: Fehlendes Grafikbild"]
+
+. Stellen Sie ein Protokoll-Volume bereit und mounten Sie es im Oracle Flash Recovery-Bereich und bei Online-Protokollen am Ziel-DR-Server.
++
+image:snapctr_ora_dr_09.PNG["Fehler: Fehlendes Grafikbild"]
+
++
+image:snapctr_ora_dr_10.PNG["Fehler: Fehlendes Grafikbild"]
+
++
+
+NOTE: Bei dem Klonverfahren von Oracle wird kein Protokoll-Volume erstellt, das vor dem Klonen auf dem DR-Server bereitgestellt werden muss.
+
+. Wählen Sie den Host und den Speicherort des Zielklonen aus, um die Datendateien, Kontrolldateien und Wiederherstellungsprotokolle zu platzieren.
++
+image:snapctr_ora_dr_11.PNG["Fehler: Fehlendes Grafikbild"]
+
+. Wählen Sie die Anmeldeinformationen für den Klon aus. Geben Sie die Details zur Oracle Home-Konfiguration auf dem Ziel-Server ein.
++
+image:snapctr_ora_dr_12.PNG["Fehler: Fehlendes Grafikbild"]
+
+. Geben Sie die vor dem Klonen auszulaufenden Skripte an. Datenbankparameter können bei Bedarf angepasst werden.
++
+image:snapctr_ora_dr_13.PNG["Fehler: Fehlendes Grafikbild"]
+
+. Wählen Sie als Recovery-Option bis Abbrechen aus, sodass die Recovery alle verfügbaren Archivprotokolle ausgeführt wird, um die letzte Transaktion, die am sekundären Cloud-Standort repliziert wurde, wiederzugewinnen.
++
+image:snapctr_ora_dr_14.PNG["Fehler: Fehlendes Grafikbild"]
+
+. Konfigurieren Sie bei Bedarf den SMTP-Server für E-Mail-Benachrichtigungen.
++
+image:snapctr_ora_dr_15.PNG["Fehler: Fehlendes Grafikbild"]
+
+. Zusammenfassung DES DR-Klons:
++
+image:snapctr_ora_dr_16.PNG["Fehler: Fehlendes Grafikbild"]
+
+. Geklonte DBs sind sofort nach Abschluss des Klons mit SnapCenter registriert und sind dann für den Backup-Schutz verfügbar.
++
+image:snapctr_ora_dr_16_1.PNG["Fehler: Fehlendes Grafikbild"]
+
+
+
+
+
+== Validierung und Konfiguration von Post-DR-Klonen für Oracle
+
+. Validierung der letzten Testtransaktion, die am DR-Standort in der Cloud gespeichert, repliziert und wiederhergestellt wurde
++
+image:snapctr_ora_dr_17.PNG["Fehler: Fehlendes Grafikbild"]
+
+. Konfigurieren Sie den Flash-Recovery-Bereich.
++
+image:snapctr_ora_dr_18.PNG["Fehler: Fehlendes Grafikbild"]
+
+. Konfigurieren Sie den Oracle Listener für den Benutzerzugriff.
+. Verteilen Sie das geklonte Volume vom replizierten Quell-Volume.
+. Die Replizierung wird von der Cloud in On-Premises-Systeme umkehren und der ausgefallene On-Premises-Datenbankserver neu erstellt.
+
+
+
+NOTE: Durch die Aufteilung des Klons wird möglicherweise eine temporäre Storage-Auslastung verursacht, die deutlich höher ist als der normale Betrieb. Nach der rekonstruiert der lokalen DB-Server kann jedoch zusätzlicher Speicherplatz freigegeben werden.
+
+
+
+== Klonen einer lokalen SQL-Produktionsdatenbank in die Cloud für DR
+
+. Um sicherzustellen, dass die SQL-Klon-Recovery durch das letzte verfügbare Protokoll ausgeführt wurde, haben wir eine kleine Testtabelle erstellt und eine Reihe eingefügt. Die Testdaten würden nach einer vollständigen Wiederherstellung des letzten verfügbaren Protokolls wiederhergestellt.
++
+image:snapctr_sql_dr_01.PNG["Fehler: Fehlendes Grafikbild"]
+
+. Melden Sie sich mit einer Datenbank-Management-Benutzer-ID für SQL Server bei SnapCenter an. Navigieren Sie zur Registerkarte Ressourcen, auf der die SQL Server-Schutzressourcen-Gruppe angezeigt wird.
++
+image:snapctr_sql_dr_02.PNG["Fehler: Fehlendes Grafikbild"]
+
+. Führen Sie ein Protokoll-Backup manuell aus, um die letzte Transaktion auszuführen, die in den sekundären Storage in der Public Cloud repliziert werden soll.
++
+image:snapctr_sql_dr_03.PNG["Fehler: Fehlendes Grafikbild"]
+
+. Wählen Sie das letzte vollständige SQL Server-Backup für den Klon aus.
++
+image:snapctr_sql_dr_04.PNG["Fehler: Fehlendes Grafikbild"]
+
+. Legen Sie die Kloneinstellung fest, z. B. den Klon-Server, die Kloninstanz, den Klonnamen und die Mount-Option. Der sekundäre Storage-Standort, an dem das Klonen durchgeführt wird, ist automatisch gefüllt.
++
+image:snapctr_sql_dr_05.PNG["Fehler: Fehlendes Grafikbild"]
+
+. Wählen Sie alle anzuwendenden Protokollsicherungen aus.
++
+image:snapctr_sql_dr_06.PNG["Fehler: Fehlendes Grafikbild"]
+
+. Geben Sie alle optionalen Skripte an, die vor oder nach dem Klonen ausgeführt werden sollen.
++
+image:snapctr_sql_dr_07.PNG["Fehler: Fehlendes Grafikbild"]
+
+. Geben Sie einen SMTP-Server an, wenn eine E-Mail-Benachrichtigung gewünscht wird.
++
+image:snapctr_sql_dr_08.PNG["Fehler: Fehlendes Grafikbild"]
+
+. Zusammenfassung DES DR-Klons: Geklonte Datenbanken werden sofort in SnapCenter registriert und stehen für den Backup-Schutz zur Verfügung.
++
+image:snapctr_sql_dr_09.PNG["Fehler: Fehlendes Grafikbild"]
+
++
+image:snapctr_sql_dr_10.PNG["Fehler: Fehlendes Grafikbild"]
+
+
+
+
+
+== Validierung und Konfiguration von SQL-Klonen nach dem DR-Verfahren
+
+. Überwachen des Auftragsstatus von Klonen.
++
+image:snapctr_sql_dr_11.PNG["Fehler: Fehlendes Grafikbild"]
+
+. Überprüfen Sie, ob die letzte Transaktion repliziert und mit allen Klonen von Protokolldateien und Recoverys wiederhergestellt wurde.
++
+image:snapctr_sql_dr_12.PNG["Fehler: Fehlendes Grafikbild"]
+
+. Konfigurieren Sie ein neues SnapCenter-Protokollverzeichnis auf dem DR-Server für die Sicherung der SQL Server-Protokolle.
+. Verteilen Sie das geklonte Volume vom replizierten Quell-Volume.
+. Die Replizierung wird von der Cloud in On-Premises-Systeme umkehren und der ausgefallene On-Premises-Datenbankserver neu erstellt.
+
+
+
+
+== Wo Hilfe benötigt wird?
+
+Wenn Sie Hilfe bei dieser Lösung und diesen Anwendungsbeispielen benötigen, nehmen Sie an der Teil link:https://netapppub.slack.com/archives/C021R4WC0LC["NetApp Solution Automation Community unterstützt Slack-Channel"] Und suchen Sie den Kanal zur Lösungsautomatisierung, um Ihre Fragen zu stellen oder zu fragen.

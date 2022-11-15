@@ -1,0 +1,332 @@
+---
+sidebar: sidebar 
+permalink: databases/hybrid_dbops_snapcenter_getting_started_aws.html 
+summary: In diesem Abschnitt wird der Bereitstellungsprozess von Cloud Manager und Cloud Volumes ONTAP in AWS beschrieben. 
+keywords: AWS, cloud volumes ontap, cloud manager, deploy 
+---
+= Erste Schritte mit der AWS Public Cloud
+:hardbreaks:
+:allow-uri-read: 
+:nofooter: 
+:icons: font
+:linkattrs: 
+:table-stripes: odd
+:imagesdir: ./../media/
+
+
+link:hybrid_dbops_snapcenter_getting_started_onprem.html["Zurück: Erste Schritte vor Ort."]
+
+
+
+== AWS Public Cloud
+
+
+NOTE: Um die folgenden Elemente zu vereinfachen, haben wir dieses Dokument auf Basis einer Implementierung in AWS erstellt. Allerdings ist der Prozess für Azure und GCP sehr ähnlich.
+
+
+
+=== 1. Scheck vor dem Flug
+
+Stellen Sie vor der Implementierung sicher, dass die Infrastruktur vorhanden ist, die eine Implementierung in der nächsten Phase ermöglicht. Dazu gehört Folgendes:
+
+* AWS Konto
+* VPC in Ihrer bevorzugten Region
+* Subnetz mit Zugang zum öffentlichen Internet
+* Berechtigungen zum Hinzufügen von IAM-Rollen in Ihrem AWS-Konto
+* Ein geheimer Schlüssel und Zugriffsschlüssel für Ihren AWS-Benutzer
+
+
+
+
+=== 2. Schritte zur Implementierung von Cloud Manager und Cloud Volumes ONTAP in AWS
+
+
+NOTE: Für die Implementierung von Cloud Manager und Cloud Volumes ONTAP gibt es viele Methoden. Diese Methode ist die einfachste, erfordert jedoch die meisten Berechtigungen. Falls diese Methode für Ihre AWS-Umgebung nicht geeignet ist, schlagen Sie bitte in nach https://docs.netapp.com/us-en/occm/task_creating_connectors_aws.html["NetApp Cloud-Dokumentation"^].
+
+
+
+==== Implementieren Sie den Cloud Manager Connector
+
+. Navigieren Sie zu https://cloud.netapp.com/cloud-manager["NetApp Cloud Central"^] Und melden Sie sich an oder registrieren Sie sich.
++
+image:cloud_central_login_page.PNG["Fehler: Fehlendes Grafikbild"]
+
+. Nach der Anmeldung sollten Sie auf den Bildschirm gebracht werden.
++
+image:cloud_central_canvas_page.PNG["Fehler: Fehlendes Grafikbild"]
+
+. Klicken Sie auf „Arbeitsumgebung hinzufügen“ und wählen Sie Cloud Volumes ONTAP in AWS. Hier haben Sie außerdem die Wahl, ob Sie ein Single Node-System oder ein Hochverfügbarkeitspaar implementieren möchten. Ich habe mich entschieden, ein Hochverfügbarkeitspaar bereitzustellen.
++
+image:cloud_central_add_we.PNG["Fehler: Fehlendes Grafikbild"]
+
+. Wenn kein Anschluss erstellt wurde, wird ein Popup-Fenster angezeigt, in dem Sie aufgefordert werden, einen Anschluss zu erstellen.
++
+image:cloud_central_add_conn_1.PNG["Fehler: Fehlendes Grafikbild"]
+
+. Klicken Sie auf „Start“ und anschließend auf „AWS“.
++
+image:cloud_central_add_conn_3.PNG["Fehler: Fehlendes Grafikbild"]
+
+. Geben Sie Ihren geheimen Schlüssel und den Zugriffsschlüssel ein. Stellen Sie sicher, dass Ihr Benutzer über die auf dem angegebenen korrekten Berechtigungen verfügt https://mysupport.netapp.com/site/info/cloud-manager-policies["Die NetApp Richtlinien"^].
++
+image:cloud_central_add_conn_4.PNG["Fehler: Fehlendes Grafikbild"]
+
+. Geben Sie dem Konnektor einen Namen und verwenden Sie entweder eine vordefinierte Rolle, wie auf der beschrieben https://mysupport.netapp.com/site/info/cloud-manager-policies["Die NetApp Richtlinien"^] Oder Fragen Sie Cloud Manager, welche Rolle Sie dabei spielen sollten.
++
+image:cloud_central_add_conn_5.PNG["Fehler: Fehlendes Grafikbild"]
+
+. Geben Sie die für die Bereitstellung des Connectors erforderlichen Netzwerkinformationen an. Vergewissern Sie sich, dass der ausgehende Internetzugang aktiviert ist, indem Sie:
++
+.. Geben der Verbindung eine öffentliche IP-Adresse
+.. Dem Anschluss einen Proxy zur Verfügung stellen, der funktioniert
+.. Dem Anschluss eine Route zum öffentlichen Internet über ein Internet-Gateway geben
++
+image:cloud_central_add_conn_6.PNG["Fehler: Fehlendes Grafikbild"]
+
+
+
+. Ermöglichen Sie die Kommunikation mit dem Connector über SSH, HTTP und HTTPS, indem Sie entweder eine Sicherheitsgruppe bereitstellen oder eine neue Sicherheitsgruppe erstellen. Ich habe nur von meiner IP-Adresse aus den Zugriff auf den Konnektor aktiviert.
++
+image:cloud_central_add_conn_7.PNG["Fehler: Fehlendes Grafikbild"]
+
+. Überprüfen Sie die Informationen auf der Übersichtsseite, und klicken Sie auf Hinzufügen, um den Connector bereitzustellen.
++
+image:cloud_central_add_conn_8.PNG["Fehler: Fehlendes Grafikbild"]
+
+. Der Connector wird nun mit einem Cloud-Formierung-Stack implementiert. Sie können den Fortschritt von Cloud Manager oder über AWS überwachen.
++
+image:cloud_central_add_conn_9.PNG["Fehler: Fehlendes Grafikbild"]
+
+. Wenn die Bereitstellung abgeschlossen ist, wird eine Seite mit dem Erfolg angezeigt.
++
+image:cloud_central_add_conn_10.PNG["Fehler: Fehlendes Grafikbild"]
+
+
+
+
+
+==== Implementieren Sie Cloud Volumes ONTAP
+
+. Wählen Sie AWS und die Art der Implementierung auf der Grundlage Ihrer Anforderungen aus.
++
+image:cloud_central_add_we_1.PNG["Fehler: Fehlendes Grafikbild"]
+
+. Wenn kein Abonnement zugewiesen wurde und Sie mit PAYGO kaufen möchten, wählen Sie Anmeldedaten bearbeiten.
++
+image:cloud_central_add_we_2.PNG["Fehler: Fehlendes Grafikbild"]
+
+. Wählen Sie Abonnement Hinzufügen.
++
+image:cloud_central_add_we_3.PNG["Fehler: Fehlendes Grafikbild"]
+
+. Wählen Sie den Vertrag aus, den Sie abonnieren möchten. Ich entschied mich für Pay-as-you-go.
++
+image:cloud_central_add_we_4.PNG["Fehler: Fehlendes Grafikbild"]
+
+. Sie werden zu AWS umgeleitet und wählen Sie „Weiter“, um sich Abonnieren zu öffnen.
++
+image:cloud_central_add_we_5.PNG["Fehler: Fehlendes Grafikbild"]
+
+. Melden Sie sich an und Sie werden zurück auf NetApp Cloud Central umgeleitet. Wenn Sie bereits abonniert haben und nicht umgeleitet werden, klicken Sie auf den Link "Hier klicken".
++
+image:cloud_central_add_we_6.PNG["Fehler: Fehlendes Grafikbild"]
+
+. Sie werden zu Cloud Central umgeleitet. Dort müssen Sie die Namen Ihres Abonnements benennen und es Ihrem Cloud Central Konto zuweisen.
++
+image:cloud_central_add_we_7.PNG["Fehler: Fehlendes Grafikbild"]
+
+. Wenn der Erfolg abgeschlossen ist, wird eine Seite mit den Häkchen angezeigt. Öffnen Sie die Registerkarte „Cloud Manager“.
++
+image:cloud_central_add_we_8.PNG["Fehler: Fehlendes Grafikbild"]
+
+. Das Abonnement wird jetzt in Cloud Central angezeigt. Klicken Sie auf Anwenden, um fortzufahren.
++
+image:cloud_central_add_we_9.PNG["Fehler: Fehlendes Grafikbild"]
+
+. Geben Sie die Angaben zur Arbeitsumgebung ein, z. B.:
++
+.. Cluster-Name
+.. Cluster-Passwort
+.. AWS Tags (optional)
++
+image:cloud_central_add_we_10.PNG["Fehler: Fehlendes Grafikbild"]
+
+
+
+. Wählen Sie aus, welche zusätzlichen Services Sie bereitstellen möchten. Weitere Informationen zu diesen Services finden Sie auf der https://cloud.netapp.com["NetApp Cloud Homepage"^].
++
+image:cloud_central_add_we_11.PNG["Fehler: Fehlendes Grafikbild"]
+
+. Wählen Sie, ob die Implementierung in mehreren Verfügbarkeitszonen erfolgen soll (erfordert drei Subnetze, jede in einer anderen Verfügbarkeitszone) oder eine einzelne Verfügbarkeitszone. Ich habe mehrere AZS ausgewählt.
++
+image:cloud_central_add_we_12.PNG["Fehler: Fehlendes Grafikbild"]
+
+. Wählen Sie die Region, die VPC und die Sicherheitsgruppe für das zu implementierende Cluster aus. In diesem Abschnitt weisen Sie außerdem die Verfügbarkeitszonen pro Node (und Mediator) sowie die Subnetze zu, in denen sie tätig sind.
++
+image:cloud_central_add_we_13.PNG["Fehler: Fehlendes Grafikbild"]
+
+. Wählen Sie die Verbindungsmethoden für die Nodes und den Mediator.
++
+image:cloud_central_add_we_14.PNG["Fehler: Fehlendes Grafikbild"]
+
+
+
+
+TIP: Der Mediator muss mit den AWS APIs kommunizieren. Es ist keine öffentliche IP-Adresse erforderlich, solange die APIs nach der Implementierung der Mediator EC2 Instanz erreichbar sind.
+
+. Mit fließenden IP-Adressen wird der Zugriff auf die verschiedenen von Cloud Volumes ONTAP verwendeten IP-Adressen ermöglicht, einschließlich Cluster-Management und DatenserverIPs. Diese Adressen müssen nicht bereits in Ihrem Netzwerk routingfähig sein und zu Routing-Tabellen in Ihrer AWS-Umgebung hinzugefügt werden. Sie sind erforderlich, um während des Failover konsistente IP-Adressen für ein HA-Paar zu aktivieren. Weitere Informationen zu schwimmenden IP-Adressen finden Sie im https://docs.netapp.com/us-en/occm/reference_networking_aws.html#requirements-for-ha-pairs-in-multiple-azs["NetApp Cloud Documentation"^].
++
+image:cloud_central_add_we_15.PNG["Fehler: Fehlendes Grafikbild"]
+
+. Wählen Sie aus, zu welchen Routingtabellen die unverankerten IP-Adressen hinzugefügt werden sollen. Diese Routingtabellen werden von Clients für die Kommunikation mit Cloud Volumes ONTAP verwendet.
++
+image:cloud_central_add_we_16.PNG["Fehler: Fehlendes Grafikbild"]
+
+. Sie haben die Wahl, ob die von AWS gemanagte Verschlüsselung oder AWS KMS zur Verschlüsselung der ONTAP-Root-, Boot- und Datenfestplatten aktiviert werden sollen.
++
+image:cloud_central_add_we_17.PNG["Fehler: Fehlendes Grafikbild"]
+
+. Wählen Sie Ihr Lizenzmodell. Wenn Sie nicht wissen, welche Option Sie wählen sollten, wenden Sie sich an Ihren NetApp Ansprechpartner.
++
+image:cloud_central_add_we_18.PNG["Fehler: Fehlendes Grafikbild"]
+
+. Wählen Sie die Konfiguration aus, die am besten zu Ihrem Anwendungsfall passt. Dies bezieht sich auf die Überlegungen zur Dimensionierung, die auf der Seite Voraussetzungen behandelt werden.
++
+image:cloud_central_add_we_19.PNG["Fehler: Fehlendes Grafikbild"]
+
+. Erstellen Sie optional ein Volume. Dies ist nicht erforderlich, da in den nächsten Schritten SnapMirror verwendet wird, welches die Volumes für uns erstellt.
++
+image:cloud_central_add_we_20.PNG["Fehler: Fehlendes Grafikbild"]
+
+. Überprüfen Sie die getroffene Auswahl und aktivieren Sie die Kontrollkästchen, um zu überprüfen, ob Cloud Manager Ressourcen in Ihrer AWS-Umgebung implementiert. Klicken Sie abschließend auf „Go“.
++
+image:cloud_central_add_we_21.PNG["Fehler: Fehlendes Grafikbild"]
+
+. Cloud Volumes ONTAP startet jetzt mit der Implementierung. Cloud Manager verwendet für die Implementierung von Cloud Volumes ONTAP APIs und Cloud-Formations-Stacks von AWS. Anschließend wird das System gemäß Ihren Spezifikationen konfiguriert, sodass ein sofort einsatzbereites System verfügbar ist. Der Zeitpunkt für diesen Prozess variiert je nach getroffene Auswahl.
++
+image:cloud_central_add_we_22.PNG["Fehler: Fehlendes Grafikbild"]
+
+. Sie können den Fortschritt überwachen, indem Sie zur Zeitleiste navigieren.
++
+image:cloud_central_add_we_23.PNG["Fehler: Fehlendes Grafikbild"]
+
+. Die Zeitleiste dient als Audit aller in Cloud Manager ausgeführten Aktionen. Sie können alle API-Aufrufe anzeigen, die Cloud Manager bei der Einrichtung von AWS sowie dem ONTAP Cluster getätigt hat. Dies kann auch effektiv verwendet werden, um alle Probleme zu beheben, denen Sie gegenüberstehen.
++
+image:cloud_central_add_we_24.PNG["Fehler: Fehlendes Grafikbild"]
+
+. Nach Abschluss der Bereitstellung erscheint der CVO-Cluster auf dem Canvas, der aktuellen Kapazität. Das ONTAP Cluster ist im aktuellen Status vollständig konfiguriert, um ein echtes, out-of-the-box-Erlebnis zu ermöglichen.
++
+image:cloud_central_add_we_25.PNG["Fehler: Fehlendes Grafikbild"]
+
+
+
+
+
+==== Konfigurieren Sie SnapMirror aus Ihrem lokalen Standort in die Cloud
+
+Nachdem Sie nun ein ONTAP Quellsystem und ein implementierter Zielsystem von ONTAP haben, können Sie Volumes mit Datenbankdaten in die Cloud replizieren.
+
+Einen Leitfaden zu kompatiblen ONTAP-Versionen für SnapMirror finden Sie im https://docs.netapp.com/ontap-9/index.jsp?topic=%2Fcom.netapp.doc.pow-dap%2FGUID-0810D764-4CEA-4683-8280-032433B1886B.html["SnapMirror Kompatibilitätsmatrix"^].
+
+. Klicken Sie auf das Quell-ONTAP-System (on-Premises), ziehen Sie es per Drag & Drop zum Ziel, wählen Sie Replikation > Aktivieren, oder wählen Sie Replikation > Menü > Replikation.
++
+image:cloud_central_replication_1.png["Fehler: Fehlendes Grafikbild"]
+
++
+Wählen Sie Aktivieren.
+
++
+image:cloud_central_replication_2.png["Fehler: Fehlendes Grafikbild"]
+
++
+Oder Optionen.
+
++
+image:cloud_central_replication_3.png["Fehler: Fehlendes Grafikbild"]
+
++
+Replizierung:
+
++
+image:cloud_central_replication_4.png["Fehler: Fehlendes Grafikbild"]
+
+. Wenn Sie keine Drag-and-Drop-Option haben, wählen Sie das Ziel-Cluster aus, zu dem Sie replizieren möchten.
++
+image:cloud_central_replication_5.png["Fehler: Fehlendes Grafikbild"]
+
+. Wählen Sie das Volume aus, das Sie replizieren möchten. Wir haben die Daten und alle Log-Volumes repliziert.
++
+image:cloud_central_replication_6.png["Fehler: Fehlendes Grafikbild"]
+
+. Wählen Sie den Zieldatentyp und die Tiering-Richtlinie. Für Disaster Recovery empfehlen wir eine SSD als Festplattentyp und zur Aufrechterhaltung des Daten-Tiering. Mit Daten-Tiering werden die gespiegelten Daten in kostengünstigem Objekt-Storage verschoben und Kosten auf lokalen Festplatten eingespart. Wenn Sie die Beziehung unterbrechen oder das Volume klonen, verwenden die Daten den schnellen lokalen Storage.
++
+image:cloud_central_replication_7.png["Fehler: Fehlendes Grafikbild"]
+
+. Wählen Sie den Zielvolumennamen: Wir haben ausgewählt `[source_volume_name]_dr`.
++
+image:cloud_central_replication_8.png["Fehler: Fehlendes Grafikbild"]
+
+. Wählen Sie die maximale Übertragungsrate für die Replikation aus. Dadurch sparen Sie Bandbreite, wenn Sie eine Verbindung mit einer niedrigen Bandbreite zur Cloud, wie zum Beispiel einem VPN, herstellen.
++
+image:cloud_central_replication_9.png["Fehler: Fehlendes Grafikbild"]
+
+. Legen Sie die Replizierungsrichtlinie fest. Wir haben uns für einen Spiegel entschieden, der den letzten Datensatz aufnimmt und diesen in das Ziel-Volume repliziert. Sie können auch eine andere Richtlinie auf Basis Ihrer Anforderungen wählen.
++
+image:cloud_central_replication_10.png["Fehler: Fehlendes Grafikbild"]
+
+. Wählen Sie den Zeitplan für das Auslösen der Replikation aus. NetApp empfiehlt die Festlegung eines „täglichen“ Zeitplans für das Daten-Volume und einen „stündlichen“ Zeitplan für die Log-Volumes, wobei diese jedoch je nach Anforderungen geändert werden können.
++
+image:cloud_central_replication_11.png["Fehler: Fehlendes Grafikbild"]
+
+. Überprüfen Sie die eingegebenen Informationen, klicken Sie auf Go, um den Cluster Peer und SVM Peer auszulösen (wenn dies Ihr erstes Mal ist, wenn Sie zwischen den beiden Clustern replizieren) und implementieren und initialisieren Sie dann die SnapMirror Beziehung.
++
+image:cloud_central_replication_12.png["Fehler: Fehlendes Grafikbild"]
+
+. Setzen Sie diesen Prozess für Datenvolumen und Protokoll-Volumes fort.
+. Wenn Sie alle Beziehungen überprüfen möchten, wechseln Sie zur Registerkarte „Replikation“ in Cloud Manager. Hier können Sie Ihre Beziehungen verwalten und ihren Status überprüfen.
++
+image:cloud_central_replication_13.png["Fehler: Fehlendes Grafikbild"]
+
+. Nachdem alle Volumes repliziert wurden, befinden Sie sich in einem stabilen Zustand und können zu den Workflows für Disaster Recovery und Entwicklung/Test wechseln.
+
+
+
+
+=== 3. EC2 Computing-Instanz für Datenbank-Workload implementieren
+
+AWS verfügt über vorkonfigurierte EC2 Computing-Instanzen für verschiedene Workloads. Die Wahl des Instanztyps bestimmt die Anzahl der CPU-Kerne, die Speicherkapazität, den Speichertyp und die Kapazität sowie die Netzwerk-Performance. In den Anwendungsfällen wird mit Ausnahme der Betriebssystempartition der Haupt-Storage für die Ausführung des Datenbank-Workloads von CVO oder der FSX ONTAP-Storage-Engine zugewiesen. Daher müssen die wichtigsten Faktoren die Wahl der CPU-Cores, des Arbeitsspeichers und der Netzwerk-Performance sein. Typische AWS EC2 Instanztypen sind hier zu finden: https://us-east-2.console.aws.amazon.com/ec2/v2/home?region=us-east-2#InstanceTypes:["EC2 Instanztyp"].
+
+
+
+==== Dimensionierung der Computing-Instanz
+
+. Wählen Sie den richtigen Instanztyp basierend auf dem erforderlichen Workload aus. Zu berücksichtigende Faktoren sind die Anzahl der zu unterstützenden Geschäftstransaktionen, die Anzahl gleichzeitiger Benutzer, die Größenbemessung von Datensätze usw.
+. Die Implementierung der EC2-Instanz kann über das EC2 Dashboard gestartet werden. Die genauen Implementierungsverfahren gehen über den Umfang dieser Lösung hinaus. Siehe https://aws.amazon.com/pm/ec2/?trk=ps_a134p000004f2ZGAAY&trkCampaign=acq_paid_search_brand&sc_channel=PS&sc_campaign=acquisition_US&sc_publisher=Google&sc_category=Cloud%20Computing&sc_country=US&sc_geo=NAMER&sc_outcome=acq&sc_detail=%2Bec2%20%2Bcloud&sc_content=EC2%20Cloud%20Compute_bmm&sc_matchtype=b&sc_segment=536455698896&sc_medium=ACQ-P|PS-GO|Brand|Desktop|SU|Cloud%20Computing|EC2|US|EN|Text&s_kwcid=AL!4422!3!536455698896!b!!g!!%2Bec2%20%2Bcloud&ef_id=EAIaIQobChMIua378M-p8wIVToFQBh0wfQhsEAMYASAAEgKTzvD_BwE:G:s&s_kwcid=AL!4422!3!536455698896!b!!g!!%2Bec2%20%2Bcloud["Amazon EC2"] Entsprechende Details.
+
+
+
+
+==== Konfiguration einer Linux-Instanz für Oracle-Workload
+
+Dieser Abschnitt enthält weitere Konfigurationsschritte, nachdem eine EC2 Linux Instanz implementiert wurde.
+
+. Fügen Sie eine Oracle-Standby-Instanz zum DNS-Server für die Namensauflösung in der SnapCenter-Managementdomäne hinzu.
+. Fügen Sie als SnapCenter OS-Anmeldeinformationen eine Linux-Management-Benutzer-ID mit sudo-Berechtigungen ohne Kennwort hinzu. Aktivieren Sie die ID mit SSH-Passwort-Authentifizierung auf der EC2-Instanz. (Bei EC2-Instanzen ist die SSH-Kennwortauthentifizierung und passwortless sudo standardmäßig deaktiviert.)
+. Konfiguration der Oracle Installation entsprechend der lokalen Oracle Installation, z. B. Betriebssystem-Patches, Oracle Versionen und Patches usw.
+. NetApp Ansible DB-Automatisierungsrollen können genutzt werden, um EC2 Instanzen für Anwendungsfälle in den Bereichen Entwicklung/Test und Disaster Recovery zu konfigurieren. Der Automatisierungscode kann auf der öffentlichen NetApp GitHub Website heruntergeladen werden: https://github.com/NetApp-Automation/na_oracle19c_deploy["Automatisierte Oracle 19c Implementierung"^]. Ziel ist es, einen Datenbank-Software-Stack auf einer EC2 Instanz zu installieren und zu konfigurieren, der an lokale OS- und Datenbankkonfigurationen angepasst wird.
+
+
+
+
+==== Windows-Instanzkonfiguration für den SQL Server-Workload
+
+Dieser Abschnitt enthält zusätzliche Konfigurationsschritte, nachdem eine EC2 Windows-Instanz ursprünglich implementiert wurde.
+
+. Rufen Sie das Windows-Administratorpasswort ab, um sich über RDP bei einer Instanz anzumelden.
+. Deaktivieren Sie die Windows-Firewall, treten Sie der Windows SnapCenter-Domäne des Hosts bei und fügen Sie die Instanz zum DNS-Server zur Namensauflösung hinzu.
+. Bereitstellen eines SnapCenter-Protokollvolumens zum Speichern von SQL Server-Protokolldateien
+. Konfigurieren Sie iSCSI auf dem Windows-Host, um das Volume zu mounten und das Festplattenlaufwerk zu formatieren.
+. Viele ihrer früheren Aufgaben können mit der NetApp Automatisierungslösung für SQL Server automatisiert werden. Informieren Sie sich auf der NetApp Public Automation GitHub Website über neu veröffentlichte Rollen und Lösungen: https://github.com/NetApp-Automation["NetApp Automatisierung"^].
+
+
+link:hybrid_dbops_snapcenter_devtest.html["Als Nächstes: Workflow für Entwicklungs- und Test-Bursting in die Cloud."]

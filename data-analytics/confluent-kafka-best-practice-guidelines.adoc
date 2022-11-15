@@ -1,0 +1,43 @@
+---
+sidebar: sidebar 
+permalink: data-analytics/confluent-kafka-best-practice-guidelines.html 
+keywords: best practices, guidelines, nfs, san 
+summary: In diesem Abschnitt werden die Erfahrungen aus dieser Zertifizierung vorgestellt. 
+---
+= Best Practices-Richtlinien
+:hardbreaks:
+:allow-uri-read: 
+:nofooter: 
+:icons: font
+:linkattrs: 
+:imagesdir: ./../media/
+
+
+link:confluent-kafka-confluent-kafka-rebalance.html["Früher: Confluent Self-Rebalancing Cluster."]
+
+* Basierend auf unserer Validierung ist S3 Objekt-Storage ideal für Conflient, um Daten zu speichern.
+* Wir können SAN mit hohem Durchsatz (speziell FC) verwenden, um den Broker häufig verwendete Daten oder lokale Festplatten zu erhalten, da wir in der Conflient Tiered Storage-Konfiguration, Die Größe der im Datenvermittler-Verzeichnis enthaltenen Daten richtet sich nach der Segmentgröße und der Aufbewahrungszeit, wenn die Daten in den Objekt-Storage verschoben werden.
+* Objektspeicher bieten eine bessere Performance, wenn Segment.Bytes höher ist. Wir haben 512 MB getestet.
+* In Kafka wird die Länge des Schlüssels oder Wertes (in Bytes) für jeden Datensatz, der zum Thema produziert wird, durch das gesteuert `length.key.value` Parameter. Bei StorageGRID hat sich die Performance bei der Aufnahme und Wiederherstellung von S3-Objekten auf höhere Werte erhöht. 512 Byte sorgte beispielsweise für einen Abruf von 5,8 GB/s, 1024 Bytes sorgten für einen s3-Abruf von 7,5 GB/s und 2048 Bytes für fast 10 GB/s.
+
+
+In der folgenden Abbildung sind die S3-Objektaufnahme und -Abruf basierend auf dargestellt `length.key.value`.
+
+image:confluent-kafka-image11.png["Fehler: Fehlendes Grafikbild"]
+
+* *Kafka Tuning.* um die Performance von Tiered Storage zu verbessern, können Sie TierFetcherNumThreads und TierArchivNumThreads erhöhen. Als allgemeine Richtlinie möchten Sie TierFetcherNumThreads erhöhen, um mit der Anzahl der physischen CPU-Kerne zu übereinstimmen und TierArchivNumThreads auf die Hälfte der CPU-Kerne zu erhöhen. Wenn Sie zum Beispiel in den Servereigenschaften eine Maschine mit acht physischen Kernen haben, setzen Sie confluent.Tier.fetcher.num.threads = 8 und confluent.Tier.archiver.num.threads = 4.
+* *Zeitintervall für Thema löscht.* Wenn ein Thema gelöscht wird, beginnt das Löschen der Log-Segment-Dateien im Objektspeicher nicht sofort. Stattdessen gibt es ein Zeitintervall mit einem Standardwert von 3 Stunden, bevor das Löschen dieser Dateien erfolgt. Sie können die Konfiguration confluent.tier.topic.delete.check.interval.ms ändern, um den Wert dieses Intervalls zu ändern. Wenn Sie ein Thema oder Cluster löschen, können Sie die Objekte auch manuell im jeweiligen Bucket löschen.
+* *ACLs auf internen Tiered Storage-Themen.* eine Best Practice für On-Premises-Implementierungen ist die Aktivierung einer ACL-Autorisierung für die internen Themen für Tiered Storage. Legen Sie ACL-Regeln fest, um den Zugriff auf diese Daten nur dem Broker-Benutzer zu beschränken. Dies sichert interne Themen und verhindert nicht autorisierten Zugriff auf Tiered Storage-Daten und Metadaten.
+
+
+[listing]
+----
+kafka-acls --bootstrap-server localhost:9092 --command-config adminclient-configs.conf \
+--add --allow-principal User:<kafka> --operation All --topic "_confluent-tier-state"
+----
+
+NOTE: Ersetzen Sie den Benutzer `<kafka>` Mit dem eigentlichen Brokerchef in Ihrer Implementierung
+
+Beispiel: Der Befehl `confluent-tier-state` Legt ACLs zum internen Thema für Tiered Storage fest. Derzeit gibt es nur ein einziges internes Thema im Zusammenhang mit Tiered Storage. Das Beispiel erstellt eine ACL, die die Hauptberechtigung von Kafka für alle Vorgänge im internen Thema erhält.
+
+link:confluent-kafka-sizing.html["Als Nächstes: Dimensionierung."]

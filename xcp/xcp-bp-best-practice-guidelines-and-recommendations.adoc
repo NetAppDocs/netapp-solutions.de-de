@@ -1,0 +1,27 @@
+---
+sidebar: sidebar 
+permalink: xcp/xcp-bp-best-practice-guidelines-and-recommendations.html 
+keywords: best practices, guidelines, recommendations, IMT 
+summary: Dieser Abschnitt enthält Best Practices, Richtlinien und Empfehlungen für die Datenmigration mit NetApp XCP. 
+---
+= Best Practice-Richtlinien und -Empfehlungen
+:hardbreaks:
+:allow-uri-read: 
+:nofooter: 
+:icons: font
+:linkattrs: 
+:imagesdir: ./../media/
+
+
+link:xcp-bp-cifs-data-migration-with-acls-from-a-source-storage-box-to-ontap.html["Früher: CIFS-Datenmigration mit ACLs von einer Quell-Storage Box zu ONTAP."]
+
+* Verwenden Sie das XCP-Client-Betriebssystem, das von IMT unterstützt wird. Der von IMT unterstützte Client wird von NetApp qualifiziert.
+* Führen Sie XCP als Root-Benutzer im Linux-Betriebssystem aus, um die Migration durchzuführen. Sie können den xcp-Befehl als Sudo-Benutzer ausführen, er wird jedoch nicht von XCP unterstützt.
+* Führen Sie nur eine Instanz von XCP pro Client aus. Technisch können Sie mehrere Versionen von XCP auf demselben Host von einem anderen Standort aus ausführen, dies ist jedoch keine unterstützte Vorgehensweise. In der Tat kann das Ausführen vieler Instanzen zu einem Ausfall führen.
+* In der aktuellen XCP-Version wird Live Source nicht unterstützt. Wenn das NetApp Quell-Volume aktiv ist und fortlaufend durch Applikationen und Benutzer geändert wird, sollten Sie einen Snapshot des Quell-Volumes erstellen, um eine Migration durchzuführen.
+* Als Best Practice empfiehlt es sich, einen neuen Snapshot mit einem anderen Namen für jede inkrementelle Synchronisierung zu erstellen, sodass es einfach ist, einen inkrementellen Migrationspfad basierend auf dem Snapshot-Namen bei Ausfall zu erstellen.
+* Wenn Sie eine Snapshot-basierte Migration durchführen, empfiehlt es sich, die Snapshot-basierte Migration bis zur Umstellung fortzusetzen.
+* Wenn Sie mehr als 10 Millionen Dateien haben und eine inkrementelle Datenänderung von mehr als 50 % haben, empfiehlt es sich, eine höhere Anzahl an Kernen und mehr Speicher zu verwenden als die minimale Empfehlung im Installations- und Administrationshandbuch.
+
+
+link:xcp-bp-troubleshooting.html["Weiter: Fehlerbehebung."]

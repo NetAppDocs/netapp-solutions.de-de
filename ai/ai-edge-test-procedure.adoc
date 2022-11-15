@@ -1,0 +1,65 @@
+---
+sidebar: sidebar 
+permalink: ai/ai-edge-test-procedure.html 
+keywords: procedure, operating system, ubuntu, nvidia, docker, criteo, brats 
+summary: Dieser Abschnitt beschreibt die Testverfahren zur Validierung dieser Lösung. 
+---
+= Testverfahren
+:hardbreaks:
+:allow-uri-read: 
+:nofooter: 
+:icons: font
+:linkattrs: 
+:imagesdir: ./../media/
+
+
+link:ai-edge-test-configuration.html["Zurück: Testkonfiguration."]
+
+In dieser Validierung haben wir folgendes Testverfahren verwendet.
+
+
+
+== Einrichtung von Betriebssystem und KI-Inferenz
+
+Für AFF C190 haben wir Ubuntu 18.04 mit NVIDIA-Treibern und Docker mit Unterstützung für NVIDIA-GPUs verwendet und MLPerf verwendet https://github.com/mlperf/inference_results_v0.7/tree/master/closed/Lenovo["Codieren"^] Erhältlich als Teil der Lenovo Vorlage an MLPerf Inferenz v0.7.
+
+Für EF280 haben wir Ubuntu 20.04 mit NVIDIA-Treibern und Docker mit Unterstützung für NVIDIA-GPUs und MLPerf verwendet https://github.com/mlcommons/inference_results_v1.1/tree/main/closed/Lenovo["Codieren"^] Verfügbar als Teil der Lenovo Vorlage für MLPerf Inferenz v1.1.
+
+Zur Einrichtung des KI-Inferenz führen Sie folgende Schritte aus:
+
+. Laden Sie Datensätze herunter, für die eine Registrierung erforderlich ist, den ImageNet 2012 Validation-Satz, den Criteo Terabyte-Datensatz und den Briats 2019-Trainingssatz, und entpacken Sie die Dateien.
+. Erstellen Sie ein Arbeitsverzeichnis mit mindestens 1 TB und definieren Sie die Umgebungsvariable `MLPERF_SCRATCH_PATH` Bezug auf das Verzeichnis.
++
+Sie sollten dieses Verzeichnis im gemeinsam genutzten Speicher für den Netzwerkspeicherfall oder die lokale Festplatte beim Testen mit lokalen Daten freigeben.
+
+. Führen Sie das Make-in-Management `prebuild` Befehl, mit dem der Docker-Container für die erforderlichen Inferenzaufgaben erstellt und gestartet wird.
++
+
+NOTE: Die folgenden Befehle werden alle im laufenden Docker-Container ausgeführt:
+
++
+** Laden Sie vortrainierte KI-Modelle für MLPerf-Inferenz-Aufgaben herunter: `make download_model`
+** Laden Sie zusätzliche Datensätze herunter, die kostenlos heruntergeladen werden können: `make download_data`
+** Daten vorverarbeiten: Make `preprocess_data`
+** Ausführen: `make build`.
+** Aufbau der für die GPU optimierten Inferenz-Engines in Computing-Servern: `make generate_engines`
+** Führen Sie zum Ausführen von Inferenz-Workloads den folgenden Befehl aus (ein Befehl):
+
+
+
+
+....
+make run_harness RUN_ARGS="--benchmarks=<BENCHMARKS> --scenarios=<SCENARIOS>"
+....
+
+
+== KI-Inferenz wird ausgeführt
+
+Es wurden drei Läufe ausgeführt:
+
+* KI-Inferenz eines einzelnen Servers mit lokalem Storage
+* KI-Inferenz eines einzelnen Servers mittels Netzwerk-Storage
+* Multi-Server-KI-Inferenz mit Netzwerk-Storage
+
+
+link:ai-edge-test-results.html["Weiter: Testergebnisse."]

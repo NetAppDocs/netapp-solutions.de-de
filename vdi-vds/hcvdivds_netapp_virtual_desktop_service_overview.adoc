@@ -1,0 +1,58 @@
+---
+sidebar: sidebar 
+permalink: vdi-vds/hcvdivds_netapp_virtual_desktop_service_overview.html 
+keywords: virtual desktop, Azure NetApp Files, VDS 
+summary: NetApp bietet viele Cloud-Services, einschließlich der schnellen Bereitstellung von Virtual Desktop mit WVD oder Remote Applikationen, einschließlich der schnellen Integration mit Azure NetApp Files. 
+---
+= NetApp Virtual Desktop Service – Überblick
+:hardbreaks:
+:allow-uri-read: 
+:nofooter: 
+:icons: font
+:linkattrs: 
+:imagesdir: ./../media/
+
+
+NetApp bietet viele Cloud-Services an, darunter die schnelle Bereitstellung von Virtual Desktop mit WVD oder Remote-Applikationen und die schnelle Integration mit Azure NetApp Files.
+
+Üblicherweise dauert die Bereitstellung und Bereitstellung von Remote Desktop Services für Kunden Wochen. Abgesehen von der Provisionierung kann es schwierig sein, Applikationen, Benutzerprofile, gemeinsam genutzte Daten und Gruppenrichtlinienobjekte zu managen, um Richtlinien durchzusetzen. Firewall-Regeln können die Komplexität erhöhen und erfordern eigene Kenntnisse und Tools.
+
+Mit dem Microsoft Azure Windows Virtual Desktop Service übernimmt Microsoft die Wartung der Komponenten von Remote Desktop Services, sodass Kunden sich auf die Bereitstellung von Workspaces in der Cloud konzentrieren können. Kunden müssen den gesamten Stack bereitstellen und managen, für den das Management von VDI-Umgebungen besondere Fähigkeiten erforderlich sind.
+
+Mit VDS können Kunden virtuelle Desktops schnell implementieren, ohne sich Gedanken darüber machen zu müssen, wo Komponenten wie Broker, Gateways, Agents usw. installiert werden müssen. Kunden, die die vollständige Kontrolle über ihre Umgebung benötigen, können mit einem Professional Services Team zusammenarbeiten, um ihre Ziele zu erreichen. Kunden nutzen VDS als Service und können sich somit auf ihre wichtigsten geschäftlichen Herausforderungen konzentrieren.
+
+NetApp VDS ist ein Software-als-Service-Angebot für das zentrale Management mehrerer Implementierungen in AWS, Azure, GCP oder Private Cloud-Umgebungen. Microsoft Windows Virtual Desktop ist nur auf Microsoft Azure verfügbar. NetApp VDS orchestriert Microsoft Remote Desktop Services in anderen Umgebungen.
+
+Microsoft bietet Multisession unter Windows 10 ausschließlich für Windows Virtual Desktop-Umgebungen auf Azure an. Die Authentifizierung und Identität werden durch die Virtual Desktop-Technologie gehandhabt. WVD erfordert Azure Active Directory Synchronisiert (mit AD Connect) mit Active Directory und Session-VMs, die mit Active Directory verbunden sind. RDS erfordert Active Directory für die Benutzeridentität und Authentifizierung, während VM-Domänen beitreten und verwalten.
+
+Die folgende Abbildung zeigt eine Beispieltopologie für die Implementierung.
+
+image:hcvdivds_image1.png["Fehler: Fehlendes Grafikbild"]
+
+Jede Bereitstellung ist mit einer Active Directory-Domäne verknüpft und stellt den Clients einen Zugriffspunkt für Arbeitsbereiche und Anwendungen zur Verfügung. Ein Service-Provider oder Unternehmen mit mehreren Active Directory-Domänen verfügt in der Regel über mehr Implementierungen. Eine einzelne Active Directory-Domäne, die mehrere Regionen umfasst, verfügt normalerweise über eine einzige Implementierung mit mehreren Standorten.
+
+Für WVD in Azure bietet Microsoft eine Plattform als Service, die von NetApp VDS verbraucht wird. Für andere Umgebungen orchestriert NetApp VDS die Implementierung und Konfiguration von Microsoft Remote Desktop Services. NetApp VDS unterstützt sowohl WVD Classic ALS auch WVD ARM und kann auch für ein Upgrade vorhandener Versionen verwendet werden.
+
+Jede Implementierung verfügt über eigene Plattform-Services, die aus Cloud Workspace Manager (REST-API-Endpunkt), einem HTML 5 Gateway (Verbindung zu VMs über ein VDS-Managementportal), RDS Gateways (Access Point für Clients) und einem Domain Controller bestehen. Die folgende Abbildung zeigt die VDS Control Plane Architektur für die Implementierung von RDS.
+
+image:hcvdivds_image2.png["Fehler: Fehlendes Grafikbild"]
+
+Bei RDS-Implementierungen ist der Zugriff auf NetApp VDS über Windows und Browser mithilfe der Client-Software möglich, die angepasst werden kann und das Kundenlogo und -Bilder enthält. Basierend auf den Benutzeranmeldeinformationen bietet es Benutzern Zugriff auf genehmigte Arbeitsbereiche und Anwendungen. Es müssen keine Gateway-Details konfiguriert werden.
+
+Die folgende Abbildung zeigt den NetApp VDS Client.
+
+image:hcvdivds_image3.png["Fehler: Fehlendes Grafikbild"]
+
+In der Azure WVD-Implementierung übernimmt Microsoft den Zugriffspunkt für die Clients und kann von einem Microsoft WVD-Client genutzt werden, der nativ für verschiedene Betriebssysteme verfügbar ist. Sie ist auch über ein webbasiertes Portal zugänglich. Die Konfiguration der Client-Software muss vom Group Policy Object (GPO) oder auf andere Weise vom Kunden bevorzugt werden.
+
+Die folgende Abbildung zeigt die VDS Control Plane Architecture für Azure WVD-Implementierungen.
+
+image:hcvdivds_image4.png["Fehler: Fehlendes Grafikbild"]
+
+Neben der Implementierung und Konfiguration der erforderlichen Komponenten übernimmt NetApp VDS auch das Management von Benutzern, das Applikations-Management, die Skalierung von Ressourcen und die Optimierung.
+
+NetApp VDS kann Benutzer erstellen oder bestehenden Benutzerkonten Zugriff auf Cloud-Workspace oder Applikationsservices gewähren. Das Portal kann auch für das Zurücksetzen von Kennwörtern und die Delegierung der Verwaltung einer Teilmenge von Komponenten verwendet werden. Helpdesk-Administratoren oder Level-3-Techniker können Benutzersitzungen zur Fehlerbehebung Schatten stellen oder eine Verbindung zu Servern innerhalb des Portals herstellen.
+
+NetApp VDS kann die von Ihnen erstellten Bildvorlagen verwenden oder vorhandene vom Markt für die Cloud-basierte Bereitstellung nutzen. Um die Anzahl der zu managenden Images zu verringern, können Sie ein Basis-Image verwenden. Weitere Applikationen, die Sie benötigen, können Sie über das zur Verfügung gestellte Framework bereitstellen. Dazu gehören sämtliche Befehlszeilen-Tools wie Chocolatey, MSIX App-Attached, PowerShell usw. Sogar benutzerdefinierte Skripts können als Teil von Ereignissen des Maschinellen Lebenszyklus verwendet werden.
+
+link:hcvdivds_netapp_hci_overview.html["Weiter: Übersicht über NetApp HCI"]

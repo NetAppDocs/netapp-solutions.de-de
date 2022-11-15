@@ -1,0 +1,104 @@
+---
+sidebar: sidebar 
+permalink: containers/rh-os-n_openshift_VMW.html 
+keywords: OpenShift, VMware vSphere, ESXi 
+summary: VMware vSphere ist eine Virtualisierungsplattform zur zentralen Verwaltung einer großen Anzahl virtualisierter Server und Netzwerke, die auf dem ESXi Hypervisor ausgeführt werden. 
+---
+= OpenShift auf VMware vSphere
+:allow-uri-read: 
+
+
+VMware vSphere ist eine Virtualisierungsplattform zur zentralen Verwaltung einer großen Anzahl virtualisierter Server und Netzwerke, die auf dem ESXi Hypervisor ausgeführt werden.
+
+Weitere Informationen zu VMware vSphere finden Sie im https://www.vmware.com/products/vsphere.html["VMware vSphere Website"^].
+
+VMware vSphere bietet folgende Funktionen:
+
+* *VMware vCenter Server.* VMware vCenter Server bietet ein einheitliches Management aller Hosts und VMs von einer einzigen Konsole aus und aggregiert die Performance-Überwachung von Clustern, Hosts und VMs.
+* *VMware vSphere vMotion.* VMware vCenter ermöglicht die unterbrechungsfreie Migration von VMs zwischen Knoten des Clusters bei Anfrage.
+* *VSphere High Availability.* um Unterbrechungen bei Host-Ausfällen zu vermeiden, ermöglicht VMware vSphere die Clusterkonfiguration und Konfiguration von Hosts für Hochverfügbarkeit. VMs, die durch einen Host-Ausfall unterbrochen werden, werden in Kürze auf anderen Hosts im Cluster neu gestartet, wodurch die Services wiederhergestellt werden.
+* *Distributed Resource Scheduler (DRS).* Ein VMware vSphere Cluster kann konfiguriert werden, um den Ressourcenbedarf der von ihm gehosteten VMs auszugleichen. VMs mit Ressourceninhaltungen können Hot-to-andere Nodes im Cluster migriert werden, um sicherzustellen, dass genügend Ressourcen verfügbar sind.
+
+
+image:redhat_openshift_image33.png["Fehler: Fehlendes Grafikbild"]
+
+
+
+== Netzwerkdesign
+
+Die Red hat OpenShift on NetApp Lösung verwendet zwei Daten-Switches für die primäre Datenkonnektivität mit 25 Gbit/s. Zudem werden zwei zusätzliche Management-Switches verwendet, die mit 1 Gbit/s Konnektivität für in-Band-Management der Storage-Nodes und Out-of-Band-Management-Funktionen für IPMI-Funktionalität bieten. OCP verwendet für das Cluster-Management das logische VM-Netzwerk auf VMware vSphere. Dieser Abschnitt beschreibt die Anordnung und der Zweck jedes in der Lösung verwendeten virtuellen Netzwerksegments und beschreibt die Voraussetzungen für die Implementierung der Lösung.
+
+
+
+=== VLAN-Anforderungen
+
+Red hat OpenShift auf VMware vSphere wurde entwickelt, um den Netzwerkverkehr für verschiedene Zwecke durch die Verwendung von Virtual Local Area Networks (VLANs) logisch zu trennen. Diese Konfiguration kann entsprechend den Kundenanforderungen skaliert werden oder um eine weitere Isolierung für spezifische Netzwerkservices zu bieten. In der folgenden Tabelle werden die für die Implementierung der Lösung erforderlichen VLANs bei der Validierung der Lösung bei NetApp aufgeführt.
+
+|===
+| VLANs | Zweck | VLAN-ID 
+
+
+| Out-of-Band-Managementnetzwerk | Management für physische Knoten und IPMI | 16 
+
+
+| VM Network | Zugriff auf das virtuelle Gastnetzwerk | 181 
+
+
+| Datennetzwerk Storage-Netzwerk | Storage-Netzwerk für ONTAP NFS | 184 
+
+
+| Datennetzwerk Storage-Netzwerk | Storage-Netzwerk für ONTAP iSCSI | 185 
+
+
+| In-Band-Managementnetzwerk | Management für ESXi Knoten, vCenter Server, ONTAP Select | 3480 
+
+
+| Datennetzwerk Storage-Netzwerk | Storage-Netzwerk für NetApp Element iSCSI | 3481 
+
+
+| Migrationsnetzwerk | Netzwerk für die Migration von virtuellen Gastnetzvorgängen | 3482 
+|===
+
+
+=== Support-Ressourcen für die Netzwerkinfrastruktur
+
+Die folgende Infrastruktur sollte vor der Bereitstellung der OpenShift Container Platform vorhanden sein:
+
+* Mindestens ein DNS-Server bietet vollständige Host-Name-Auflösung, auf die über das bandinterne Managementnetzwerk und das VM-Netzwerk zugegriffen werden kann.
+* Mindestens ein NTP-Server, auf den über das bandinterne Managementnetzwerk und das VM-Netzwerk zugegriffen werden kann.
+* (Optional) ausgehende Internetverbindung sowohl für das bandinterne Managementnetzwerk als auch für das VM-Netzwerk.
+
+
+
+
+== Best Practices für Produktionsimplementierungen
+
+In diesem Abschnitt werden verschiedene Best Practices aufgeführt, die ein Unternehmen vor der Implementierung dieser Lösung in der Produktion berücksichtigen sollte.
+
+
+
+=== OpenShift in ein ESXi-Cluster mit mindestens drei Nodes implementieren
+
+Die in diesem Dokument beschriebene Architektur behandelt die minimale Hardwarebereitstellung für HA-Vorgänge durch Implementierung von zwei ESXi Hypervisor-Nodes und die Gewährleistung einer fehlertoleranten Konfiguration durch die Unterstützung von VMware vSphere HA und VMware vMotion. Mit dieser Konfiguration können implementierte VMs zwischen den beiden Hypervisoren migriert und neu gestartet werden, sollte ein Host nicht mehr verfügbar sein.
+
+Da Red hat OpenShift zunächst mit drei Master-Nodes implementiert wird, können unter bestimmten Umständen mindestens zwei Master-Master-Konfigurationen mit zwei Nodes denselben Node belegen. Dies kann zu einem möglichen Ausfall von OpenShift führen, wenn dieser bestimmte Node nicht mehr verfügbar ist. Daher ist es eine Best Practice von Red hat, dass mindestens drei ESXi-Hypervisor-Nodes bereitgestellt werden müssen, damit die OpenShift-Master gleichmäßig verteilt werden können, was eine zusätzliche Fehlertoleranz bietet.
+
+
+
+=== Konfiguration der virtuellen Maschine und der Host-Affinität
+
+Durch die Unterstützung der VM- und Host-Affinität kann sichergestellt werden, dass die OpenShift-Master-Verteilung über mehrere Hypervisor-Nodes hinweg erreicht werden kann.
+
+Affinität oder Antiaffinität ist eine Möglichkeit, Regeln für eine Gruppe von VMs und/oder Hosts zu definieren, die festlegen, ob die VMs auf demselben Host oder denselben Hosts in der Gruppe oder auf verschiedenen Hosts ausgeführt werden. Wird auf die VMs angewendet, indem Gruppen von Affinitätsgruppen erstellt werden, die aus VMs und/oder Hosts mit einer Reihe identischer Parameter und Bedingungen bestehen. Je nachdem, ob die VMs einer Affinitätsgruppe auf demselben Host oder Hosts der Gruppe oder separat auf verschiedenen Hosts ausgeführt werden, können die Parameter der Affinitätsgruppe entweder eine positive oder eine negative Affinität definieren.
+
+Informationen zum Konfigurieren von Affinitätsgruppen finden Sie im https://docs.vmware.com/en/VMware-vSphere/6.7/com.vmware.vsphere.resmgmt.doc/GUID-FF28F29C-8B67-4EFF-A2EF-63B3537E6934.html["VSphere 6.7 Dokumentation: Nutzung von DRS Affinity Rules"^].
+
+
+
+=== Verwenden Sie eine benutzerdefinierte Installationsdatei für die OpenShift-Bereitstellung
+
+IPI vereinfacht die Bereitstellung von OpenShift-Clustern durch den interaktiven Assistenten, den bereits in diesem Dokument erläutert wurde. Es ist jedoch möglich, dass Sie einige Standardwerte im Rahmen einer Cluster-Bereitstellung ändern müssen.
+
+In diesen Fällen können Sie den Assistenten ausführen und ausführen, ohne sofort einen Cluster bereitzustellen. Stattdessen erstellt der Assistent eine Konfigurationsdatei, aus der das Cluster später bereitgestellt werden kann. Dies ist sehr nützlich, wenn Sie IPI-Standards ändern müssen oder wenn Sie mehrere identische Cluster in Ihrer Umgebung für andere Zwecke wie Mandantenfähigkeit implementieren möchten. Weitere Informationen zum Erstellen einer benutzerdefinierten Installationskonfiguration für OpenShift finden Sie unter https://docs.openshift.com/container-platform/4.7/installing/installing_vsphere/installing-vsphere-installer-provisioned-customizations.html["Red hat OpenShift Installieren eines Clusters auf vSphere mit Anpassungen"^].
+
+link:rh-os-n_overview_netapp.html["Weiter: NetApp Storage Überblick"]

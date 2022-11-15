@@ -1,0 +1,60 @@
+---
+sidebar: sidebar 
+permalink: ai/osrunai_over-quota_fairness.html 
+keywords:  
+summary:  
+---
+= Gerechtigkeit Wegen Zu Viel Quoten
+:hardbreaks:
+:allow-uri-read: 
+:nofooter: 
+:icons: font
+:linkattrs: 
+:imagesdir: ./../media/
+
+
+In diesem Abschnitt erweitern wir das Szenario, in dem mehrere Teams Workloads einreichen und ihre Kontingente übertreffen. Auf diese Weise zeigen wir, wie Run:AI Fairness-Algorithmus Clusterressourcen entsprechend dem Verhältnis voreingestellter Quoten zuweist.
+
+Ziele für dieses Testszenario:
+
+* Warteschlangenmechanismus anzeigen, wenn mehrere Teams GPUs über ihre Kontingente anfordern
+* Zeigen Sie, wie das System einen fairen Anteil des Clusters zwischen mehreren Teams verteilt, die entsprechend dem Verhältnis zwischen ihren Quoten über ihrem Kontingent liegen, so dass das Team mit dem höheren Kontingent einen größeren Anteil der freien Kapazität erhält.
+
+
+Am Ende von link:osrunai_basic_resource_allocation_fairness.html["Gerechtigkeit Bei Der Grundlegenden Ressourcenzuweisung"], Es gibt zwei Workloads in die Warteschlange: Einen für `team-b` Und eins für `team-c`. In diesem Abschnitt werden zusätzliche Workloads Warteschlange gestellt.
+
+Details wie Stellenausschreibungen, verwendete Container-Images und ausgeführte Befehlssequenzen finden Sie unter link:osrunai_testing_details_for_section_4.10.html["Testdetails für Abschnitt 4.10"].
+
+Wenn alle Jobs gemäß Abschnitt gesendet werden link:osrunai_testing_details_for_section_4.10.html["Testdetails für Abschnitt 4.10"], Das System-Dashboard zeigt das an `team-a`, `team-b`, und `team-c` Alle haben mehr GPUs als ihre voreingestellten Quoten. `team-a` Belegt vier mehr GPUs als die voreingestellte Soft Quota (vier), wohingegen `team-b` Und `team-c` Jeder besetzen zwei mehr GPUs als ihre Soft-Quota (zwei). Das Verhältnis der zugewiesenen GPUs zu viel Kontingent entspricht dem ihrer voreingestellten Quote. Das liegt daran, dass das System das voreingestellte Kontingent als Referenz der Priorität verwendet und entsprechend bereitgestellt hat, wenn mehrere Teams mehr GPUs anfordern und ihre Quoten übertreffen. Ein solcher automatischer Lastausgleich ist Fairness und Priorisierung, wenn Datenwissenschaftler im Unternehmen aktiv an der Entwicklung und Produktion von KI-Modellen arbeiten.
+
+image:osrunai_image10.png["Fehler: Fehlendes Grafikbild"]
+
+Die Ergebnisse dieses Testszenarios zeigen Folgendes:
+
+* Das System beginnt, die Workloads anderer Teams in die Warteschlange zu stellen.
+* Die Reihenfolge der Abwarteschlangen wird nach Fairness-Algorithmen festgelegt, so dass `team-b` Und `team-c` Erhalten Sie die gleiche Menge von Over-Quota GPUs (da sie eine ähnliche Quote haben), und `team-a` Erhält eine doppelte Menge von GPUs, da ihre Quote doppelt so hoch ist wie die Quote von `team-b` Und `team-c`.
+* Die gesamte Zuweisung erfolgt automatisch.
+
+
+Daher sollte sich das System in folgenden Staaten stabilisieren:
+
+|===
+| Projekt | GPUs zugewiesen | Kommentar 
+
+
+| Team A | 8/4 | Vier GPUs über die Quote. Leere Warteschlange. 
+
+
+| Team b | 4/2 | Zwei GPUs über dem Kontingent. Ein Workload in Warteschlange. 
+
+
+| Team c | 4/2 | Zwei GPUs über dem Kontingent. Ein Workload in Warteschlange. 
+
+
+| Team d | 0/8 | GPU verwendet überhaupt nicht; keine Workloads in der Warteschlange. 
+|===
+Die folgende Abbildung zeigt die GPU-Zuweisung pro Projekt im Dashboard „Run:AI Analytics“ für die Abschnitte link:osrunai_achieving_high_cluster_utilization_with_over-uota_gpu_allocation.html["Erreichen einer hohen Cluster-Auslastung mit GPU-Zuweisung über ein Kontingent"], link:osrunai_basic_resource_allocation_fairness.html["Gerechtigkeit Bei Der Grundlegenden Ressourcenzuweisung"], und link:osrunai_over-quota_fairness.html["Gerechtigkeit Wegen Zu Viel Quoten"]. Die einzelnen Zeilen in der Abbildung geben die Anzahl der GPUs an, die jederzeit für ein Data-Science-Team bereitgestellt werden. Wie wir sehen, weist das System GPUs dynamisch entsprechend den eingereichten Workloads zu. So können Teams im Cluster GPUs zur Verfügung stehen und Jobs entsprechend der Fairness vorbeugen, bevor sie endlich einen stabilen Zustand für alle vier Teams erreichen.
+
+image:osrunai_image11.png["Fehler: Fehlendes Grafikbild"]
+
+link:osrunai_saving_data_to_a_trident-provisioned_persistentvolume.html["Nächste Schritte: Speichern von Daten in einem mit Trident bereitgestellten PersistenzVolume"]

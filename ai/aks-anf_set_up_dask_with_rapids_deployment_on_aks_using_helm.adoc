@@ -1,0 +1,102 @@
+---
+sidebar: sidebar 
+permalink: ai/aks-anf_set_up_dask_with_rapids_deployment_on_aks_using_helm.html 
+keywords: dask, rapids, deployment, aks, helm, pvc, persistent volume claim 
+summary: Auf dieser Seite wird die Einrichtung von „Dask with RAPIDS“-Einsatz auf AKS mit Helm beschrieben. 
+---
+= Einrichten von „Dask with RAPIDS Deployment“ auf AKS mit Helm
+:hardbreaks:
+:allow-uri-read: 
+:nofooter: 
+:icons: font
+:linkattrs: 
+:imagesdir: ./../media/
+
+
+link:aks-anf_install_trident.html["Früher: Trident Installieren."]
+
+Gehen Sie wie folgt vor, um die Implementierung von „Dask with RAPIDS“ auf AKS mit Helm einzurichten:
+
+. Erstellen Sie einen Namespace für die Installation von DASK mit RAPIDS.
++
+....
+kubectl create namespace rapids-dask
+....
+. Erstellen Sie ein PVC, um den Click-Through-Rate-Datensatz zu speichern:
++
+.. Speichern Sie den folgenden YAML-Inhalt in einer Datei, um ein PVC zu erstellen.
++
+....
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: pvc-criteo-data
+spec:
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 1000Gi
+  storageClassName: azurenetappfiles
+....
+.. Wenden Sie die YAML-Datei auf Ihr Kubernetes-Cluster an.
++
+....
+kubectl -n rapids-dask apply -f <your yaml file>
+....
+
+
+. Klonen Sie die `rapidsai git` Repository ( https://github.com/rapidsai/helm-chart["https://github.com/rapidsai/helm-chart"^]).
++
+....
+git clone https://github.com/rapidsai/helm-chart helm-chart
+....
+. Ändern `values.yaml` Und schließen Sie die PVC ein, die früher für Arbeiter und Jupyter-Workspace erstellt wurde.
++
+.. Wechseln Sie zum `rapidsai` Verzeichnis des Repository.
++
+....
+cd helm-chart/rapidsai
+....
+.. Aktualisieren Sie die `values.yaml` Datei und Mounten des Volumes mit PVC.
++
+....
+dask:
+  …
+  worker:
+    name: worker
+    …
+    mounts:
+      volumes:
+        - name: data
+          persistentVolumeClaim:
+            claimName: pvc-criteo-data
+      volumeMounts:
+        - name: data
+          mountPath: /data
+    …
+  jupyter:
+    name: jupyter
+    …
+    mounts:
+      volumes:
+        - name: data
+          persistentVolumeClaim:
+            claimName: pvc-criteo-data
+      volumeMounts:
+        - name: data
+          mountPath: /data
+    …
+....
+
+
+. Gehen Sie zum Home-Verzeichnis des Projektarchivs und stellen Sie Dask mit drei Worker-Knoten auf AKS mit Helm bereit.
++
+....
+cd ..
+helm dep update rapidsai
+helm install rapids-dask --namespace rapids-dask rapidsai
+....
+
+
+link:aks-anf_azure_netapp_files_performance_tiers.html["Weiter: Azure NetApp Files-Performance-Tiers."]
