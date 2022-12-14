@@ -92,6 +92,7 @@ NOTE: Diese Funktion befindet sich derzeit in der öffentlichen Vorschau.
 Wenn Sie ein Azure NetApp Datei-Volume als VMware-Datenspeicher einer Private Cloud der Azure VMware Lösung anhängen möchten, müssen Sie die folgenden Voraussetzungen erfüllen.
 
 .Voraussetzungen
+[%collapsible]
 ====
 . Verwenden Sie die Anmeldung bei az und überprüfen Sie, ob das Abonnement für die CloudSanExperience-Funktion im Namespace von Microsoft.AVS registriert ist.
 
@@ -148,6 +149,7 @@ az extension add --name vmware
 ....
 ====
 .Azure NetApp Files Volumes erstellen und mounten
+[%collapsible]
 ====
 . Melden Sie sich im Azure-Portal an und greifen Sie auf Azure NetApp Files zu. Überprüfen Sie den Zugriff auf den Azure NetApp Files-Service und registrieren Sie den Azure NetApp Files Ressourcenanbieter mithilfe von `az provider register` `--namespace Microsoft.NetApp –wait` Befehl. Erstellen Sie nach der Registrierung ein NetApp Konto. Weitere Informationen finden Sie hier https://docs.microsoft.com/en-us/azure/azure-netapp-files/azure-netapp-files-create-netapp-account["Verlinken"^] Für detaillierte Schritte.
 
@@ -179,6 +181,7 @@ Informationen zur Azure NetApp Files Volume-Performance nach Größe oder Kontin
 
 ====
 .Fügen Sie einen Azure NetApp Files-Datastore in eine Private Cloud hinzu
+[%collapsible]
 ====
 Um einen Azure NetApp Files-Datastore zu einer Private Cloud hinzuzufügen, gehen Sie wie folgt vor:
 
@@ -303,11 +306,13 @@ Die Volume-Umgestaltung und die dynamischen Service Level-Änderungen sind für 
 == Workloads
 
 .Migration
+[%collapsible]
 ====
 Einer der häufigsten Anwendungsfälle ist die Migration. On-Premises-VMs mit VMware HCX oder vMotion verschieben Alternativ können Sie mit Riverwiese VMs zu Azure NetApp Files Datastores migrieren.
 
 ====
 .Datensicherung
+[%collapsible]
 ====
 Zu den größten Stärken der ANF-Datastores zählen das Backup von VMs und die schnelle Wiederherstellung. Mit Snapshot Kopien können Sie ohne Auswirkungen auf die Performance schnell Kopien Ihrer VMs oder Datastores erstellen und diese dann zur längerfristigen Datensicherung oder zu einer sekundären Region an Azure Storage senden. Dabei wird für Disaster Recovery-Zwecke eine regionsübergreifende Replizierung verwendet. Durch diesen Ansatz werden der Storage-Platzbedarf und die Netzwerkbandbreite minimiert, da nur geänderte Informationen gespeichert werden.
 
@@ -317,6 +322,7 @@ Verwenden Sie Azure NetApp Files Snapshot Kopien für die allgemeine Sicherheit 
 NOTE: Mit ANF-Datastores kann die Option „auf neues Volume wiederherstellen“ verwendet werden, um ein gesamtes Datastore Volume zu klonen. Das wiederhergestellte Volume kann als weiterer Datastore für Hosts innerhalb des AVS SDDC gemountet werden. Nachdem ein Datastore gemountet wurde, können die darin enthaltenen VMs registriert, neu konfiguriert und angepasst werden, als wären sie einzeln geklonte VMs.
 
 .Cloud Backup für Virtual Machines
+[%collapsible]
 =====
 Cloud Backup für Virtual Machines bietet eine vSphere Web-Client-GUI auf vCenter, um Virtual Machines der Azure VMware Lösung und Azure NetApp Files-Datastores über Backup-Richtlinien zu schützen. In diesen Richtlinien können ein Zeitplan, die Aufbewahrung und andere Funktionen definiert werden. Die Funktion Cloud Backup für Virtual Machines kann über den Befehl Ausführen implementiert werden.
 
@@ -336,6 +342,7 @@ image:vmware-dr-image7.png["Fehler: Fehlendes Grafikbild"]
 
 =====
 .Disaster Recovery mit Azure NetApp Files, JetStream DR und Azure VMware Lösung
+[%collapsible]
 =====
 Disaster Recovery in die Cloud ist eine stabile und kostengünstige Möglichkeit zum Schutz der Workloads vor Standortausfällen und Datenbeschädigungen (z. B. Ransomware). Mithilfe des VMware VAIO Frameworks können VMware On-Premises-Workloads auf Azure Blob Storage und für die Recovery repliziert werden, was zu minimalen oder fast keinem Datenverlust und nahezu keinem RTO führt. Jetstream DR kann verwendet werden, um die Workloads, die von On-Premises-Systemen auf AVS repliziert wurden, nahtlos wiederherzustellen. Insbesondere können sie auf Azure NetApp Files übertragen werden. Sie ermöglicht eine kostengünstige Disaster Recovery, da minimale Ressourcen am DR-Standort und kostengünstiger Cloud Storage genutzt werden. Jetstream DR automatisiert die Recovery auf ANF-Datastores über Azure Blob Storage. Jetstream DR stellt unabhängige VMs oder Gruppen zugehöriger VMs in der Infrastruktur des Recovery-Standorts entsprechend der Netzwerkzuordnung wieder her und sorgt für zeitpunktgenaue Recovery zur Sicherung von Ransomware.
 

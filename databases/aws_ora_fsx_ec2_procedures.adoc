@@ -204,7 +204,7 @@ Das Automatisierungsteam von NetApp stellt ein Automatisierungs-Kit bereit, um O
 
 === Ansible-Controller vorbereiten, um die Automatisierung auszuführen
 
-Befolgen Sie die Anweisungen im Abschnitt „ and connecting to an EC2 instance for hosting Oracle database„ “ Bezeichnet, um eine kleine EC2 Linux-Instanz zum Ausführen des Ansible-Controllers bereitzustellen. Anstatt RedHat zu verwenden, sollte Amazon Linux t2.Large mit 2vCPU und 8G RAM ausreichend sein.
+Befolgen Sie die Anweisungen im Abschnitt „<<Erstellen und Verbinden mit einer EC2-Instanz zum Hosten von Oracle-Datenbank>>„ “ Bezeichnet, um eine kleine EC2 Linux-Instanz zum Ausführen des Ansible-Controllers bereitzustellen. Anstatt RedHat zu verwenden, sollte Amazon Linux t2.Large mit 2vCPU und 8G RAM ausreichend sein.
 
 
 
@@ -226,7 +226,7 @@ git clone https://github.com/NetApp-Automation/na_rds_fsx_oranfs_config.git
 
 Siehe diese detaillierte Anweisung link:https://docs.netapp.com/us-en/netapp-solutions/databases/cli_automation.html["CLI-Implementierung einer Oracle 19c Datenbank"^] Um Oracle 19c mit CLI-Automatisierung zu implementieren. Die Befehlssyntax für die Ausführung des Playbook-Befehls ändert sich klein, da Sie ein SSH-Schlüsselpaar anstelle eines Passworts für die Host-Zugriffs-Authentifizierung verwenden. Die folgende Liste enthält eine allgemeine Zusammenfassung:
 
-. Standardmäßig verwendet eine EC2-Instanz ein SSH-Schlüsselpaar für die Zugriffsauthentisierung. Über Ansible-Root-Verzeichnisse zur Controller-Automatisierung `/home/ec2-user/na_oracle19c_deploy`, und `/home/ec2-user/na_rds_fsx_oranfs_config`Erstellen Sie eine Kopie des SSH-Schlüssels `accesststkey.pem` Für den im Schritt implementierten Oracle Host „ and connecting to an EC2 instance for hosting Oracle database.“
+. Standardmäßig verwendet eine EC2-Instanz ein SSH-Schlüsselpaar für die Zugriffsauthentisierung. Über Ansible-Root-Verzeichnisse zur Controller-Automatisierung `/home/ec2-user/na_oracle19c_deploy`, und `/home/ec2-user/na_rds_fsx_oranfs_config`Erstellen Sie eine Kopie des SSH-Schlüssels `accesststkey.pem` Für den im Schritt implementierten Oracle Host „<<Erstellen und Verbinden mit einer EC2-Instanz zum Hosten von Oracle-Datenbank>>.“
 . Melden Sie sich als ec2-User beim DB-Host der EC2-Instanz an, und installieren Sie die python3-Bibliothek.
 +
 [source, cli]
@@ -492,7 +492,7 @@ NOTE: Sie können Oracle Archivprotokoll-Beschneidung in der Backup-Richtlinie a
 
 Das Datenbank-Backup in SnapCenter ist benutzerkonfigurierbar und kann entweder einzeln oder als Gruppe in einer Ressourcengruppe eingerichtet werden. Das Backup-Intervall hängt von den RTO- und RPO-Zielen ab. NetApp empfiehlt, alle paar Stunden ein komplettes Datenbank-Backup auszuführen und das Protokoll-Backup mit einer höheren Frequenz, z. B. 10-15 Minuten, zu archivieren, um eine schnelle Recovery zu ermöglichen.
 
-Weitere Informationen finden Sie im Abschnitt Oracle von link:https://docs.netapp.com/us-en/netapp-solutions/databases/hybrid_dbops_snapcenter_getting_started_onprem.html#8-implement-backup-policy-to-protect-database["Backup-Richtlinie zum Schutz der Datenbank implementieren"^] Für detaillierte Schritt-für-Schritt-Prozesse zur Implementierung der im Abschnitt erstellten Backup-Richtlinie  backup policy for Oracle database Und für die Backup-Jobplanung.
+Weitere Informationen finden Sie im Abschnitt Oracle von link:https://docs.netapp.com/us-en/netapp-solutions/databases/hybrid_dbops_snapcenter_getting_started_onprem.html#8-implement-backup-policy-to-protect-database["Backup-Richtlinie zum Schutz der Datenbank implementieren"^] Für detaillierte Schritt-für-Schritt-Prozesse zur Implementierung der im Abschnitt erstellten Backup-Richtlinie <<Konfigurieren der Backup-Richtlinie für Oracle-Datenbank>> Und für die Backup-Jobplanung.
 
 Das folgende Bild zeigt ein Beispiel für die Ressourcengruppen, die zum Backup einer Oracle-Datenbank eingerichtet wurden.
 

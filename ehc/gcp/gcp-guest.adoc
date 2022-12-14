@@ -33,6 +33,7 @@ CVO ist von Grund auf für beste Performance und erweiterte Datenmanagementfunkt
 === Cloud Volumes ONTAP (CVO) als Storage mit Gastzugriff
 
 .Implementierung von Cloud Volumes ONTAP in der Google Cloud (Do IT Yourself)
+[%collapsible]
 ====
 Cloud Volumes ONTAP-Freigaben und LUNs können von VMs gemountet werden, die in der GCVE Private Cloud-Umgebung erstellt wurden. Die Volumes können auch auf dem Linux-Client und auf dem Windows-Client eingebunden werden, wobei auf LUNS unter Linux- oder Windows-Clients als Blockgeräte zugegriffen werden kann, wenn sie über iSCSI gemountet werden, da Cloud Volumes ONTAP iSCSI-, SMB- und NFS-Protokolle unterstützt. Cloud Volumes ONTAP Volumes lassen sich in wenigen einfachen Schritten einrichten.
 
@@ -87,6 +88,7 @@ image:gcve-cvo-guest-9.png[""]
 
 ====
 .Zusätzliche Konfigurationen für SMB Volumes
+[%collapsible]
 ====
 . Stellen Sie nach der Arbeitsumgebung sicher, dass der CIFS-Server mit den entsprechenden DNS- und Active Directory-Konfigurationsparametern konfiguriert ist. Dieser Schritt ist erforderlich, bevor Sie das SMB-Volume erstellen können.
 +
@@ -124,6 +126,7 @@ image:gcve-cvo-guest-15.png[""]
 
 ====
 .Verbinden Sie die LUN auf Cloud Volumes ONTAP mit einem Host
+[%collapsible]
 ====
 Führen Sie die folgenden Schritte aus, um die Cloud Volumes ONTAP-LUN mit einem Host zu verbinden:
 
@@ -180,6 +183,7 @@ image:gcve-cvo-guest-22.png[""]
 
 ====
 .Mounten Sie das Cloud Volumes ONTAP NFS Volume auf dem Linux Client
+[%collapsible]
 ====
 So mounten Sie das Cloud Volumes ONTAP-Dateisystem (DIY) von VMs in der Google Cloud VMware Engine:
 
@@ -226,6 +230,7 @@ Weitere Vorteile und Funktionen sind Datensicherung und -Wiederherstellung mit S
 === Cloud Volumes Service (CVS) als Storage mit Gastverbunden
 
 .Konfiguration von Cloud Volumes Service mit der VMware Engine
+[%collapsible]
 ====
 Cloud Volumes Service Shares können von VMs gemountet werden, die in der VMware Engine Umgebung erstellt wurden. Die Volumes können auch auf dem Linux-Client eingebunden und auf dem Windows-Client zugeordnet werden, da Cloud Volumes Service SMB- und NFS-Protokolle unterstützt. Cloud Volumes Service Volumes lassen sich in einfachen Schritten einrichten.
 
@@ -235,6 +240,7 @@ Im folgenden Dokument können Sie NetApp Cloud Volumes Service für Google Cloud
 
 ====
 .Erstellen eines CVS NFS-Volumes in die GCVE Private Cloud
+[%collapsible]
 ====
 Führen Sie folgende Schritte aus, um NFS-Volumes zu erstellen und einzubinden:
 
@@ -288,6 +294,7 @@ image:gcve-cvs-guest-10.png[""]
 
 ====
 .Mounten von NFS-Exporten auf VMs, die auf der VMware Engine ausgeführt werden
+[%collapsible]
 ====
 Stellen Sie vor dem Bereitstellen des NFS-Volumes sicher, dass der Peering-Status der privaten Verbindung als aktiv aufgeführt ist. Sobald der Status „aktiv“ lautet, verwenden Sie den Befehl „Mount“.
 
@@ -329,6 +336,7 @@ image:gcve-cvs-guest-22.png[""]
 
 ====
 .Erstellen und Mounten von SMB-Share an VMs, die auf VMware Engine ausgeführt werden
+[%collapsible]
 ====
 Vergewissern Sie sich bei SMB-Volumes, dass die Active Directory-Verbindungen vor dem Erstellen des SMB-Volume konfiguriert sind.
 

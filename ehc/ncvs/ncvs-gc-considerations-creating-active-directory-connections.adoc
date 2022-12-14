@@ -108,11 +108,11 @@ Cloud Volumes Service wird in Active Directory als normales Konto-Objekt angezei
 * CIFS/SMB und NFS Kerberos erstellen separate Computerkontoobjekte.
 * NFS mit aktiviertem LDAP erstellt ein Maschinenkonto in Active Directory für Kerberos LDAP bindet.
 * Duale Protokoll-Volumes mit LDAP nutzen das CIFS/SMB-Maschinenkonto für LDAP und SMB.
-* CIFS/SMB-Maschinenkonten verwenden eine Namensgebungskonvention von NAME-1234 (zufällige vierstellige ID mit Bindestrich angefügt an <10 Zeichen Name) für das Maschinenkonto. SIE können DEN NAMEN durch die Einstellung des NetBIOS-Namens auf der Active Directory-Verbindung definieren (siehe Abschnitt „ Directory connection details„).
+* CIFS/SMB-Maschinenkonten verwenden eine Namensgebungskonvention von NAME-1234 (zufällige vierstellige ID mit Bindestrich angefügt an <10 Zeichen Name) für das Maschinenkonto. SIE können DEN NAMEN durch die Einstellung des NetBIOS-Namens auf der Active Directory-Verbindung definieren (siehe Abschnitt „<<Details zur Active Directory-Verbindung>>„).
 * NFS Kerberos verwendet NFS-NAME-1234 als Namenskonvention (bis zu 15 Zeichen). Wenn mehr als 15 Zeichen verwendet werden, lautet der Name NFS-CAM-NAME-1234.
 * Nur NFS CVS-Performance-Instanzen mit aktiviertem LDAP erstellen ein SMB-Maschinenkonto, um es an den LDAP-Server zu binden, und zwar mit derselben Namenskonvention wie CIFS/SMB-Instanzen.
 * Wenn ein SMB-Computerkonto erstellt wird, werden standardmäßig ausgeblendete Admin-Freigaben verwendet (siehe Abschnitt link:ncvs-gc-smb.html#default-hidden-shares["„Standard versteckte Freigaben“"]) Werden auch erstellt (c€, Admin-Dollar, ipc-Dollar), aber diese Aktien haben keine ACLs zugewiesen und sind unzugänglich.
-* Die Rechnungsobjekte werden standardmäßig in CN=Computer platziert, aber eine können Sie bei Bedarf eine andere OU festlegen. Siehe Abschnitt „ needed to create SMB machine accounts“ Informationen darüber, welche Zugriffsrechte zum Hinzufügen/Entfernen von Gerätekontonobjekten für Cloud Volumes Service erforderlich sind.
+* Die Rechnungsobjekte werden standardmäßig in CN=Computer platziert, aber eine können Sie bei Bedarf eine andere OU festlegen. Siehe Abschnitt „<<Zum Erstellen von SMB-Computerkonten erforderliche Berechtigungen>>“ Informationen darüber, welche Zugriffsrechte zum Hinzufügen/Entfernen von Gerätekontonobjekten für Cloud Volumes Service erforderlich sind.
 
 
 Wenn Cloud Volumes Service das SMB-Maschinenkonto zu Active Directory hinzufügt, werden die folgenden Felder ausgefüllt:

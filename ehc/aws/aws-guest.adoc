@@ -33,6 +33,7 @@ FSX für ONTAP bietet außerdem hochverfügbaren und langlebigen Storage mit vol
 === FSX ONTAP als Storage mit Gastverbunden
 
 .Konfiguration von Amazon FSX für NetApp ONTAP mit VMware Cloud auf AWS
+[%collapsible]
 ====
 Amazon FSX für NetApp ONTAP Dateifreigaben und LUNs können von VMs gemountet werden, die in der VMware SDDC Umgebung bei VMware Cloud bei AWS erstellt wurden. Die Volumes können auch auf dem Linux-Client eingebunden und mithilfe des NFS- oder SMB-Protokolls auf dem Windows-Client abgebildet werden. LUNs sind unter Linux- oder Windows-Clients als Block-Geräte verfügbar, wenn sie über iSCSI eingebunden werden. Amazon FSX für das NetApp ONTAP Filesystem lässt sich mit den folgenden Schritten schnell einrichten.
 
@@ -41,6 +42,7 @@ NOTE: Amazon FSX für NetApp ONTAP und VMware Cloud auf AWS müssen sich in ders
 
 ====
 .Amazon FSX für ONTAP Volumes erstellen und mounten
+[%collapsible]
 ====
 So erstellen und mounten Sie Amazon FSX für NetApp ONTAP Filesystem:
 
@@ -103,6 +105,7 @@ image:aws-fsx-guest-11.png[""]
 
 ====
 .Mounten Sie FSX ONTAP Volume auf dem Linux Client
+[%collapsible]
 ====
 So mounten Sie das im vorherigen Schritt erstellte FSX ONTAP-Volumen. Führen Sie von den Linux VMs innerhalb von VMC auf dem AWS SDDC folgende Schritte aus:
 
@@ -126,6 +129,7 @@ image:aws-fsx-guest-21.png[""]
 video::vmc_linux_vm_nfs.mp4[]
 ====
 .Hängen Sie FSX ONTAP Volumes an Microsoft Windows Clients an
+[%collapsible]
 ====
 Um Dateifreigaben auf einem Amazon FSX-Dateisystem zu verwalten und zuzuordnen, muss die GUI für freigegebene Ordner verwendet werden.
 
@@ -159,6 +163,7 @@ image:aws-fsx-guest-26.png[""]
 
 ====
 .Verbinden Sie FSX für NetApp ONTAP LUNs mit einem Host über iSCSI
+[%collapsible]
 ====
 video::vmc_windows_vm_iscsi.mp4[]
 ISCSI-Datenverkehr für FSX durchläuft das VMware Transit Connect/AWS Transit Gateway über die im vorherigen Abschnitt angegebenen Routen. Folgen Sie der Dokumentation, um eine LUN in Amazon FSX für NetApp ONTAP zu konfigurieren link:https://docs.aws.amazon.com/fsx/latest/ONTAPGuide/supported-fsx-clients.html["Hier"].
@@ -169,6 +174,7 @@ In diesem Dokument wird die Verbindung der iSCSI-LUN mit einem Windows-Host darg
 
 ====
 .Bereitstellen eines LUNs in FSX für NetApp ONTAP:
+[%collapsible]
 ====
 . Greifen Sie über den Management-Port des FSX für das Dateisystem ONTAP auf die NetApp ONTAP CLI zu.
 . Erstellen Sie die LUNs mit der erforderlichen Größe, wie durch die Ausgabe der Dimensionierung angegeben.
@@ -283,6 +289,7 @@ CVO ist von Grund auf für beste Performance und erweiterte Datenmanagementfunkt
 === Cloud Volumes ONTAP (CVO) als Storage mit Gastzugriff
 
 .Neue Cloud Volumes ONTAP-Instanz in AWS implementieren (selbst übernehmen)
+[%collapsible]
 ====
 Cloud Volumes ONTAP-Freigaben und LUNs können von VMs gemountet werden, die in der VMware Cloud on AWS SDDC Umgebung erstellt wurden. Die Volumes können auch auf nativen AWS VM Linux Windows Clients eingebunden werden, und AUF LUNS kann bei Verwendung über iSCSI als Blockgeräte zugegriffen werden, da Cloud Volumes ONTAP iSCSI-, SMB- und NFS-Protokolle unterstützt. Cloud Volumes ONTAP Volumes lassen sich in wenigen einfachen Schritten einrichten.
 
@@ -351,6 +358,7 @@ image:aws-cvo-guest-14.png[""]
 
 ====
 .Zusätzliche Konfigurationen für SMB Volumes
+[%collapsible]
 ====
 . Stellen Sie nach der Arbeitsumgebung sicher, dass der CIFS-Server mit den entsprechenden DNS- und Active Directory-Konfigurationsparametern konfiguriert ist. Dieser Schritt ist erforderlich, bevor Sie das SMB-Volume erstellen können.
 +
@@ -374,6 +382,7 @@ image:aws-cvo-guest-24.png[""]
 
 ====
 .Verbinden Sie die LUN mit einem Host
+[%collapsible]
 ====
 Führen Sie die folgenden Schritte aus, um die Cloud Volumes ONTAP-LUN mit einem Host zu verbinden:
 
@@ -423,6 +432,7 @@ Stellen Sie auf den Linux-Clients sicher, dass der iSCSI-Daemon ausgeführt wird
 
 ====
 .Mounten Sie das Cloud Volumes ONTAP NFS Volume auf dem Linux Client
+[%collapsible]
 ====
 So mounten Sie das Cloud Volumes ONTAP (DIY) Dateisystem von VMs innerhalb VMC auf AWS SDDC aus:
 

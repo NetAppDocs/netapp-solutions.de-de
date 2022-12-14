@@ -30,6 +30,7 @@ Dieses Dokument enthält eine Schritt-für-Schritt-Anleitung zur Bereitstellung 
 NOTE: VMware HCX arbeitet mit jedem Datenspeichertyp zusammen, da die Migration auf VM-Ebene erfolgt. Dieses Dokument eignet sich daher für bestehende NetApp Kunden sowie für Kunden anderer Anbieter, die eine Implementierung der Azure NetApp Files Lösung mit Azure VMware als kostengünstige VMware Cloud-Implementierung planen.
 
 .Allgemeine Schritte
+[%collapsible]
 ====
 Diese Liste enthält grundlegende Schritte, die für die Installation und Konfiguration von HCX Cloud Manager auf der Azure Cloud-Seite und die Installation von HCX Connector vor Ort erforderlich sind:
 
@@ -45,6 +46,7 @@ Diese Liste enthält grundlegende Schritte, die für die Installation und Konfig
 
 ====
 .Voraussetzungen
+[%collapsible]
 ====
 Bevor Sie beginnen, stellen Sie sicher, dass die folgenden Voraussetzungen erfüllt sind. Weitere Informationen finden Sie unter https://docs.microsoft.com/en-us/azure/azure-vmware/configure-vmware-hcx["Verlinken"^]. Nachdem die Voraussetzungen, einschließlich der Konnektivität, vorhanden sind, konfigurieren und aktivieren Sie HCX, indem Sie den Lizenzschlüssel aus dem Azure VMware-Lösungsportal generieren. Nach dem Herunterladen des OVA-Installationsprogramms gehen Sie wie unten beschrieben mit der Installation vor.
 
@@ -60,6 +62,7 @@ NOTE: HCX Advanced ist die Standardoption und die VMware HCX Enterprise Edition 
 
 ====
 .Übergeordnete Architektur
+[%collapsible]
 ====
 Die für diese Validierung verwendete Lab-Umgebung wurde zu Testzwecken über ein Site-to-Site-VPN verbunden, das On-Premises-Konnektivität mit der Azure VMware Lösung ermöglicht.
 
@@ -73,6 +76,7 @@ image:anfd-hcx-image1.png["Dieses Bild zeigt die in dieser Lösung verwendete al
 Führen Sie die folgenden Schritte aus, um die Implementierung dieser Lösung abzuschließen:
 
 .Schritt 1: Installieren Sie HCX über Azure Portal mit der Option Add-ons
+[%collapsible]
 ====
 Gehen Sie wie folgt vor, um die Installation durchzuführen:
 
@@ -95,6 +99,7 @@ image:anfd-hcx-image3.png["Screenshot der Fertigstellung des Abschnitts HCX Work
 
 ====
 .Schritt 2: Stellen Sie das Installationsprogramm OVA im lokalen vCenter Server bereit
+[%collapsible]
 ====
 Damit der On-Premises Connector eine Verbindung zum HCX Manager in Azure VMware herstellen kann, müssen in der On-Premises-Umgebung die entsprechenden Firewall-Ports geöffnet sein.
 
@@ -131,6 +136,7 @@ Eine Schritt-für-Schritt-Anleitung finden Sie im https://docs.vmware.com/en/VMw
 
 ====
 .Schritt 3: HCX Connector mit dem Lizenzschlüssel aktivieren
+[%collapsible]
 ====
 Nachdem Sie den VMware HCX Connector OVA vor Ort bereitgestellt und das Gerät gestartet haben, führen Sie die folgenden Schritte aus, um den HCX Connector zu aktivieren. Generieren Sie den Lizenzschlüssel aus dem Azure VMware Lösungs-Portal und aktivieren Sie ihn in VMware HCX Manager.
 
@@ -179,6 +185,7 @@ image:anfd-hcx-image8.png["Screenshot mit dem abgeschlossenen Prozess"]
 
 ====
 .Schritt 4: Verbinden Sie den lokalen VMware HCX Connector mit der Azure VMware-Lösung HCX Cloud Manager
+[%collapsible]
 ====
 Nachdem HCX Connector sowohl in der lokalen als auch in der Azure VMware-Lösung installiert wurde, konfigurieren Sie die private Cloud der lokalen VMware HCX Connector for Azure VMware-Lösung, indem Sie die Paarung hinzufügen. Gehen Sie wie folgt vor, um die Standortpaarung zu konfigurieren:
 
@@ -207,6 +214,7 @@ image:anfd-hcx-image11.png["Screenshot des abgeschlossenen Prozesses auf dem HCX
 
 ====
 .Schritt 5: Netzwerkprofil, Computing-Profil und Service-Mesh konfigurieren
+[%collapsible]
 ====
 Die VMware HCX Interconnect Service Appliance bietet Replizierungs- und vMotion-basierte Migrationsfunktionen über das Internet und private Verbindungen zum Zielstandort. Das Interconnect bietet Verschlüsselung, Traffic Engineering und VM-Mobilität. Um eine Interconnect Service Appliance zu erstellen, gehen Sie wie folgt vor:
 
@@ -247,6 +255,7 @@ image:anfd-hcx-image15.png["Screenshot aus dem abgeschlossenen Prozess auf der S
 
 ====
 .Schritt 6: Migration von Workloads
+[%collapsible]
 ====
 Workloads können mithilfe verschiedener VMware HCX Migrationstechnologien bidirektional zwischen lokalen und Azure SDDCs migriert werden. VMs können mithilfe von mehreren Migrationstechnologien wie HCX Bulk Migration, HCX vMotion, HCX Cold Migration, HCX Replication Assisted vMotion (erhältlich mit HCX Enterprise Edition) und HCX OS Assisted Migration (erhältlich mit der HCX Enterprise Edition) in und von VMware HCX Enterprise Edition verschoben werden.
 

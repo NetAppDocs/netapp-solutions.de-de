@@ -69,6 +69,7 @@ NOTE: Es gibt mehrere Optionen, um On-Premises-Datacenter mit Azure zu verbinden
 === Einzelheiten Zur Bereitstellung
 
 .Konfiguration von CVO auf Azure und Replizierung von Volumes zu CVO
+[%collapsible]
 ====
 Als ersten Schritt müssen Sie Cloud Volumes ONTAP auf Azure konfigurieren (https://docs.netapp.com/us-en/netapp-solutions/ehc/azure/azure-guest.html["Verlinken"^]) Und replizieren Sie die gewünschten Volumen zu Cloud Volumes ONTAP mit den gewünschten Frequenzen und Snapshot-Aufbewahrung.
 
@@ -76,6 +77,7 @@ image:dr-cvo-avs-image2.png["Fehler: Fehlendes Grafikbild"]
 
 ====
 .Konfigurieren Sie AVS-Hosts und CVO-Datenzugriff
+[%collapsible]
 ====
 Zwei wichtige Faktoren, die bei der Implementierung des SDDC berücksichtigt werden müssen, sind die Größe des SDDC-Clusters in der Azure VMware Lösung und die Dauer des SDDC im Service. Diese beiden wichtigen Überlegungen für eine Disaster-Recovery-Lösung tragen zur Senkung der Gesamtbetriebskosten bei. Das SDDC kann mit nur drei Hosts eingerichtet sein und bis hin zu einem Cluster mit mehreren Hosts in einer umfassenden Implementierung.
 
@@ -89,6 +91,7 @@ Nach der ordnungsgemäßen Konfiguration von Cloud Volumes ONTAP und AVS beginne
 
 ====
 .Installieren Sie JetStream DR im lokalen Datacenter
+[%collapsible]
 ====
 Die Jetstream DR-Software besteht aus drei Hauptkomponenten: Der JetStream DR Management Server Virtual Appliance (MSA), der DR Virtual Appliance (DRVA) und den Host-Komponenten (I/O-Filterpakete). Mit dem MSA-System werden Hostkomponenten auf dem Compute-Cluster installiert und konfiguriert und JetStream DR-Software verwaltet. Die Installation erfolgt wie folgt:
 
@@ -196,6 +199,7 @@ Der Status der Failover- und Failback-Runbooks wird nun als konfiguriert aufgef�
 
 ====
 .Installieren Sie JetStream DR für AVS in der Private Cloud
+[%collapsible]
 ====
 Eine Best Practice für einen Recovery-Standort (AVS) ist die Erstellung eines Pilotlichtclusters mit drei Knoten im Voraus. Dadurch kann die Infrastruktur am Recovery-Standort vorkonfiguriert werden, einschließlich:
 
@@ -268,6 +272,7 @@ Der kontinuierliche Failover-Prozess beginnt und der Fortschritt kann über die 
 
 ====
 .Failover und Failback
+[%collapsible]
 ====
 . Nach einem Ausfall im geschützten Cluster der lokalen Umgebung (teilweiser oder kompletter Ausfall) können Sie das Failover für VMs auslösen. Dazu verwenden Sie Jetstream, nachdem die SnapMirror Beziehung für die jeweiligen Applikations-Volumes unterbrochen wurde.
 +
