@@ -8719,7 +8719,7 @@
 <p class="page-details">
   
     
-    <time datetime="2022-11-15 19:53:27 +0000">11/15/2022</time>
+    <time datetime="2022-12-14 19:16:15 +0000">12/14/2022</time>
     
   
 
@@ -8806,7 +8806,7 @@
 <img src="/us-en/netapp-solutions/images/note.svg" alt="Anmerkung">
 </td>
 <td class="content">
-Bei der Verwendung von NFSv4.1 wird der Root-Benutzer möglicherweise als niemand angezeigt, wenn er Verzeichnislisting-Befehle auf NFS-Clients ausführt. Dies liegt an der Konfiguration der ID-Domänenzuordnung des Clients. Siehe Abschnitt genannt  and the nobody user/group Finden Sie weitere Informationen zu diesem Problem und wie Sie es lösen können.
+Bei der Verwendung von NFSv4.1 wird der Root-Benutzer möglicherweise als niemand angezeigt, wenn er Verzeichnislisting-Befehle auf NFS-Clients ausführt. Dies liegt an der Konfiguration der ID-Domänenzuordnung des Clients. Siehe Abschnitt genannt <a href="#nfsv4-1-und-der-niemand-benutzergruppe">NFSv4.1 und der niemand-Benutzer/Gruppe</a> Finden Sie weitere Informationen zu diesem Problem und wie Sie es lösen können.
 </td>
 </tr>
 </table>
@@ -8820,7 +8820,7 @@ Bei der Verwendung von NFSv4.1 wird der Root-Benutzer möglicherweise als nieman
 <p>In Linux hat das Root-Konto Zugriff auf alle Befehle, Dateien und Ordner in einem Linux-basierten Dateisystem. Aufgrund der Leistungsfähigkeit dieses Kontos müssen Benutzer häufig aufgrund von Best Practices für die Sicherheit deaktiviert oder auf irgendeine Weise eingeschränkt werden. Bei NFS-Exporten kann die Leistung, die ein Root-Benutzer über die Dateien und Ordner hat, im Cloud Volumes Service über Exportrichtlinien und -Regeln gesteuert werden. Auch das Konzept wird als Root Squash bezeichnet.</p>
 </div>
 <div class="paragraph">
-<p>Root-Squashing sorgt dafür, dass der Root-Benutzer, der auf eine NFS-Bereitstellung zugreift, auf den anonymen numerischen Benutzer 65534 (siehe Abschnitt „ anonymous user“) und ist derzeit nur verfügbar, wenn CVS-Performance verwendet wird, indem Sie bei der Erstellung von Regeln für Exportrichtlinien aus für Root-Zugriff auswählen. Wenn der Root-Benutzer auf den anonymen Benutzer zerquetscht wird, hat er keinen Zugriff mehr auf das Ausführen von Chown oder <a href="https://en.wikipedia.org/wiki/Setuid" target="_blank" rel="noopener">"Setuid/setgid-Befehle (das klebrige Bit)"</a> In Dateien oder Ordnern im NFS-Mount und Dateien oder Ordnern, die vom Root-Benutzer erstellt wurden, zeigen die Anon-UID als Eigentümer/Gruppe an. Darüber hinaus können NFSv4 ACLs nicht vom Root-Benutzer geändert werden. Der Root-Benutzer hat jedoch weiterhin Zugriff auf chmod und gelöschte Dateien, für die er keine expliziten Berechtigungen besitzt. Wenn Sie den Zugriff auf die Datei- und Ordnerberechtigungen eines Root-Benutzers beschränken möchten, ziehen Sie in Betracht, ein Volume mit NTFS ACLs zu verwenden und einen Windows-Benutzer mit dem Namen zu erstellen <code>root</code>, Und die gewünschten Berechtigungen auf die Dateien oder Ordner anwenden.</p>
+<p>Root-Squashing sorgt dafür, dass der Root-Benutzer, der auf eine NFS-Bereitstellung zugreift, auf den anonymen numerischen Benutzer 65534 (siehe Abschnitt „<a href="#der-anonyme-benutzer">Der anonyme Benutzer</a>“) und ist derzeit nur verfügbar, wenn CVS-Performance verwendet wird, indem Sie bei der Erstellung von Regeln für Exportrichtlinien aus für Root-Zugriff auswählen. Wenn der Root-Benutzer auf den anonymen Benutzer zerquetscht wird, hat er keinen Zugriff mehr auf das Ausführen von Chown oder <a href="https://en.wikipedia.org/wiki/Setuid" target="_blank" rel="noopener">"Setuid/setgid-Befehle (das klebrige Bit)"</a> In Dateien oder Ordnern im NFS-Mount und Dateien oder Ordnern, die vom Root-Benutzer erstellt wurden, zeigen die Anon-UID als Eigentümer/Gruppe an. Darüber hinaus können NFSv4 ACLs nicht vom Root-Benutzer geändert werden. Der Root-Benutzer hat jedoch weiterhin Zugriff auf chmod und gelöschte Dateien, für die er keine expliziten Berechtigungen besitzt. Wenn Sie den Zugriff auf die Datei- und Ordnerberechtigungen eines Root-Benutzers beschränken möchten, ziehen Sie in Betracht, ein Volume mit NTFS ACLs zu verwenden und einen Windows-Benutzer mit dem Namen zu erstellen <code>root</code>, Und die gewünschten Berechtigungen auf die Dateien oder Ordner anwenden.</p>
 </div>
 </div>
 </div>
@@ -8831,10 +8831,10 @@ Bei der Verwendung von NFSv4.1 wird der Root-Benutzer möglicherweise als nieman
 <p>Die anonyme (anon) Benutzer-ID gibt eine UNIX-Benutzer-ID oder einen UNIX-Benutzernamen an, der Client-Anforderungen ohne gültige NFS-Anmeldeinformationen zugeordnet ist. Dies kann den Root-Benutzer einschließen, wenn Root-Squashing verwendet wird. Der anon-Benutzer in Cloud Volumes Service ist 65534.</p>
 </div>
 <div class="paragraph">
-<p>Diese UID ist normalerweise dem Benutzernamen zugeordnet <code>nobody</code> Oder <code>nfsnobody</code> In Linux Umgebungen zu managen. Cloud Volumes Service verwendet auch 65534 als den lokalen UNIX-Benutzer` pcuser` (siehe Abschnitt “ local UNIX users and groups“), der auch der Standard-Fallback-Benutzer für Windows auf UNIX-Namenszuordnungen ist, wenn kein gültiger übereinstimmender UNIX-Benutzer in LDAP gefunden werden kann.</p>
+<p>Diese UID ist normalerweise dem Benutzernamen zugeordnet <code>nobody</code> Oder <code>nfsnobody</code> In Linux Umgebungen zu managen. Cloud Volumes Service verwendet auch 65534 als den lokalen UNIX-Benutzer` pcuser` (siehe Abschnitt “<a href="#lokale-unix-standardbenutzer-und-gruppen">Lokale UNIX-Standardbenutzer und -Gruppen</a>“), der auch der Standard-Fallback-Benutzer für Windows auf UNIX-Namenszuordnungen ist, wenn kein gültiger übereinstimmender UNIX-Benutzer in LDAP gefunden werden kann.</p>
 </div>
 <div class="paragraph">
-<p>Aufgrund der Unterschiede bei Benutzernamen in Linux und Cloud Volumes Service für UID 65534, konnte die Namenszeichenfolge für Benutzer, die 65534 zugeordnet sind, bei der Verwendung von NFSv4.1 nicht übereinstimmen. Dies könnte zu sehen sein <code>nobody</code> Als Benutzer auf einigen Dateien und Ordnern. Siehe Abschnitt „ and the nobody user/group“ Für Informationen zu diesem Problem und zur Lösung dieses Problems.</p>
+<p>Aufgrund der Unterschiede bei Benutzernamen in Linux und Cloud Volumes Service für UID 65534, konnte die Namenszeichenfolge für Benutzer, die 65534 zugeordnet sind, bei der Verwendung von NFSv4.1 nicht übereinstimmen. Dies könnte zu sehen sein <code>nobody</code> Als Benutzer auf einigen Dateien und Ordnern. Siehe Abschnitt „<a href="#nfsv4-1-und-der-niemand-benutzergruppe">NFSv4.1 und der niemand-Benutzer/Gruppe</a>“ Für Informationen zu diesem Problem und zur Lösung dieses Problems.</p>
 </div>
 </div>
 </div>
@@ -8862,7 +8862,7 @@ Bei der Verwendung von NFSv4.1 wird der Root-Benutzer möglicherweise als nieman
 <p><strong>RO/RW-Zugriffsregeln.</strong> Wählen Sie Lese-/Schreibschutz oder Schreibschutz, um den Zugriff auf den Export zu steuern.</p>
 </li>
 <li>
-<p><strong>Root-Zugriff (ein/aus).</strong> konfiguriert Root Squash (siehe Abschnitt „ root user„ Weitere Informationen).</p>
+<p><strong>Root-Zugriff (ein/aus).</strong> konfiguriert Root Squash (siehe Abschnitt „<a href="#der-root-benutzer">Der Root-Benutzer</a>„ Weitere Informationen).</p>
 </li>
 <li>
 <p><strong>Protokolltyp.</strong> Dies beschränkt den Zugriff auf die NFS-Bereitstellung auf eine bestimmte Protokollversion. Wenn Sie sowohl NFSv3 als auch NFSv4.1 für das Volume angeben, lassen Sie entweder beide Felder leer oder aktivieren Sie beide Kontrollkästchen.</p>
@@ -8878,7 +8878,7 @@ Bei der Verwendung von NFSv4.1 wird der Root-Benutzer möglicherweise als nieman
 <h2 id="eigentümerschaft-chown-und-change-group-chgrp-ändern">Eigentümerschaft (chown) und Change Group (chgrp) ändern</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>NFS auf Cloud Volumes Service ermöglicht es dem Root-Benutzer nur chown/chgrp auf Dateien und Ordnern auszuführen. Andere Benutzer sehen ein <code>Operation not permitted</code> Fehler – auch bei den eigenen Dateien. Wenn Sie Root Squash verwenden (wie im Abschnitt “ beschrieben root user“), wird die Root zu einem nicht-Root-Benutzer gequetscht und darf keinen Zugriff auf Chown und chgrp haben. Derzeit gibt es in Cloud Volumes Service keine Problemumgehungen, um chown und chgrp für nicht-Root-Benutzer zu ermöglichen. Wenn Eigentumsänderungen erforderlich sind, ziehen Sie die Verwendung von doppelten Protokoll-Volumes in Erwägung und legen Sie den Sicherheitsstil auf NTFS fest, um die Berechtigungen von Windows-Seite aus zu steuern.</p>
+<p>NFS auf Cloud Volumes Service ermöglicht es dem Root-Benutzer nur chown/chgrp auf Dateien und Ordnern auszuführen. Andere Benutzer sehen ein <code>Operation not permitted</code> Fehler – auch bei den eigenen Dateien. Wenn Sie Root Squash verwenden (wie im Abschnitt “ beschrieben<a href="#der-root-benutzer">Der Root-Benutzer</a>“), wird die Root zu einem nicht-Root-Benutzer gequetscht und darf keinen Zugriff auf Chown und chgrp haben. Derzeit gibt es in Cloud Volumes Service keine Problemumgehungen, um chown und chgrp für nicht-Root-Benutzer zu ermöglichen. Wenn Eigentumsänderungen erforderlich sind, ziehen Sie die Verwendung von doppelten Protokoll-Volumes in Erwägung und legen Sie den Sicherheitsstil auf NTFS fest, um die Berechtigungen von Windows-Seite aus zu steuern.</p>
 </div>
 </div>
 </div>
@@ -9006,7 +9006,7 @@ Bei der Verwendung von NFSv4.1 wird der Root-Benutzer möglicherweise als nieman
 <p>Durch die Verwendung von Dual-Protokoll-Volumes und die Anwendung von NTFS-ACLs auf das Volume sind NFSv3-Clients gezwungen, numerische IDs auf gültige UNIX-Benutzernamen zu lösen, um sich für den ordnungsgemäßen Zugriff auf Mounts zu authentifizieren. Dazu muss LDAP aktiviert und UNIX-Benutzer- und Gruppenidentitäten konfiguriert werden.</p>
 </li>
 <li>
-<p>Das Squashing des Root-Benutzers begrenzt den Schaden, den ein Root-Benutzer auf einen NFS-Mount tun kann, aber das Risiko wird nicht vollständig beseitigt. Weitere Informationen finden Sie im Abschnitt „ root user.“</p>
+<p>Das Squashing des Root-Benutzers begrenzt den Schaden, den ein Root-Benutzer auf einen NFS-Mount tun kann, aber das Risiko wird nicht vollständig beseitigt. Weitere Informationen finden Sie im Abschnitt „<a href="#der-root-benutzer">Der Root-Benutzer</a>.“</p>
 </li>
 </ul>
 </div>
@@ -9297,7 +9297,7 @@ drwxrwxrwx 7 root   root         4096 Feb  3 12:06 ..
 </div>
 </div>
 <div class="paragraph">
-<p>Weitere Informationen zu diesem Thema und wie man es löst, finden Sie im Abschnitt „ and the nobody user/group.“</p>
+<p>Weitere Informationen zu diesem Thema und wie man es löst, finden Sie im Abschnitt „<a href="#nfsv4-1-und-der-niemand-benutzergruppe">NFSv4.1 und der niemand-Benutzer/Gruppe</a>.“</p>
 </div>
 </div>
 <div class="sect2">

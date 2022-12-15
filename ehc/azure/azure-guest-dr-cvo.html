@@ -8719,7 +8719,7 @@
 <p class="page-details">
   
     
-    <time datetime="2022-11-15 19:53:27 +0000">11/15/2022</time>
+    <time datetime="2022-12-14 19:16:15 +0000">12/14/2022</time>
     
   
 
@@ -8828,8 +8828,8 @@ Es gibt mehrere Optionen, um On-Premises-Datacenter mit Azure zu verbinden, soda
 </div>
 <div class="sect2">
 <h3 id="einzelheiten-zur-bereitstellung">Einzelheiten Zur Bereitstellung</h3>
-<div class="exampleblock">
-<div class="title">Beispiel 1. Konfiguration von CVO auf Azure und Replizierung von Volumes zu CVO</div>
+<details>
+<summary class="title">Konfiguration von CVO auf Azure und Replizierung von Volumes zu CVO</summary>
 <div class="content">
 <div class="paragraph">
 <p>Als ersten Schritt müssen Sie Cloud Volumes ONTAP auf Azure konfigurieren (<a href="https://docs.netapp.com/us-en/netapp-solutions/ehc/azure/azure-guest.html" target="_blank" rel="noopener">"Verlinken"</a>) Und replizieren Sie die gewünschten Volumen zu Cloud Volumes ONTAP mit den gewünschten Frequenzen und Snapshot-Aufbewahrung.</p>
@@ -8838,9 +8838,9 @@ Es gibt mehrere Optionen, um On-Premises-Datacenter mit Azure zu verbinden, soda
 <p><span class="image"><img src="./../../media/dr-cvo-avs-image2.png" alt="Fehler: Fehlendes Grafikbild"></span></p>
 </div>
 </div>
-</div>
-<div class="exampleblock">
-<div class="title">Beispiel 2. Konfigurieren Sie AVS-Hosts und CVO-Datenzugriff</div>
+</details>
+<details>
+<summary class="title">Konfigurieren Sie AVS-Hosts und CVO-Datenzugriff</summary>
 <div class="content">
 <div class="paragraph">
 <p>Zwei wichtige Faktoren, die bei der Implementierung des SDDC berücksichtigt werden müssen, sind die Größe des SDDC-Clusters in der Azure VMware Lösung und die Dauer des SDDC im Service. Diese beiden wichtigen Überlegungen für eine Disaster-Recovery-Lösung tragen zur Senkung der Gesamtbetriebskosten bei. Das SDDC kann mit nur drei Hosts eingerichtet sein und bis hin zu einem Cluster mit mehreren Hosts in einer umfassenden Implementierung.</p>
@@ -8858,9 +8858,9 @@ Es gibt mehrere Optionen, um On-Premises-Datacenter mit Azure zu verbinden, soda
 <p>Nach der ordnungsgemäßen Konfiguration von Cloud Volumes ONTAP und AVS beginnen Sie mit der Konfiguration des Jetstream zur Automatisierung der Wiederherstellung lokaler Workloads auf AVS (VMs mit Applikations-VMDKs und VMs mit in-Guest-Storage) mithilfe des VAIO Mechanismus und durch Nutzung von SnapMirror für Applikations-Volumes-Kopien auf Cloud Volumes ONTAP.</p>
 </div>
 </div>
-</div>
-<div class="exampleblock">
-<div class="title">Beispiel 3. Installieren Sie JetStream DR im lokalen Datacenter</div>
+</details>
+<details>
+<summary class="title">Installieren Sie JetStream DR im lokalen Datacenter</summary>
 <div class="content">
 <div class="paragraph">
 <p>Die Jetstream DR-Software besteht aus drei Hauptkomponenten: Der JetStream DR Management Server Virtual Appliance (MSA), der DR Virtual Appliance (DRVA) und den Host-Komponenten (I/O-Filterpakete). Mit dem MSA-System werden Hostkomponenten auf dem Compute-Cluster installiert und konfiguriert und JetStream DR-Software verwaltet. Die Installation erfolgt wie folgt:</p>
@@ -9054,9 +9054,9 @@ Falls erforderlich, wenden Sie im unteren Teil des Bildschirms benutzerdefiniert
 <p>Der Status der Failover- und Failback-Runbooks wird nun als konfiguriert aufgeführt. Failover- und Failback-Runbook-Gruppen werden paarweise erstellt, wobei dieselbe erste Gruppe von VMs und Einstellungen verwendet wird. Bei Bedarf können die Einstellungen einer Runbook-Gruppe individuell angepasst werden, indem Sie auf den entsprechenden Link Details klicken und Änderungen vornehmen.</p>
 </div>
 </div>
-</div>
-<div class="exampleblock">
-<div class="title">Beispiel 4. Installieren Sie JetStream DR für AVS in der Private Cloud</div>
+</details>
+<details>
+<summary class="title">Installieren Sie JetStream DR für AVS in der Private Cloud</summary>
 <div class="content">
 <div class="paragraph">
 <p>Eine Best Practice für einen Recovery-Standort (AVS) ist die Erstellung eines Pilotlichtclusters mit drei Knoten im Voraus. Dadurch kann die Infrastruktur am Recovery-Standort vorkonfiguriert werden, einschließlich:</p>
@@ -9212,9 +9212,9 @@ Obwohl sich der kontinuierliche Failover- und Failover-Modus bei der Konfigurati
 <p>Der kontinuierliche Failover-Prozess beginnt und der Fortschritt kann über die UI überwacht werden. Durch Klicken auf das blaue Symbol im Abschnitt „Aktueller Schritt“ wird ein Popup-Fenster angezeigt, in dem Details zum aktuellen Schritt des Failover-Prozesses angezeigt werden.</p>
 </div>
 </div>
-</div>
-<div class="exampleblock">
-<div class="title">Beispiel 5. Failover und Failback</div>
+</details>
+<details>
+<summary class="title">Failover und Failback</summary>
 <div class="content">
 <div class="olist arabic">
 <ol class="arabic">
@@ -9496,7 +9496,7 @@ Um die Rollen des primären und sekundären Storage nach der umgekehrten Resynch
 <p>Testen Sie wie immer die Schritte zur Wiederherstellung der kritischen Workloads, bevor Sie sie in die Produktionsumgebung portieren.</p>
 </div>
 </div>
-</div>
+</details>
 </div>
 </div>
 </div>

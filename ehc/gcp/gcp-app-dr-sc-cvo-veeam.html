@@ -8719,7 +8719,7 @@
 <p class="page-details">
   
     
-    <time datetime="2022-11-15 19:53:27 +0000">11/15/2022</time>
+    <time datetime="2022-12-14 19:16:15 +0000">12/14/2022</time>
     
   
 
@@ -8828,8 +8828,8 @@ Es gibt mehrere Optionen, um On-Premises-Datacenter mit Google Cloud zu verbinde
 </div>
 <div class="sect2">
 <h3 id="einzelheiten-zur-bereitstellung">Einzelheiten Zur Bereitstellung</h3>
-<div class="exampleblock">
-<div class="title">Beispiel 1. Konfiguration von CVO auf Google Cloud und Replizierung von Volumes zu CVO</div>
+<details>
+<summary class="title">Konfiguration von CVO auf Google Cloud und Replizierung von Volumes zu CVO</summary>
 <div class="content">
 <div class="paragraph">
 <p>Als ersten Schritt müssen Sie Cloud Volumes ONTAP auf Google Cloud konfigurieren (<a href="https://docs.netapp.com/us-en/netapp-solutions/ehc/gcp/gcp-guest.html" target="_blank" rel="noopener">"cvo"</a>) Und replizieren Sie die gewünschten Volumen zu Cloud Volumes ONTAP mit den gewünschten Frequenzen und Snapshot-Aufbewahrung.</p>
@@ -8848,9 +8848,9 @@ Your browser does not support the video tag.
 </div>
 </div>
 </div>
-</div>
-<div class="exampleblock">
-<div class="title">Beispiel 2. Konfigurieren Sie GCVE-Hosts und CVO-Datenzugriff</div>
+</details>
+<details>
+<summary class="title">Konfigurieren Sie GCVE-Hosts und CVO-Datenzugriff</summary>
 <div class="content">
 <div class="paragraph">
 <p>Zwei wichtige Faktoren, die bei der Implementierung des SDDC berücksichtigt werden müssen, sind die Größe des SDDC-Clusters in der GCVE-Lösung und die Dauer, bis das SDDC den Betrieb aufrecht erhalten hat. Diese beiden wichtigen Überlegungen für eine Disaster-Recovery-Lösung tragen zur Senkung der Gesamtbetriebskosten bei. Das SDDC kann mit nur drei Hosts eingerichtet sein und bis hin zu einem Cluster mit mehreren Hosts in einer umfassenden Implementierung.</p>
@@ -8865,20 +8865,17 @@ Your browser does not support the video tag.
 <p>Nachdem Cloud Volumes ONTAP und GCVE ordnungsgemäß konfiguriert wurden, beginnen Sie mit der Konfiguration von Veeam, um die Wiederherstellung lokaler Workloads auf GCVE (VMs mit Applikations-VMDKs und VMs mit in-Guest-Storage) zu automatisieren. Dazu nutzen Sie die Veeam Replication-Funktion und können SnapMirror für Applikations-Volumes-Kopien in Cloud Volumes ONTAP nutzen.</p>
 </div>
 </div>
-</div>
-<div class="exampleblock">
-<div class="title">Beispiel 3. Veeam Komponenten Installieren</div>
+</details>
+<details>
+<summary class="title">Veeam Komponenten Installieren</summary>
 <div class="content">
 <div class="paragraph">
-<p>Der Veeam Backup-Server, Backup-Repository und Backup-Proxy, der bereitgestellt werden muss, basieren auf einem Implementierungsszenario. In diesem Anwendungsfall müssen kein Objektspeicher für Veeam implementiert und auch kein Scale-out-Repository erforderlich sein.</p>
-</div>
-<div class="paragraph">
-<p><a href="https://helpcenter.veeam.com/docs/backup/qsg_vsphere/deployment_scenarios.html">"Das Installationsverfahren finden Sie in der Veeam-Dokumentation"</a></p>
+<p>Der Veeam Backup-Server, Backup-Repository und Backup-Proxy, der bereitgestellt werden muss, basieren auf einem Implementierungsszenario. In diesem Anwendungsfall müssen kein Objektspeicher für Veeam implementiert und auch kein Scale-out-Repository erforderlich sein.https://helpcenter.veeam.com/docs/backup/qsg_vsphere/deployment_scenarios.html["Das Installationsverfahren finden Sie in der Veeam-Dokumentation"]</p>
 </div>
 </div>
-</div>
-<div class="exampleblock">
-<div class="title">Beispiel 4. VM Replication mit Veeam einrichten</div>
+</details>
+<details>
+<summary class="title">VM Replication mit Veeam einrichten</summary>
 <div class="content">
 <div class="paragraph">
 <p>VCenter vor Ort und GCVE vCenter müssen bei Veeam registriert werden. <a href="https://helpcenter.veeam.com/docs/backup/qsg_vsphere/replication_job.html">"VSphere VM Replication Job einrichten"</a> Wählen Sie im Assistenten zur Gastverarbeitung die Option Anwendungsverarbeitung deaktivieren, da wir SnapCenter für applikationsgerechtes Backup und Recovery verwenden werden.</p>
@@ -8891,9 +8888,9 @@ Your browser does not support the video tag.
 </div>
 </div>
 </div>
-</div>
-<div class="exampleblock">
-<div class="title">Beispiel 5. Failover von Microsoft SQL Server VM</div>
+</details>
+<details>
+<summary class="title">Failover von Microsoft SQL Server VM</summary>
 <div class="content">
 <div class="videoblock">
 <div class="content">
@@ -8903,7 +8900,7 @@ Your browser does not support the video tag.
 </div>
 </div>
 </div>
-</div>
+</details>
 </div>
 </div>
 </div>

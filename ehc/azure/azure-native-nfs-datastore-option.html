@@ -8717,7 +8717,7 @@
 <p class="page-details">
   
     
-    <time datetime="2022-11-15 19:53:27 +0000">11/15/2022</time>
+    <time datetime="2022-12-14 19:16:15 +0000">12/14/2022</time>
     
   
 
@@ -8890,8 +8890,8 @@ Diese Funktion befindet sich derzeit in der öffentlichen Vorschau.
 <div class="paragraph">
 <p>Wenn Sie ein Azure NetApp Datei-Volume als VMware-Datenspeicher einer Private Cloud der Azure VMware Lösung anhängen möchten, müssen Sie die folgenden Voraussetzungen erfüllen.</p>
 </div>
-<div class="exampleblock">
-<div class="title">Beispiel 1. Voraussetzungen</div>
+<details>
+<summary class="title">Voraussetzungen</summary>
 <div class="content">
 <div class="olist arabic">
 <ol class="arabic">
@@ -9004,9 +9004,9 @@ az feature register --name "CloudSanExperience" --namespace "Microsoft.AVS"</pre
 </div>
 </div>
 </div>
-</div>
-<div class="exampleblock">
-<div class="title">Beispiel 2. Azure NetApp Files Volumes erstellen und mounten</div>
+</details>
+<details>
+<summary class="title">Azure NetApp Files Volumes erstellen und mounten</summary>
 <div class="content">
 <div class="olist arabic">
 <ol class="arabic">
@@ -9069,9 +9069,9 @@ az feature register --name "CloudSanExperience" --namespace "Microsoft.AVS"</pre
 <p>Informationen zur Azure NetApp Files Volume-Performance nach Größe oder Kontingent finden Sie unter <a href="https://docs.microsoft.com/en-us/azure/azure-netapp-files/azure-netapp-files-performance-considerations" target="_blank" rel="noopener">"Überlegungen zur Performance von Azure NetApp Files"</a>.</p>
 </div>
 </div>
-</div>
-<div class="exampleblock">
-<div class="title">Beispiel 3. Fügen Sie einen Azure NetApp Files-Datastore in eine Private Cloud hinzu</div>
+</details>
+<details>
+<summary class="title">Fügen Sie einen Azure NetApp Files-Datastore in eine Private Cloud hinzu</summary>
 <div class="content">
 <div class="paragraph">
 <p>Um einen Azure NetApp Files-Datastore zu einer Private Cloud hinzuzufügen, gehen Sie wie folgt vor:</p>
@@ -9119,7 +9119,7 @@ az feature register --name "CloudSanExperience" --namespace "Microsoft.AVS"</pre
 <p><span class="image"><img src="./../../media/vmware-dr-image5.png" alt="Fehler: Fehlendes Grafikbild"></span></p>
 </div>
 </div>
-</div>
+</details>
 </div>
 </div>
 <div class="sect1">
@@ -9295,16 +9295,16 @@ az feature register --name "CloudSanExperience" --namespace "Microsoft.AVS"</pre
 <div class="sect1">
 <h2 id="workloads">Workloads</h2>
 <div class="sectionbody">
-<div class="exampleblock">
-<div class="title">Beispiel 4. Migration</div>
+<details>
+<summary class="title">Migration</summary>
 <div class="content">
 <div class="paragraph">
 <p>Einer der häufigsten Anwendungsfälle ist die Migration. On-Premises-VMs mit VMware HCX oder vMotion verschieben Alternativ können Sie mit Riverwiese VMs zu Azure NetApp Files Datastores migrieren.</p>
 </div>
 </div>
-</div>
-<div class="exampleblock">
-<div class="title">Beispiel 7. Datensicherung</div>
+</details>
+<details>
+<summary class="title">Datensicherung</summary>
 <div class="content">
 <div class="paragraph">
 <p>Zu den größten Stärken der ANF-Datastores zählen das Backup von VMs und die schnelle Wiederherstellung. Mit Snapshot Kopien können Sie ohne Auswirkungen auf die Performance schnell Kopien Ihrer VMs oder Datastores erstellen und diese dann zur längerfristigen Datensicherung oder zu einer sekundären Region an Azure Storage senden. Dabei wird für Disaster Recovery-Zwecke eine regionsübergreifende Replizierung verwendet. Durch diesen Ansatz werden der Storage-Platzbedarf und die Netzwerkbandbreite minimiert, da nur geänderte Informationen gespeichert werden.</p>
@@ -9324,8 +9324,8 @@ Mit ANF-Datastores kann die Option „auf neues Volume wiederherstellen“ verwe
 </tr>
 </table>
 </div>
-<div class="exampleblock">
-<div class="title">Beispiel 5. Cloud Backup für Virtual Machines</div>
+<details>
+<summary class="title">Cloud Backup für Virtual Machines</summary>
 <div class="content">
 <div class="paragraph">
 <p>Cloud Backup für Virtual Machines bietet eine vSphere Web-Client-GUI auf vCenter, um Virtual Machines der Azure VMware Lösung und Azure NetApp Files-Datastores über Backup-Richtlinien zu schützen. In diesen Richtlinien können ein Zeitplan, die Aufbewahrung und andere Funktionen definiert werden. Die Funktion Cloud Backup für Virtual Machines kann über den Befehl Ausführen implementiert werden.</p>
@@ -9368,9 +9368,9 @@ Mit der Azure NetApp Files Snapshot Technologie werden Backups und Restores sehr
 <p><span class="image"><img src="./../../media/vmware-dr-image7.png" alt="Fehler: Fehlendes Grafikbild"></span></p>
 </div>
 </div>
-</div>
-<div class="exampleblock">
-<div class="title">Beispiel 6. Disaster Recovery mit Azure NetApp Files, JetStream DR und Azure VMware Lösung</div>
+</details>
+<details>
+<summary class="title">Disaster Recovery mit Azure NetApp Files, JetStream DR und Azure VMware Lösung</summary>
 <div class="content">
 <div class="paragraph">
 <p>Disaster Recovery in die Cloud ist eine stabile und kostengünstige Möglichkeit zum Schutz der Workloads vor Standortausfällen und Datenbeschädigungen (z. B. Ransomware). Mithilfe des VMware VAIO Frameworks können VMware On-Premises-Workloads auf Azure Blob Storage und für die Recovery repliziert werden, was zu minimalen oder fast keinem Datenverlust und nahezu keinem RTO führt. Jetstream DR kann verwendet werden, um die Workloads, die von On-Premises-Systemen auf AVS repliziert wurden, nahtlos wiederherzustellen. Insbesondere können sie auf Azure NetApp Files übertragen werden. Sie ermöglicht eine kostengünstige Disaster Recovery, da minimale Ressourcen am DR-Standort und kostengünstiger Cloud Storage genutzt werden. Jetstream DR automatisiert die Recovery auf ANF-Datastores über Azure Blob Storage. Jetstream DR stellt unabhängige VMs oder Gruppen zugehöriger VMs in der Infrastruktur des Recovery-Standorts entsprechend der Netzwerkzuordnung wieder her und sorgt für zeitpunktgenaue Recovery zur Sicherung von Ransomware.</p>
@@ -9379,9 +9379,9 @@ Mit der Azure NetApp Files Snapshot Technologie werden Backups und Restores sehr
 <p><a href="azure-native-dr-jetstream.html">"DR-Lösung mit ANF, JetStream und AVS"</a>.</p>
 </div>
 </div>
+</details>
 </div>
-</div>
-</div>
+</details>
 </div>
 </div>
 
