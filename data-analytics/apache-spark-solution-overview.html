@@ -8728,7 +8728,7 @@
 <p class="page-details">
   
     
-    <time datetime="2022-11-15 19:53:27 +0000">11/15/2022</time>
+    <time datetime="2022-12-19 22:27:23 +0000">12/19/2022</time>
     
   
 
@@ -8876,7 +8876,7 @@
 <p>Mit Hadoop Storage Tiering können Sie Dateien mit unterschiedlichen Storage-Typen gemäß einer Storage Policy speichern. Storage-Typen sind enthalten <code>hot</code>, <code>cold</code>, <code>warm</code>, <code>all_ssd</code>, <code>one_ssd</code>, und <code>lazy_persist</code>.</p>
 </div>
 <div class="paragraph">
-<p>Wir haben die Validierung des Hadoop Storage Tiering auf einem NetApp AFF Storage Controller und einem E-Series Storage Controller mit SSD- und SAS-Laufwerken mit unterschiedlichen Storage-Richtlinien durchgeführt. Das Spark-Cluster mit AFF A800 verfügt über vier Computing-Worker-Nodes, während das Cluster mit E-Series acht Nodes hat.</p>
+<p>Wir haben die Validierung des Hadoop Storage Tiering auf einem NetApp AFF Storage Controller und einem E-Series Storage Controller mit SSD- und SAS-Laufwerken mit unterschiedlichen Storage-Richtlinien durchgeführt. Das Spark-Cluster mit AFF A800 verfügt über vier Computing-Worker-Nodes, während das Cluster mit E-Series acht Nodes hat. Wir haben dies in erster Linie getan, um die Performance von Solid-State-Laufwerken mit Festplatten zu vergleichen.</p>
 </div>
 <div class="paragraph">
 <p>Die folgende Abbildung zeigt die Performance der NetApp Lösungen für eine Hadoop SSD.</p>
@@ -8894,6 +8894,12 @@
 </li>
 <li>
 <p>Mit TeraSort sortiert die SSD-Konfiguration 1 TB an Daten 1138.36-mal schneller als die NL-SAS-Konfiguration. Darüber hinaus verwendete die SSD-Konfiguration die Hälfte der Computing-Nodes und die Hälfte der Festplattenlaufwerke (insgesamt 24 SSD-Laufwerke). Daher war es pro Laufwerk ca. dreimal schneller als die NL-SAS-Konfiguration.</p>
+</li>
+<li>
+<p>Zusammenfassend lässt sich sagen, dass die Umstellung von rotierenden Festplatten auf All-Flash-Systeme die Performance steigert. Die Anzahl der Computing-Nodes war nicht der Engpass. Mit NetApp All-Flash-Storage lässt sich die Runtime Performance gut skalieren.</p>
+</li>
+<li>
+<p>Mit NFS waren die Daten in funktioneller Hinsicht gleichbedeutend mit den gemeinsamen Pools, wodurch sich die Anzahl der Computing-Nodes je nach Workload reduzieren ließ. Apache Spark-Cluster-Benutzer müssen die Daten nicht manuell neu verteilen, wenn sie die Anzahl der Computing-Nodes ändern.</p>
 </li>
 </ul>
 </div>
