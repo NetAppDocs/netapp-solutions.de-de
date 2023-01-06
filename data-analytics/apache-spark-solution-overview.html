@@ -3786,6 +3786,8 @@
 
 
 
+
+
     
       <ul class="subfolders" style="display:none;">
         <li class="pdf-ux-container">
@@ -8195,6 +8197,13 @@
         ONTAP-Tools für VMware vSphere - Produktsicherheit
       </a></li><li 
       data-pdf-exists="true" 
+      data-pdf-filename="SnapCenter Plug-in VMware vSphere – Produktsicherheit"
+      data-li-level="3#" 
+      class=" "
+    ><a class="na-navbar-padding" href="/de-de/netapp-solutions/virtualization/scvmware-security-secure-development-activities.html">
+        SnapCenter Plug-in VMware vSphere – Produktsicherheit
+      </a></li><li 
+      data-pdf-exists="true" 
       data-pdf-filename="VMware vSphere Automation"
       data-li-level="3" 
       class="subfolders "
@@ -8728,7 +8737,7 @@
 <p class="page-details">
   
     
-    <time datetime="2022-12-19 22:27:23 +0000">12/19/2022</time>
+    <time datetime="2023-01-06 16:53:43 +0000">01/06/2023</time>
     
   
 
@@ -8876,7 +8885,12 @@
 <p>Mit Hadoop Storage Tiering können Sie Dateien mit unterschiedlichen Storage-Typen gemäß einer Storage Policy speichern. Storage-Typen sind enthalten <code>hot</code>, <code>cold</code>, <code>warm</code>, <code>all_ssd</code>, <code>one_ssd</code>, und <code>lazy_persist</code>.</p>
 </div>
 <div class="paragraph">
-<p>Wir haben die Validierung des Hadoop Storage Tiering auf einem NetApp AFF Storage Controller und einem E-Series Storage Controller mit SSD- und SAS-Laufwerken mit unterschiedlichen Storage-Richtlinien durchgeführt. Das Spark-Cluster mit AFF A800 verfügt über vier Computing-Worker-Nodes, während das Cluster mit E-Series acht Nodes hat. Wir haben dies in erster Linie getan, um die Performance von Solid-State-Laufwerken mit Festplatten zu vergleichen.</p>
+<p>&lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD Wir haben eine Validierung des Hadoop Storage Tiering auf einem NetApp AFF Storage Controller und einem E-Series Storage Controller mit SSD- und SAS-Laufwerken mit unterschiedlichen Storage-Richtlinien durchgeführt. Das Spark-Cluster mit AFF A800 verfügt über vier Computing-Worker-Nodes, während das Cluster mit E-Series acht Nodes hat. Hauptsächlich wurde ein Vergleich der Performance von Solid State-Laufwerken (SSDs) und Festplatten (HDDs) durchgeführt.</p>
+</div>
+<div class="exampleblock">
+<div class="content">
+<div class="paragraph">
+<p>Wir haben die Validierung des Hadoop Storage Tiering auf einem NetApp AFF Storage Controller und einem E-Series Storage Controller mit SSD- und SAS-Laufwerken mit unterschiedlichen Storage-Richtlinien durchgeführt. Das Spark-Cluster mit AFF A800 verfügt über vier Computing-Worker-Nodes, während das Cluster mit E-Series acht Nodes hat. Wir haben dies in erster Linie getan, um die Performance von Solid-State-Laufwerken mit Festplatten zu vergleichen. &gt;&gt;&gt;&gt;&gt;&gt;&gt; A51c9ddf73ca69e1120ce05edc7b09607b96eae</p>
 </div>
 <div class="paragraph">
 <p>Die folgende Abbildung zeigt die Performance der NetApp Lösungen für eine Hadoop SSD.</p>
@@ -8893,13 +8907,25 @@
 <p>Mit TeraGen generierte die SSD-Konfiguration 1 TB an Daten 15,66-mal schneller als die NL-SAS-Konfiguration. Darüber hinaus verwendete die SSD-Konfiguration die Hälfte der Computing-Nodes und die Hälfte der Festplattenlaufwerke (insgesamt 24 SSD-Laufwerke). Basierend auf der Abschlusszeit war der Job fast doppelt so schnell wie die NL-SAS-Konfiguration.</p>
 </li>
 <li>
-<p>Mit TeraSort sortiert die SSD-Konfiguration 1 TB an Daten 1138.36-mal schneller als die NL-SAS-Konfiguration. Darüber hinaus verwendete die SSD-Konfiguration die Hälfte der Computing-Nodes und die Hälfte der Festplattenlaufwerke (insgesamt 24 SSD-Laufwerke). Daher war es pro Laufwerk ca. dreimal schneller als die NL-SAS-Konfiguration.</p>
+<p>Mit TeraSort sortiert die SSD-Konfiguration 1 TB an Daten 1138.36-mal schneller als die NL-SAS-Konfiguration. Darüber hinaus verwendete die SSD-Konfiguration die Hälfte der Computing-Nodes und die Hälfte der Festplattenlaufwerke (insgesamt 24 SSD-Laufwerke). Daher war es pro Laufwerk ca. dreimal schneller als die NL-SAS-Konfiguration. &lt;&lt;&lt;&lt;&lt;&lt;&lt; KOPF</p>
 </li>
+<li>
+<p>Die Schlussfolgerung lautet: Der Wechsel von rotierenden Festplatten zu All-Flash-Systemen verbessert die Performance. Die Anzahl der Computing-Nodes war nicht der Engpass. Mit dem All-Flash-Storage von NetApp lässt sich die Runtime Performance gut skalieren.</p>
+</li>
+<li>
+<p>Mit NFS entsprach der Summe der Daten, die je nach Workload die Anzahl der Computing-Nodes reduzieren konnte. Die Apache Spark-Cluster-Benutzer müssen Daten nicht manuell neu verteilen, wenn sich die Anzahl der Computing-Nodes ändert.</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="ulist">
+<ul>
 <li>
 <p>Zusammenfassend lässt sich sagen, dass die Umstellung von rotierenden Festplatten auf All-Flash-Systeme die Performance steigert. Die Anzahl der Computing-Nodes war nicht der Engpass. Mit NetApp All-Flash-Storage lässt sich die Runtime Performance gut skalieren.</p>
 </li>
 <li>
-<p>Mit NFS waren die Daten in funktioneller Hinsicht gleichbedeutend mit den gemeinsamen Pools, wodurch sich die Anzahl der Computing-Nodes je nach Workload reduzieren ließ. Apache Spark-Cluster-Benutzer müssen die Daten nicht manuell neu verteilen, wenn sie die Anzahl der Computing-Nodes ändern.</p>
+<p>Mit NFS waren die Daten in funktioneller Hinsicht gleichbedeutend mit den gemeinsamen Pools, wodurch sich die Anzahl der Computing-Nodes je nach Workload reduzieren ließ. Apache Spark-Cluster-Benutzer müssen die Daten nicht manuell neu verteilen, wenn sie die Anzahl der Computing-Nodes ändern. &gt;&gt;&gt;&gt;&gt;&gt;&gt; A51c9ddf73ca69e1120ce05edc7b09607b96eae</p>
 </li>
 </ul>
 </div>
