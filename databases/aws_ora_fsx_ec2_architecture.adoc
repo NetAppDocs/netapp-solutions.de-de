@@ -1,7 +1,7 @@
 ---
 sidebar: sidebar 
 permalink: databases/aws_ora_fsx_ec2_architecture.html 
-summary: Dieser Abschnitt enthält einen Überblick über eine RDS-Architektur für die Oracle-Implementierungslösung mit individuell angepasster RDS- und FSX ONTAP-Storage. 
+summary: Dieser Abschnitt enthält einen Überblick über eine RDS-Architektur für eine Oracle-Implementierungslösung mit individuell angepassten RDS- und FSX ONTAP-Storage. 
 keywords: architecture, Oracle RDS, RDS, FSx ONTAP, FSx, AWS, Oracle, HA, DR 
 ---
 = Lösungsarchitektur
@@ -18,18 +18,18 @@ link:aws_ora_fsx_ec2_deploy_intro.html["Zurück: Einführung."]
 
 Das folgende Architekturdiagramm zeigt eine hochverfügbare Implementierung von Oracle Datenbanken auf einer AWS EC2 Instanz mit dem FSX Storage-Service. Ein ähnliches Bereitstellungsschema, jedoch mit Standby in einer anderen Region kann für das Disaster Recovery eingerichtet werden.
 
-In der Umgebung wird die Oracle Computing-Instanz über eine AWS EC2 Instance Console implementiert. Über die Konsole stehen mehrere EC2-Instanztypen zur Verfügung. NetApp empfiehlt die Implementierung eines datenbankorientierten EC2 Instanztyps wie ein m5 Ami Image mit RedHat Enterprise Linux 8 und eine Netzwerkbandbreite von bis zu 10 Gps.
+In der Umgebung wird die Oracle Computing-Instanz über eine AWS EC2 Instance Console implementiert. Über die Konsole stehen mehrere EC2-Instanztypen zur Verfügung. NetApp empfiehlt die Implementierung eines datenbankorientierten EC2 Instanztyps wie ein m5 Ami Image mit RedHat Enterprise Linux 8 und bis zu 10 Gps Netzwerkbandbreite.
 
 Oracle Datenbank-Storage auf FSX Volumes hingegen wird mit der AWS FSX Konsole oder der CLI bereitgestellt. Die Oracle-Binärdateien, Daten oder Log-Volumes werden anschließend präsentiert und auf einem Linux-Host der EC2 Instanz gemountet. Jeder Daten- oder Protokoll-Volume kann abhängig vom verwendeten Storage-Protokoll mehrere LUNs zugewiesen sein.
 
-image:aws_ora_fsx_ec2_arch.PNG["Fehler: Fehlendes Grafikbild"]
+image:aws_ora_fsx_ec2_arch.PNG["Dieses Bild zeigt ein Beispieldiagramm mit einem primären HA-Cluster – dem Standby-HA-Cluster – Management-Nodes – und den zugehörigen Verbindungsknoten."]
 
 Ein FSX Storage-Cluster verfügt über doppelte Redundanz, sodass sowohl der primäre als auch der Standby-Storage-Cluster in zwei verschiedenen Verfügbarkeitszonen implementiert werden können. Datenbank-Volumes werden von einem primären FSX-Cluster auf ein Standby-FSX-Cluster in einem vom Benutzer konfigurierbaren Intervall für alle Oracle Binär-, Daten- und Protokoll-Volumes repliziert.
 
-Diese hochverfügbare Oracle-Umgebung wird über einen Ansible-Controller-Node sowie einen SnapCenter-Backup-Server und ein UI-Tool verwaltet. Die Installation, Konfiguration und Replizierung von Oracle werden mithilfe von Playbook-basierten Ansible Toolkits automatisiert. Jedes Update auf dem Kernel-Betriebssystem der Oracle EC2 Instanz oder Oracle Patching kann parallel ausgeführt werden, um den Primär- und Standby-Modus synchron zu halten. So kann die Erstautomatisierung auch problemlos erweitert werden, um bei Bedarf einige sich wiederholende tägliche Oracle Aufgaben durchzuführen.
+Diese hochverfügbare Oracle-Umgebung wird über einen Ansible-Controller-Node sowie einen SnapCenter-Backup-Server und ein UI-Tool verwaltet. Oracle-Installation, -Konfiguration und -Replizierung werden mithilfe von Playbook-basierten Ansible-Tool-Kits automatisiert. Jedes Update auf dem Kernel-Betriebssystem der Oracle EC2 Instanz oder Oracle Patching kann parallel ausgeführt werden, um den Primär- und Standby-Modus synchron zu halten. So kann die Erstautomatisierung auch problemlos erweitert werden, um bei Bedarf einige sich wiederholende tägliche Oracle Aufgaben durchzuführen.
 
 SnapCenter stellt Workflows für zeitpunktgenaue Oracle Database Recovery oder für das Datenbankklonen in den primären oder Standby-Zonen bereit, falls erforderlich. Über die Benutzeroberfläche von SnapCenter können Sie das Backup und die Replizierung von Oracle Datenbanken auf Standby FSX Storage konfigurieren, um für Hochverfügbarkeit oder Disaster Recovery entsprechend Ihrer RTO- oder RPO-Vorgaben zu sorgen.
 
 Die Lösung stellt einen alternativen Prozess bereit, der Funktionen bietet, die denen von Oracle RAC und Data Guard Deployment ähnlich sind.
 
-link:aws_ora_fsx_ec2_factors.html["Als Nächstes: Implementierungsverfahren"]
+link:aws_ora_fsx_ec2_factors.html["Weiter: Wichtige Faktoren."]
