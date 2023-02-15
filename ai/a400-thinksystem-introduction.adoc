@@ -1,0 +1,51 @@
+---
+sidebar: sidebar 
+permalink: ai/a400-thinksystem-introduction.html 
+keywords: tr4810, 4810, introduction, cluster architecture, lenovo, ai 
+summary: 'Diese Lösung konzentriert sich sowohl auf Cluster-Architekturen der Einstiegs- als auch der Midrange-Klasse mit NetApp Storage und Lenovo Servern, die für künstliche Intelligenz-Workloads optimiert sind. Geeignet für kleine und mittelgroße Teams, bei denen die meisten Computing-Jobs Single-Node (Single- oder Multi-GPU) sind oder über einige Compute-Nodes verteilt werden. Dies ist keine große Einschränkung, da die meisten täglichen KI-Trainingsaufgaben ein einzelner Node sind.' 
+---
+= TR-4810: NetApp AFF A400 mit Lenovo ThinkSystem SR670 V2 für KI- und ML-Modelltraining
+:hardbreaks:
+:allow-uri-read: 
+:nofooter: 
+:icons: font
+:linkattrs: 
+:imagesdir: ./../media/
+
+
+Sathish Thyagarajan, David Arnette, NetApp Mircea Troaca, Lonovo
+
+[role="lead"]
+Diese Lösung bietet eine Midrange-Cluster-Architektur und nutzt NetApp Storage und Lenovo Server, die für KI-Workloads (künstliche Intelligenz) optimiert sind. Geeignet für kleine und mittelständische Unternehmen, bei denen die meisten Computing-Aufgaben ein Node (eine einzelne oder mehrere GPUs) sind oder über einige Compute-Nodes verteilt werden. Diese Lösung lässt sich für viele Unternehmen an den meisten täglichen KI-Trainingsaufgaben anpassen.
+
+Dieses Dokument behandelt Tests und Validierungen einer Computing- und Storage-Konfiguration, die aus Lenovo SR670V2 Servern mit acht GPUs, einem Midrange-System von NetApp AFF A400 und einem 100-GbE-Interconnect-Switch besteht. Zur Messung der Performance haben wir ResNet50 mit dem ImageNet-Datensatz, einer Batch-Größe von 408, Half Precision, CUDA und cuDNN verwendet. Diese Architektur ist eine effiziente und kostengünstige Lösung für kleine und mittelständische Unternehmen. Sie startet mit KI-Initiativen, die die Funktionen der Enterprise-Klasse von NetApp ONTAP Storage mit Cloud-Integration benötigen.
+
+
+
+== Zielgruppe
+
+Dieses Dokument richtet sich an folgende Zielgruppen:
+
+* Data Scientists, Data Engineers, Datenadministratoren und Entwickler von KI-Systemen
+* Enterprise-Architekten, die Lösungen für die Entwicklung von KI-Modellen entwickeln
+* Data Scientists und Data Engineers, die nach effizienten Möglichkeiten suchen, Entwicklungsziele für Deep Learning (DL) und Machine Learning (ML) zu erreichen
+* Führungskräfte aus Unternehmen und Entscheidungsträger für OT/IT, die eine möglichst schnelle Markteinführungszeit für KI-Initiativen erreichen möchten
+
+
+
+
+== Lösungsarchitektur
+
+Diese Lösung mit Lenovo ThinkSystem Servern und NetApp ONTAP mit AFF Storage wurde entwickelt, um KI-Training auf großen Datensätzen unter Verwendung der Rechenleistung von GPUs neben herkömmlichen CPUs zu ermöglichen. Diese Validierung belegt eine hohe Performance und ein optimales Datenmanagement mit einer Scale-out-Architektur, in der ein, zwei oder vier Lenovo SR670 V2 Server zusammen mit einem einzigen NetApp AFF A400 Storage-System eingesetzt werden. Die folgende Abbildung bietet einen Überblick über die Architektur.
+
+image:a400-thinksystem-image2.png["Dieses Bild zeigt einen Ethernet-Switch, der vom Management-Server umgeben ist, vier SR670 V2s mit jeweils acht GPUs und ein NetApp ONTAP Storage-System."]
+
+Diese Lösung von NetApp und Lenovo bietet folgende wichtige Vorteile:
+
+* Hocheffiziente und kostengünstige Leistung bei der parallelen Ausführung mehrerer Schulungsjobs
+* Skalierbare Performance basierend auf einer unterschiedlichen Anzahl von Lenovo Servern und verschiedenen Modellen von NetApp Storage Controllern
+* Robuste Datensicherung zur Einhaltung niedriger Recovery-Zeitpunkte (RPOs) und Recovery-Zeiten (RTOs) ohne Datenverluste
+* Optimiertes Datenmanagement mit Snapshots und Klonen zur Optimierung von Entwicklungs-Workflows
+
+
+link:a400-thinksystem-technology-overview.html["Weiter: Technologische Übersicht."]

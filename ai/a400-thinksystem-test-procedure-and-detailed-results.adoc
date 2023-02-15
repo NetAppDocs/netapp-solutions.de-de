@@ -1,0 +1,67 @@
+---
+sidebar: sidebar 
+permalink: ai/a400-thinksystem-test-procedure-and-detailed-results.html 
+keywords: data, graphs, image recognition, training, resnet, data read speed, 
+summary: In diesem Abschnitt werden die Ergebnisse der detaillierten Testverfahren beschrieben. 
+---
+= Testverfahren und detaillierte Ergebnisse
+:hardbreaks:
+:allow-uri-read: 
+:nofooter: 
+:icons: font
+:linkattrs: 
+:imagesdir: ./../media/
+
+
+link:a400-thinksystem-test-configuration.html["Zurück: Testkonfiguration."]
+
+
+
+== Image-Recognition-Training mit ResNet in ONTAP
+
+Wir führten den ResNet50 Benchmark mit einem und zwei SR670 V2 Servern aus. Bei diesem Test wurde der MXNet 22.04-py3 NGC-Container verwendet.
+
+Bei dieser Validierung haben wir folgendes Testverfahren verwendet:
+
+. Wir haben den Host-Cache vor dem Ausführen des Skripts gelöscht, um sicherzustellen, dass die Daten nicht bereits im Cache gespeichert waren:
++
+....
+sync ; sudo /sbin/sysctl vm.drop_caches=3
+....
+. Wir haben das Benchmark-Skript mit dem ImageNet Datensatz im Server-Storage (lokale SSD-Speicherung) sowie auf dem NetApp AFF Storage-System ausgeführt.
+. Wir validierten die Netzwerk- und lokale Storage-Performance mithilfe des `dd` Befehl.
+. Für die Ausführung des Single-Node haben wir den folgenden Befehl verwendet:
++
+....
+python train_imagenet.py --gpus 0,1,2,3,4,5,6,7 --batch-size 408 --kv-store horovod --lr 10.5 --mom 0.9 --lr-step-epochs pow2 --lars-eta 0.001 --label-smoothing 0.1 --wd 5.0e-05 --warmup-epochs 2 --eval-period 4 --eval-offset 2 --optimizer sgdwfastlars --network resnet-v1b-stats-fl --num-layers 50 --num-epochs 37 --accuracy-threshold 0.759 --seed 27081 --dtype float16 --disp-batches 20 --image-shape 4,224,224 --fuse-bn-relu 1 --fuse-bn-add-relu 1 --bn-group 1 --min-random-area 0.05 --max-random-area 1.0 --conv-algo 1 --force-tensor-core 1 --input-layout NHWC --conv-layout NHWC --batchnorm-layout NHWC --pooling-layout NHWC --batchnorm-mom 0.9 --batchnorm-eps 1e-5 --data-train /data/train.rec --data-train-idx /data/train.idx --data-val /data/val.rec --data-val-idx /data/val.idx --dali-dont-use-mmap 0 --dali-hw-decoder-load 0 --dali-prefetch-queue 5 --dali-nvjpeg-memory-padding 256 --input-batch-multiplier 1 --dali- threads 6 --dali-cache-size 0 --dali-roi-decode 1 --dali-preallocate-width 5980 --dali-preallocate-height 6430 --dali-tmp-buffer-hint 355568328 --dali-decoder-buffer-hint 1315942 --dali-crop-buffer-hint 165581 --dali-normalize-buffer-hint 441549 --profile 0 --e2e-cuda-graphs 0 --use-dali
+....
+. Für die verteilten Läufe haben wir das Parallelisierungsmodell des Parameterservers verwendet. Wir haben zwei Parameter-Server pro Node verwendet und die Anzahl der Epoch-Durchläufe auf die gleiche Weise festgelegt wie auf dem Single-Node-Betrieb. Unser Ziel war, da verteiltes Training aufgrund unperfekter Synchronisierung zwischen Prozessen oft mehr Epochen benötigt. Die unterschiedliche Anzahl von Epoch-Durchläufen kann Vergleiche zwischen Single-Node- und verteilten Fällen verzerren.
+
+
+
+
+== Lesegeschwindigkeit von Daten: Lokal statt Netzwerkspeicher
+
+Die Lesegeschwindigkeit wurde mit dem getestet `dd` Befehl für eine der Dateien für den ImageNet-Datensatz. Konkret haben wir folgende Befehle sowohl für lokale als auch für Netzwerkdaten ausgeführt:
+
+....
+sync ; sudo /sbin/sysctl vm.drop_caches=3dd if=/a400-100g/netapp-ra/resnet/data/preprocessed_data/train.rec of=/dev/null bs=512k count=2048Results (average of 5 runs):
+Local storage: 1.7 GB/s Network storage: 1.5 GB/s.
+....
+Beide Werte sind ähnlich. Sie zeigen, dass Netzwerk-Storage Daten zu einer Rate liefern kann, die dem lokalen Storage ähnelt.
+
+
+
+== Shared Use Case: Mehrere, unabhängige, simultane Jobs
+
+Dieser Test simulierte den erwarteten Anwendungsfall für diese Lösung: KI-Training für mehrere Jobs und mehrere Benutzer. Jeder Node führte sein eigenes Training durch, während er den Shared Netzwerk-Storage verwendete. Die Ergebnisse werden in der folgenden Abbildung dargestellt, die zeigt, dass der Lösungsfall eine hervorragende Leistung bot, bei der alle Jobs im Wesentlichen mit derselben Geschwindigkeit wie einzelne Jobs ausgeführt wurden. Der Gesamtdurchsatz skalierte sich linear mit der Anzahl der Nodes.
+
+image:a400-thinksystem-image8.png["Diese Abbildung zeigt die aggregierten Bilder pro Sekunde."]
+
+image:a400-thinksystem-image9.png["Diese Figurwe zeigt die Laufzeit in Minuten."]
+
+Diese Diagramme stellen die Laufzeit in Minuten dar und die Aggregat-Images pro Sekunde für Computing-Nodes, die acht GPUs von jedem Server im 100-GbE-Client-Netzwerk verwendet haben, wobei sowohl das Modell für gleichzeitige Trainings als auch das zentrale Trainingsmodell kombiniert werden. Die durchschnittliche Laufzeit des Trainingsmodells betrug 35 Minuten und 9 Sekunden. Die einzelnen Laufzeiten waren 34 Minuten und 32 Sekunden, 36 Minuten und 21 Sekunden, 34 Minuten und 37 Sekunden, 35 Minuten und 25 Sekunden und 34 Minuten und 31 Sekunden. Die durchschnittlichen Images pro Sekunde für das Trainingsmodell betrug 22,573, die einzelnen Bilder pro Sekunde waren 21,764, 23,438, 22,556, 22,564 und 22,547.
+
+Unsere Validierung basiert darauf, dass ein unabhängiges Trainingsmodell mit einer NetApp Datenlaufzeit von 34 Minuten und 54 Sekunden bei 22,231 Bildern/Sek. betrug Ein unabhängiges Trainingsmodell mit einer lokalen Daten-das-Laufzeit (Local Data, das) betrug 34 Minuten und 21 Sekunden bei 22,102 Bildern/Sek. Während dieser Ausführung war die durchschnittliche GPU-Auslastung 96 %, wie bei nvidia-smi zu beobachten. Zu beachten ist, dass dieser Durchschnitt die Testphase umfasst, in der GPUs nicht verwendet wurden, während die CPU-Auslastung 40 % betrug, wie mit mpstat gemessen. Dadurch wird gezeigt, dass die Datenbereitstellungsrate in jedem Fall ausreichend ist.
+
+link:a400-thinksystem-architecture-adjustments.html["Weiter: Architekturanpassungen."]

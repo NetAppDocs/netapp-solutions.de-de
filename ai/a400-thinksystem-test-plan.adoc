@@ -1,0 +1,23 @@
+---
+sidebar: sidebar 
+permalink: ai/a400-thinksystem-test-plan.html 
+keywords: test plan, validation, image recognition training, processes 
+summary: In dieser Validierung haben wir das von MLPerf v2.0 festgelegte Image Recognition Training durchgeführt. Insbesondere haben wir das Modell ResNet v2.0 mit dem ImageNet-Datensatz trainiert. Die Hauptmetrik ist die Zeit, bis die gewünschte Genauigkeit erreicht ist. Wir berichten außerdem über die Trainingsbandbreite in Bildern pro Sekunde, um die horizontal skalierbare Effizienz besser beurteilen zu können. 
+---
+= Testplan
+:hardbreaks:
+:allow-uri-read: 
+:nofooter: 
+:icons: font
+:linkattrs: 
+:imagesdir: ./../media/
+
+
+link:a400-thinksystem-technology-overview.html["Zurück: Technologieübersicht."]
+
+[role="lead"]
+In dieser Validierung haben wir das von MLPerf v2.0 festgelegte Image Recognition Training durchgeführt. Insbesondere haben wir das Modell ResNet v2.0 mit dem ImageNet-Datensatz trainiert, bis wir eine Genauigkeit von 76.1 % erreicht haben. Die Hauptmetrik ist die Zeit, bis die gewünschte Genauigkeit erreicht ist. Wir berichten außerdem über die Trainingsbandbreite in Bildern pro Sekunde, um die horizontal skalierbare Effizienz besser beurteilen zu können.
+
+Im primären Testfall wurden mehrere unabhängige Trainingsprozesse (eine pro Node) gleichzeitig bewertet. Dies simuliert den Hauptanwendungsfall, ein Shared-System, das von mehreren Data Scientists genutzt wird. Im zweiten Testfall wurde die horizontale Skalierbarkeit evaluiert.
+
+link:a400-thinksystem-test-results.html["Weiter: Testergebnisse."]
