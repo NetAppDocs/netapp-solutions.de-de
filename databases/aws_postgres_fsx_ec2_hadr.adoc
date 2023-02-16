@@ -21,7 +21,7 @@ Allen Cao, Niyaz Mohamed, NetApp
 
 PostgreSQL ist eine häufig verwendete Open-Source-Datenbank, die auf Platz vier unter den zehn beliebtesten Datenbank-Engines von rangiert link:https://db-engines.com/en/ranking["DB-Engines"^]. Auf der einen Seite, PostgreSQL leitet seine Popularität aus seinem lizenzfreien, Open-Source-Modell, während noch mit ausgereiften Features. Da es sich um Open-Source-Lösungen handelt, fehlen insbesondere in der Public Cloud detaillierte Leitfäden zur Implementierung produktionsferglicher Datenbanken. Dies gilt für Hochverfügbarkeit und Disaster Recovery (HA/DR). Im Allgemeinen kann es schwierig sein, ein typisches PostgreSQL HA/DR-System mit warmem Standby, Streaming-Replizierung usw. einzurichten. Das Testen der HA/DR-Umgebung durch Beförderung des Standby-Standorts und dann das Zurückschalten zum primären Standort kann mit der Produktion zu Störungen führen. Es gibt auf dem primären Volume gut dokumentierte Performance-Probleme, wenn Lese-Workloads auf dem Streaming des Hot-Standby-Modus ausgeführt werden.
 
-In dieser Dokumentation zeigen wir, wie man eine PostgreSQL-Streaming-HA/DR-Lösung auf Applikationsebene auskommt und eine PostgreSQL HA/DR-Lösung auf Basis von AWS FSX ONTAP Storage für Datenbankdateien und EC2 Computing-Instanzen wie PostgreSQL DB-Server aufbaut. Die Lösung erstellt ein einfacheres, vergleichbares System und liefert ähnliche Ergebnisse im Vergleich zur herkömmlichen Streaming-Replizierung auf PostgreSQL-Applikationsebene für HA/DR.
+In dieser Dokumentation zeigen wir, wie Sie eine PostgreSQL Streaming HA/DR-Lösung auf Applikationsebene hinter sich lassen und eine PostgreSQL HA/DR-Lösung auf Basis von AWS FSX ONTAP Storage und EC2 Computing-Instanzen mittels Storage-Level-Replizierung aufbauen können. Die Lösung erstellt ein einfacheres, vergleichbares System und liefert ähnliche Ergebnisse im Vergleich zur herkömmlichen Streaming-Replizierung auf PostgreSQL-Applikationsebene für HA/DR.
 
 Diese Lösung basiert auf der bewährten und ausgereiften NetApp SnapMirror Replizierungstechnologie auf Storage-Ebene, die auch in FSX ONTAP Cloud-Storage für PostgreSQL HA/DR in AWS verfügbar ist. Die Implementierung ist mit einem vom NetApp Solutions Team bereitgestellten Automatisierungs-Toolkit einfach. Es bietet ähnliche Funktionen und beseitigt gleichzeitig die Komplexität- und Performance-Einbußen am primären Standort mit der auf Applikationsebene basierenden Streaming-basierten HA/DR-Lösung auf Applikationsebene. Die Lösung kann einfach implementiert und getestet werden, ohne dass der aktive primäre Standort davon betroffen ist.
 
@@ -265,7 +265,7 @@ ansible-playbook -i hosts postgresql_standby_resync.yml -u ec2-user --private-ke
 
 === Failover vom primären EC2 DB-Server zum Standby-EC2-DB-Server aufgrund des Ausfalls der EC2-Computing-Instanz
 
-NetApp empfiehlt, manuelle Failover-Prozesse mit gut eingeführtem Betriebssystem auszuführen, für das möglicherweise eine Lizenz erforderlich ist.
+NetApp empfiehlt, manuelle Failover-Vorgänge auszuführen oder bewährte Betriebssystem-Cluster-Software zu verwenden, die möglicherweise eine Lizenz erfordern.
 
 
 
@@ -283,6 +283,6 @@ link:https://aws.amazon.com/pm/ec2/?trk=36c6da98-7b20-48fa-8225-4784bced9843&sc_
 
 * Automatisierung der NetApp Lösung
 +
-link:https://review.docs.netapp.com/us-en/netapp-solutions_ajc_psql_aws/automation/automation_introduction.html["https://review.docs.netapp.com/us-en/netapp-solutions_ajc_psql_aws/automation/automation_introduction.html"^]
+link:https://docs.netapp.com/us-en/netapp-solutions/automation/automation_introduction.html["https://docs.netapp.com/us-en/netapp-solutions/automation/automation_introduction.html"^]
 
 
