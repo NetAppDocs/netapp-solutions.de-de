@@ -86,9 +86,6 @@ Die neue Integration von Azure NetApp Files ermöglicht die Erstellung von NFS-D
 
 NOTE: Um eine optimale Performance zu erzielen, implementieren Sie die Azure NetApp Files in derselben Verfügbarkeitszone wie die Private Cloud. Die Colocation mit dem Express Route FastPath bietet die beste Performance bei minimaler Netzwerklatenz.
 
-
-NOTE: Diese Funktion befindet sich derzeit in der öffentlichen Vorschau.
-
 Wenn Sie ein Azure NetApp Datei-Volume als VMware-Datenspeicher einer Private Cloud der Azure VMware Lösung anhängen möchten, müssen Sie die folgenden Voraussetzungen erfüllen.
 
 .Voraussetzungen
@@ -167,7 +164,7 @@ image:vmware-dr-image3.png["Fehler: Fehlendes Grafikbild"]
 
  a| 
 * NFSv3 wird für Datastores auf Azure NetApp Files unterstützt.
-* Verwenden Sie die Premium- oder Ultra-Tier für optimale Leistung.
+* Verwenden Sie Premium oder Standard-Tier für kapazitätsintensive Workloads und Ultra Tier für Performance-gebundene Workloads, wo es erforderlich ist, und ergänzen Sie dabei den standardmäßigen vSAN Storage.
 
 
 |===
@@ -177,12 +174,15 @@ image:vmware-dr-image3.png["Fehler: Fehlendes Grafikbild"]
 
 image:vmware-dr-image4.png["Fehler: Fehlendes Grafikbild"]
 
-Informationen zur Azure NetApp Files Volume-Performance nach Größe oder Kontingent finden Sie unter https://docs.microsoft.com/en-us/azure/azure-netapp-files/azure-netapp-files-performance-considerations["Überlegungen zur Performance von Azure NetApp Files"^].
+Informationen zur Azure NetApp Files Volume-Performance nach Größe oder Kontingent finden Sie unter link:https://docs.microsoft.com/en-us/azure/azure-netapp-files/azure-netapp-files-performance-considerations["Überlegungen zur Performance von Azure NetApp Files"^].
 
 ====
 .Fügen Sie einen Azure NetApp Files-Datastore in eine Private Cloud hinzu
 [%collapsible]
 ====
+
+NOTE: Azure NetApp Files Volume kann über das Azure-Portal mit Ihrer Private Cloud verbunden werden. Folgen Sie diesen Anweisungen link:https://learn.microsoft.com/en-us/azure/azure-vmware/attach-azure-netapp-files-to-azure-vmware-solution-hosts?tabs=azure-portal["Verbindung von Microsoft"] Schrittweise Vorgehensweise zum Mounten eines Azure NetApp Files-Datenspeichers im Azure-Portal.
+
 Um einen Azure NetApp Files-Datastore zu einer Private Cloud hinzuzufügen, gehen Sie wie folgt vor:
 
 . Nachdem die erforderlichen Funktionen registriert sind, schließen Sie einen NFS-Datenspeicher an das Private Cloud Cluster der Azure VMware Lösung an. Führen Sie dazu den entsprechenden Befehl aus.
@@ -230,13 +230,15 @@ image:vmware-dr-image6.png["Fehler: Fehlendes Grafikbild"]
 
 Weitere Informationen finden Sie unter https://docs.microsoft.com/en-us/azure/azure-netapp-files/azure-netapp-files-service-levels["Service-Level für Azure NetApp Files"^].
 
+Weitere Informationen finden Sie hier link:https://learn.microsoft.com/en-us/azure/azure-netapp-files/performance-benchmarks-azure-vmware-solution["Verbindung von Microsoft"] Für detaillierte Performance-Benchmarks, die während eines Sizing-Tests verwendet werden können
+
 |===
 | Wichtige Hinweise 
 
 
  a| 
-* Verwenden Sie die Premium oder Ultra Tier für Datastore Volumes, um eine optimale Performance zu erzielen.
-* Verwenden Sie Standard- oder Premium Tier Volumes, um die Anforderungen an Dateifreigabe für Gast-VMs zu erfüllen.
+* Verwenden Sie die Premium- oder Standard-Tier für Datastore Volumes, um optimale Kapazität und Performance zu erzielen. Wenn Leistung erforderlich ist, kann Ultra Tier verwendet werden.
+* Verwenden Sie für die Anforderungen an Gasteinbindung Premium oder Ultra Tier sowie für die Fileshare-Anforderungen von Gast-VMs Standard- oder Premium-Tier-Volumes.
 
 
 |===
@@ -250,6 +252,8 @@ Um mehr verfügbare Bandbreite bei Azure NetApp Files Volumes nutzen zu können,
 
 Für eine höhere Bandbreite erstellen Sie als Best Practice mehrere Datastores mit mehreren ANF Volumes, erstellen VMDKs und verteilen die logischen Volumes über VMDKs.
 
+Weitere Informationen finden Sie hier link:https://learn.microsoft.com/en-us/azure/azure-netapp-files/performance-benchmarks-azure-vmware-solution["Verbindung von Microsoft"] Für detaillierte Performance-Benchmarks, die während eines Sizing-Tests verwendet werden können
+
 |===
 | Wichtige Hinweise 
 
@@ -258,30 +262,7 @@ Für eine höhere Bandbreite erstellen Sie als Best Practice mehrere Datastores 
 * Die Azure VMware Lösung lässt standardmäßig acht NFS-Datenspeicher zu. Dies kann über eine Support-Anfrage weiter verbessert werden.
 * Nutzen Sie er FastPath zusammen mit Ultra SKU für eine höhere Bandbreite und niedrigere Latenz. Weitere Informationen
 * Mit den „grundlegenden“ Netzwerkfunktionen in Azure NetApp Files wird die Konnektivität über die Azure VMware Lösung durch die Bandbreite der ExpressRoute Verbindung und des ExpressRoute Gateways gebunden.
-* Für Azure NetApp Files Volumes mit „Standard“-Netzwerkfunktionen (derzeit öffentlich Vorschau) wird ExpressRoute FastPath unterstützt. Bei Aktivierung sendet FastPath den Netzwerkdatenverkehr direkt an die Azure NetApp Files Volumes und umgehen das Gateway mit höherer Bandbreite und niedrigerer Latenz.
-
-
-|===
-
-
-== Performance-Optimierung
-
-Obwohl die empfohlene Anzahl an Virtual Machines pro NFS-Datenspeicher subjektiv ist, bestimmen viele Faktoren die optimale Anzahl von VMs, die auf den jeweiligen Datenspeicher platziert werden kann. Obwohl die meisten Administratoren nur die Kapazität berücksichtigen, ist die Menge der gleichzeitigen I/O-Vorgänge, die an die VMDKs gesendet werden, einer der wichtigsten Faktoren für die Gesamt-Performance. Der ESXi Host verfügt über viele Mechanismen, um die Fairness zwischen Virtual Machines zu gewährleisten, die im Wettbewerb um Datastore-Ressourcen stehen. Am einfachsten lässt sich die Performance jedoch durch Regulation der Anzahl der Virtual Machines auf den einzelnen Datenspeichern steuern. Wenn die I/O-Muster paralleler Virtual Machines zu viel Datenverkehr zum Datenspeicher senden, füllen sich die Festplatten-Warteschlangen aus und es wird eine höhere Latenz generiert.
-
-
-
-== Dimensionierung von Volumes und Datenspeicher
-
-Wenn ein Volume auf Azure NetApp Files für Datenspeicher-Zwecke erstellt wird, empfiehlt es sich, ein Volume zu erstellen, das nicht größer als nötig ist. Obwohl die maximale Volume-Größe bis zu 100 TB beträgt, empfiehlt NetApp, mit einer kleinen Datenspeicherkapazität zu beginnen und diese nach Bedarf zu erhöhen. Mit Datastores mit richtiger Größenbemessung wird verhindert, dass versehentlich zu viele Virtual Machines auf dem Datenspeicher platziert werden, und es wird die Wahrscheinlichkeit von Ressourcenkonflikten verringert. Da Datenspeicher- und VMDK-Größen einfach erhöht werden können, wenn eine Virtual Machine zusätzliche Kapazität benötigt, müssen keine Datenspeicher mehr als erforderlich erstellt werden. Für eine optimale Performance empfiehlt es sich, die Anzahl der Datenspeicher zu erhöhen, statt ihre Größe zu erhöhen.
-
-|===
-| Zeigt auf, wie man sich merken sollte 
-
-
- a| 
-* Eine gute Größe für einen ANF NFS Datastore liegt von 4 TB bis 8 TB.
-* Platzieren Sie 15-20 VMs auf einem einzelnen Datenspeicher. Je nach VM-Anforderungen kann diese auf 35-40 VMs erhöht werden.
-* Berücksichtigen Sie für die beste Performance und das beste Management Gastsysteme wie NFS/SMB-Filesysteme, die von den Gastsystemen für Applikationen mit hohem I/O-Aufkommen wie Datenbanken verwaltet werden.
+* Für Azure NetApp Files Volumes mit „Standard“-Netzwerkfunktionen wird ExpressRoute FastPath unterstützt. Bei Aktivierung sendet FastPath den Netzwerkdatenverkehr direkt an die Azure NetApp Files Volumes und umgehen das Gateway mit höherer Bandbreite und niedrigerer Latenz.
 
 
 |===
@@ -297,7 +278,7 @@ Die Volume-Umgestaltung und die dynamischen Service Level-Änderungen sind für 
 
  a| 
 * Dank der Volume-Umgestaltung und der dynamischen Service Level-Funktion können Sie die Kosten optimieren, indem Sie für Steady-State Workloads eindimensionieren und so eine Überprovisionierung vermeiden.
-* Während der öffentlichen Vorschau ist VAAI nicht aktiviert.
+* VAAI ist nicht aktiviert.
 
 
 |===
