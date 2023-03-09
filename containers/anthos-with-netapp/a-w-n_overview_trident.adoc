@@ -13,281 +13,44 @@ summary: Astra Trident ist ein vollständig unterstützter Open-Source-Storage-O
 :imagesdir: ./../../media/
 
 
-Astra Trident ist ein vollständig unterstützter Open-Source-Storage-Orchestrator für Container und Kubernetes-Distributionen, einschließlich Anthos. Trident kann mit dem gesamten NetApp Storage-Portfolio eingesetzt werden, einschließlich NetApp ONTAP und Element Storage-Systeme. Es unterstützt auch NFS- und iSCSI-Verbindungen. Trident beschleunigt den DevOps-Workflow, da Endbenutzer Storage über ihre NetApp Storage-Systeme bereitstellen und managen können, ohne dass ein Storage-Administrator eingreifen muss.
+Astra Trident ist ein vollständig unterstützter Open-Source-Storage-Orchestrator für Container und Kubernetes-Distributionen, einschließlich Anthos. Trident kann mit dem gesamten NetApp Storage-Portfolio, einschließlich NetApp ONTAP, eingesetzt werden. Darüber hinaus werden NFS- und iSCSI-Verbindungen unterstützt. Trident beschleunigt den DevOps-Workflow, da Endbenutzer Storage über ihre NetApp Storage-Systeme bereitstellen und managen können, ohne dass ein Storage-Administrator eingreifen muss.
 
 Ein Administrator kann verschiedene Storage-Back-Ends basierend auf den Projektanforderungen und Storage-Systemmodellen konfigurieren, die erweiterte Storage-Funktionen wie Komprimierung, bestimmte Festplattentypen und QoS-Level ermöglichen, die eine bestimmte Performance garantieren. Nach ihrer Definition können diese Back-Ends von Entwicklern in ihren Projekten verwendet werden, um persistente Volume Claims (PVCs) zu erstellen und persistenten Storage nach Bedarf an ihre Container anzubinden.
 
-image:a-w-n_trident.png["Fehler: Fehlendes Grafikbild"]
+image:a-w-n_astra_trident.png["Fehler: Fehlendes Grafikbild"]
 
 Astra Trident führt einen schnellen Entwicklungszyklus durch, und, wie Kubernetes, wird viermal im Jahr veröffentlicht.
 
-Die neueste Version von Astra Trident, 22.04, wurde im April 2022 veröffentlicht. Eine Support-Matrix, in der die Version von Trident getestet wurde, mit der Kubernetes Distribution zu finden ist https://docs.netapp.com/us-en/trident/trident-get-started/requirements.html#supported-frontends-orchestrators["Hier"].
+Die Dokumentation zur neuesten Version von Astra Trident ist zu finden https://docs.netapp.com/us-en/trident/index.html["Hier"]. Eine Support-Matrix, in der die Version von Trident getestet wurde, mit der Kubernetes Distribution zu finden ist https://docs.netapp.com/us-en/trident/trident-get-started/requirements.html#supported-frontends-orchestrators["Hier"].
 
 Ab Version 20.04 wird die Trident-Einrichtung vom Trident Operator durchgeführt. Der Operator vereinfacht umfangreiche Implementierungen und bietet zusätzlichen Support einschließlich Selbstreparatur für Pods, die im Rahmen der Trident-Installation bereitgestellt werden.
 
 In der Version 22.04 wurde ein Helm Chart zur Erleichterung der Installation des Trident Operators zur Verfügung gestellt.
 
-
-
-== Installieren Sie den Trident Operator mit Helm
-
-Um die Installation von Trident auf dem implementierten Benutzer-Cluster zu automatisieren und ein persistentes Volume bereitzustellen, gehen Sie wie folgt vor:
-
-
-NOTE: Helm ist auf der GKE-Admin-Workstation standardmäßig nicht installiert. Es kann in einem Binärformat heruntergeladen werden, das mit Ubuntu von der funktioniert https://helm.sh/docs/intro/install/["Helm-Installationsseite"].
-
-. Legen Sie zunächst den Speicherort des Benutzer-Clusters fest `kubeconfig` Datei als Umgebungsvariable, damit Sie nicht darauf verweisen müssen, weil Trident keine Option hat, diese Datei zu übergeben.
-+
-[listing]
-----
-[ubuntu@gke-admin-ws-2022-05-03 trident-installer]$ export KUBECONFIG=~/user-cluster-1/user-cluster-1-kubeconfig
-----
-. Trident Helm Repository hinzufügen:
-+
-[listing]
-----
-[ubuntu@gke-admin-ws-2022-05-03 trident-installer] helm repo add netapp-trident https://netapp.github.io/trident-helm-chart
-----
-. Führen Sie den Helm-Befehl aus, um den Trident-Operator aus dem Tarball im Steuerverzeichnis zu installieren, während der Dreizack-Namespace in Ihrem Benutzer-Cluster erstellt wird.
-+
-[listing]
-----
-[ubuntu@gke-admin-ws-2022-05-03 trident-installer]$ helm install trident netapp-trident/trident-operator --version 22.4.0 --create-namespace --namespace trident
-NAME: trident
-LAST DEPLOYED: Fri May  6 12:54:25 2022
-NAMESPACE: trident
-STATUS: deployed
-REVISION: 1
-TEST SUITE: None
-NOTES:
-Thank you for installing trident-operator, which will deploy and manage NetApp's Trident CSI
-storage provisioner for Kubernetes.
-
-Your release is named 'trident' and is installed into the 'trident' namespace.
-Please note that there must be only one instance of Trident (and trident-operator) in a Kubernetes cluster.
-
-To configure Trident to manage storage resources, you will need a copy of tridentctl, which is
-available in pre-packaged Trident releases.  You may find all Trident releases and source code
-online at https://github.com/NetApp/trident.
-
-To learn more about the release, try:
-
-  $ helm status trident
-  $ helm get all trident
-----
-. Sie können überprüfen, ob Trident erfolgreich installiert wurde, indem Sie die Pods prüfen, die im Namespace ausgeführt werden, oder die tridentctl-Binärdatei verwenden, um die installierte Version zu überprüfen.
-+
-[listing]
-----
-[ubuntu@gke-admin-ws-2022-05-03 trident-installer]$ kubectl get pods -n trident
-NAME                               READY   STATUS    RESTARTS   AGE
-trident-csi-5z45l                  1/2     Running   2          30s
-trident-csi-696b685cf8-htdb2       6/6     Running   0          30s
-trident-csi-b74p2                  2/2     Running   0          30s
-trident-csi-lrw4n                  2/2     Running   0          30s
-trident-operator-7c748d957-gr2gw   1/1     Running   0          36s
-
-[ubuntu@gke-admin-ws-2022-05-03 trident-installer]$ ./tridentctl -n trident version
-+----------------+----------------+
-| SERVER VERSION | CLIENT VERSION |
-+----------------+----------------+
-| 22.04.0          | 22.04.0          |
-+----------------+----------------+
-----
+Informationen zur Installation von Astra Trident finden Sie unter https://docs.netapp.com/us-en/trident/trident-get-started/kubernetes-deploy.html["Hier"].
 
 
 
-NOTE: In einigen Fällen müssen die Kundenumgebungen möglicherweise die Anpassungen der Trident Implementierung erfordern. In diesen Fällen kann der Trident-Operator manuell installiert und die enthaltenen Manifeste aktualisiert werden, um die Implementierung anzupassen.
+== Erstellen eines Storage-System-Backends
+
+Nach Abschluss der Installation des Astra Trident Operator müssen Sie das Backend für die spezifische NetApp Storage-Plattform konfigurieren, die Sie verwenden. Folgen Sie dem folgenden Link, um mit der Einrichtung und Konfiguration von Astra Trident fortzufahren.link:https://docs.netapp.com/us-en/trident/trident-get-started/kubernetes-postdeployment.html#step-1-create-a-backend["Erstellen Sie ein Backend."]
 
 
 
-== Trident Operator kann manuell installiert werden
+== Erstellen Sie eine Speicherklasse
 
-Um Trident manuell auf dem implementierten Benutzer-Cluster zu installieren und ein persistentes Volume bereitzustellen, führen Sie die folgenden Schritte aus:
-
-. Laden Sie das Installationsarchiv auf die Admin-Arbeitsstation herunter und extrahieren Sie den Inhalt. Die aktuelle Version von Trident ist 22.04, die heruntergeladen werden kann https://github.com/NetApp/trident/releases/download/v22.04.0/trident-installer-22.04.0.tar.gz["Hier"].
-+
-[listing]
-----
-[ubuntu@gke-admin-ws-2022-05-03 ~]$ wget https://github.com/NetApp/trident/releases/download/v22.04.0/trident-installer-22.04.0.tar.gz
---2022-05-06 15:17:30--  https://github.com/NetApp/trident/releases/download/v22.04.0/trident-installer-22.04.0.tar.gz
-Resolving github.com (github.com)... 140.82.114.3
-Connecting to github.com (github.com)|140.82.114.3|:443... connected.
-HTTP request sent, awaiting response... 302 Found
-Location: https://github-releases.githubusercontent.com/77179634/a4fa9f00-a9f2-11eb-9053-98e8e573d4ae?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAIWNJYAX4CSVEH53A%2F20210506%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20210506T191643Z&X-Amz-Expires=300&X-Amz-Signature=8a49a2a1e08c147d1ddd8149ce45a5714f9853fee19bb1c507989b9543eb3630&X-Amz-SignedHeaders=host&actor_id=0&key_id=0&repo_id=77179634&response-content-disposition=attachment%3B%20filename%3Dtrident-installer-22.04.0.tar.gz&response-content-type=application%2Foctet-stream [following]
---2022-05-06 15:17:30--  https://github-releases.githubusercontent.com/77179634/a4fa9f00-a9f2-11eb-9053-98e8e573d4ae?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAIWNJYAX4CSVEH53A%2F20210506%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20210506T191643Z&X-Amz-Expires=300&X-Amz-Signature=8a49a2a1e08c147d1ddd8149ce45a5714f9853fee19bb1c507989b9543eb3630&X-Amz-SignedHeaders=host&actor_id=0&key_id=0&repo_id=77179634&response-content-disposition=attachment%3B%20filename%3Dtrident-installer-22.04.0.tar.gz&response-content-type=application%2Foctet-stream
-Resolving github-releases.githubusercontent.com (github-releases.githubusercontent.com)... 185.199.108.154, 185.199.109.154, 185.199.110.154, ...
-Connecting to github-releases.githubusercontent.com (github-releases.githubusercontent.com)|185.199.108.154|:443... connected.
-HTTP request sent, awaiting response... 200 OK
-Length: 38349341 (37M) [application/octet-stream]
-Saving to: ‘trident-installer-22.04.0.tar.gz’
-
-100%[==================================================================================================================>] 38,349,341  88.5MB/s   in 0.4s
-
-2022-05-06 15:17:30 (88.5 MB/s) - ‘trident-installer-22.04.0.tar.gz’ saved [38349341/38349341]
-----
-. Extrahieren Sie die Trident Installation aus dem heruntergeladenen Paket.
-+
-[listing]
-----
-[ubuntu@gke-admin-ws-2022-05-03 ~]$ tar -xzf trident-installer-22.04.0.tar.gz
-[ubuntu@gke-admin-ws-2022-05-03 ~]$ cd trident-installer/
-[ubuntu@gke-admin-ws-2022-05-03 trident-installer]$
-----
-. Legen Sie den Speicherort des Benutzer-Clusters fest `kubeconfig` Datei als Umgebungsvariable, damit Sie nicht darauf verweisen müssen, weil Trident keine Option hat, diese Datei zu übergeben.
-+
-[listing]
-----
-[ubuntu@gke-admin-ws-2022-05-03 trident-installer]$ KUBECONFIG=~/user-cluster-1/user-cluster-1-kubeconfig
-----
-. Der `trident-installer` Das Verzeichnis enthält Manifeste für die Definition aller erforderlichen Ressourcen. Erstellen Sie mithilfe der entsprechenden Manifeste das `TridentOrchestrator` Benutzerdefinierte Ressourcendefinition.
-+
-[listing]
-----
-[ubuntu@gke-admin-ws-2022-05-03 trident-installer]$ kubectl create -f deploy/crds/trident.netapp.io_tridentorchestrators_crd_post1.16.yaml
-customresourcedefinition.apiextensions.k8s.io/tridentorchestrators.trident.netapp.io created
-----
-. Wenn nicht vorhanden ist, erstellen Sie mithilfe des angegebenen Manifests einen Trident Namespace im Cluster.
-+
-[listing]
-----
-[ubuntu@gke-admin-ws-2022-05-03 trident-installer]$ kubectl apply -f deploy/namespace.yaml
-namespace/trident created
-----
-. Erstellen Sie die Ressourcen, die für die Trident-Operator, wie z. B. ein, erforderlich sind `ServiceAccount` Für den Operator A `ClusterRole` Und `ClusterRoleBinding` Bis zum `ServiceAccount`, Eine engagierte `PodSecurityPolicy`, Oder der Operator selbst.
-+
-[listing]
-----
-[ubuntu@gke-admin-ws-2022-05-03 trident-installer]$ kubectl create -f deploy/bundle.yaml
-serviceaccount/trident-operator created
-clusterrole.rbac.authorization.k8s.io/trident-operator created
-clusterrolebinding.rbac.authorization.k8s.io/trident-operator created
-deployment.apps/trident-operator created
-podsecuritypolicy.policy/tridentoperatorpods created
-----
-. Sie können den Status des Bedieners überprüfen, nachdem er mit den folgenden Befehlen bereitgestellt wurde:
-+
-[listing]
-----
-[ubuntu@gke-admin-ws-2022-05-03 trident-installer]$ kubectl get deployment -n trident
-NAME               READY   UP-TO-DATE   AVAILABLE   AGE
-trident-operator   1/1     1            1           23s
-[ubuntu@gke-admin-ws-2022-05-03 trident-installer]$ kubectl get pods -n trident
-NAME                                READY   STATUS    RESTARTS   AGE
-trident-operator-66f48895cc-lzczk   1/1     Running   0          41s
-----
-. Mit dem implementierten Operator können wir nun Trident installieren. Dazu muss ein erstellt werden `TridentOrchestrator`.
-+
-[listing]
-----
-[ubuntu@gke-admin-ws-2022-05-03 trident-installer]$ kubectl create -f deploy/crds/tridentorchestrator_cr.yaml
-tridentorchestrator.trident.netapp.io/trident created
-[ubuntu@gke-admin-ws-2022-05-03 trident-installer]$ kubectl describe torc trident
-Name:         trident
-Namespace:
-Labels:       <none>
-Annotations:  <none>
-API Version:  trident.netapp.io/v1
-Kind:         TridentOrchestrator
-Metadata:
-  Creation Timestamp:  2022-05-06T17:00:28Z
-  Generation:          1
-  Managed Fields:
-    API Version:  trident.netapp.io/v1
-    Fields Type:  FieldsV1
-    fieldsV1:
-      f:spec:
-        .:
-        f:debug:
-        f:namespace:
-    Manager:      kubectl-create
-    Operation:    Update
-    Time:         2022-05-06T17:00:28Z
-    API Version:  trident.netapp.io/v1
-    Fields Type:  FieldsV1
-    fieldsV1:
-      f:status:
-        .:
-        f:currentInstallationParams:
-          .:
-          f:IPv6:
-          f:autosupportHostname:
-          f:autosupportImage:
-          f:autosupportProxy:
-          f:autosupportSerialNumber:
-          f:debug:
-          f:enableNodePrep:
-          f:imagePullSecrets:
-          f:imageRegistry:
-          f:k8sTimeout:
-          f:kubeletDir:
-          f:logFormat:
-          f:silenceAutosupport:
-          f:tridentImage:
-        f:message:
-        f:namespace:
-        f:status:
-        f:version:
-    Manager:         trident-operator
-    Operation:       Update
-    Time:            2022-05-06T17:00:28Z
-  Resource Version:  931421
-  Self Link:         /apis/trident.netapp.io/v1/tridentorchestrators/trident
-  UID:               8a26a7a6-dde8-4d55-9b66-a7126754d81f
-Spec:
-  Debug:      true
-  Namespace:  trident
-Status:
-  Current Installation Params:
-    IPv6:                       false
-    Autosupport Hostname:
-    Autosupport Image:          netapp/trident-autosupport:22.04
-    Autosupport Proxy:
-    Autosupport Serial Number:
-    Debug:                      true
-    Enable Node Prep:           false
-    Image Pull Secrets:
-    Image Registry:
-    k8sTimeout:           30
-    Kubelet Dir:          /var/lib/kubelet
-    Log Format:           text
-    Silence Autosupport:  false
-    Trident Image:        netapp/trident:22.04.0
-  Message:                Trident installed
-  Namespace:              trident
-  Status:                 Installed
-  Version:                v22.04.0
-Events:
-  Type    Reason      Age   From                        Message
-  ----    ------      ----  ----                        -------
-  Normal  Installing  80s   trident-operator.netapp.io  Installing Trident
-  Normal  Installed   68s   trident-operator.netapp.io  Trident installed
-----
-. Sie können überprüfen, ob Trident erfolgreich installiert wurde, indem Sie die Pods prüfen, die im Namespace ausgeführt werden, oder die tridentctl-Binärdatei verwenden, um die installierte Version zu überprüfen.
-+
-[listing]
-----
-[ubuntu@gke-admin-ws-2022-05-03 trident-installer]$ kubectl get pods -n trident
-NAME                                READY   STATUS    RESTARTS   AGE
-trident-csi-bb64c6cb4-lmd6h         6/6     Running   0          82s
-trident-csi-gn59q                   2/2     Running   0          82s
-trident-csi-m4szj                   2/2     Running   0          82s
-trident-csi-sb9k9                   2/2     Running   0          82s
-trident-operator-66f48895cc-lzczk   1/1     Running   0          2m39s
-
-[ubuntu@gke-admin-ws-2022-05-03 trident-installer]$ ./tridentctl -n trident version
-+----------------+----------------+
-| SERVER VERSION | CLIENT VERSION |
-+----------------+----------------+
-| 22.04.0          | 22.04.0          |
-+----------------+----------------+
-----
+Nach Erstellung des Backends müssen Sie eine Storage-Klasse erstellen, die Kubernetes-Benutzer angeben werden, wann sie ein Volume erstellen möchten. Kubernetes-Benutzer stellen Volumes mithilfe von Persistent Volume Claims (PVCs) bereit, die eine Storage-Klasse nach Namen angeben. Klicken Sie auf den untenstehenden Link, um eine Storage-Klasse zu erstellen.link:https://docs.netapp.com/us-en/trident/trident-get-started/kubernetes-postdeployment.html#step-2-create-a-storage-class["Erstellen Sie eine Speicherklasse"]
 
 
 
+== Dynamische Bereitstellung von Volumes
 
-== Erstellen von Storage-System-Back-Ends
+Sie müssen ein Kubernetes-PVC-Objekt (Persistent Volume Claim) mithilfe der Storage-Klasse erstellen, um ein Volume dynamisch bereitzustellen. Klicken Sie auf den folgenden Link, um ein PVC-Objekt zu erstellen.link:https://docs.netapp.com/us-en/trident/trident-get-started/kubernetes-postdeployment.html#step-3-provision-your-first-volume["Erstellen Sie eine PVC"]
 
-Nach Abschluss der Installation des Astra Trident Operator müssen Sie das Backend für die spezifische NetApp Storage-Plattform konfigurieren, die Sie verwenden. Folgen Sie dem folgenden Link, um mit der Einrichtung und Konfiguration von Astra Trident fortzufahren.
 
-link:a-w-n_trident_ontap_nfs.html["Weiter: NetApp ONTAP NFS."]
+
+== Verwenden Sie das Volume
+
+Das im obigen Schritt bereitgestellte Volume kann von einer Applikation verwendet werden, indem das Volume in den Pod gemountet wird.der unten stehende Link zeigt ein Beispiel.link:https://docs.netapp.com/us-en/trident/trident-get-started/kubernetes-postdeployment.html#step-4-mount-the-volumes-in-a-pod["Mounten Sie das Volume in einem Pod"]
+
+link:a-w-n_overview_advanced.html["Weiter: Erweiterte Konfigurationsoptionen für Anthos."]
