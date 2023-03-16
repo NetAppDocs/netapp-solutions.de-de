@@ -1,0 +1,138 @@
+---
+sidebar: sidebar 
+permalink: data-analytics/kafka-nfs-functional-validation-silly-rename-fix.html 
+keywords: validation setup, architecture flow, testing methodology 
+summary: Für die funktionale Validierung haben wir gezeigt, dass ein Kafka-Cluster mit einem NFSv3-Mount für Storage Kafka-Vorgänge wie Partitionsumverteilung nicht ausführen kann, während ein anderer Cluster, der auf NFSv4 mit der Korrektur gemountet ist, die gleichen Operationen ohne Unterbrechungen durchführen kann. 
+---
+= Funktionale Validierung – Korrektur von Silly-Umbenennung
+:hardbreaks:
+:allow-uri-read: 
+:nofooter: 
+:icons: font
+:linkattrs: 
+:imagesdir: ./../media/
+
+
+link:kafka-nfs-netapp-solution-for-silly-rename-issue-in-nfs-to-kafka-workload.html["Früher: NetApp Lösung für albernes Problem in NFS zu Kafka-Workload"]
+
+[role="lead"]
+Für die funktionale Validierung haben wir gezeigt, dass ein Kafka-Cluster mit einem NFSv3-Mount für Storage Kafka-Vorgänge wie Partitionsumverteilung nicht ausführen kann, während ein anderer Cluster, der auf NFSv4 mit der Korrektur gemountet ist, die gleichen Operationen ohne Unterbrechungen durchführen kann.
+
+
+
+== Einrichtung der Validierung
+
+Das Setup läuft auf AWS. Die folgende Tabelle zeigt die verschiedenen Plattformkomponenten und Umgebungskonfigurationen, die für die Validierung verwendet werden.
+
+|===
+| Plattformkomponente | Umgebungskonfiguration 
+
+
+| Confluent Platform Version 7.2.1  a| 
+* 3 x Zookeeper – t3.xlarge
+* 4 x Broker-Server – r3.xlarge
+* 1 x Grafana – t3.xlarge
+* 1 x Leitstelle – t3.xlarge
+* 3 x Hersteller/Verbraucher
+
+
+
+
+| Betriebssystem auf allen Knoten | RHEL8.7oder höher 
+
+
+| NetApp Cloud Volumes ONTAP Instanz | Single-Node-Instanz – M5.2xLarge 
+|===
+Die folgende Abbildung zeigt die Architekturkonfiguration dieser Lösung.
+
+image:kafka-nfs-image1.png["Diese Bilder zeigen die AWS-Topologie mit einer VPC, die drei private Subnetze mit einem Producer-Swarm, dem Kafka-Cluster und einer CVO-Instanz enthält."]
+
+
+
+== Architekturfluss
+
+* *Compute.* Wir nutzten einen vier-Knoten-Kafka-Cluster mit einem drei-Knoten-Zookeeper-Ensemble, das auf dedizierten Servern lief.
+* *Monitoring.* für eine Prometheus-Grafana-Kombination haben wir zwei Knoten verwendet.
+* *Workload.* zur Generierung von Workloads haben wir ein separates Cluster mit drei Nodes verwendet, das die Produktion und Nutzung aus diesem Kafka-Cluster ermöglicht.
+* *Speicher.* Wir verwendeten eine NetApp Cloud Volumes ONTAP-Instanz mit einem einzigen Node, wobei zwei 500 GB GP2 AWS-EBS Volumes an die Instanz angeschlossen waren. Diese Volumes wurden dann dem Kafka Cluster als einzelnes NFSv4.1-Volume über eine LIF offengelegt.
+
+
+Die Standardeigenschaften von Kafka wurden für alle Server ausgewählt. Das gleiche wurde für den Zookeeper Schwarm getan.
+
+
+
+== Methodik des Testens
+
+. Zwei ähnliche Kafka-Cluster wurden mit dem folgenden Unterschied erstellt:
++
+** *Cluster 1.* der Backend-NFS v4.1-Server mit produktionsbereitem ONTAP Version 9.12.1 wurde von einer NetApp CVO-Instanz gehostet. RHEL 8.7/RHEL 9.1 wurden auf den Brokern installiert.
+** *Cluster 2.* der Backend NFS Server war ein manuell erstellter generischer Linux NFSv3 Server.
+
+
+. Auf beiden Kafka-Clustern wurde ein Demothema erstellt.
++
+Cluster 1:
+
++
+image:kafka-nfs-image2.png["Dieser Screenshot zeigt das Demo-Thema, das auf Cluster 1 erstellt wurde."]
+
++
+Cluster 2:
+
++
+image:kafka-nfs-image3.png["Dieser Screenshot zeigt das Demo-Thema, das auf Cluster 2 erstellt wurde."]
+
+. In diese neu erstellten Themen wurden für beide Cluster Daten geladen. Dies wurde mit dem Producer-perf-Test Toolkit durchgeführt, das im Standard-Kafka-Paket enthalten ist:
++
+....
+./kafka-producer-perf-test.sh --topic __a_demo_topic --throughput -1 --num-records 3000000 --record-size 1024 --producer-props acks=all bootstrap.servers=172.30.0.160:9092,172.30.0.172:9092,172.30.0.188:9092,172.30.0.123:9092
+....
+. Für Broker-1 wurde für jeden der Cluster eine Integritätsprüfung über Telnet durchgeführt:
++
+** telnet `172.30.0.160 9092`
+** telnet `172.30.0.198 9092`
++
+Eine erfolgreiche Integritätsprüfung für Broker auf beiden Clustern wird im nächsten Screenshot angezeigt:
+
++
+image:kafka-nfs-image4.png["Dieser Screenshot zeigt die Anzeige für eine erfolgreiche Integritätsprüfung auf beiden Brokern."]
+
+
+
+. Um die Fehlerbedingung auszulösen, die einen Absturz von Kafka-Clustern mit NFSv3-Storage-Volumes verursacht, haben wir bei beiden Clustern den Prozess der Partitionsumzuordnung initiiert. Die Partitionsumverteilung wurde mit durchgeführt `kafka-reassign-partitions.sh`. Der detaillierte Prozess sieht wie folgt aus:
++
+.. Um die Partitionen für ein Thema in einem Kafka-Cluster neu zuzuweisen, haben wir die vorgeschlagene Neuzuweisung von config JSON generiert (dies wurde für beide Cluster durchgeführt).
++
+....
+kafka-reassign-partitions --bootstrap-server=172.30.0.160:9092,172.30.0.172:9092,172.30.0.188:9092,172.30.0.123:9092 --broker-list "1,2,3,4" --topics-to-move-json-file /tmp/topics.json --generate
+....
+.. Die generierte Neuzuweisung JSON wurde dann in gespeichert `/tmp/reassignment- file.json`.
+.. Der eigentliche Vorgang der Partitionsumverteilung wurde durch den folgenden Befehl ausgelöst:
++
+....
+kafka-reassign-partitions --bootstrap-server=172.30.0.198:9092,172.30.0.163:9092,172.30.0.221:9092,172.30.0.204:9092 --reassignment-json-file /tmp/reassignment-file.json –execute
+....
+
+
+. Nach ein paar Minuten, als die Neuzuweisung abgeschlossen war, zeigte eine weitere Integritätsprüfung der Broker, dass Cluster mit NFSv3-Storage-Volumes ein albernes Problem hatten und abgestürzt waren, während Cluster 1 mit NetApp ONTAP NFSv4.1-Storage-Volumes mit der Korrektur den Betrieb ohne Unterbrechungen fortsetzte.
++
+image:kafka-nfs-image5.png["Dieser Screenshot zeigt die Ausgabe eines abgestürzten Brokers."]
+
++
+** Cluster1-Broker-1 ist aktiv.
+** Cluster2-Broker-1 ist tot.
+
+
+. Bei der Überprüfung der Kafka-Protokollverzeichnisse wurde deutlich, dass Cluster 1 mit NetApp ONTAP NFSv4.1-Storage-Volumes mit der Korrektur eine saubere Partitionszuweisung hatte, während Cluster 2 mit generischem NFSv3-Storage nicht auf alberne Probleme beim Umbenennen zurückzuführen war, was zum Absturz führte. Das folgende Bild zeigt den Partitionsausgleich von Cluster 2, was zu einem dummen Umbenennungsproblem auf NFSv3 Storage führte.
++
+image:kafka-nfs-image6.png["In diesem Screenshot wird die Protokollausgabe für Cluster 2 abstürzt."]
+
++
+Das folgende Bild zeigt eine saubere Partition Rebalancing von Cluster 1 mit NetApp NFSv4.1 Storage.
+
++
+image:kafka-nfs-image7.png["In diesem Screenshot wird die Protokollausgabe für eine erfolgreiche Zuweisung einer sauberen Partition für Cluster 1 angezeigt, wobei"]
+
+
+
+link:kafka-nfs-why-netapp-nfs-for-kafka-workloads.html["Nächste Frage: Warum NetApp NFS für Kafka-Workloads?"]

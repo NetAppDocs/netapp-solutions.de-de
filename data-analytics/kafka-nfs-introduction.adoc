@@ -1,0 +1,65 @@
+---
+sidebar: sidebar 
+permalink: data-analytics/kafka-nfs-introduction.html 
+keywords: tr4947, 4947, introduction, kafka, nfs 
+summary: 'In diesem Dokument werden die folgenden Themen behandelt: Problem bei unsinnigen Umbenennungen und Lösungsvalidierung, Reduzierung der CPU-Auslastung zur Reduzierung der I/O-Wartezeit, schnellere Recovery von Kafka-Brokern sowie Performance in der Cloud und vor Ort.' 
+---
+= TR-4947: Apache Kafka Workload mit NetApp NFS-Storage – Funktionsvalidierung und Performance
+:hardbreaks:
+:allow-uri-read: 
+:nofooter: 
+:icons: font
+:linkattrs: 
+:imagesdir: ./../media/
+
+
+Shantanu Chakole, Karthikeyan Nagalingam und Joe Scott, NetApp
+
+[role="lead"]
+Kafka ist ein verteiltes Veröffentlichungsabonnensystem mit einer robusten Warteschlange, die große Mengen an Nachrichtendaten aufnehmen kann. Mit Kafka können Anwendungen Daten sehr schnell zu Themen schreiben und lesen. Aufgrund seiner Fehlertoleranz und Skalierbarkeit wird Kafka im Big Data-Bereich häufig als zuverlässige Möglichkeit genutzt, viele Datenströme sehr schnell aufzunehmen und zu verschieben. Anwendungsfälle sind beispielsweise die Stream-Verarbeitung, die Verfolgung der Website-Aktivität, die Erfassung und Überwachung von Kennzahlen, die Protokollaggregation, Echtzeitanalysen usw.
+
+Obwohl normale Kafka-Vorgänge in NFS gut funktionieren, ist die https://sbg.technology/2018/07/10/kafka-nfs/["Blöde Umbenennung"^] Problem stürzt die Anwendung während der Größenänderung oder Neupartitionierung eines Kafka-Clusters ab, der auf NFS ausgeführt wird. Dies ist ein bedeutender Aspekt, da die Größe eines Kafka-Clusters zum Lastausgleich oder zur Wartung angepasst oder neu partitioniert werden muss. Weitere Details finden Sie hier https://www.netapp.com/blog/ontap-ready-for-streaming-applications/["Hier"^].
+
+In diesem Dokument werden die folgenden Themen beschrieben:
+
+* Das Problem mit der Silly-Umbenennung und die Lösungsvalidierung
+* Verringerung der CPU-Auslastung, um die I/O-Wartezeit zu verringern
+* Kürzere Recovery-Zeit für Kafka-Broker
+* Performance in der Cloud und lokal
+
+
+
+
+== Gründe für NFS-Storage für Kafka-Workloads
+
+Kafka-Workloads in Produktionsapplikationen können riesige Datenmengen zwischen Applikationen streamen. Diese Daten werden in den Kafka-Broker-Nodes im Kafka-Cluster aufbewahrt und gespeichert. Kafka ist auch für Verfügbarkeit und Parallelität bekannt, was erreicht wird, indem Themen in Partitionen unterteilt und diese Partitionen dann im gesamten Cluster repliziert werden. Das bedeutet, dass die riesige Datenmenge, die durch ein Kafka-Cluster fließt, sich in der Regel in der Größe multipliziert. NFS macht die Ausbalancierung der Daten, da sich die Anzahl der Broker sehr schnell und einfach ändert. In großen Umgebungen erfolgt die Umverteilung von Daten innerhalb von das, wenn die Anzahl der Broker sich sehr ändert und in den meisten Kafka-Umgebungen ändert sich häufig die Anzahl der Broker.
+
+Weitere Vorteile:
+
+* *Maturity.* NFS ist ein ausgereiftes Protokoll, was bedeutet, dass die meisten Aspekte der Implementierung, Sicherung und Nutzung gut verstanden sind.
+* *Open.* NFS ist ein offenes Protokoll, dessen Weiterentwicklung in den Internet-Spezifikationen als freies und offenes Netzwerkprotokoll dokumentiert wird.
+* *Kosteneffektiv.* NFS ist eine kostengünstige Lösung für die gemeinsame Nutzung von Netzwerkdateien, die einfach eingerichtet werden kann, da sie die vorhandene Netzwerkinfrastruktur nutzt.
+* *Zentral verwaltet.* die zentrale Verwaltung von NFS verringert den Bedarf an zusätzlicher Software und Speicherplatz auf einzelnen Benutzersystemen.
+* *Distributed.* NFS kann als verteiltes Dateisystem verwendet werden, wodurch der Bedarf an Wechseldatenträgern reduziert wird.
+
+
+
+
+== Warum NetApp für Kafka-Workloads?
+
+Die NetApp NFS-Implementierung gilt als Gold-Standard für das Protokoll und wird in unzähligen Enterprise-NAS-Umgebungen eingesetzt. Neben der Glaubwürdigkeit von NetApp bietet es zudem folgende Vorteile:
+
+* Zuverlässigkeit und Effizienz
+* Skalierbarkeit und Performance
+* Hochverfügbarkeit (HA-Partner in einem NetApp ONTAP Cluster)
+* Datensicherung
++
+** *Disaster Recovery (NetApp SnapMirror).* Ihre Site ist ausgefallen oder Sie möchten an einem anderen Standort starten und an der Stelle fortfahren, an der Sie aufgehört hatten.
+** Einfaches Management Ihres Storage-Systems (Administration und Management mit NetApp OnCommand).
+** *Load Balancing.* der Cluster ermöglicht Ihnen den Zugriff auf verschiedene Volumes von Daten-LIFs, die auf verschiedenen Knoten gehostet werden.
+** *Unterbrechungsfreier Betrieb.* LIFs oder Volume-Verschiebungen sind für die NFS Clients transparent.
+
+
+
+
+link:kafka-nfs-netapp-solution-for-silly-rename-issue-in-nfs-to-kafka-workload.html["Nächster Schritt: NetApp Lösung für das Problem, Daten bei NFS- zu Kafka-Workloads umbenennen."]

@@ -1,0 +1,31 @@
+---
+sidebar: sidebar 
+permalink: data-analytics/kafka-nfs-netapp-solution-for-silly-rename-issue-in-nfs-to-kafka-workload.html 
+keywords: solution, posix, xfs, ext4, rebalancing 
+summary: In diesem Abschnitt werden das Problem der unsinnigen Umbenennung und die Änderungen beschrieben, die für den NFS-Server und den NFS-Client erforderlich sind, um das Problem zu beheben. 
+---
+= NetApp Lösung für das Problem, Daten bei NFS- zu Kafka-Workloads umbenennen
+:hardbreaks:
+:allow-uri-read: 
+:nofooter: 
+:icons: font
+:linkattrs: 
+:imagesdir: ./../media/
+
+
+link:kafka-nfs-introduction.html["Zurück: Einführung."]
+
+[role="lead"]
+Kafka wird mit der Annahme erstellt, dass das zugrunde liegende Dateisystem POSIX-kompatibel ist: Zum Beispiel XFS oder Ext4. Beim Ausbalancieren von Ressourcen in Kafka werden Dateien entfernt, während die Anwendung sie weiterhin verwendet. Ein POSIX-konformes Dateisystem ermöglicht das Aufheben der Verknüpfung zum Fortfahren. Allerdings wird die Datei erst entfernt, nachdem alle Verweise auf die Datei verschwunden sind. Wenn das zugrunde liegende Dateisystem mit einem Netzwerk verbunden ist, fängt der NFS-Client die Aufheben der Verknüpfung ab und verwaltet den Workflow. Da für die nicht verknüpfte Datei noch offene Öffnungen vorhanden sind, sendet der NFS-Client eine Umbenennungsanforderung an den NFS-Server und führt beim letzten Schließen der nicht verknüpften Datei einen Entnahmierungsvorgang für die umbenannte Datei aus. Dieses Verhalten wird allgemein als „dummer über NFS“ bezeichnet und wird vom NFS-Client orchestriert.
+
+Jeder Kafka-Broker, der Storage von einem NFSv3-Server verwendet, läuft aufgrund dieses Verhaltens mit Problemen zusammen. Das NFSv4.x-Protokoll verfügt jedoch über Funktionen, um dieses Problem zu beheben, indem es dem Server erlaubt, die Verantwortung für die geöffneten, nicht verknüpften Dateien zu übernehmen. NFS-Server, die diese optionale Funktion unterstützen, kommunizieren zum Zeitpunkt des Dateiöffnens die Eigentumsfähigkeit an den NFS-Client. Der NFS-Client beendet dann das Aufheben der Verbindung, wenn offene Verbindungen vorhanden sind, und ermöglicht dem Server, den Fluss zu verwalten. Obwohl die NFSv4-Spezifikation Richtlinien für die Implementierung bietet, gab es bisher keine bekannten NFS-Server-Implementierungen, die diese optionale Funktion unterstützen.
+
+Die folgenden Änderungen sind für den NFS-Server und den NFS-Client erforderlich, um das Problem der unsinnigen Umbenennung zu lösen:
+
+* *Änderungen am NFS-Client (Linux).* zum Zeitpunkt des Dateieröffnens antwortet der NFS-Server mit einem Flag, der die Fähigkeit anzeigt, das Aufheben der Verknüpfung von geöffneten Dateien zu handhaben. Durch clientseitige NFS-Änderungen kann der NFS-Server das Aufheben der Verknüpfung in Gegenwart des Flags bearbeiten. NetApp hat den Open-Source-Linux NFS-Client mit diesen Änderungen aktualisiert. Der aktualisierte NFS-Client ist jetzt allgemein in RHEL8.7 und RHEL9.1 verfügbar.
+* *Änderungen am NFS-Server.* der NFS-Server verfolgt die geöffneten Daten. Das Aufheben der Verknüpfung zu einer vorhandenen offenen Datei wird nun vom Server verwaltet, um POSIX-Semantik zu entsprechen. Wenn das letzte Öffnen geschlossen wird, initiiert der NFS-Server dann das eigentliche Entfernen der Datei und vermeidet so den dummen Umbenennungsprozess. In der neuesten Version, ONTAP 9.12.1, hat der ONTAP-NFS-Server diese Funktion implementiert.
+
+
+Durch die oben genannten Änderungen am NFS-Client und -Server kann Kafka sicher von allen Vorteilen von Network-Attached NFS-Storage profitieren.
+
+link:kafka-nfs-functional-validation-silly-rename-fix.html["Weiter: Funktionale Validierung - Silly umbenennen fix."]

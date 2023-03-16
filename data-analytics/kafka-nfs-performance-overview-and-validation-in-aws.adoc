@@ -1,0 +1,373 @@
+---
+sidebar: sidebar 
+permalink: data-analytics/kafka-nfs-performance-overview-and-validation-in-aws.html 
+keywords: AWS cloud, ha pair, high availability, openmessage benchmarking, architectural setup 
+summary: Ein Kafka-Cluster mit einer auf NetApp NFS gemounteten Storage-Ebene wurde in der AWS Cloud hinsichtlich Performance getestet. Die Benchmarking-Beispiele sind in den folgenden Abschnitten beschrieben. 
+---
+= Performance-Übersicht und Validierung in AWS
+:hardbreaks:
+:allow-uri-read: 
+:nofooter: 
+:icons: font
+:linkattrs: 
+:imagesdir: ./../media/
+
+
+link:kafka-nfs-why-netapp-nfs-for-kafka-workloads.html["Zurück: Warum NetApp NFS für Kafka-Workloads?."]
+
+[role="lead"]
+Ein Kafka-Cluster mit einer auf NetApp NFS gemounteten Storage-Ebene wurde in der AWS Cloud hinsichtlich Performance getestet. Die Benchmarking-Beispiele sind in den folgenden Abschnitten beschrieben.
+
+
+
+== Kafka in der AWS-Cloud mit NetApp Cloud Volumes ONTAP (Hochverfügbarkeitspaar und einzelner Node)
+
+Ein Kafka-Cluster mit NetApp Cloud Volumes ONTAP (HA-Paar) wurde hinsichtlich der Performance in der AWS-Cloud gemessen. Dieses Benchmarking wird in den folgenden Abschnitten beschrieben.
+
+
+
+=== Einrichtung der Architektur
+
+In der folgenden Tabelle wird die Umgebungskonfiguration für ein Kafka-Cluster mithilfe von NAS gezeigt.
+
+|===
+| Plattformkomponente | Umgebungskonfiguration 
+
+
+| Kafka 3.2.3  a| 
+* 3 x Zookeeper – t2.small
+* 3 x Broker Server – i3en.2xlarge
+* 1 x Grafana – c5n.2xlarge
+* 4 x Hersteller/Verbraucher -- c5n.2xlarge *
+
+
+
+
+| Betriebssystem auf allen Knoten | RHEL8.6 
+
+
+| NetApp Cloud Volumes ONTAP Instanz | INSTANZ EINES HA-Paars – m5dn.12xLarge x 2-Node-Instanz eines einzelnen Knotens – m5dn.12xLarge x 1 Node 
+|===
+
+
+=== Einrichtung des NetApp Cluster Volume ONTAP
+
+. Für das Cloud Volumes ONTAP HA-Paar erstellten wir zwei Aggregate mit drei Volumes auf jedem Aggregat auf jedem Storage Controller. Für einen einzelnen Cloud Volumes ONTAP Node erstellen wir sechs Volumes in einem Aggregat.
++
+image:kafka-nfs-image25.png["Dieses Bild zeigt die Eigenschaften von aggr3 und aggr22."]
+
++
+image:kafka-nfs-image26.png["Dieses Bild zeigt die Eigenschaften von aggr2."]
+
+. Um eine bessere Netzwerk-Performance zu erzielen, haben wir sowohl für das HA-Paar als auch für den einzelnen Node High-Speed-Networking ermöglicht.
++
+image:kafka-nfs-image27.png["Diese Bilder zeigen, wie Sie Hochgeschwindigkeitsnetzwerke aktivieren."]
+
+. Wir bemerkten, dass der ONTAP NVRAM mehr IOPS hatte, also änderten wir die IOPS für das Cloud Volumes ONTAP Root-Volume auf 2350. Die Root-Datenträger in Cloud Volumes ONTAP waren 47 GB groß. Der folgende ONTAP-Befehl gilt für das HA-Paar und derselbe Schritt gilt für den einzelnen Node.
++
+....
+statistics start -object vnvram -instance vnvram -counter backing_store_iops -sample-id sample_555
+kafka_nfs_cvo_ha1::*> statistics show -sample-id sample_555
+Object: vnvram
+Instance: vnvram
+Start-time: 1/18/2023 18:03:11
+End-time: 1/18/2023 18:03:13
+Elapsed-time: 2s
+Scope: kafka_nfs_cvo_ha1-01
+    Counter                                                     Value
+    -------------------------------- --------------------------------
+    backing_store_iops                                           1479
+Object: vnvram
+Instance: vnvram
+Start-time: 1/18/2023 18:03:11
+End-time: 1/18/2023 18:03:13
+Elapsed-time: 2s
+Scope: kafka_nfs_cvo_ha1-02
+    Counter                                                     Value
+    -------------------------------- --------------------------------
+    backing_store_iops                                           1210
+2 entries were displayed.
+kafka_nfs_cvo_ha1::*>
+....
++
+image:kafka-nfs-image28.png["Diese Bilder zeigen, wie Sie Volume-Eigenschaften ändern."]
+
+
+
+In der folgenden Abbildung ist die Architektur eines NAS-basierten Kafka-Clusters dargestellt.
+
+* *Compute.* Wir benutzten einen drei-Knoten-Kafka-Cluster mit einem drei-Knoten-Zookeeper-Ensemble, das auf dedizierten Servern läuft. Jeder Broker hatte zwei NFS-Mount-Punkte zu einem einzelnen Volume auf der Cloud Volumes ONTAP Instanz über eine dedizierte LIF.
+* *Monitoring.* für eine Prometheus-Grafana-Kombination haben wir zwei Knoten verwendet. Zur Generierung von Workloads haben wir ein separates Cluster mit drei Nodes verwendet, das für diesen Kafka-Cluster erzeugt und genutzt werden kann.
+* *Storage.* Wir verwendeten eine HA-Paar-Cloud Volumes ONTAP-Instanz mit einem 6 TB GP3 AWS-EBS Volume auf der Instanz gemountet. Das Volume wurde dann mit einem NFS-Mount in den Kafka-Broker exportiert.
+
+
+image:kafka-nfs-image29.png["Diese Abbildung stellt die Architektur eines NAS-basierten Kafka-Clusters dar."]
+
+
+
+=== OpenMessage Benchmarking-Konfigurationen
+
+. Für eine bessere NFS Performance benötigen wir mehr Netzwerkverbindungen zwischen dem NFS Server und dem NFS Client, die man mit nconnect erstellen kann. Mit dem folgenden Befehl mounten Sie die NFS-Volumes auf den Broker-Nodes mit der Option nconnect:
++
+....
+[root@ip-172-30-0-121 ~]# cat /etc/fstab
+UUID=eaa1f38e-de0f-4ed5-a5b5-2fa9db43bb38/xfsdefaults00
+/dev/nvme1n1 /mnt/data-1 xfs defaults,noatime,nodiscard 0 0
+/dev/nvme2n1 /mnt/data-2 xfs defaults,noatime,nodiscard 0 0
+172.30.0.233:/kafka_aggr3_vol1 /kafka_aggr3_vol1 nfs defaults,nconnect=16 0 0
+172.30.0.233:/kafka_aggr3_vol2 /kafka_aggr3_vol2 nfs defaults,nconnect=16 0 0
+172.30.0.233:/kafka_aggr3_vol3 /kafka_aggr3_vol3 nfs defaults,nconnect=16 0 0
+172.30.0.242:/kafka_aggr22_vol1 /kafka_aggr22_vol1 nfs defaults,nconnect=16 0 0
+172.30.0.242:/kafka_aggr22_vol2 /kafka_aggr22_vol2 nfs defaults,nconnect=16 0 0
+172.30.0.242:/kafka_aggr22_vol3 /kafka_aggr22_vol3 nfs defaults,nconnect=16 0 0
+[root@ip-172-30-0-121 ~]# mount -a
+[root@ip-172-30-0-121 ~]# df -h
+Filesystem                       Size  Used Avail Use% Mounted on
+devtmpfs                          31G     0   31G   0% /dev
+tmpfs                             31G  249M   31G   1% /run
+tmpfs                             31G     0   31G   0% /sys/fs/cgroup
+/dev/nvme0n1p2                    10G  2.8G  7.2G  28% /
+/dev/nvme1n1                     2.3T  248G  2.1T  11% /mnt/data-1
+/dev/nvme2n1                     2.3T  245G  2.1T  11% /mnt/data-2
+172.30.0.233:/kafka_aggr3_vol1   1.0T   12G 1013G   2% /kafka_aggr3_vol1
+172.30.0.233:/kafka_aggr3_vol2   1.0T  5.5G 1019G   1% /kafka_aggr3_vol2
+172.30.0.233:/kafka_aggr3_vol3   1.0T  8.9G 1016G   1% /kafka_aggr3_vol3
+172.30.0.242:/kafka_aggr22_vol1  1.0T  7.3G 1017G   1% /kafka_aggr22_vol1
+172.30.0.242:/kafka_aggr22_vol2  1.0T  6.9G 1018G   1% /kafka_aggr22_vol2
+172.30.0.242:/kafka_aggr22_vol3  1.0T  5.9G 1019G   1% /kafka_aggr22_vol3
+tmpfs                            6.2G     0  6.2G   0% /run/user/1000
+[root@ip-172-30-0-121 ~]#
+....
+. Überprüfen Sie die Netzwerkverbindungen in Cloud Volumes ONTAP. Der folgende ONTAP-Befehl wird über den einzelnen Cloud Volumes ONTAP Node verwendet. Derselbe Schritt gilt für das Cloud Volumes ONTAP HA-Paar.
++
+....
+Last login time: 1/20/2023 00:16:29
+kafka_nfs_cvo_sn::> network connections active show -service nfs* -fields remote-host
+node                cid        vserver              remote-host
+------------------- ---------- -------------------- ------------
+kafka_nfs_cvo_sn-01 2315762628 svm_kafka_nfs_cvo_sn 172.30.0.121
+kafka_nfs_cvo_sn-01 2315762629 svm_kafka_nfs_cvo_sn 172.30.0.121
+kafka_nfs_cvo_sn-01 2315762630 svm_kafka_nfs_cvo_sn 172.30.0.121
+kafka_nfs_cvo_sn-01 2315762631 svm_kafka_nfs_cvo_sn 172.30.0.121
+kafka_nfs_cvo_sn-01 2315762632 svm_kafka_nfs_cvo_sn 172.30.0.121
+kafka_nfs_cvo_sn-01 2315762633 svm_kafka_nfs_cvo_sn 172.30.0.121
+kafka_nfs_cvo_sn-01 2315762634 svm_kafka_nfs_cvo_sn 172.30.0.121
+kafka_nfs_cvo_sn-01 2315762635 svm_kafka_nfs_cvo_sn 172.30.0.121
+kafka_nfs_cvo_sn-01 2315762636 svm_kafka_nfs_cvo_sn 172.30.0.121
+kafka_nfs_cvo_sn-01 2315762637 svm_kafka_nfs_cvo_sn 172.30.0.121
+kafka_nfs_cvo_sn-01 2315762639 svm_kafka_nfs_cvo_sn 172.30.0.72
+kafka_nfs_cvo_sn-01 2315762640 svm_kafka_nfs_cvo_sn 172.30.0.72
+kafka_nfs_cvo_sn-01 2315762641 svm_kafka_nfs_cvo_sn 172.30.0.72
+kafka_nfs_cvo_sn-01 2315762642 svm_kafka_nfs_cvo_sn 172.30.0.72
+kafka_nfs_cvo_sn-01 2315762643 svm_kafka_nfs_cvo_sn 172.30.0.72
+kafka_nfs_cvo_sn-01 2315762644 svm_kafka_nfs_cvo_sn 172.30.0.72
+kafka_nfs_cvo_sn-01 2315762645 svm_kafka_nfs_cvo_sn 172.30.0.72
+kafka_nfs_cvo_sn-01 2315762646 svm_kafka_nfs_cvo_sn 172.30.0.72
+kafka_nfs_cvo_sn-01 2315762647 svm_kafka_nfs_cvo_sn 172.30.0.72
+kafka_nfs_cvo_sn-01 2315762648 svm_kafka_nfs_cvo_sn 172.30.0.72
+kafka_nfs_cvo_sn-01 2315762649 svm_kafka_nfs_cvo_sn 172.30.0.121
+kafka_nfs_cvo_sn-01 2315762650 svm_kafka_nfs_cvo_sn 172.30.0.121
+kafka_nfs_cvo_sn-01 2315762651 svm_kafka_nfs_cvo_sn 172.30.0.121
+kafka_nfs_cvo_sn-01 2315762652 svm_kafka_nfs_cvo_sn 172.30.0.121
+kafka_nfs_cvo_sn-01 2315762653 svm_kafka_nfs_cvo_sn 172.30.0.121
+kafka_nfs_cvo_sn-01 2315762656 svm_kafka_nfs_cvo_sn 172.30.0.223
+kafka_nfs_cvo_sn-01 2315762657 svm_kafka_nfs_cvo_sn 172.30.0.223
+kafka_nfs_cvo_sn-01 2315762658 svm_kafka_nfs_cvo_sn 172.30.0.223
+kafka_nfs_cvo_sn-01 2315762659 svm_kafka_nfs_cvo_sn 172.30.0.223
+kafka_nfs_cvo_sn-01 2315762660 svm_kafka_nfs_cvo_sn 172.30.0.223
+kafka_nfs_cvo_sn-01 2315762661 svm_kafka_nfs_cvo_sn 172.30.0.223
+kafka_nfs_cvo_sn-01 2315762662 svm_kafka_nfs_cvo_sn 172.30.0.223
+kafka_nfs_cvo_sn-01 2315762663 svm_kafka_nfs_cvo_sn 172.30.0.223
+kafka_nfs_cvo_sn-01 2315762664 svm_kafka_nfs_cvo_sn 172.30.0.223
+kafka_nfs_cvo_sn-01 2315762665 svm_kafka_nfs_cvo_sn 172.30.0.223
+kafka_nfs_cvo_sn-01 2315762666 svm_kafka_nfs_cvo_sn 172.30.0.223
+kafka_nfs_cvo_sn-01 2315762667 svm_kafka_nfs_cvo_sn 172.30.0.72
+kafka_nfs_cvo_sn-01 2315762668 svm_kafka_nfs_cvo_sn 172.30.0.72
+kafka_nfs_cvo_sn-01 2315762669 svm_kafka_nfs_cvo_sn 172.30.0.72
+kafka_nfs_cvo_sn-01 2315762670 svm_kafka_nfs_cvo_sn 172.30.0.72
+kafka_nfs_cvo_sn-01 2315762671 svm_kafka_nfs_cvo_sn 172.30.0.72
+kafka_nfs_cvo_sn-01 2315762672 svm_kafka_nfs_cvo_sn 172.30.0.72
+kafka_nfs_cvo_sn-01 2315762673 svm_kafka_nfs_cvo_sn 172.30.0.223
+kafka_nfs_cvo_sn-01 2315762674 svm_kafka_nfs_cvo_sn 172.30.0.223
+kafka_nfs_cvo_sn-01 2315762676 svm_kafka_nfs_cvo_sn 172.30.0.121
+kafka_nfs_cvo_sn-01 2315762677 svm_kafka_nfs_cvo_sn 172.30.0.223
+kafka_nfs_cvo_sn-01 2315762678 svm_kafka_nfs_cvo_sn 172.30.0.223
+kafka_nfs_cvo_sn-01 2315762679 svm_kafka_nfs_cvo_sn 172.30.0.223
+48 entries were displayed.
+ 
+kafka_nfs_cvo_sn::>
+....
+. Wir benutzen folgende Kafka `server.properties` In allen Kafka-Brokern für das Cloud Volumes ONTAP HA-Paar. Der `log.dirs` Die Eigenschaft ist für jeden Broker unterschiedlich, und die restlichen Eigenschaften sind für Broker üblich. Für Broker1 ist die `log.dirs` Der Wert ist wie folgt:
++
+....
+[root@ip-172-30-0-121 ~]# cat /opt/kafka/config/server.properties
+broker.id=0
+advertised.listeners=PLAINTEXT://172.30.0.121:9092
+#log.dirs=/mnt/data-1/d1,/mnt/data-1/d2,/mnt/data-1/d3,/mnt/data-2/d1,/mnt/data-2/d2,/mnt/data-2/d3
+log.dirs=/kafka_aggr3_vol1/broker1,/kafka_aggr3_vol2/broker1,/kafka_aggr3_vol3/broker1,/kafka_aggr22_vol1/broker1,/kafka_aggr22_vol2/broker1,/kafka_aggr22_vol3/broker1
+zookeeper.connect=172.30.0.12:2181,172.30.0.30:2181,172.30.0.178:2181
+num.network.threads=64
+num.io.threads=64
+socket.send.buffer.bytes=102400
+socket.receive.buffer.bytes=102400
+socket.request.max.bytes=104857600
+num.partitions=1
+num.recovery.threads.per.data.dir=1
+offsets.topic.replication.factor=1
+transaction.state.log.replication.factor=1
+transaction.state.log.min.isr=1
+replica.fetch.max.bytes=524288000
+background.threads=20
+num.replica.alter.log.dirs.threads=40
+num.replica.fetchers=20
+[root@ip-172-30-0-121 ~]#
+....
++
+** Für Broker2 ist die `log.dirs` Der Eigenschaftswert ist wie folgt:
++
+....
+log.dirs=/kafka_aggr3_vol1/broker2,/kafka_aggr3_vol2/broker2,/kafka_aggr3_vol3/broker2,/kafka_aggr22_vol1/broker2,/kafka_aggr22_vol2/broker2,/kafka_aggr22_vol3/broker2
+....
+** Für Broker3 ist die `log.dirs` Der Eigenschaftswert ist wie folgt:
++
+....
+log.dirs=/kafka_aggr3_vol1/broker3,/kafka_aggr3_vol2/broker3,/kafka_aggr3_vol3/broker3,/kafka_aggr22_vol1/broker3,/kafka_aggr22_vol2/broker3,/kafka_aggr22_vol3/broker3
+....
+
+
+. Für den einzelnen Cloud Volumes ONTAP-Node ist die Kafka `servers.properties` Ist das gleiche wie für das Cloud Volumes ONTAP HA-Paar mit Ausnahme des `log.dirs` Eigenschaft.
++
+** Für Broker1 ist die `log.dirs` Der Wert ist wie folgt:
++
+....
+log.dirs=/kafka_aggr2_vol1/broker1,/kafka_aggr2_vol2/broker1,/kafka_aggr2_vol3/broker1,/kafka_aggr2_vol4/broker1,/kafka_aggr2_vol5/broker1,/kafka_aggr2_vol6/broker1
+....
+** Für Broker2 ist die `log.dirs` Der Wert ist wie folgt:
++
+....
+log.dirs=/kafka_aggr2_vol1/broker2,/kafka_aggr2_vol2/broker2,/kafka_aggr2_vol3/broker2,/kafka_aggr2_vol4/broker2,/kafka_aggr2_vol5/broker2,/kafka_aggr2_vol6/broker2
+....
+** Für Broker3 ist die `log.dirs` Der Eigenschaftswert ist wie folgt:
++
+....
+log.dirs=/kafka_aggr2_vol1/broker3,/kafka_aggr2_vol2/broker3,/kafka_aggr2_vol3/broker3,/kafka_aggr2_vol4/broker3,/kafka_aggr2_vol5/broker3,/kafka_aggr2_vol6/broker3
+....
+
+
+. Der Workload im OMB ist mit den folgenden Eigenschaften konfiguriert: `(/opt/benchmark/workloads/1-topic-100-partitions-1kb.yaml)`.
++
+....
+topics: 4
+partitionsPerTopic: 100
+messageSize: 32768
+useRandomizedPayloads: true
+randomBytesRatio: 0.5
+randomizedPayloadPoolSize: 100
+subscriptionsPerTopic: 1
+consumerPerSubscription: 80
+producersPerTopic: 40
+producerRate: 1000000
+consumerBacklogSizeGB: 0
+testDurationMinutes: 5
+....
++
+Der `messageSize` Kann je nach Anwendungsfall variieren. In unserem Performance-Test haben wir 3.000 verwendet.
+
++
+Wir haben zwei verschiedene Treiber verwendet, Sync oder Throughput, von OMB, um den Workload auf dem Kafka-Cluster zu generieren.
+
++
+** Die yaml-Datei, die für die Eigenschaften des Sync-Treibers verwendet wird, ist wie folgt `(/opt/benchmark/driver- kafka/kafka-sync.yaml)`:
++
+....
+name: Kafka
+driverClass: io.openmessaging.benchmark.driver.kafka.KafkaBenchmarkDriver
+# Kafka client-specific configuration
+replicationFactor: 3
+topicConfig: |
+  min.insync.replicas=2
+  flush.messages=1
+  flush.ms=0
+commonConfig: |
+  bootstrap.servers=172.30.0.121:9092,172.30.0.72:9092,172.30.0.223:9092
+producerConfig: |
+  acks=all
+  linger.ms=1
+  batch.size=1048576
+consumerConfig: |
+  auto.offset.reset=earliest
+  enable.auto.commit=false
+  max.partition.fetch.bytes=10485760
+....
+** Die yaml-Datei, die für die Eigenschaften des Durchsatztreibers verwendet wird, ist wie folgt `(/opt/benchmark/driver- kafka/kafka-throughput.yaml)`:
++
+....
+name: Kafka
+driverClass: io.openmessaging.benchmark.driver.kafka.KafkaBenchmarkDriver
+# Kafka client-specific configuration
+replicationFactor: 3
+topicConfig: |
+  min.insync.replicas=2
+commonConfig: |
+  bootstrap.servers=172.30.0.121:9092,172.30.0.72:9092,172.30.0.223:9092
+  default.api.timeout.ms=1200000
+  request.timeout.ms=1200000
+producerConfig: |
+  acks=all
+  linger.ms=1
+  batch.size=1048576
+consumerConfig: |
+  auto.offset.reset=earliest
+  enable.auto.commit=false
+  max.partition.fetch.bytes=10485760
+....
+
+
+
+
+
+
+== Methodik des Testens
+
+. Ein Kafka-Cluster wurde gemäß der oben beschriebenen Spezifikation mit Terraform und Ansible bereitgestellt. Terraform wird verwendet, um die Infrastruktur mit AWS-Instanzen für den Kafka-Cluster zu erstellen, und Ansible baut auf diesen den Kafka-Cluster.
+. Ein OMB-Workload wurde mit der oben beschriebenen Workload-Konfiguration und dem Sync-Treiber ausgelöst.
++
+....
+Sudo bin/benchmark –drivers driver-kafka/kafka- sync.yaml workloads/1-topic-100-partitions-1kb.yaml
+....
+. Ein anderer Workload wurde mit dem Durchsatztreiber mit derselben Workload-Konfiguration ausgelöst.
++
+....
+sudo bin/benchmark –drivers driver-kafka/kafka-throughput.yaml workloads/1-topic-100-partitions-1kb.yaml
+....
+
+
+
+
+== Beobachtung
+
+Es wurden zwei unterschiedliche Treibertypen verwendet, mit denen Workloads für die Performance einer Kafka-Instanz generiert werden, die auf NFS ausgeführt wird. Der Unterschied zwischen den Treibern ist die Eigenschaft log flush.
+
+Bei einem Cloud Volumes ONTAP HA-Paar:
+
+* Der Gesamtdurchsatz, der konsistent vom Sync-Treiber generiert wird: ~1236 Mbps.
+* Gesamtdurchsatz für den Durchsatztreiber: Spitze ~1412 Mbps.
+
+
+Für einen einzelnen Cloud Volumes ONTAP-Node:
+
+* Der Gesamtdurchsatz, der vom Sync-Treiber konsistent generiert wird: ~ 1962MBps.
+* Gesamtdurchsatz des Durchsatztreibers: Spitze ~1660 MB/s
+
+
+Der Sync-Treiber kann einen konsistenten Durchsatz generieren, da die Protokolle umgehend auf die Festplatte gespeichert werden, während der Durchsatztreiber bei der umfangreichen Protokollüberweise auf die Festplatte führt.
+
+Diese Durchsatzwerte werden für die jeweilige AWS-Konfiguration generiert. Um höhere Performance-Anforderungen zu erfüllen, können die Instanztypen vertikal skaliert und weiter optimiert werden, um einen besseren Durchsatz zu erzielen. Der Gesamtdurchsatz oder die Gesamtrate ist die Kombination von Erzeugerrate und Verbraucherrate.
+
+image:kafka-nfs-image30.png["Vier verschiedene Grafiken werden hier vorgestellt. CVO-HA-Paar-Durchsatztreiber. CVO-HA-Paar-Sync-Treiber. CVO-Single-Node-Durchsatztreiber. CVO-Single-Node Sync Treiber"]
+
+Prüfen Sie den Storage-Durchsatz, wenn Sie ein Benchmarking des Durchsatzes oder der Synchronisationstreiber durchführen.
+
+image:kafka-nfs-image31.png["Dieses Diagramm zeigt die Performance in den Bereichen Latenz, IOPS und Durchsatz."]
+
+link:kafka-nfs-performance-overview-and-validation-with-aff-on-premises.html["Weiter: Performance-Übersicht und Validierung mit AFF On-Premises."]

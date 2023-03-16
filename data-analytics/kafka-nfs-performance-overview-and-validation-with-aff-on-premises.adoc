@@ -1,0 +1,193 @@
+---
+sidebar: sidebar 
+permalink: data-analytics/kafka-nfs-performance-overview-and-validation-with-aff-on-premises.html 
+keywords: storage configuration, client tuning, kafka broker tuning, workload ganerator, steady state, performance, extreme performance 
+summary: Vor Ort haben wir den NetApp AFF A900 Storage-Controller mit ONTAP 9.12.1RC1 verwendet, um die Performance und Skalierung eines Kafka Clusters zu validieren. Wir verwendeten dieselbe Testumgebung wie in unseren früheren Best Practices für Tiered Storage mit ONTAP und AFF. 
+---
+= Performance-Übersicht und Validierung mit AFF A900 vor Ort
+:hardbreaks:
+:allow-uri-read: 
+:nofooter: 
+:icons: font
+:linkattrs: 
+:imagesdir: ./../media/
+
+
+link:kafka-nfs-performance-overview-and-validation-in-aws.html["Zurück: Performance-Übersicht und Validierung in AWS."]
+
+[role="lead"]
+Vor Ort haben wir den NetApp AFF A900 Storage-Controller mit ONTAP 9.12.1RC1 verwendet, um die Performance und Skalierung eines Kafka Clusters zu validieren. Wir verwendeten dieselbe Testumgebung wie in unseren früheren Best Practices für Tiered Storage mit ONTAP und AFF.
+
+Wir haben Confluent Kafka 6.2.0 verwendet, um die AFF A900 zu evaluieren. Der Cluster verfügt über acht Broker-Nodes und drei Zookeeper-Nodes. Für Performance-Tests haben wir fünf OMB-Arbeitsknoten verwendet.
+
+image:kafka-nfs-image32.png["Fehler: Fehlendes Grafikbild"]
+
+
+
+== Storage-Konfiguration
+
+Wir verwendeten NetApp FlexGroups Instanzen, um einen einzelnen Namespace für Protokollverzeichnisse bereitzustellen und so das Recovery und die Konfiguration zu vereinfachen. Wir verwendeten NFSv4.1 und pNFS, um direkten Pfadzugriff auf Protokollsegmentdaten zu ermöglichen.
+
+
+
+== Client-Tuning
+
+Jeder Client hat die FlexGroup Instanz mit dem folgenden Befehl gemountet.
+
+....
+mount -t nfs -o vers=4.1,nconnect=16 172.30.0.121:/kafka_vol01 /data/kafka_vol01
+....
+Darüber hinaus haben wir die `max_session_slots`` Aus der Standardeinstellung `64` Bis `180`. Dies entspricht dem Standardlimit für Sitzungsslot in ONTAP.
+
+
+
+== Kafka-Broker-Tuning
+
+Um den Durchsatz im zu testenden System zu maximieren, haben wir die Standardparameter für bestimmte Schlüsselthread-Pools deutlich erhöht. Für die meisten Konfigurationen empfehlen wir die folgenden Confluent Kafka Best Practices. Dieses Tuning wurde verwendet, um die Parallelität von ausstehender I/O zum Storage zu maximieren. Diese Parameter können an die Computing-Ressourcen und Storage-Attribute Ihres Vermittlers angepasst werden.
+
+....
+num.io.threads=96
+num.network.threads=96
+background.threads=20
+num.replica.alter.log.dirs.threads=40
+num.replica.fetchers=20
+queued.max.requests=2000
+....
+
+
+== Testmethodik für Workload Generator
+
+Für den Durchsatztreiber und die Themenkonfiguration haben wir dieselben OMB-Konfigurationen wie für Cloud-Tests verwendet.
+
+. Eine FlexGroup-Instanz wurde mit Ansible auf einem AFF-Cluster bereitgestellt.
++
+....
+---
+- name: Set up kafka broker processes
+  hosts: localhost
+  vars:
+    ntap_hostname: ‘hostname’
+    ntap_username: 'user'
+    ntap_password: 'password'
+    size: 10
+    size_unit: tb
+    vserver: vs1
+    state: present
+    https: true
+    export_policy: default
+    volumes:
+      - name: kafka_fg_vol01
+        aggr: ["aggr1_a", "aggr2_a", “aggr1_b”, “aggr2_b”]
+        path: /kafka_fg_vol01
+  tasks:
+    - name: Edit volumes
+      netapp.ontap.na_ontap_volume:
+        state: "{{ state }}"
+        name: "{{ item.name }}"
+        aggr_list: "{{ item.aggr }}"
+        aggr_list_multiplier: 8
+        size: "{{ size }}"
+        size_unit: "{{ size_unit }}"
+        vserver: "{{ vserver }}"
+        snapshot_policy: none
+        export_policy: default
+        junction_path: "{{ item.path }}"
+        qos_policy_group: none
+        wait_for_completion: True
+        hostname: "{{ ntap_hostname }}"
+        username: "{{ ntap_username }}"
+        password: "{{ ntap_password }}"
+        https: "{{ https }}"
+        validate_certs: false
+      connection: local
+      with_items: "{{ volumes }}"
+....
+. PNFS wurde auf der ONTAP SVM aktiviert.
++
+....
+vserver modify -vserver vs1 -v4.1-pnfs enabled -tcp-max-xfer-size 262144
+....
+. Der Workload wurde mit dem Durchsatztreiber unter Verwendung derselben Workload-Konfiguration wie für Cloud Volumes ONTAP ausgelöst. Siehe Abschnitt „<<Stabile Performance>>„ Unten. Für den Workload wurde ein Replizierungsfaktor von 3 verwendet, d. h., es wurden drei Kopien von Protokollsegmenten in NFS aufbewahrt.
++
+....
+sudo bin/benchmark --drivers driver-kafka/kafka-throughput.yaml workloads/1-topic-100-partitions-1kb.yaml
+....
+. Schließlich haben wir Messungen mit einem Rückstand durchgeführt, um die Fähigkeit der Verbraucher zu messen, die neuesten Nachrichten zu erhalten. OMB baut einen Rückstand auf, indem die Verbraucher zu Beginn einer Messung angehalten werden. Dies führt zu drei unterschiedlichen Phasen: Der Schaffung von Rückstand (Traffic nur für Hersteller), der Entleerung von Rückständen (eine verbraucherlastige Phase, in der Verbraucher verpasste Ereignisse in einem Thema aufholen) und der stetige Zustand. Siehe Abschnitt „<<Extreme performance,Speichergrenzen werden untersucht>>„ Weitere Informationen.
+
+
+
+
+=== Stabile Performance
+
+Wir haben den AFF A900 anhand des OpenMessaging Benchmarks evaluiert, um einen ähnlichen Vergleich wie für Cloud Volumes ONTAP in AWS und das in AWS zu liefern. Alle Performance-Werte stellen den Kafka-Cluster-Durchsatz auf Produzenten- und Verbraucherebene dar.
+
+Die stabile Performance mit Confluent Kafka und dem AFF A900 erreichte einen durchschnittlichen Durchsatz von 3,4 GB/s sowohl bei Herstellern als auch bei Verbrauchern. Das sind über 3.4 Millionen Nachrichten im Kafka-Cluster. Durch die Visualisierung des kontinuierlichen Durchsatzes in Byte pro Sekunde für BrokerTopicMetrics sehen wir die hervorragende Steady State Performance und den vom AFF A900 unterstützten Datenverkehr.
+
+image:kafka-nfs-image33.png["Dieses Diagramm zeigt den Durchsatz des Broker-Netzwerks."]
+
+Dies entspricht gut der Ansicht der Nachrichten, die pro Thema übermittelt werden. Die folgende Grafik zeigt eine Aufschlüsselung pro Thema. Bei der getesteten Konfiguration sahen wir fast 900.000 Nachrichten pro Thema für vier Themen.
+
+image:kafka-nfs-image34.png["Dieses Diagramm zeigt den Durchsatz des Broker-Netzwerks."]
+
+
+
+== Extreme Performance und Speichergrenzen untersucht werden
+
+Für AFF haben wir auch mit OMB unter Verwendung der Backlog-Funktion getestet. Die Backlog-Funktion hält Verbraucher-Abonnements an, während im Kafka-Cluster ein Rückstand von Ereignissen aufgebaut wird. In dieser Phase tritt nur der Produzentenverkehr auf, der Ereignisse generiert, die in die Protokolle übertragen werden. Dies emuliert die Batch-Verarbeitung oder die Offline-Analyse-Workflows am genauesten. In diesen Workflows werden Kundenabonnements gestartet und müssen historische Daten lesen, die bereits aus dem Broker-Cache entfernt wurden.
+
+Um die Storage-Einschränkungen für den Verbraucherdurchsatz in dieser Konfiguration zu verstehen, haben wir die reine Produzentenphase gemessen, um zu verstehen, wie viel Schreibverkehr das A900 aufnehmen könnte. Siehe den nächsten Abschnitt „<<Anleitung zur Größenbemessung>>Um zu verstehen, wie man diese Daten nutzt.
+
+Während des reinen Produzententeils dieser Messung konnten wir einen hohen Spitzendurchsatz beobachten, der die Grenzen der A900-Leistung überstieg (wenn andere Broker-Ressourcen nicht für den Produzenten- und Verbraucherverkehr gesättigt waren).
+
+image:kafka-nfs-image35.png["Fehler: Fehlendes Grafikbild"]
+
+
+NOTE: Wir haben die Nachrichtengröße für diese Messung auf 16.000 erhöht, um den Overhead pro Nachricht zu begrenzen und den Storage-Durchsatz auf NFS-Bereitstellungspunkte zu maximieren.
+
+....
+messageSize: 16384
+consumerBacklogSizeGB: 4096
+....
+Der Confluent Kafka Cluster erzielte einen Spitzendurchsatz von 4.03GB/s.
+
+....
+18:12:23.833 [main] INFO WorkloadGenerator - Pub rate 257759.2 msg/s / 4027.5 MB/s | Pub err     0.0 err/s …
+....
+Nachdem OMB den Eventstau ausgefüllt hat, wurde der Consumer Traffic neu gestartet. Bei Messungen mit einer Entleerung des Rückstands konnten wir einen Spitzendurchsatz von über 20 GB/s bei allen Themen beobachten. Der kombinierte Durchsatz zum NFS-Volume, auf dem die OMB-Protokolldaten gespeichert werden, wurde auf ~30 GBit/s gesteigert.
+
+
+
+== Anleitung zur Größenbemessung
+
+Amazon Web Services bietet eine https://aws.amazon.com/blogs/big-data/best-practices-for-right-sizing-your-apache-kafka-clusters-to-optimize-performance-and-cost/["Leitfaden zur Größenanpassung"^] Ideal zum Skalieren und Skalieren von Kafka Clustern.
+
+Diese Größenbestimmung bietet eine nützliche Formel zum Bestimmen der Anforderungen an den Storage-Durchsatz für Ihren Kafka-Cluster:
+
+Bei einem aggregierten Durchsatz, der mit einem Replizierungsfaktor r in den Cluster von tcluster erzeugt wird, beträgt der vom Broker Storage erhaltene Durchsatz wie folgt:
+
+....
+t[storage] = t[cluster]/#brokers + t[cluster]/#brokers * (r-1)
+          = t[cluster]/#brokers * r
+....
+Das lässt sich noch weiter vereinfachen:
+
+....
+max(t[cluster]) <= max(t[storage]) * #brokers/r
+....
+Mit dieser Formel können Sie die entsprechende ONTAP-Plattform für die Anforderungen Ihres Kafka-Hot-Tier auswählen.
+
+In der folgenden Tabelle wird der erwartete Producer Throughput für den A900 mit unterschiedlichen Replikationsfaktoren erläutert:
+
+|===
+| Replizierungsfaktor | Producer Throughput (GPPS) 
+
+
+| 3 (gemessen) | 3.4 
+
+
+| 2 | 5.1 
+
+
+| 1 | 10.2 
+|===
+link:kafka-nfs-conclusion.html["Weiter: Fazit."]
