@@ -63,6 +63,12 @@ Die Standardeigenschaften von Kafka wurden für alle Server ausgewählt. Das gle
 
 == Methodik des Testens
 
+. Aktualisierung `-is-preserve-unlink-enabled true` Zum kafka-Band wie folgt:
++
+....
+aws-shantanclastrecall-aws::*> volume create -vserver kafka_svm -volume kafka_fg_vol01 -aggregate kafka_aggr -size 3500GB -state online -policy kafka_policy -security-style unix -unix-permissions 0777 -junction-path /kafka_fg_vol01 -type RW -is-preserve-unlink-enabled true
+[Job 32] Job succeeded: Successful
+....
 . Zwei ähnliche Kafka-Cluster wurden mit dem folgenden Unterschied erstellt:
 +
 ** *Cluster 1.* der Backend-NFS v4.1-Server mit produktionsbereitem ONTAP Version 9.12.1 wurde von einer NetApp CVO-Instanz gehostet. RHEL 8.7/RHEL 9.1 wurden auf den Brokern installiert.
