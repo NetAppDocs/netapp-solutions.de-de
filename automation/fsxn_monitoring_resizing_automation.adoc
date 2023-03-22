@@ -1,0 +1,236 @@
+---
+sidebar: sidebar 
+permalink: automation/fsxn_monitoring_resizing_automation.html 
+keywords: AWS, FSX, FSxN, automation, FSxN monitoring, FSxN automation, FSxN resizing, FSx for NetApp ONTAP monitoring, FSx for ONTAP monitoring 
+summary: Diese Seite beschreibt die Automatisierung rund um das Monitoring von AWS FSxN und die automatische Größenanpassung basierend auf Schwellenwert. 
+---
+= FSX für ONTAP-Überwachung und automatische Resizing mit AWS Lambda-Funktion
+:hardbreaks:
+:allow-uri-read: 
+:nofooter: 
+:icons: font
+:linkattrs: 
+:imagesdir: ./../media/
+
+
+[role="lead"]
+Autor(en): Dhruv Tyagi, Niyaz Mohamed
+
+
+
+== Übersicht: Monitoring und Auto-Resizing FSX for ONTAP über AWS Lambda Funktion
+
+FSX for ONTAP ist ein erster auf AWS verfügbarer Cloud-Storage-Service für Enterprise-Anforderungen. Er bietet äußerst zuverlässigen, skalierbaren, hochperformanten und funktionsreichen File-Storage auf Basis des beliebten NetApp ONTAP-Filesystems.
+
+FSX für ONTAP bietet eine nahtlose Implementierungs- und Managementerfahrung. Für den Einstieg sind keine Storage-Fachkenntnisse erforderlich. Um das Monitoring zu vereinfachen, kann eine AWS Lambba Funktion (zum Automatisieren der Anpassung der gesamten Storage-Kapazität, Volume-Größe oder LUN-Größe basierend auf Schwellwerten) verwendet werden. Dieses Dokument enthält eine Schritt-für-Schritt-Anleitung zum Erstellen eines automatisierten Setups, das FSX für ONTAP in regelmäßigen Abständen überwacht, benachrichtigt und skaliert, wenn ein benutzerdefinierter Schwellenwert überschritten wird, und benachrichtigt den Administrator über die Größenanpassungsaktivität.
+
+.Funktionen
+[%collapsible]
+====
+Die Lösung bietet folgende Funktionen:
+
+* Überwachung:
++
+** Nutzung der gesamten Storage-Kapazität von FSX für ONTAP
+** Nutzung jedes Volumes (Thin Provisioning/Thick Provisioning)
+** Nutzung jeder LUN (Thin Provisioning/Thick Provisioning)
+
+
+* Möglichkeit, die Größe einer der oben genannten Größen zu ändern, wenn ein benutzerdefinierter Schwellenwert überschritten wird
+* Benachrichtigungsmechanismus, um Warnungen zu Nutzungen und Größenanpassungen per E-Mail zu erhalten
+* Fähigkeit zum Löschen von Snapshots, die älter als ein benutzerdefinierter Schwellenwert sind
+* Fähigkeit, eine Liste mit FlexClone Volumes und zugehörigen Snapshots zu erhalten
+* Möglichkeit, die Prüfungen in einem regelmäßigen Intervall auszuführen
+
+
+====
+.Voraussetzungen
+[%collapsible]
+====
+Bevor Sie beginnen, stellen Sie sicher, dass die folgenden Voraussetzungen erfüllt sind:
+
+* FSX für ONTAP ist implementiert
+* Ein privates Subnetz mit angeschlossenem NAT-Gateway wird von der Lambda-Funktion für die Internetverbindung benötigt
+* Das private Subnetz sollte auch eine Verbindung zu FSX for ONTAP haben
+* Das Passwort „fsxadmin“ wurde für FSX for ONTAP festgelegt
+
+
+====
+.Übergeordnete Architektur
+[%collapsible]
+====
+* AWS Lambda Funktion macht API-Aufrufe zu FSX for ONTAP zum Abrufen und Aktualisieren der Größe der Speicherkapazität, Volumes und LUNs.
+* „Fsxadmin“-Passwort als sichere Zeichenfolge im AWS SSM-Parameterspeicher für zusätzliche Sicherheitsschicht gespeichert.
+* AWS SES (Simple E-Mail Service) werden verwendet, um Endbenutzer zu benachrichtigen, wenn ein Ereignis zur Größenänderung eintritt.
+
+
+image:fsxn-monitoring-resizing-architecture.png["Dieses Bild zeigt die in dieser Lösung verwendete allgemeine Architektur."]
+
+====
+
+
+== Lösungsimplementierung
+
+Führen Sie die folgenden Schritte aus, um die Implementierung dieser Lösung abzuschließen:
+
+.Schritt 1: Klonen Sie das GitHub Repository
+[%collapsible]
+====
+GitHub-Repository auf Ihrem lokalen System klonen:
+
+[listing]
+----
+git clone https://github.com/NetApp-Automation/fsxn-monitoring-auto-resizing.git
+----
+====
+.Schritt 2: SSM-Parameter für fsxadmin-Passwort erstellen
+[%collapsible]
+====
+Navigieren Sie zu AWS Console > *Parameter Store* und klicken Sie auf *Parameter erstellen*.
+
+[listing]
+----
+Name: <Any name/path for storing fsxadmin password>
+Tier: Standard
+Type: SecureString
+KMS key source: My current account
+  KMS Key ID: <Use the default one selected>
+Value: <Enter the password for "fsxadmin" user configured on FSx for ONTAP>
+----
+Klicken Sie auf *Parameter erstellen*.
+
+image:fsxn-monitoring-resizing-ssm-parameter.png["Dieses Bild zeigt das Fenster zur Erstellung von SSM-Parametern in der AWS Konsole."]
+
+====
+.Schritt 3: E-Mail-Dienst Einrichten
+[%collapsible]
+====
+Navigieren Sie zu AWS Console > *Simple Email Service (SES)* und klicken Sie auf *Create Identity*.
+
+[listing]
+----
+Identity type: Email address
+Email address: <Enter an email address to be used for sending resizing notifications>
+----
+Klicken Sie auf *Create Identity*
+
+image:fsxn-monitoring-resizing-ses.png["Dieses Bild zeigt das Fenster zur Erstellung der SES-Identität in der AWS Konsole."]
+
+====
+.Schritt 4: Erstellen und Einrichten der AWS Lambda-Funktion
+[%collapsible]
+====
+. Navigieren Sie zu AWS-Konsole > *AWS Lambda* und klicken Sie auf *Create Function* in der gleichen Region wie FSX for ONTAP
+. Verwenden Sie den Standardwert *Author from scratch* und aktualisieren Sie die folgenden Felder:
++
+[listing]
+----
+Function name: <Any name of your choice>
+Runtime: Python 3.9
+Architecture: x86_64
+Permissions: Select "Create a new role with basic Lambda permissions"
+Advanced Settings:
+  Enable VPC: Checked
+    VPC: <Choose either the same VPC as FSx for ONTAP or a VPC that can access both FSx for ONTAP and the internet via a private subnet>
+    Subnets: <Choose 2 private subnets which have NAT gateway attached pointing to public subnets with internet gateway and subnets that have internet access>
+    Security Group: <Choose a Security Group>
+----
++
+Klicken Sie auf *Funktion erstellen*.
+
++
+image:fsxn-monitoring-resizing-lambda-creation-1.png["Dieses Bild stellt das Fenster Lambda-Erstellung auf der AWS-Konsole dar."]
+
++
+image:fsxn-monitoring-resizing-lambda-creation-2.png["Dieses Bild stellt das Fenster Lambda-Erstellung auf der AWS-Konsole dar."]
+
+. Scrollen Sie nach unten zum Abschnitt *Layers* der neu erstellten Lambda-Funktion und klicken Sie auf *Ebene hinzufügen*.
++
+image:fsxn-monitoring-resizing-add-layer-button.png["Dieses Bild zeigt die Schaltfläche „Layer hinzufügen“ der AWS Lambda Funktionskonsole."]
+
+. Klicken Sie unter *Layer source* auf *eine neue Ebene erstellen*
+. Erstellen Sie 2 Ebenen - 1 für Anfragen und 1 für paramiko und laden Sie *Requests.zip* und *paramiko.zip* Dateien hoch. Wählen Sie *Python 3.9* als kompatible Laufzeit und klicken Sie auf *Create*.
++
+image:fsxn-monitoring-resizing-create-layer-paramiko.png["Dieses Bild zeigt das Fenster Create New Layer auf der AWS-Konsole."]
+
+. Navigieren Sie zurück zu AWS Lambda *Add Layer* > *Custom Layers* und fügen Sie die Paramiko- und Requests-Ebene nacheinander hinzu.
++
+image:fsxn-monitoring-resizing-add-layer-window.png["Dieses Bild stellt das Fenster „Layer hinzufügen“ der AWS Lambda-Funktionskonsole dar."]
+
++
+image:fsxn-monitoring-resizing-layers-added.png["Dieses Bild zeigt die hinzugefügten Schichten der AWS Lambda Funktionskonsole."]
+
+. Navigieren Sie zur Registerkarte *Konfiguration* der Lambda-Funktion und klicken Sie unter *Allgemeine Konfiguration* auf *Bearbeiten*. Ändern Sie die Zeitüberschreitung auf *5 Min*, und klicken Sie auf Speichern.
+. Navigieren Sie zur Registerkarte *Berechtigungen* der Lambda-Funktion und klicken Sie auf die zugewiesene Rolle. Klicken Sie auf der Registerkarte Berechtigungen der Rolle auf *Berechtigungen hinzufügen* > *Inline-Richtlinie erstellen*.
++
+.. Klicken Sie auf die Registerkarte JSON und fügen Sie den Inhalt der Datei Policy.json aus dem GitHub repo ein.
+.. Ersetzen Sie jedes Vorkommen von{AWS::AccountID} durch Ihre Konto-ID und klicken Sie auf *Prüfrichtlinie*
+.. Geben Sie einen Namen für die Richtlinie ein und klicken Sie auf *Create Policy*
+
+
+. Kopieren Sie den Inhalt von *fsxn_Monitoring_Resizing_Lambda.py* aus dem git repo in *Lambda_Function.py* im Abschnitt AWS Lambda Function Code Source.
+. Erstellen Sie eine neue Datei auf der gleichen Ebene wie lambda_function.py und nennen Sie sie *vars.py* und kopieren Sie den Inhalt von vars.py aus der git repo in die Datei Lambda Function vars.py. Aktualisieren Sie die Variablenwerte in vars.py. Referenzieren Sie die Variablendefinitionen unten und klicken Sie auf *deploy*:
++
+|===
+
+
+| *Name* | *Typ* | *Beschreibung* 
+
+
+| *FsxMgmtIp* | Zeichenfolge | (Erforderlich) Geben Sie in der AWS-Konsole von FSX für ONTAP die IP-Adresse für den Managementendpunkt ein. 
+
+
+| *FsxId* | Zeichenfolge | (Erforderlich) Geben Sie in der AWS-Konsole die „Filesystem-ID“ aus der FSX for ONTAP-Konsole ein. 
+
+
+| *Benutzername* | Zeichenfolge | (Erforderlich) Geben Sie in AWS den FSX for ONTAP „ONTAP Administrator username“ aus der FSX for ONTAP-Konsole ein. 
+
+
+| *Resize_threshold* | Ganzzahl | (Erforderlich) Geben Sie den Prozentwert des Schwellenwerts von 0 bis 100 ein. Dieser Schwellenwert wird verwendet, um die Speicherkapazität, Volume- und LUN-Nutzung zu messen, und wenn die %-Nutzung von Erhöhungen über diesem Schwellenwert erfolgt, erfolgt die Größenänderung. 
+
+
+| *Sender_Email* | Zeichenfolge | (Erforderlich) Geben Sie die auf SES registrierte E-Mail-ID ein, die von der Lambda-Funktion verwendet wird, um Benachrichtigungen bezüglich Überwachung und Größenänderung zu senden. 
+
+
+| *Recipient_email* | Zeichenfolge | (Erforderlich) Geben Sie die E-Mail-ID ein, über die Sie die Benachrichtigungen erhalten möchten. 
+
+
+| *fsx_password_ssm_Parameter* | Zeichenfolge | (Erforderlich) Geben Sie den Pfadnamen ein, der im AWS-Parameter Store zum Speichern des „fsxadmin“-Passworts verwendet wird. 
+
+
+| *Warn_notification* | Bool | (Erforderlich) Setzen Sie diese Option auf „wahr“, um eine Benachrichtigung zu erhalten, wenn die Storage-Kapazität/Volume/LUN-Auslastung 75 % überschreitet, aber kleiner als der Schwellenwert ist. 
+
+
+| *Enable_Snapshot_Deletion* | Bool | (Erforderlich) Setzen Sie diese Variable auf „true“, um das Löschen von Snapshots auf Volume-Ebene für Snapshots zu ermöglichen, die älter sind als der in „Snapshot_age_threshold_in_days“ angegebene Wert. 
+
+
+| *Snapshot_age_threshold_in_days* | Ganzzahl | (Erforderlich) Geben Sie die Anzahl der Tage an Snapshots auf Volume-Ebene ein, die Sie behalten möchten. Alle Snapshots, die älter als der angegebene Wert sind, werden gelöscht und das gleiche wird per E-Mail benachrichtigt. 
+|===
++
+image:fsxn-monitoring-resizing-lambda-code.png["Dieses Bild zeigt den Lambda-Code auf der AWS Lambda-Funktionskonsole."]
+
+. Klicken Sie auf *Test*, erstellen Sie ein leeres Testereignis und führen Sie den Test aus und überprüfen Sie, ob das Skript ordnungsgemäß ausgeführt wird.
+. Nach erfolgreichem Test navigieren Sie zu *Konfiguration* > *Trigger* > *Trigger hinzufügen*.
++
+[listing]
+----
+Select a Source: EventBridge
+Rule: Create a new rule
+Rule name: <Enter any name>
+Rule type: Schedule expression
+Schedule expression: <Use "rate(1 day)" if you want the function to run daily or add your own cron expression>
+----
++
+Klicken Sie auf Hinzufügen.
+
++
+image:fsxn-monitoring-resizing-eventbridge.png["Dieses Bild zeigt das Fenster zur Erstellung der Event Bridge auf der AWS Lambda-Funktionskonsole."]
+
+
+
+====
+
+
+== Schlussfolgerung
+
+Mit der bereitgestellten Lösung ist es einfach, eine Überwachungslösung einzurichten, die regelmäßig FSX für ONTAP-Speicher überwacht, die Größe basierend auf benutzerdefinierten Schwellwerten ändert und einen Warnmechanismus bietet. Dadurch werden FSX for ONTAP nahtlos eingesetzt und überwacht. So haben Administratoren mehr Zeit, sich auf geschäftskritische Aktivitäten zu konzentrieren, während der Storage bei Bedarf automatisch wächst.
