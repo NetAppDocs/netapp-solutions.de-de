@@ -17326,7 +17326,6 @@
   <block id="1ebfeec31c440a4fac484932940c73b1" category="paragraph">Autor(en): Dhruv Tyagi, Niyaz Mohamed</block>
   <block id="77b2a3f373c1bcab9cefd635e81303eb" category="section-title">Übersicht: Monitoring und Auto-Resizing FSX for ONTAP über AWS Lambda Funktion</block>
   <block id="88f21a3befc798942cec953cec96af16" category="paragraph">FSX for ONTAP ist ein erster auf AWS verfügbarer Cloud-Storage-Service für Enterprise-Anforderungen. Er bietet äußerst zuverlässigen, skalierbaren, hochperformanten und funktionsreichen File-Storage auf Basis des beliebten NetApp ONTAP-Filesystems.</block>
-  <block id="d533eef302a4867b401818c0958d07d5" category="paragraph">FSX für ONTAP bietet eine nahtlose Implementierungs- und Managementerfahrung. Für den Einstieg sind keine Storage-Fachkenntnisse erforderlich. Um das Monitoring zu vereinfachen, kann eine AWS Lambba Funktion (zum Automatisieren der Anpassung der gesamten Storage-Kapazität, Volume-Größe oder LUN-Größe basierend auf Schwellwerten) verwendet werden. Dieses Dokument enthält eine Schritt-für-Schritt-Anleitung zum Erstellen eines automatisierten Setups, das FSX für ONTAP in regelmäßigen Abständen überwacht, benachrichtigt und skaliert, wenn ein benutzerdefinierter Schwellenwert überschritten wird, und benachrichtigt den Administrator über die Größenanpassungsaktivität.</block>
   <block id="8799f4655655a26ca808c044ad467a88" category="paragraph">Die Lösung bietet folgende Funktionen:</block>
   <block id="c342d53b891fb460586d3a137ff99a6e" category="list-text">Überwachung:</block>
   <block id="138be07c6f8ee03d211e5f345546b7af" category="list-text">Nutzung der gesamten Storage-Kapazität von FSX für ONTAP</block>
@@ -17336,11 +17335,8 @@
   <block id="378c1fc07823bfb610dec17052eacf6d" category="list-text">Benachrichtigungsmechanismus, um Warnungen zu Nutzungen und Größenanpassungen per E-Mail zu erhalten</block>
   <block id="f4f72a76c2acbf4ea687920f5e120816" category="list-text">Fähigkeit zum Löschen von Snapshots, die älter als ein benutzerdefinierter Schwellenwert sind</block>
   <block id="91602eeac7d8a4cc46329128033d33d3" category="list-text">Fähigkeit, eine Liste mit FlexClone Volumes und zugehörigen Snapshots zu erhalten</block>
-  <block id="a8a8309e8496f6fa8767a3b768fd917a" category="list-text">Möglichkeit, die Prüfungen in einem regelmäßigen Intervall auszuführen</block>
   <block id="dd0679a0ea834bda0a34b306e7a09346" category="paragraph">Bevor Sie beginnen, stellen Sie sicher, dass die folgenden Voraussetzungen erfüllt sind:</block>
   <block id="561d599e4e659439d1b142dbe29b15c7" category="list-text">FSX für ONTAP ist implementiert</block>
-  <block id="b0855635fd601c0aa86b37aad2b039ac" category="list-text">Ein privates Subnetz mit angeschlossenem NAT-Gateway wird von der Lambda-Funktion für die Internetverbindung benötigt</block>
-  <block id="86cdbeab26faaadbe0e57ddc9fdc1c89" category="list-text">Das private Subnetz sollte auch eine Verbindung zu FSX for ONTAP haben</block>
   <block id="7f42d2e23aac4d85dca59633ff2cf58d" category="list-text">Das Passwort „fsxadmin“ wurde für FSX for ONTAP festgelegt</block>
   <block id="eb99e653d349f732eb98619784a340ac" category="list-text">AWS Lambda Funktion macht API-Aufrufe zu FSX for ONTAP zum Abrufen und Aktualisieren der Größe der Speicherkapazität, Volumes und LUNs.</block>
   <block id="f350c91a602035a3521ac328a432c7ed" category="list-text">„Fsxadmin“-Passwort als sichere Zeichenfolge im AWS SSM-Parameterspeicher für zusätzliche Sicherheitsschicht gespeichert.</block>
@@ -17348,17 +17344,14 @@
   <block id="432a24ba141fb90355a80ec4c6d3825e" category="paragraph"><block ref="432a24ba141fb90355a80ec4c6d3825e" category="inline-image-macro-rx" type="image"></block></block>
   <block id="974bba02716a5e7c8414499dd06bbb62" category="example-title">Schritt 1: Klonen Sie das GitHub Repository</block>
   <block id="3233c0d0dc9395d6085fb8167fdd8393" category="paragraph">GitHub-Repository auf Ihrem lokalen System klonen:</block>
-  <block id="9f4febbd8959b367ebeccd3c9b980bed" category="example-title">Schritt 2: SSM-Parameter für fsxadmin-Passwort erstellen</block>
   <block id="06df343d3a431a2f511aa7fef58e4a23" category="paragraph">Navigieren Sie zu AWS Console &gt; *Parameter Store* und klicken Sie auf *Parameter erstellen*.</block>
   <block id="faec730272cd4b39d377b89835a6a82c" category="paragraph">Klicken Sie auf *Parameter erstellen*.</block>
   <block id="1cefa861aa6d9ba408841133e7325545" category="inline-image-macro">Dieses Bild zeigt das Fenster zur Erstellung von SSM-Parametern in der AWS Konsole.</block>
   <block id="a19e362ed1a0d7ca174a7abf2c59853a" category="paragraph"><block ref="a19e362ed1a0d7ca174a7abf2c59853a" category="inline-image-macro-rx" type="image"></block></block>
-  <block id="34ed02bd2b8200c71e9f3ac3a57c6339" category="example-title">Schritt 3: E-Mail-Dienst Einrichten</block>
   <block id="bcd5fa3fbab9dadf361d9eba36b8382c" category="paragraph">Navigieren Sie zu AWS Console &gt; *Simple Email Service (SES)* und klicken Sie auf *Create Identity*.</block>
   <block id="60461626b891b858b74da97b0ee89b6e" category="paragraph">Klicken Sie auf *Create Identity*</block>
   <block id="af9b6260888bf7e72d2766823e7a2bb6" category="inline-image-macro">Dieses Bild zeigt das Fenster zur Erstellung der SES-Identität in der AWS Konsole.</block>
   <block id="59f38a9e267a3ea7e5d173c163613f58" category="paragraph"><block ref="59f38a9e267a3ea7e5d173c163613f58" category="inline-image-macro-rx" type="image"></block></block>
-  <block id="d4150206805713c5170f55a3e2f8c424" category="example-title">Schritt 4: Erstellen und Einrichten der AWS Lambda-Funktion</block>
   <block id="f7eef2aeccb65815a4f57ad9796278b3" category="list-text">Navigieren Sie zu AWS-Konsole &gt; *AWS Lambda* und klicken Sie auf *Create Function* in der gleichen Region wie FSX for ONTAP</block>
   <block id="eb625a560eb6c02ecd5a6a9f47d5d768" category="list-text">Verwenden Sie den Standardwert *Author from scratch* und aktualisieren Sie die folgenden Felder:</block>
   <block id="8af4ad16f59e1ac333921353c65b1492" category="paragraph">Klicken Sie auf *Funktion erstellen*.</block>
@@ -17399,7 +17392,6 @@
   <block id="e405587a28590f4765b9cca9a439aee0" category="cell">*fsx_password_ssm_Parameter*</block>
   <block id="fd6fdc9b8903fcc41d72463456f66547" category="cell">(Erforderlich) Geben Sie den Pfadnamen ein, der im AWS-Parameter Store zum Speichern des „fsxadmin“-Passworts verwendet wird.</block>
   <block id="a2b399451f43de7415c9c8d2f2430019" category="cell">*Warn_notification*</block>
-  <block id="8075a3b4477383f02ada5dc1dd51ddf8" category="cell">(Erforderlich) Setzen Sie diese Option auf „wahr“, um eine Benachrichtigung zu erhalten, wenn die Storage-Kapazität/Volume/LUN-Auslastung 75 % überschreitet, aber kleiner als der Schwellenwert ist.</block>
   <block id="4a011a0efb5e78112e4ed7930b4d4ac6" category="cell">*Enable_Snapshot_Deletion*</block>
   <block id="f2a43adf70fef2a5bca3a335b60d96ec" category="cell">(Erforderlich) Setzen Sie diese Variable auf „true“, um das Löschen von Snapshots auf Volume-Ebene für Snapshots zu ermöglichen, die älter sind als der in „Snapshot_age_threshold_in_days“ angegebene Wert.</block>
   <block id="d7cef1097d40a983ff6c131976641be8" category="cell">*Snapshot_age_threshold_in_days*</block>
@@ -17853,4 +17845,69 @@
   <block id="53a581d907d105a589be9419e91b16fa" category="paragraph"><block ref="53a581d907d105a589be9419e91b16fa" category="inline-link-rx"></block></block>
   <block id="904837c9cf9bc52a96ce17d051fddec9" category="cell">April 2023</block>
   <block id="1d2114df6a9f8f5d7e8f597e9c70a6c1" category="sidebar">Cloud-Datenmanagement mit NetApp File-Object Dualität und AWS SageMaker</block>
+  <block id="f8fea07785033364d3453e53cbf82aae" category="cell">29/03/2023</block>
+  <block id="74ed7031eb75ffbb784ebe9ffbd6be6a" category="cell">Aktualisierter Blog „FSX for ONTAP Monitoring and Auto-Resizing using AWS Lambda function“ mit Optionen für die private/öffentliche Bereitstellung sowie manuellen/automatisierten Implementierungsoptionen.</block>
+  <block id="385a1ac85546ae5b25d9899873bf540d" category="cell">22/03/2023</block>
+  <block id="2ab02c4627e2022ecdf98de0e3b6b18d" category="cell">Hinzugefügt Blog: FSX für ONTAP-Überwachung und Auto-Resizing mit AWS Lambda-Funktion</block>
+  <block id="2991ec0aa5bd4825c01d9bef4b9bdaad" category="paragraph">FSX für ONTAP bietet eine nahtlose Implementierungs- und Managementerfahrung. Für den Einstieg sind keine Storage-Fachkenntnisse erforderlich. Um das Monitoring zu vereinfachen, kann eine AWS Lambda Funktion (zur Automatisierung der Anpassung der gesamten Storage-Kapazität, Volume-Größe oder LUN-Größe basierend auf Schwellwerten) verwendet werden. Dieses Dokument enthält eine Schritt-für-Schritt-Anleitung zum Erstellen eines automatisierten Setups, das FSX für ONTAP in regelmäßigen Abständen überwacht, benachrichtigt und skaliert, wenn ein benutzerdefinierter Schwellenwert überschritten wird, und benachrichtigt den Administrator über die Größenanpassungsaktivität.</block>
+  <block id="8e8aff933e5047a57263663f8a18e3c3" category="list-text">Möglichkeit, die Prüfungen in einem regelmäßigen Intervall zu überwachen</block>
+  <block id="e2b4916d6d7f53cde2d5633fd6119cc4" category="list-text">Möglichkeit, die Lösung mit oder ohne Internetzugang zu nutzen</block>
+  <block id="a90d7c3c15ad351b936f52283c3587ef" category="list-text">Möglichkeit zur manuellen Bereitstellung oder mithilfe der AWS CloudFormation Template</block>
+  <block id="1526ea467258021d67f8f59298e57f70" category="list-text">Privates Subnetz mit Konnektivität zu FSX for ONTAP</block>
+  <block id="baebd0d5b177b5744e776be025952058" category="list-text">Bei der Implementierung der Lösung in einer VPC ohne Internetzugang werden VPC-Endpunkte für AWS SSM, FSX und SES eingerichtet, um Lambda die Erreichbarkeit dieser Services über das interne AWS Netzwerk zu ermöglichen.</block>
+  <block id="5215f5ee52e78e416520bfecaf294472" category="paragraph">Führen Sie die folgenden Schritte aus, um die automatisierte Implementierung dieser Lösung abzuschließen:</block>
+  <block id="6436b05fc0216b37135d2a66a585e96f" category="example-title">Schritt 2: Einrichtung eines AWS S3 Buckets</block>
+  <block id="7d54d293b4849834117fc9160feb6cbc" category="list-text">Navigieren Sie zu AWS Console &gt; *S3* und klicken Sie auf *Create bucket*. Erstellen Sie den Bucket mit den Standardeinstellungen.</block>
+  <block id="040d8a375b4543c424d11036c6faa0d7" category="list-text">Klicken Sie im Bucket auf *Upload* &gt; *Dateien hinzufügen* und wählen Sie *paramiko.zip* und *Requests.zip* aus dem geklonten GitHub-Repository auf Ihrem System aus.</block>
+  <block id="66b09b43432fbb9814d51e48e9a98ade" category="inline-image-macro">Dieses Bild zeigt das S3-Fenster mit ZIP-Dateien, die hochgeladen werden</block>
+  <block id="0f71a8c9bb8a785323461956bf9e217a" category="paragraph"><block ref="0f71a8c9bb8a785323461956bf9e217a" category="inline-image-macro-rx" type="image"></block></block>
+  <block id="6ea6ef5eae0a05760ec8bf19495d8645" category="example-title">Schritt 3: AWS SES SMTP Setup (erforderlich, wenn kein Internetzugang verfügbar)</block>
+  <block id="90db95943ff24327f32dd935aa7395d5" category="paragraph">Befolgen Sie diesen Schritt, wenn Sie die Lösung ohne Internetzugang bereitstellen möchten (Hinweis: Es entstehen zusätzliche Kosten aufgrund der Einrichtung von VPC-Endpunkten).</block>
+  <block id="972167638becf55a9af0b4e5c414a75e" category="list-text">Navigieren Sie zu AWS Console &gt; *AWS Simple Email Service (SES)* &gt; SMTP Settings und klicken Sie auf *Create SMTP credentials*</block>
+  <block id="68d59bd0e9b2839f0843ab1b2d6b136f" category="list-text">Geben Sie einen IAM-Benutzernamen ein, oder behalten Sie den Standardwert bei, und klicken Sie auf Erstellen. Speichern Sie den Benutzernamen und das Passwort zur weiteren Verwendung.</block>
+  <block id="796d9a158268a6ea8a7895c4fc08b2f7" category="admonition">Überspringen Sie diesen Schritt, wenn das SES SMTP Setup bereits vorhanden ist.</block>
+  <block id="c492e5ad14c10d85050111f49b9ccd32" category="inline-image-macro">Diese Abbildung zeigt das Fenster SMTP-Anmeldeinformationen erstellen unter AWS SES</block>
+  <block id="311486bd300a1e6b104a8c2d1edc4b1d" category="paragraph"><block ref="311486bd300a1e6b104a8c2d1edc4b1d" category="inline-image-macro-rx" type="image"></block></block>
+  <block id="53f52a194e6b0e83b281c128d8c9536d" category="example-title">Schritt 4: Implementierung von AWS CloudFormation</block>
+  <block id="d2edefb4d7f05ffadcc2ce87ffde5e98" category="list-text">Navigieren Sie zu AWS Console &gt; *CloudFormation* &gt; Create Stack &gt; with New Resources (Standard).</block>
+  <block id="f9555c9e4ee9872bd73e1554f90b137c" category="inline-image-macro">Dieses Bild stellt das Fenster „AWS CloudFormation Create Stack“ dar</block>
+  <block id="302a433b27874ed6225d3a3553f31fdb" category="paragraph"><block ref="302a433b27874ed6225d3a3553f31fdb" category="inline-image-macro-rx" type="image"></block></block>
+  <block id="1a65108ded0e706a6c44742b2f313e4e" category="paragraph">Klicken Sie auf Weiter</block>
+  <block id="ef7b077619d0583a71ba9fda28bc53fc" category="list-text">Geben Sie die Stack-Details ein. Klicken Sie auf Weiter, und aktivieren Sie das Kontrollkästchen für „Ich bestätige, dass AWS CloudFormation möglicherweise IAM-Ressourcen erstellen könnte“, und klicken Sie auf Senden.</block>
+  <block id="1b61f2cbcfae90671dbb048e72bb8918" category="admonition">Wenn „hat VPC Internetzugang?“ Ist auf falsch, „SMTP Username for AWS SES“ und „SMTP Password for AWS SES“ sind erforderlich. Andernfalls können sie leer gelassen werden.</block>
+  <block id="1f5aede37b8170af3cfbd901f22d591e" category="inline-image-macro">Dieses Bild stellt das Fenster „AWS CloudFormation Stack Details“ dar</block>
+  <block id="7e2652655cc5cfead2ca4bff65032215" category="paragraph"><block ref="7e2652655cc5cfead2ca4bff65032215" category="inline-image-macro-rx" type="image"></block></block>
+  <block id="113624fc80b505576882228d73fc03c5" category="paragraph"><block ref="113624fc80b505576882228d73fc03c5" category="inline-image-macro-rx" type="image"></block></block>
+  <block id="13069c8f4182a2f6ab810369ebe8b0ad" category="paragraph"><block ref="13069c8f4182a2f6ab810369ebe8b0ad" category="inline-image-macro-rx" type="image"></block></block>
+  <block id="bd90b3549ddb2a170121e2cae9d2e442" category="paragraph"><block ref="bd90b3549ddb2a170121e2cae9d2e442" category="inline-image-macro-rx" type="image"></block></block>
+  <block id="dcd7d4e3b6e000a6821009f7370ab47e" category="list-text">Sobald die CloudFormation-Implementierung beginnt, erhält die in der „Absender-E-Mail-ID“ angegebene E-Mail-ID eine E-Mail mit der Bitte, die Nutzung der E-Mail-Adresse mit AWS-SES zu autorisieren. Klicken Sie auf den Link, um die E-Mail-Adresse zu bestätigen.</block>
+  <block id="d22d74b4244b97ca549876dbaf6e5906" category="list-text">Sobald die Bereitstellung des CloudFormation-Stacks abgeschlossen ist, wird bei Warnungen/Benachrichtigungen eine E-Mail mit den Benachrichtigungsdetails an die Empfänger-E-Mail-ID gesendet.</block>
+  <block id="bb44dcc303804fcbbf13971e05b223b4" category="inline-image-macro">Dieses Bild zeigt die E-Mail-Benachrichtigung, die empfangen wird, wenn Benachrichtigungen verfügbar sind</block>
+  <block id="80b7092ae7ee31bafccb6f27ea2a5603" category="paragraph"><block ref="80b7092ae7ee31bafccb6f27ea2a5603" category="inline-image-macro-rx" type="image"></block></block>
+  <block id="5e482488f8434036ccb78ddb9cea595f" category="paragraph"><block ref="5e482488f8434036ccb78ddb9cea595f" category="inline-image-macro-rx" type="image"></block></block>
+  <block id="7ae845e97e60673c293edce9fe3a65f9" category="section-title">Manuelle Bereitstellung</block>
+  <block id="d4f4ecbc346d14b30240c605c5884282" category="paragraph">Führen Sie die folgenden Schritte aus, um die manuelle Bereitstellung dieser Lösung abzuschließen:</block>
+  <block id="c960dffe03501c470f4219bb16fab5ef" category="example-title">Schritt 2: AWS SES SMTP Setup (erforderlich, wenn kein Internetzugang verfügbar)</block>
+  <block id="0aa7c69c57f475cc1f055c49b0e3136e" category="example-title">Schritt 3: SSM-Parameter für fsxadmin-Passwort erstellen</block>
+  <block id="8a7ca52152a916f189b032d05768ed10" category="paragraph">Führen Sie die gleichen Schritte zum Speichern des smtp-Benutzernamens und smtp-Kennworts aus, wenn Sie die Lösung ohne Internetzugang bereitstellen. Andernfalls überspringen Sie das Hinzufügen dieser 2 Parameter.</block>
+  <block id="06e0a02f6ce962b7038b6b2918585271" category="example-title">Schritt 4: E-Mail-Dienst Einrichten</block>
+  <block id="14bcb93088a1eb5d0e0d7ce578a73a08" category="paragraph">Die in der „Absender-E-Mail-ID“ genannte E-Mail-ID erhält eine E-Mail, in der der Eigentümer aufgefordert wird, die Nutzung der E-Mail-Adresse mit AWS SES zu autorisieren. Klicken Sie auf den Link, um die E-Mail-Adresse zu bestätigen.</block>
+  <block id="88adaee1fa88f871bc7cf8d579e59cdd" category="example-title">Schritt 5: Einrichtung von VPC-Endpunkten (erforderlich, wenn kein Internetzugang verfügbar ist)</block>
+  <block id="0261907012c6fd6ed0e80ab991a9d462" category="admonition">Nur erforderlich, wenn die Bereitstellung ohne Internetzugang erfolgt. Durch VPC-Endpunkte entstehen zusätzliche Kosten.</block>
+  <block id="71bb5fff33b1866d7266866fb9c94f45" category="list-text">Navigieren Sie zu AWS Console &gt; *VPC* &gt; *Endpoints*, klicken Sie auf *Create Endpoint* und geben Sie die folgenden Details ein:</block>
+  <block id="6683864f2c9e5bbb1fa4128837ed8eab" category="paragraph">Klicken Sie auf Endpunkt erstellen.</block>
+  <block id="5f80bfe9763fe273a3a7722c1c647604" category="inline-image-macro">Dieses Bild zeigt das Fenster zur Erstellung des VPC-Endpunkts</block>
+  <block id="9a4cd1bb8a39a7c230290453794b4429" category="paragraph"><block ref="9a4cd1bb8a39a7c230290453794b4429" category="inline-image-macro-rx" type="image"></block></block>
+  <block id="603ef5b528d0bd1def7291cf6417ff56" category="paragraph"><block ref="603ef5b528d0bd1def7291cf6417ff56" category="inline-image-macro-rx" type="image"></block></block>
+  <block id="1c96306d4c766c38569c564c9bdb80a7" category="list-text">Befolgen Sie denselben Prozess für die Erstellung von SES und SSM VPC-Endpunkten. Alle Parameter bleiben wie oben, außer Dienste, die *com.amazonaws.&lt;region&gt;.smtp* und *com.amazonaws.&lt;region&gt;.ssm* entsprechen.</block>
+  <block id="a07090d2d501e8e696338339ab098115" category="example-title">Schritt 6: Erstellen und Einrichten der AWS Lambda-Funktion</block>
+  <block id="6b0889223ab16d524cd0322c25d0b4b3" category="cell">(Erforderlich) Setzen Sie diese Variable auf „wahr“, um eine Benachrichtigung zu erhalten, wenn die Storage-Kapazität/Volume/LUN-Auslastung 75 % überschreitet, jedoch unter dem Schwellenwert liegt.</block>
+  <block id="785e900d8ea09cab57830ac6967cb709" category="cell">*Internet_Access*</block>
+  <block id="24498a6850ca31bfb18f639aae517582" category="cell">(Erforderlich) Setzen Sie diese Variable auf true, wenn der Internetzugang über das Subnetz verfügbar ist, in dem diese Lambda bereitgestellt wird. Andernfalls auf False setzen.</block>
+  <block id="cd9e7c04a0bb02c275868aa4344613da" category="cell">*smtp_Region*</block>
+  <block id="4a892fb521dc4ec57f770f02637e0d0d" category="cell">(Optional) Wenn die Variable „Internet_Access“ auf „False“ gesetzt ist, geben Sie die Region ein, in der Lambda bereitgestellt wird. Z. B. US-East-1 (in diesem Format)</block>
+  <block id="07dba5c28924867968d12040d14d8b57" category="cell">*smtp_username_ssm_Parameter*</block>
+  <block id="611e6e1c3920f2514daecc54ecfb79d1" category="cell">(Optional) Wenn die Variable „Internet_Access“ auf „False“ gesetzt ist, geben Sie den Pfadnamen ein, der im AWS-Parameter Store zum Speichern des SMTP-Benutzernamens verwendet wird.</block>
+  <block id="00dc34bddd9d78c3a39608fed34bb12c" category="cell">*smtp_password_ssm_Parameter*</block>
+  <block id="7d7fbea26b1aa16fe546b51310bfd752" category="cell">(Optional) Wenn die Variable „Internet_Access“ auf „False“ gesetzt ist, geben Sie den Pfadnamen ein, der im AWS-Parameter Store zum Speichern des SMTP-Passworts verwendet wird.</block>
 </blocks>
