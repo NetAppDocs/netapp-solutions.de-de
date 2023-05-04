@@ -13,6 +13,7 @@ summary:
 :imagesdir: ./../media/
 
 
+[role="lead"]
 Die folgende Abbildung zeigt die vorgeschlagene umgangssprachlichen KI-Systemarchitektur. Sie können mit dem System entweder mit Sprachsignal- oder Texteingabe interagieren. Wenn gesprochene Eingabe erkannt wird, führt Jarvis AI-as-Service (AIAAS) ASR aus, um Text für Dialog Manager zu erstellen. Dialog Manager speichert die Zustände der Konversation, leitet Text zu den entsprechenden Diensten weiter und leitet Befehle an Fulfillment Engine weiter. Jarvis NLP Service nimmt Text ein, erkennt Intents und Entities und gibt diese Intents und Entity Slots zurück an Dialog Manager, der dann Aktion an Fulfillment Engine sendet. Fulfillment Engine besteht aus Drittanbieter-APIs oder SQL-Datenbanken, die Benutzeranfragen beantworten. Nach Erhalt der Ergebnisse von Fulfillment Engine leitet Dialogue Manager Text an Jarvis TTS AIAaS weiter, um eine Audioantwort für den Endbenutzer zu erstellen. Wir können Gesprächsverlauf archivieren, Sätze mit Intents und Slots für Nemo-Schulungen annotieren, so dass der NLP-Service verbessert wird, wenn mehr Benutzer mit dem System interagieren.
 
 image:cainvidia_image3.png["Fehler: Fehlendes Grafikbild"]
