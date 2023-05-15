@@ -430,7 +430,7 @@ Der letzte Schritt zur Konfiguration von Veeam ist die Erstellung von Backup-Job
 Um ein Failover von Applikations-VMs und Datenbank-Volumes auf VMware Cloud Volume-Services durchzuführen, die in AWS ausgeführt werden, müssen Sie eine laufende Instanz von SnapCenter Server sowie Veeam Backup and Replication Server installieren und konfigurieren. Nach Abschluss des Failover müssen diese Tools auch so konfiguriert werden, dass sie den normalen Backup-Betrieb fortsetzen, bis ein Failback zum lokalen Datacenter geplant und ausgeführt wird.
 
 .Implementieren Sie sekundären Windows SnapCenter Server
-[%collapsible]
+[#deploy-secondary-snapcenter%collapsible]
 ====
 SnapCenter Server wird im VMware Cloud SDDC implementiert oder auf einer EC2 Instanz in einer VPC mit Netzwerkkonnektivität für die VMware Cloud-Umgebung installiert.
 
@@ -457,7 +457,7 @@ Weitere Informationen zum Durchführen dieser Schritte finden Sie im Abschnitt l
 
 ====
 .Bereitstellung eines sekundären Veeam Backup & Amp; Replication Servers
-[%collapsible]
+[#deploy-secondary-veeam%collapsible]
 ====
 Sie können den Veeam Backup & Replication Server auf einem Windows-Server in der VMware Cloud auf AWS oder in einer EC2-Instanz installieren. Eine detaillierte Anleitung zur Implementierung finden Sie im https://["Technische Dokumentation Des Veeam Help Center"^].
 
@@ -475,7 +475,7 @@ Um diesen Prozess durchzuführen, müssen die folgenden Punkte abgeschlossen sei
 . Nach dem Restore der VM neue Backup-Jobs zum Schutz von SQL und Oracle VMs einrichten.
 
 
-5ad23c05d5054f7daf749b3a328903be
+Weitere Informationen zum Wiederherstellen von VMs mit Veeam finden Sie im Abschnitt link:#restore-veeam-full["Wiederherstellung von Applikations-VMs mit Veeam Full Restore"].
 
 ====
 
@@ -497,7 +497,7 @@ Für die SnapCenter-Sicherung sind folgende Voraussetzungen erforderlich:
 
 ====
 .Zusammenfassung des SnapCenter-Backup- und Restore-Prozesses
-[%collapsible]
+[#snapcenter-backup-and-restore-process-summary%collapsible]
 ====
 * Erstellen Sie ein Volume auf dem lokalen ONTAP System zum Hosten der Backup-db und Konfigurationsdateien.
 * Einrichten einer SnapMirror Beziehung zwischen On-Premises- und FSX/CVO
@@ -755,7 +755,7 @@ Das folgende Verfahren enthält Anweisungen zur Wiederherstellung eines SQL Serv
 Es wird davon ausgegangen, dass die folgenden Voraussetzungen abgeschlossen sind, um mit den Wiederherstellungsschritten fortzufahren:
 
 . Die Windows-Server-VM wurde mithilfe von Veeam Full Restore in VMware Cloud SDDC wiederhergestellt.
-. fe51b70218e2191f0338d4bcb01eb4a7
+. Es wurde ein sekundärer SnapCenter-Server eingerichtet, und die Wiederherstellung und Konfiguration von SnapCenter Datenbanken wurden anhand der im Abschnitt beschriebenen Schritte abgeschlossen link:#snapcenter-backup-and-restore-process-summary["Zusammenfassung des SnapCenter-Backup- und Restore-Prozesses"]
 
 
 .VM: Post-Restore-Konfiguration für SQL Server VM
@@ -870,7 +870,7 @@ Das folgende Verfahren enthält Anweisungen zur Wiederherstellung von Oracle App
 Führen Sie die folgenden Voraussetzungen aus, um mit den Wiederherstellungsschritten fortzufahren:
 
 . Die Oracle Linux-Server-VM wurde mithilfe von Veeam Full Restore in VMware Cloud SDDC wiederhergestellt.
-. 66d808fa42d45f6883d1a223ee26eb0c
+. Es wurde ein sekundärer SnapCenter-Server erstellt, und die SnapCenter-Datenbank und -Konfigurationsdateien wurden anhand der in diesem Abschnitt beschriebenen Schritte wiederhergestellt link:#snapcenter-backup-and-restore-process-summary["Zusammenfassung des SnapCenter-Backup- und Restore-Prozesses"]
 
 
 .FSX für Oracle Restore konfigurieren – Unterbrechung der SnapMirror Beziehung
