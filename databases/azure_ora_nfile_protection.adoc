@@ -16,6 +16,9 @@ keywords: Oracle, Azure, database, backup, restore
 
 link:azure_ora_nfile_procedures.html["Früher: Implementierungsverfahren"]
 
+[role="lead"]
+Autor(en): Allen Cao, NetApp Solutions Engineering
+
 
 
 == Sichern Sie die Oracle Datenbank mit Snapshot mit dem AzAcSnap Tool
@@ -55,8 +58,13 @@ cd /home/azacsnap/bin
 . ~/.bash_profile
 azacsnap -c backup --volume other --prefix acao-ora01-log --retention 250
 ----
-Crontab Zeitplan: 15,30,45 * * * * /Home/azacsnap/snap_log.sh 0 */2 * * * /Home/azacsnap/snap_data.sh
+Crontab-Zeitplan:
 
+[listing]
+----
+15,30,45 * * * * /home/azacsnap/snap_log.sh
+0 */2 * * * /home/azacsnap/snap_data.sh
+----
 
 NOTE: Beim Einrichten des Backups `azacsnap.json` Konfigurationsdatei: Fügen Sie alle Daten-Volumes, einschließlich des binären Volumes, zu hinzu `dataVolume` Und alle Log-Volumes auf `otherVolume`. Die maximale Aufbewahrung von Snapshots beträgt 250 Kopien.
 
@@ -81,42 +89,40 @@ Einer der wichtigsten Vorteile von Snapshot Backups besteht darin, dass es mit d
 
 Das folgende Beispiel zeigt, wie eine Oracle Datenbank über das Azure Dashboard und über die CLI auf demselben Oracle Host wiederhergestellt und wiederhergestellt wird.
 
-. Erstellen Sie eine Testtabelle in der Datenbank, die wiederhergestellt werden soll. [oracle@acao-ora01 ~] USD sqlplus / AS sysdba
-+
-SQL*Plus: Release 19.0.0.0.0 - Produktion am Mon. Sep 12 19:02:35 2022 Version 19.8.0.0.0
-
-+
-Copyright (c) 1982, 2019, Oracle. Alle Rechte vorbehalten.
-
-+
-Verbunden mit: Oracle Database 19c Enterprise Edition Release 19.0.0.0.0 - Produktionsversion 19.8.0.0.0
-
-+
-SQL> create table testSnapshot( id integer, Event varchar(100), dt timestamp);
-
-+
-Tabelle erstellt.
-
-+
-SQL> in testSnapshot-Werte einfügen(1,'Einfügen einer Datenmarkierung zur Validierung der Snapshot-Wiederherstellung',sysdate);
-
-+
-1 Zeile erstellt.
-
-+
-SQL> Commit;
-
-+
-Commit abgeschlossen.
-
-+
-SQL> aus TestSnapshot * auswählen;
-
-+
- ID
+. Erstellen Sie eine Testtabelle in der Datenbank, die wiederhergestellt werden soll.
 +
 [listing]
 ----
+[oracle@acao-ora01 ~]$ sqlplus / as sysdba
+
+SQL*Plus: Release 19.0.0.0.0 - Production on Mon Sep 12 19:02:35 2022
+Version 19.8.0.0.0
+
+Copyright (c) 1982, 2019, Oracle.  All rights reserved.
+
+Connected to:
+Oracle Database 19c Enterprise Edition Release 19.0.0.0.0 - Production
+Version 19.8.0.0.0
+
+SQL> create table testsnapshot(
+     id integer,
+     event varchar(100),
+     dt timestamp);
+
+Table created.
+
+SQL> insert into testsnapshot values(1,'insert a data marker to validate snapshot restore',sysdate);
+
+1 row created.
+
+SQL> commit;
+
+Commit complete.
+
+SQL> select * from testsnapshot;
+
+ ID
+----------
 EVENT
 --------------------------------------------------------------------------------
 DT
@@ -127,29 +133,38 @@ insert a data marker to validate snapshot restore
 ----
 . Werfen Sie die Tabelle nach den Snapshot-Backups.
 +
-[oracle@acao-ora01 ~] USD sqlplus / AS sysdba
+[listing]
+----
+[oracle@acao-ora01 ~]$ sqlplus / as sysdba
 
-+
-SQL*Plus: Release 19.0.0.0.0 - Produktion am Dienstag 13 14. September 20:22 2022 Version 19.8.0.0.0
+SQL*Plus: Release 19.0.0.0.0 - Production on Tue Sep 13 14:20:22 2022
+Version 19.8.0.0.0
 
-+
-Copyright (c) 1982, 2019, Oracle. Alle Rechte vorbehalten.
+Copyright (c) 1982, 2019, Oracle.  All rights reserved.
 
-+
-Verbunden mit: Oracle Database 19c Enterprise Edition Release 19.0.0.0.0 - Produktionsversion 19.8.0.0.0
 
-+
-SQL> Tabelle TestSnapshot ablegen;
+Connected to:
+Oracle Database 19c Enterprise Edition Release 19.0.0.0.0 - Production
+Version 19.8.0.0.0
 
-+
-Tabelle gelöscht.
+SQL> drop table testsnapshot;
 
-+
-SQL> select * from testSnapshot; select * from testSnapshot * ERROR in Zeile 1: ORA-00942: Tabelle oder Ansicht existiert nicht
+Table dropped.
 
-+
-SQL> wird sofort heruntergefahren; die Datenbank wurde geschlossen. Datenbank nicht eingebunden. HERUNTERFAHREN DER ORACLE Instanz. SQL> Beenden von Oracle Database 19c Enterprise Edition Release 19.0.0.0.0 - Produktionsversion 19.8.0.0.0 getrennt
+SQL> select * from testsnapshot;
+select * from testsnapshot
+              *
+ERROR at line 1:
+ORA-00942: table or view does not exist
 
+SQL> shutdown immediate;
+Database closed.
+Database dismounted.
+ORACLE instance shut down.
+SQL> exit
+Disconnected from Oracle Database 19c Enterprise Edition Release 19.0.0.0.0 - Production
+Version 19.8.0.0.0
+----
 . Stellen Sie im Azure NetApp Files Dashboard das Protokoll-Volume in den letzten verfügbaren Snapshot wieder her. Wählen Sie *Lautstärke zurücksetzen*.
 +
 image:db_ora_azure_anf_restore_01.PNG["Dieser Screenshot zeigt die Methode der Umversion von Snapshots für Volumes im ANF-Dashboard."]
@@ -168,59 +183,80 @@ image:db_ora_azure_anf_restore_04.PNG["Die „sind Sie sicher, dass Sie dies tun
 
 . Synchronisieren Sie die Kontrolldateien neu, wenn Sie mehrere Kopien von ihnen haben, und ersetzen Sie die alte Kontrolldatei mit der neuesten verfügbaren Kopie.
 +
-[oracle@acao-ora01 ~] € mv /u02/oradata/ORATST/control01.ctl /u02/oradata/ORATST/control01.ctl.bk [oracle@acao-ora01 ~] USD CP /u03/orareco/ORATST/control02.ctl /u02/controladata/ORATST/controltl.01.adata
-
+[listing]
+----
+[oracle@acao-ora01 ~]$ mv /u02/oradata/ORATST/control01.ctl /u02/oradata/ORATST/control01.ctl.bk
+[oracle@acao-ora01 ~]$ cp /u03/orareco/ORATST/control02.ctl /u02/oradata/ORATST/control01.ctl
+----
 . Melden Sie sich bei der Oracle-Server-VM an, und führen Sie Datenbank-Recovery mit sqlplus aus.
-+
-[oracle@acao-ora01 ~] USD sqlplus / AS sysdba
-
-+
-SQL*Plus: Release 19.0.0.0.0 - Produktion am Dienstag 13 15. September 10:17 2022 Version 19.8.0.0.0
-
-+
-Copyright (c) 1982, 2019, Oracle. Alle Rechte vorbehalten.
-
-+
-Verbunden mit einer inaktiven Instanz.
-
-+
-SQL> Startmontage; ORACLE Instanz wurde gestartet.
-
-+
-Gesamt System globaler Bereich 6442448984 Bytes Feste Größe 8910936 Bytes Variable Größe 1090519040 Bytes Datenbank Puffer 5335154688 Bytes Repo Buffers 7864320 Bytes Datenbank angehängt. SQL> Datenbank mit Backup controlfile wiederherstellen bis Abbrechen; ORA-00279: Änderung 3188523 generiert bei 09/13/2022 10:00:09 wird für Thread 1 ORA-00289 benötigt: Vorschlag : /u03/orareco/ORATST/archivelog/2022_09_13/o1_mf_1_43__22rnjq9q_.Arc ORA-00280: Änderung 3188523 für Thread 1 ist in Folge #43
-
-+
-Protokoll angeben: {<RET>=Vorschlag für den Dateinamen} AUTOM. Abbrechen
-
-+
-ORA-00279: Änderung 3188862 generiert bei 09/13/2022 10:01:20 wird für Thread 1 ORA-00289 benötigt: Vorschlag : /u03/orarco/ORATST/archivelog/2022_09_13/o1_mf_1_44__00280 #_recoq_44_recog_3188862_a_00278_a_09_a_a_13_log_a_a_a_2022_a_a_a_a_a_a__a_a_a_a_a_a_a_a_a_a_a__a_a_a_recorequided_a_43_a_a_a_a_a_a_a_a_a_a_a_
-
-+
-Protokoll angeben: {<RET>=Vorschlag für den Dateinamen} AUTOM. Abbrechen
-
-+
-ORA-00279: Änderung 3193117 generiert bei 09/13/2022 12:00:08 wird für Thread 1 ORA-00289 benötigt: Vorschlag : /u03/orarco/ORATST/archivelog/2022_09_13/o1_mf_1_45__29h6qyw_.Arc ORA-00280: Änderung 3193117 für Thread 1 ist in Folge #45 ORA-00278: Log-Datei '/2022_archifog_09_a_a_a_13_a_a_a_44_lorbog__a_a_a_a_a__a_a_a_a_a_a__a_a_a__a_a_a_a_a_a_a_a
-
-+
-Protokoll angeben: {<RET>=Vorschlag für den Dateinamen} AUTOM. Abbrechen
-
-+
-ORA-00279: Änderung 3193440 generiert bei 09/13/2022 12:01:20 wird für Thread 1 ORA-00289 benötigt: Vorschlag : /u03/orarco/ORATST/archivelog/2022_09_13/o1_mf_1_46_%U_.Arc ORA-00280: Änderung 3193440 für Thread 1 ist in Folge #46 ORA-00278: Log-Datei '/u03/oraog_2022_recoog_09_a_a_a_a_a_a_a_a_a_a_a_13_a_a_a_a_a_a_a_a__a_a_a_a_45_a_a_a_a_a_
-
-+
-Protokoll angeben: {<RET>=empfohlen/Dateiname} ABBRECHEN Abbrechen der Medienwiederherstellung wurde abgebrochen. SQL> ändern Datenbank öffnen Resettlogs;
-
-+
-Datenbank geändert.
-
-+
-SQL> aus TestSnapshot * auswählen;
-
-+
- ID
 +
 [listing]
 ----
+[oracle@acao-ora01 ~]$ sqlplus / as sysdba
+
+SQL*Plus: Release 19.0.0.0.0 - Production on Tue Sep 13 15:10:17 2022
+Version 19.8.0.0.0
+
+Copyright (c) 1982, 2019, Oracle.  All rights reserved.
+
+Connected to an idle instance.
+
+SQL> startup mount;
+ORACLE instance started.
+
+Total System Global Area 6442448984 bytes
+Fixed Size                  8910936 bytes
+Variable Size            1090519040 bytes
+Database Buffers         5335154688 bytes
+Redo Buffers                7864320 bytes
+Database mounted.
+SQL> recover database using backup controlfile until cancel;
+ORA-00279: change 3188523 generated at 09/13/2022 10:00:09 needed for thread 1
+ORA-00289: suggestion :
+/u03/orareco/ORATST/archivelog/2022_09_13/o1_mf_1_43__22rnjq9q_.arc
+ORA-00280: change 3188523 for thread 1 is in sequence #43
+
+Specify log: {<RET>=suggested | filename | AUTO | CANCEL}
+
+ORA-00279: change 3188862 generated at 09/13/2022 10:01:20 needed for thread 1
+ORA-00289: suggestion :
+/u03/orareco/ORATST/archivelog/2022_09_13/o1_mf_1_44__29f2lgb5_.arc
+ORA-00280: change 3188862 for thread 1 is in sequence #44
+ORA-00278: log file
+'/u03/orareco/ORATST/archivelog/2022_09_13/o1_mf_1_43__22rnjq9q_.arc' no longer
+needed for this recovery
+
+Specify log: {<RET>=suggested | filename | AUTO | CANCEL}
+
+ORA-00279: change 3193117 generated at 09/13/2022 12:00:08 needed for thread 1
+ORA-00289: suggestion :
+/u03/orareco/ORATST/archivelog/2022_09_13/o1_mf_1_45__29h6qqyw_.arc
+ORA-00280: change 3193117 for thread 1 is in sequence #45
+ORA-00278: log file
+'/u03/orareco/ORATST/archivelog/2022_09_13/o1_mf_1_44__29f2lgb5_.arc' no longer
+needed for this recovery
+
+Specify log: {<RET>=suggested | filename | AUTO | CANCEL}
+
+ORA-00279: change 3193440 generated at 09/13/2022 12:01:20 needed for thread 1
+ORA-00289: suggestion :
+/u03/orareco/ORATST/archivelog/2022_09_13/o1_mf_1_46_%u_.arc
+ORA-00280: change 3193440 for thread 1 is in sequence #46
+ORA-00278: log file
+'/u03/orareco/ORATST/archivelog/2022_09_13/o1_mf_1_45__29h6qqyw_.arc' no longer
+needed for this recovery
+
+Specify log: {<RET>=suggested | filename | AUTO | CANCEL}
+cancel
+Media recovery cancelled.
+SQL> alter database open resetlogs;
+
+Database altered.
+
+SQL> select * from testsnapshot;
+
+  ID
+----------
 EVENT
 --------------------------------------------------------------------------------
 DT
@@ -228,7 +264,6 @@ DT
          1
 insert a data marker to validate snapshot restore
 12-SEP-22 07.07.35.000000 PM
-
 
 SQL> select systimestamp from dual;
 

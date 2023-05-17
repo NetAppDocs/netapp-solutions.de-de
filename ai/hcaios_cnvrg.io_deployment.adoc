@@ -64,7 +64,7 @@ cnvrg-app-69fbb9df98-6xrgf              1/1     Running     0          2m cnvrg-
 
 == Computer Vision Model Training mit ResNet50 und dem Thorax-Röntgendatensatz
 
-Cnvrg.io AI OS wurde in einem Kubernetes Setup auf einer NetApp ONTAP KI-Architektur auf Basis des NVIDIA DGX-Systems implementiert. Zur Validierung haben wir den NIH Chest Röntgendatensatz verwendet, der aus entidentifizierten Bildern von Thoraxröntgenbildern besteht. Die Bilder waren im PNG-Format. Die Daten wurden vom NIH Clinical Center bereitgestellt und sind über den verfügbar https://nihcc.app.box.com/v/ChestXray-NIHCC["NIH Download-Site"^]. Wir verwendeten eine 250-GB-Datenprobe mit 627, 615 Bildern aus 15 Klassen.
+Cnvrg.io AI OS wurde in einem Kubernetes Setup auf einer NetApp ONTAP KI-Architektur auf Basis des NVIDIA DGX-Systems implementiert. Zur Validierung haben wir den NIH Chest Röntgendatensatz verwendet, der aus entidentifizierten Bildern von Thoraxröntgenbildern besteht. Die Bilder waren im PNG-Format. Die Daten wurden vom NIH Clinical Center bereitgestellt und sind über den verfügbar https://["NIH Download-Site"^]. Wir verwendeten eine 250-GB-Datenprobe mit 627, 615 Bildern aus 15 Klassen.
 
 Der Datensatz wurde auf die cnvrg Plattform hochgeladen und auf einem NFS-Export aus dem NetApp AFF A800 Speichersystem zwischengespeichert.
 
@@ -84,7 +84,7 @@ Zum Hochladen von Daten auf die cnvrg Plattform können Sie die GUI oder den cnv
 
 Gehen Sie wie folgt vor, um Daten hochzuladen:
 
-. Laden Sie die herunter https://app.cnvrg.io/docs/cli/install.html["Cnvrg CLI"^].
+. Laden Sie die herunter https://["Cnvrg CLI"^].
 . Navigieren Sie zum Röntgenverzeichnis.
 . Initialisieren Sie den Datensatz in der Plattform mit dem `cnvrg data init` Befehl.
 . Alle Inhalte des Verzeichnisses mit dem in den zentralen Data Lake hochladen `cnvrg data sync` Befehl.Nachdem die Daten in den zentralen Objektspeicher hochgeladen wurden (StorageGRID, S3 oder andere), können Sie mit der GUI navigieren. Die folgende Abbildung zeigt eine geladene PNG-Datei mit Röntgenfibrose im Brustbild. Darüber hinaus versioniere cnvrg die Daten, so dass jedes Modell, das Sie erstellen, auf die Datenversion reproduziert werden kann.

@@ -79,7 +79,7 @@ In der folgenden Tabelle sind die Softwareanforderungen aufgeführt.
 
 == Analyse der finanziellen Stimmung
 
-Wir haben veröffentlicht https://docs.netapp.com/us-en/netapp-solutions/ai/ai-sent-support-center-analytics.html["TR-4910: Sentiment Analysis from Customer Communications with NetApp AI"^], In der mithilfe der eine End-to-End-Conversational KI-Pipeline aufgebaut wurde https://github.com/NetApp/netapp-dataops-toolkit["NetApp DataOps Toolkit"^], AFF Storage und NVIDIA DGX-System. Die Pipeline führt Stapelverarbeitung von Audiosignalen, ASR (Automatic Speech Recognition), Transfer Learning und Sentiment-Analysen durch und nutzt dabei das DataOps Toolkit, https://developer.nvidia.com/riva["NVIDIA Riva SDK"^], Und das https://developer.nvidia.com/tao["Tao-Rahmen"^]. Wir haben den Anwendungsfall der Sentiment-Analyse auf die Finanzdienstleistungsbranche ausgeweitet und einen SparkNLP-Workflow entwickelt, drei BERT-Modelle für verschiedene NLP-Aufgaben wie die benannte Anerkennung von Unternehmen geladen und die Quartalsgewinne der NASDAQ Top 10-Unternehmen in Sentenniveal getitelt.
+Wir haben veröffentlicht https://["TR-4910: Sentiment Analysis from Customer Communications with NetApp AI"^], In der mithilfe der eine End-to-End-Conversational KI-Pipeline aufgebaut wurde https://["NetApp DataOps Toolkit"^], AFF Storage und NVIDIA DGX-System. Die Pipeline führt Stapelverarbeitung von Audiosignalen, ASR (Automatic Speech Recognition), Transfer Learning und Sentiment-Analysen durch und nutzt dabei das DataOps Toolkit, https://["NVIDIA Riva SDK"^], Und das https://["Tao-Rahmen"^]. Wir haben den Anwendungsfall der Sentiment-Analyse auf die Finanzdienstleistungsbranche ausgeweitet und einen SparkNLP-Workflow entwickelt, drei BERT-Modelle für verschiedene NLP-Aufgaben wie die benannte Anerkennung von Unternehmen geladen und die Quartalsgewinne der NASDAQ Top 10-Unternehmen in Sentenniveal getitelt.
 
 Das folgende Skript `sentiment_analysis_spark. py` Verwendet das FinBERT-Modell, um Transkripte in HDFS zu verarbeiten und positive, neutrale und negative Stimmungswerte zu erzielen, wie in der folgenden Tabelle dargestellt:
 
@@ -242,7 +242,7 @@ image:apache-spark-image12.png["Horovod Spark Workflow Laufzeit."]
 
 Für Empfehlungssysteme, die zur Maximierung der CTR entwickelt wurden, müssen Sie lernen, anspruchsvolle Funktionsinteraktionen hinter Benutzerverhalten zu erlernen, die mathematisch von niedrig bis hoch berechnet werden können. Interaktionen zwischen Low-Order- und High-Order-Funktionen sollten für ein gutes Deep-Learning-Modell genauso wichtig sein, ohne das eine oder andere per Bicken zu tun. Deep Factorisation Machine (DeepFM), ein maschinell basiertes neuronales Netz zur Faktorisierung, kombiniert für das Feature Learning in einer neuen neuronalen Netzwerkarchitektur Factorisationsmaschinen für Empfehlung und Deep Learning.
 
-Obwohl herkömmliche Factorisierungsmaschinen paarweise Interaktionen als inneres Produkt latenter Vektoren zwischen Features modellieren und theoretisch Informationen in hoher Reihenfolge erfassen können, verwenden maschinelle Lernende in der Regel aufgrund der hohen Rechen- und Speicherkomplexität nur Interaktionen in zweiter Reihenfolge. Deep Neural Network Varianten wie Googles https://arxiv.org/abs/1606.07792["Wide  Deep Modelle"^] Zum anderen lernt man in einer hybriden Netzwerkstruktur anspruchsvolle Feature-Interaktionen, indem man ein linear weites Modell mit einem tiefen Modell kombiniert.
+Obwohl herkömmliche Factorisierungsmaschinen paarweise Interaktionen als inneres Produkt latenter Vektoren zwischen Features modellieren und theoretisch Informationen in hoher Reihenfolge erfassen können, verwenden maschinelle Lernende in der Regel aufgrund der hohen Rechen- und Speicherkomplexität nur Interaktionen in zweiter Reihenfolge. Deep Neural Network Varianten wie Googles https://["Wide  Deep Modelle"^] Zum anderen lernt man in einer hybriden Netzwerkstruktur anspruchsvolle Feature-Interaktionen, indem man ein linear weites Modell mit einem tiefen Modell kombiniert.
 
 Es gibt zwei Eingänge zu diesem Wide & Deep Model, einen für das zugrunde liegende breite Modell und den anderen für die Tiefe, der letzte Teil von denen noch erfordert fachkundige Feature-Engineering und macht damit die Technik weniger generierbar für andere Domains. Im Gegensatz zum Wide & Deep Model lässt sich DeepFM ohne jede Funktionstechnik effizient mit RAW-Funktionen Schulen, da sein breites Teil und das tiefe Teil denselben Eingang und den Einbettungsvektor teilen.
 
@@ -269,7 +269,7 @@ Beachten Sie, dass seit der Datendatei `ctr_train.csv` Ist über 11 GB, müssen 
     .config("spark.driver.maxResultSize", "50gb") \
     .getOrCreate()
 ....
-In der obigen `SparkSession.builder` Konfiguration wurde ebenfalls aktiviert https://arrow.apache.org/["Apache Arrow"^], Die einen Spark DataFrame in einen Pandas DataFrame mit dem konvertiert `df.toPandas()` Methode.
+In der obigen `SparkSession.builder` Konfiguration wurde ebenfalls aktiviert https://["Apache Arrow"^], Die einen Spark DataFrame in einen Pandas DataFrame mit dem konvertiert `df.toPandas()` Methode.
 
 ....
 22/06/17 15:56:21 INFO scheduler.DAGScheduler: Job 2 finished: toPandas at /sparkusecase/DeepCTR/examples/run_classification_criteo_spark.py:96, took 627.126487 s
@@ -287,7 +287,7 @@ Da sich dieser technische Bericht auf CPU-Tests ohne GPUs konzentriert, ist es z
 2022-06-18 07:19:20.101478: I tensorflow/core/platform/cpu_feature_guard.cc:151] This TensorFlow binary is optimized with oneAPI Deep Neural Network Library (oneDNN) to use the following CPU instructions in performance-critical operations:  AVX2 FMA
 To enable them in other operations, rebuild TensorFlow with the appropriate compiler flags.
 ....
-Um TensorFlow von der Quelle zu erstellen, empfiehlt NetApp die Verwendung https://bazel.build/["Bazel"^]. Für unsere Umgebung haben wir in der Shell-Eingabeaufforderung die folgenden Befehle zur Installation ausgeführt `dnf`, `dnf-plugins`, Und Bazel.
+Um TensorFlow von der Quelle zu erstellen, empfiehlt NetApp die Verwendung https://["Bazel"^]. Für unsere Umgebung haben wir in der Shell-Eingabeaufforderung die folgenden Befehle zur Installation ausgeführt `dnf`, `dnf-plugins`, Und Bazel.
 
 ....
 yum install dnf
@@ -305,9 +305,9 @@ yum update
 scl enable devtoolset-11 bash
 . /opt/rh/devtoolset-11/enable
 ....
-Beachten Sie, dass die letzten beiden Befehle aktiviert sind `devtoolset-11`, Die verwendet `/opt/rh/devtoolset-11/root/usr/bin/gcc` (GCC 11.2.1). Stellen Sie auch sicher, dass Sie `git` Version ist größer als 1.8.3 (dies kommt mit RHEL 7.9). Weitere Informationen finden Sie hier https://travis.media/how-to-upgrade-git-on-rhel7-and-centos7/["Artikel"^] Für Aktualisierung `git` Bis 2.24.1.
+Beachten Sie, dass die letzten beiden Befehle aktiviert sind `devtoolset-11`, Die verwendet `/opt/rh/devtoolset-11/root/usr/bin/gcc` (GCC 11.2.1). Stellen Sie auch sicher, dass Sie `git` Version ist größer als 1.8.3 (dies kommt mit RHEL 7.9). Weitere Informationen finden Sie hier https://["Artikel"^] Für Aktualisierung `git` Bis 2.24.1.
 
-Wir gehen davon aus, dass Sie die neueste TensorFlow Master-Repo bereits geklont haben. Erstellen Sie dann ein `workspace` Verzeichnis mit einem `WORKSPACE` Datei zum Erstellen von TensorFlow aus der Quelle mit AVX, AVX2 und FMA Führen Sie die aus `configure` Datei und geben Sie den richtigen Python-Binärspeicherort an. https://developer.nvidia.com/cuda-toolkit["CUDA"^] Ist für unsere Tests deaktiviert, da wir keine GPU verwendet haben. A `.bazelrc` Die Datei wird entsprechend Ihren Einstellungen erzeugt. Außerdem haben wir die Datei bearbeitet und gesetzt `build --define=no_hdfs_support=false` Um die HDFS-Unterstützung zu aktivieren. Siehe `.bazelrc` Im Abschnitt link:apache-spark-python-scripts-for-each-major-use-case.html["„Python-Skripte für jeden Hauptanwendungsfall“,"] Für eine vollständige Liste von Einstellungen und Flags.
+Wir gehen davon aus, dass Sie die neueste TensorFlow Master-Repo bereits geklont haben. Erstellen Sie dann ein `workspace` Verzeichnis mit einem `WORKSPACE` Datei zum Erstellen von TensorFlow aus der Quelle mit AVX, AVX2 und FMA Führen Sie die aus `configure` Datei und geben Sie den richtigen Python-Binärspeicherort an. https://["CUDA"^] Ist für unsere Tests deaktiviert, da wir keine GPU verwendet haben. A `.bazelrc` Die Datei wird entsprechend Ihren Einstellungen erzeugt. Außerdem haben wir die Datei bearbeitet und gesetzt `build --define=no_hdfs_support=false` Um die HDFS-Unterstützung zu aktivieren. Siehe `.bazelrc` Im Abschnitt link:apache-spark-python-scripts-for-each-major-use-case.html["„Python-Skripte für jeden Hauptanwendungsfall“,"] Für eine vollständige Liste von Einstellungen und Flags.
 
 ....
 ./configure

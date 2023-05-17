@@ -16,13 +16,13 @@ summary: Cloud Volumes Service bietet die Möglichkeit, dieselben Datensätze so
 link:ncvs-gc-smb.html["Früher: SMB."]
 
 [role="lead"]
-Cloud Volumes Service bietet die Möglichkeit, dieselben Datensätze sowohl für SMB- als auch für NFS-Clients zu nutzen, ohne dass die Zugriffsberechtigungen dafür unterbrochen werden (https://cloud.google.com/architecture/partners/netapp-cloud-volumes/managing-dual-protocol-access["Dual-Protokoll"^]). Dies geschieht durch die Koordinierung der Identitätszuordnung zwischen Protokollen und die Verwendung eines zentralen Backend-LDAP-Servers zur Bereitstellung der UNIX-Identitäten an Cloud Volumes Service. Sie können Windows Active Directory verwenden, um sowohl Windows- als auch UNIX-Benutzer zur Benutzerfreundlichkeit bereitzustellen.
+Cloud Volumes Service bietet die Möglichkeit, dieselben Datensätze sowohl für SMB- als auch für NFS-Clients zu nutzen, ohne dass die Zugriffsberechtigungen dafür unterbrochen werden (https://["Dual-Protokoll"^]). Dies geschieht durch die Koordinierung der Identitätszuordnung zwischen Protokollen und die Verwendung eines zentralen Backend-LDAP-Servers zur Bereitstellung der UNIX-Identitäten an Cloud Volumes Service. Sie können Windows Active Directory verwenden, um sowohl Windows- als auch UNIX-Benutzer zur Benutzerfreundlichkeit bereitzustellen.
 
 
 
 == Zugriffssteuerung
 
-* *Zugriffskontrollen freigeben.* Bestimmen Sie, welche Clients und/oder Benutzer und Gruppen auf eine NAS-Freigabe zugreifen können. Für NFS kontrollieren Exportrichtlinien und Regeln den Client-Zugriff auf Exporte. NFS-Exporte werden von der Cloud Volumes Service Instanz gemanagt. SMB nutzt CIFS/SMB-Freigaben und ACLs für die Freigabe von ACLs und ermöglicht eine granularere Kontrolle auf Benutzer- und Gruppenebene. Sie können ACLs auf Share-Ebene nur über SMB-Clients konfigurieren https://library.netapp.com/ecmdocs/ECMP1401220/html/GUID-C1772CDF-8AEE-422B-AB87-CFCB7E50FF94.html["MMC/Computer-Management"^] Mit einem Konto, das über Administratorrechte auf der Cloud Volumes Service-Instanz verfügt (siehe Abschnitt link:ncvs-gc-smb.html#accounts-with-local/builtin-administrator/backup-rights["„Konten mit lokalen/BUILTIN-Administrator/Backup-Rechten.“"]).
+* *Zugriffskontrollen freigeben.* Bestimmen Sie, welche Clients und/oder Benutzer und Gruppen auf eine NAS-Freigabe zugreifen können. Für NFS kontrollieren Exportrichtlinien und Regeln den Client-Zugriff auf Exporte. NFS-Exporte werden von der Cloud Volumes Service Instanz gemanagt. SMB nutzt CIFS/SMB-Freigaben und ACLs für die Freigabe von ACLs und ermöglicht eine granularere Kontrolle auf Benutzer- und Gruppenebene. Sie können ACLs auf Share-Ebene nur über SMB-Clients konfigurieren https://["MMC/Computer-Management"^] Mit einem Konto, das über Administratorrechte auf der Cloud Volumes Service-Instanz verfügt (siehe Abschnitt link:ncvs-gc-smb.html#accounts-with-local/builtin-administrator/backup-rights["„Konten mit lokalen/BUILTIN-Administrator/Backup-Rechten.“"]).
 * *Dateizugriffssteuerung.* Kontrollieren Sie Berechtigungen auf Datei- oder Ordnerebene und werden immer vom NAS-Client verwaltet. NFS Clients können die traditionellen Modus-Bits (rwx) oder NFSv4 ACLs nutzen. SMB-Clients nutzen NTFS-Berechtigungen.
 
 
@@ -38,7 +38,7 @@ Beispiel: Wenn ein Windows-Benutzer mit dem Namen `joe` Versucht über SMB den Z
 
 Alternativ können Sie auch festlegen, ob ein UNIX-Benutzer den Namen hat `joe` Versucht, auf ein Cloud Volumes Service-Volume mit Windows-Berechtigungen zuzugreifen, dann muss der UNIX-Benutzer in der Lage sein, einem gültigen Windows-Benutzer zuzuordnen. Andernfalls wird der Zugriff auf das Volume verweigert.
 
-Derzeit wird nur Active Directory für das externe UNIX-Identitätsmanagement mit LDAP unterstützt. Weitere Informationen zum Konfigurieren des Zugriffs auf diesen Dienst finden Sie unter https://cloud.google.com/architecture/partners/netapp-cloud-volumes/creating-smb-volumes["Erstellen einer AD-Verbindung"^].
+Derzeit wird nur Active Directory für das externe UNIX-Identitätsmanagement mit LDAP unterstützt. Weitere Informationen zum Konfigurieren des Zugriffs auf diesen Dienst finden Sie unter https://["Erstellen einer AD-Verbindung"^].
 
 
 

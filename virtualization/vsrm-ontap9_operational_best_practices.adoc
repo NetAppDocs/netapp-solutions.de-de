@@ -32,7 +32,7 @@ NetApp ONTAP 9 kann so konfiguriert werden, dass Snapshot Kopien automatisch ent
 ....
 snap autodelete modify –volume -commitment try
 ....
-Die automatische Volume-Größe sollte auf festgelegt werden `grow` Für Volumes mit SAN-Datastores und `grow_shrink` Für NFS-Datastores. Siehe https://docs.netapp.com/ontap-9/index.jsp?topic=%2Fcom.netapp.doc.dot-cm-cmpr-910%2Fvolume__autosize.html["ONTAP 9 Dokumentationszentrum"^] Für bestimmte Syntax.
+Die automatische Volume-Größe sollte auf festgelegt werden `grow` Für Volumes mit SAN-Datastores und `grow_shrink` Für NFS-Datastores. Siehe https://["ONTAP 9 Dokumentationszentrum"^] Für bestimmte Syntax.
 
 
 
@@ -122,11 +122,11 @@ Wenn es um Failover an einem Standort zusätzlich zur in diesem Leitfaden beschr
 
 Ein Problem, mit dem Sie möglicherweise zu kämpfen haben, ist die Netzwerkunterschiede zwischen den Standorten. In einigen Umgebungen können am primären Standort und am DR-Standort dieselben Netzwerk-IP-Adressen verwendet werden. Diese Fähigkeit wird als Stretched Virtual LAN (VLAN) oder Stretched Network Setup bezeichnet. Andere Umgebungen müssen möglicherweise unterschiedliche Netzwerk-IP-Adressen (z. B. in unterschiedlichen VLANs) am primären Standort relativ zum DR-Standort verwenden.
 
-VMware bietet verschiedene Möglichkeiten zur Lösung dieses Problems. Netzwerkvirtualisierungstechnologien wie VMware NSX-T Data Center abstrahieren den gesamten Netzwerk-Stack von Ebene 2 bis 7 von der Betriebsumgebung und ermöglichen so portablere Lösungen. Weitere Informationen zu NSX-T-Optionen mit SRM https://docs.vmware.com/en/Site-Recovery-Manager/8.4/com.vmware.srm.admin.doc/GUID-89402F1B-1AFB-42CD-B7D5-9535AF32435D.html["Hier"^].
+VMware bietet verschiedene Möglichkeiten zur Lösung dieses Problems. Netzwerkvirtualisierungstechnologien wie VMware NSX-T Data Center abstrahieren den gesamten Netzwerk-Stack von Ebene 2 bis 7 von der Betriebsumgebung und ermöglichen so portablere Lösungen. Weitere Informationen zu NSX-T-Optionen mit SRM https://["Hier"^].
 
 SRM ermöglicht es Ihnen auch, die Netzwerkkonfiguration einer VM wie das Recovery zu ändern. Diese Neukonfiguration umfasst Einstellungen wie IP-Adressen, Gateway-Adresse und DNS-Server-Einstellungen. Verschiedene Netzwerkeinstellungen, die auf einzelne VMs angewendet werden, während sie wiederhergestellt werden, können in den Eigenschaftseinstellungen einer VM im Wiederherstellungsplan angegeben werden.
 
-Um SRM so zu konfigurieren, dass verschiedene Netzwerkeinstellungen auf mehrere VMs angewendet werden können, ohne die Eigenschaften der einzelnen im Recovery-Plan bearbeiten zu müssen, stellt VMware ein Tool namens dr-ip-Customizer bereit. Weitere Informationen zur Verwendung dieses Dienstprogramms finden Sie in der Dokumentation von VMware https://docs.vmware.com/en/Site-Recovery-Manager/8.4/com.vmware.srm.admin.doc/GUID-2B7E2B25-2B82-4BC4-876B-2FE0A3D71B84.html["Hier"^].
+Um SRM so zu konfigurieren, dass verschiedene Netzwerkeinstellungen auf mehrere VMs angewendet werden können, ohne die Eigenschaften der einzelnen im Recovery-Plan bearbeiten zu müssen, stellt VMware ein Tool namens dr-ip-Customizer bereit. Weitere Informationen zur Verwendung dieses Dienstprogramms finden Sie in der Dokumentation von VMware https://["Hier"^].
 
 
 

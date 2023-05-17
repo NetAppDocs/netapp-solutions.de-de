@@ -16,7 +16,7 @@ summary: SMB ist ein von Microsoft entwickeltes Netzwerkdateiprotokoll, das eine
 link:ncvs-gc-nfs.html["Früher: NFS."]
 
 [role="lead"]
-https://docs.microsoft.com/en-us/previous-versions/windows/it-pro/windows-server-2012-r2-and-2012/hh831795(v=ws.11)["SMB"^] Das von Microsoft entwickelte Netzwerk-File-Sharing-Protokoll bietet zentralisierte Benutzer-/Gruppenauthentifizierung, Berechtigungen, Sperren und Dateifreigabe für mehrere SMB-Clients über ein Ethernet-Netzwerk. Dateien und Ordner werden Clients über Freigaben angezeigt, die mit einer Vielzahl von Freigabeeigenschaften konfiguriert werden können und die Zugriffskontrolle über Berechtigungen auf Share-Ebene bietet. SMB kann jedem Client angezeigt werden, der Protokolle unterstützt, einschließlich Windows-, Apple- und Linux-Clients.
+https://["SMB"^] Das von Microsoft entwickelte Netzwerk-File-Sharing-Protokoll bietet zentralisierte Benutzer-/Gruppenauthentifizierung, Berechtigungen, Sperren und Dateifreigabe für mehrere SMB-Clients über ein Ethernet-Netzwerk. Dateien und Ordner werden Clients über Freigaben angezeigt, die mit einer Vielzahl von Freigabeeigenschaften konfiguriert werden können und die Zugriffskontrolle über Berechtigungen auf Share-Ebene bietet. SMB kann jedem Client angezeigt werden, der Protokolle unterstützt, einschließlich Windows-, Apple- und Linux-Clients.
 
 Cloud Volumes Service unterstützt die Protokollversionen SMB 2.1 und 3.x.
 
@@ -97,7 +97,7 @@ image:ncvs-gc-image9.png["Fehler: Fehlendes Grafikbild"]
 
 === SMB-Authentifizierungsdialekte
 
-Cloud Volumes Service unterstützt Folgendes https://docs.microsoft.com/en-us/openspecs/windows_protocols/ms-smb2/8df1a501-ce4e-4287-8848-5f1d4733e280["Dialekte"^] Für SMB-Authentifizierung:
+Cloud Volumes Service unterstützt Folgendes https://["Dialekte"^] Für SMB-Authentifizierung:
 
 * LM
 * NTLM
@@ -109,7 +109,7 @@ Kerberos-Authentifizierung für SMB-Freigabe-Zugriff ist die sicherste Authentif
 
 Cloud Volumes Service unterstützt außerdem die Rückwärtskompatibilität für die LM- und NTLM-Authentifizierung. Wenn Kerberos falsch konfiguriert ist (z. B. beim Erstellen von SMB-Aliasen), geht der Zugriff auf Shares auf schwächere Authentifizierungsmethoden zurück (z. B. NTLMv2). Da diese Mechanismen weniger sicher sind, sind sie in einigen Active Directory-Umgebungen deaktiviert. Wenn schwächere Authentifizierungsmethoden deaktiviert sind und Kerberos nicht richtig konfiguriert ist, schlägt der Zugriff auf die Freigabe fehl, da keine gültige Authentifizierungsmethode vorhanden ist, auf die Sie zurückgreifen können.
 
-Informationen zum Konfigurieren/Anzeigen der unterstützten Authentifizierungsstufen in Active Directory finden Sie unter https://docs.microsoft.com/en-us/windows/security/threat-protection/security-policy-settings/network-security-lan-manager-authentication-level["Netzwerksicherheit: Authentifizierungsebene des LAN Managers"^].
+Informationen zum Konfigurieren/Anzeigen der unterstützten Authentifizierungsstufen in Active Directory finden Sie unter https://["Netzwerksicherheit: Authentifizierungsebene des LAN Managers"^].
 
 
 
@@ -160,7 +160,7 @@ Gehen Sie wie folgt vor, um die besten Sicherheitsergebnisse zu erzielen:
 * Verwenden Sie Gruppen zur Zugriffssteuerung anstelle einzelner Benutzer, um das Management zu vereinfachen und das Entfernen bzw. Hinzufügen von Benutzern zu beschleunigen, um ACLs über das Gruppenmanagement zu teilen.
 * Weniger restriktiver, allgemeiner Zugriff auf die Asse auf den Freigabeberechtigungen und Sperrung des Zugriffs auf Benutzer und Gruppen mit Dateiberechtigungen für eine granularere Zugriffskontrolle.
 * Die allgemeine Verwendung von expliziten Ablehnen von ACLs vermeiden, da sie ACLs außer Kraft setzen. Beschränken Sie die Verwendung expliziter Ablehnen von ACLs für Benutzer oder Gruppen, die schnell vom Zugriff auf ein Dateisystem eingeschränkt werden müssen.
-* Achten Sie darauf, dass Sie auf die achten https://www.varonis.com/blog/permission-propagation/["ACL-Vererbung"^] Einstellungen beim Ändern von Berechtigungen; das Festlegen des Vererbungsfahs auf der obersten Ebene eines Verzeichnisses oder Volumes mit hoher Dateianzahl bedeutet, dass jede Datei unter diesem Verzeichnis oder Volume über geerbte Berechtigungen verfügt, die ihr hinzugefügt wurden. Dies kann unerwünschte Verhaltensweisen wie unbeabsichtigten Zugriff/Denial-of-DoS und lange Abgänge von Berechtigungsänderungen verursachen, wenn jede Datei angepasst wird.
+* Achten Sie darauf, dass Sie auf die achten https://["ACL-Vererbung"^] Einstellungen beim Ändern von Berechtigungen; das Festlegen des Vererbungsfahs auf der obersten Ebene eines Verzeichnisses oder Volumes mit hoher Dateianzahl bedeutet, dass jede Datei unter diesem Verzeichnis oder Volume über geerbte Berechtigungen verfügt, die ihr hinzugefügt wurden. Dies kann unerwünschte Verhaltensweisen wie unbeabsichtigten Zugriff/Denial-of-DoS und lange Abgänge von Berechtigungsänderungen verursachen, wenn jede Datei angepasst wird.
 
 
 
@@ -180,17 +180,17 @@ Das Ausblenden von Snapshot Kopien vor Endbenutzern kann aus Sicherheitsgründen
 
 * *SMB-Verschlüsselung aktivieren (sowohl für CVS-Performance als auch für CVS-SW verfügbar).* SMB-Verschlüsselung ist auf der SMB-Freigabe standardmäßig deaktiviert (deaktiviert). Wenn Sie das Kontrollkästchen aktiviert SMB-Verschlüsselung aktivieren, bedeutet dies, dass der Datenverkehr zwischen dem SMB-Client und dem -Server im laufenden Vorgang verschlüsselt wird, wobei die am höchsten unterstützten Verschlüsselungsstufen ausgehandelt werden. Cloud Volumes Service unterstützt bis zu AES-256-Verschlüsselung für SMB. Durch die Aktivierung der SMB-Verschlüsselung kommen Performance-Einbußen mit sich, die für Ihre SMB-Clients möglicherweise nicht spürbar sind – in etwa im Bereich von 10 bis 20 %. NetApp empfiehlt Tests nachdrücklich, um zu prüfen, ob diese Performance-Einbußen akzeptabel sind.
 * *SMB-Share ausblenden (verfügbar sowohl für CVS-Performance als auch CVS-SW).* durch diese Option wird der SMB-Share-Pfad vom normalen Browsing ausgeblendet. Das bedeutet, dass Clients, die den Freigabepfad nicht kennen, die Freigaben beim Zugriff auf den Standard-UNC-Pfad nicht sehen können (z. B. `\\CVS-SMB`). Wenn das Kontrollkästchen aktiviert ist, können nur Clients darauf zugreifen, die den SMB-Freigabepfad explizit kennen oder über den von einem Gruppenrichtlinienobjekt definierten Freigabepfad verfügen (Sicherheit durch Obfuscation).
-* *Access-Based Enumeration (ABE) aktivieren (nur CVS-SW).* Dies ähnelt dem Ausblenden der SMB-Freigabe, außer die Freigaben oder Dateien sind nur Benutzern oder Gruppen verborgen, die keine Berechtigung zum Zugriff auf die Objekte haben. Beispiel: Wenn Windows-Benutzer `joe` Ist mindestens nicht erlaubt Lese-Zugriff durch die Berechtigungen, dann der Windows-Benutzer `joe` SMB-Freigabe oder Dateien können überhaupt nicht angezeigt werden. Dies ist standardmäßig deaktiviert und Sie können sie durch Aktivieren des Kästchens aktivieren. Weitere Informationen zu ABE finden Sie im NetApp Knowledge Base-Artikel https://kb.netapp.com/Advice_and_Troubleshooting/Data_Storage_Software/ONTAP_OS/How_does_Access_Based_Enumeration_(ABE)_work["Wie funktioniert Access Based Enumeration (ABE)?"^]
-* *Kontinuierliche verfügbare (CA) Freigabesupport aktivieren (nur CVS-Performance).* https://kb.netapp.com/Advice_and_Troubleshooting/Data_Storage_Software/ONTAP_OS/What_are_SMB_Continuously_Available_(CA)_Shares["Kontinuierlich verfügbare SMB-Freigaben"^] Bietet eine Möglichkeit, Applikationsunterbrechungen bei Failover-Ereignissen zu minimieren, indem Sperrstatus über Nodes im Cloud Volumes Service-Back-End-System hinweg repliziert werden. Dies ist keine Sicherheitsfunktion, bietet aber insgesamt eine höhere Ausfallsicherheit. Derzeit werden nur SQL Server- und FSLogix-Anwendungen unterstützt.
+* *Access-Based Enumeration (ABE) aktivieren (nur CVS-SW).* Dies ähnelt dem Ausblenden der SMB-Freigabe, außer die Freigaben oder Dateien sind nur Benutzern oder Gruppen verborgen, die keine Berechtigung zum Zugriff auf die Objekte haben. Beispiel: Wenn Windows-Benutzer `joe` Ist mindestens nicht erlaubt Lese-Zugriff durch die Berechtigungen, dann der Windows-Benutzer `joe` SMB-Freigabe oder Dateien können überhaupt nicht angezeigt werden. Dies ist standardmäßig deaktiviert und Sie können sie durch Aktivieren des Kästchens aktivieren. Weitere Informationen zu ABE finden Sie im NetApp Knowledge Base-Artikel https://["Wie funktioniert Access Based Enumeration (ABE)?"^]
+* *Kontinuierliche verfügbare (CA) Freigabesupport aktivieren (nur CVS-Performance).* https://["Kontinuierlich verfügbare SMB-Freigaben"^] Bietet eine Möglichkeit, Applikationsunterbrechungen bei Failover-Ereignissen zu minimieren, indem Sperrstatus über Nodes im Cloud Volumes Service-Back-End-System hinweg repliziert werden. Dies ist keine Sicherheitsfunktion, bietet aber insgesamt eine höhere Ausfallsicherheit. Derzeit werden nur SQL Server- und FSLogix-Anwendungen unterstützt.
 
 
 
 
 == Ausgeblendete Standardfreigaben
 
-Wenn in Cloud Volumes Service ein SMB Server erstellt wird, gibt es diese https://library.netapp.com/ecmdocs/ECMP1366834/html/GUID-5B56B12D-219C-4E23-B3F8-1CB1C4F619CE.html["Versteckte administrative Freigaben"^] (Unter Verwendung der Namenskonvention für USD), die zusätzlich zum SMB-Share des Daten-Volumes erstellt werden. Dazu gehören C€ (Namespace Access) und IPC€ (gemeinsame Nutzung von benannten Rohren für die Kommunikation zwischen Programmen, wie z. B. die Remote Procedure Calls (RPC), die für den Zugriff auf die Microsoft Management Console (MMC) verwendet werden).
+Wenn in Cloud Volumes Service ein SMB Server erstellt wird, gibt es diese https://["Versteckte administrative Freigaben"^] (Unter Verwendung der Namenskonvention für USD), die zusätzlich zum SMB-Share des Daten-Volumes erstellt werden. Dazu gehören C€ (Namespace Access) und IPC€ (gemeinsame Nutzung von benannten Rohren für die Kommunikation zwischen Programmen, wie z. B. die Remote Procedure Calls (RPC), die für den Zugriff auf die Microsoft Management Console (MMC) verwendet werden).
 
-Die IPC-USD-Freigabe enthält keine Share-ACLs und kann nicht geändert werden – sie wird streng für RPC-Aufrufe und verwendet https://docs.microsoft.com/en-us/troubleshoot/windows-server/networking/inter-process-communication-share-null-session["Windows deaktiviert standardmäßig den anonymen Zugriff auf diese Freigaben"^].
+Die IPC-USD-Freigabe enthält keine Share-ACLs und kann nicht geändert werden – sie wird streng für RPC-Aufrufe und verwendet https://["Windows deaktiviert standardmäßig den anonymen Zugriff auf diese Freigaben"^].
 
 Der Wert-Anteil ermöglicht standardmäßig den Zugriff von BUILTIN/Administratoren, aber die Cloud Volumes Service-Automatisierung entfernt das Share-ACL und erlaubt keinen Zugriff auf jemanden, da der Zugriff auf die C€-Aktie eine Übersicht über alle gemounteten Volumes in den Cloud Volumes Service-Dateisystemen ermöglicht. Daher wird versucht, zu navigieren `\\SERVER\C$` Fehler.
 
@@ -200,9 +200,9 @@ Der Wert-Anteil ermöglicht standardmäßig den Zugriff von BUILTIN/Administrato
 
 Cloud Volumes Service SMB-Server verfügen über ähnliche Funktionen wie normale Windows SMB-Server, da lokale Gruppen (z. B. BUILTIN\-Administratoren) Zugriffsrechte für ausgewählte Domänenbenutzer und -Gruppen anwenden.
 
-Wenn Sie einen Benutzer angeben, der zu Backup-Benutzern hinzugefügt werden soll, wird der Benutzer der Gruppe BUILTIN\Backup Operators in der Cloud Volumes Service-Instanz hinzugefügt, die diese Active Directory-Verbindung verwendet, die dann den ruft https://docs.microsoft.com/en-us/windows-hardware/drivers/ifs/privileges["SeBackupPrivilege und SeRestorePrivilege"^].
+Wenn Sie einen Benutzer angeben, der zu Backup-Benutzern hinzugefügt werden soll, wird der Benutzer der Gruppe BUILTIN\Backup Operators in der Cloud Volumes Service-Instanz hinzugefügt, die diese Active Directory-Verbindung verwendet, die dann den ruft https://["SeBackupPrivilege und SeRestorePrivilege"^].
 
-Wenn Sie Benutzern von Sicherheitsberechtigungen einen Benutzer hinzufügen, erhält der Benutzer die SeSecurityPrivilege, die in einigen Anwendungsanwendungsfällen, wie z. B., nützlich ist https://docs.netapp.com/us-en/ontap/smb-hyper-v-sql/add-sesecurityprivilege-user-account-task.html["SQL Server auf SMB-Freigaben"^].
+Wenn Sie Benutzern von Sicherheitsberechtigungen einen Benutzer hinzufügen, erhält der Benutzer die SeSecurityPrivilege, die in einigen Anwendungsanwendungsfällen, wie z. B., nützlich ist https://["SQL Server auf SMB-Freigaben"^].
 
 image:ncvs-gc-image13.png["Fehler: Fehlendes Grafikbild"]
 

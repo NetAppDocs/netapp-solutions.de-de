@@ -56,7 +56,7 @@ NOTE: Bei der Verwendung von NFSv4.1 wird der Root-Benutzer möglicherweise als 
 
 In Linux hat das Root-Konto Zugriff auf alle Befehle, Dateien und Ordner in einem Linux-basierten Dateisystem. Aufgrund der Leistungsfähigkeit dieses Kontos müssen Benutzer häufig aufgrund von Best Practices für die Sicherheit deaktiviert oder auf irgendeine Weise eingeschränkt werden. Bei NFS-Exporten kann die Leistung, die ein Root-Benutzer über die Dateien und Ordner hat, im Cloud Volumes Service über Exportrichtlinien und -Regeln gesteuert werden. Auch das Konzept wird als Root Squash bezeichnet.
 
-Root-Squashing sorgt dafür, dass der Root-Benutzer, der auf eine NFS-Bereitstellung zugreift, auf den anonymen numerischen Benutzer 65534 (siehe Abschnitt „<<Der anonyme Benutzer>>“) und ist derzeit nur verfügbar, wenn CVS-Performance verwendet wird, indem Sie bei der Erstellung von Regeln für Exportrichtlinien aus für Root-Zugriff auswählen. Wenn der Root-Benutzer auf den anonymen Benutzer zerquetscht wird, hat er keinen Zugriff mehr auf das Ausführen von Chown oder https://en.wikipedia.org/wiki/Setuid["Setuid/setgid-Befehle (das klebrige Bit)"^] In Dateien oder Ordnern im NFS-Mount und Dateien oder Ordnern, die vom Root-Benutzer erstellt wurden, zeigen die Anon-UID als Eigentümer/Gruppe an. Darüber hinaus können NFSv4 ACLs nicht vom Root-Benutzer geändert werden. Der Root-Benutzer hat jedoch weiterhin Zugriff auf chmod und gelöschte Dateien, für die er keine expliziten Berechtigungen besitzt. Wenn Sie den Zugriff auf die Datei- und Ordnerberechtigungen eines Root-Benutzers beschränken möchten, ziehen Sie in Betracht, ein Volume mit NTFS ACLs zu verwenden und einen Windows-Benutzer mit dem Namen zu erstellen `root`, Und die gewünschten Berechtigungen auf die Dateien oder Ordner anwenden.
+Root-Squashing sorgt dafür, dass der Root-Benutzer, der auf eine NFS-Bereitstellung zugreift, auf den anonymen numerischen Benutzer 65534 (siehe Abschnitt „<<Der anonyme Benutzer>>“) und ist derzeit nur verfügbar, wenn CVS-Performance verwendet wird, indem Sie bei der Erstellung von Regeln für Exportrichtlinien aus für Root-Zugriff auswählen. Wenn der Root-Benutzer auf den anonymen Benutzer zerquetscht wird, hat er keinen Zugriff mehr auf das Ausführen von Chown oder https://["Setuid/setgid-Befehle (das klebrige Bit)"^] In Dateien oder Ordnern im NFS-Mount und Dateien oder Ordnern, die vom Root-Benutzer erstellt wurden, zeigen die Anon-UID als Eigentümer/Gruppe an. Darüber hinaus können NFSv4 ACLs nicht vom Root-Benutzer geändert werden. Der Root-Benutzer hat jedoch weiterhin Zugriff auf chmod und gelöschte Dateien, für die er keine expliziten Berechtigungen besitzt. Wenn Sie den Zugriff auf die Datei- und Ordnerberechtigungen eines Root-Benutzers beschränken möchten, ziehen Sie in Betracht, ein Volume mit NTFS ACLs zu verwenden und einen Windows-Benutzer mit dem Namen zu erstellen `root`, Und die gewünschten Berechtigungen auf die Dateien oder Ordner anwenden.
 
 
 
@@ -111,7 +111,7 @@ Mode-Bit-Berechtigungen decken nur Besitzer, Gruppe und alle anderen in der Sema
 
 Beide Methoden erfordern eine LDAP-Verbindung für das UNIX-Identitätsmanagement und eine gültige UNIX-Benutzer- und Gruppeninformationen (siehe Abschnitt link:ncvs-gc-other-nas-infrastructure-service-dependencies.html#ldap["„LDAP“"]) Und sind nur mit CVS-Performance Instanzen verfügbar. Um Volumes im NTFS-Sicherheitsstil mit NFS zu verwenden, müssen Sie Dual-Protokoll (SMB und NFSv3) oder Dual-Protokoll (SMB und NFSv4.1) verwenden, auch wenn keine SMB-Verbindungen hergestellt werden. Um NFSv4.1 ACLs für NFSv3-Mounts zu verwenden, müssen Sie auswählen `Both (NFSv3/NFSv4.1)` Als Protokolltyp.
 
-Normale UNIX Modus Bits bieten nicht die gleiche Granularitätsebene in Berechtigungen, die NTFS oder NFSv4.x ACLs bieten. In der folgenden Tabelle wird die Berechtigungsgranularität zwischen NFSv3-Modus-Bits und NFSv4.1 ACLs verglichen. Informationen zu NFSv4.1 ACLs finden Sie unter https://linux.die.net/man/5/nfs4_acl["nfs4_acl – NFSv4 Access Control-Listen"^].
+Normale UNIX Modus Bits bieten nicht die gleiche Granularitätsebene in Berechtigungen, die NTFS oder NFSv4.x ACLs bieten. In der folgenden Tabelle wird die Berechtigungsgranularität zwischen NFSv3-Modus-Bits und NFSv4.1 ACLs verglichen. Informationen zu NFSv4.1 ACLs finden Sie unter https://["nfs4_acl – NFSv4 Access Control-Listen"^].
 
 |===
 | Bits im NFSv3 Modus | NFSv4.1 ACLs 
@@ -139,7 +139,7 @@ Berechtigungen * Read-Data (Files) / list-Directory (Verzeichnisse) * Write-Data
 |===
 Schließlich ist die NFS-Gruppenmitgliedschaft (sowohl in NFSv3 als AUCH NFSV4.x) auf ein Standardlimit von 16 für AUTH_SYS begrenzt, gemäß den RPC-Paketlimits. NFS Kerberos bietet bis zu 32 Gruppen und NFSv4 ACLs entfernen die Beschränkung durch granulare Benutzer- und Gruppen-ACLs (bis zu 1024 Einträge pro ACE).
 
-Darüber hinaus bietet Cloud Volumes Service erweiterte Gruppen-Support, um die maximal unterstützten Gruppen auf 32 zu erweitern. Dazu ist eine LDAP-Verbindung zu einem LDAP-Server erforderlich, der gültige UNIX-Benutzer- und Gruppenidentitäten enthält. Weitere Informationen zur Konfiguration finden Sie unter https://cloud.google.com/architecture/partners/netapp-cloud-volumes/creating-nfs-volumes?hl=en_US["Erstellen und Managen von NFS-Volumes"^] In der Google-Dokumentation.
+Darüber hinaus bietet Cloud Volumes Service erweiterte Gruppen-Support, um die maximal unterstützten Gruppen auf 32 zu erweitern. Dazu ist eine LDAP-Verbindung zu einem LDAP-Server erforderlich, der gültige UNIX-Benutzer- und Gruppenidentitäten enthält. Weitere Informationen zur Konfiguration finden Sie unter https://["Erstellen und Managen von NFS-Volumes"^] In der Google-Dokumentation.
 
 
 
@@ -220,7 +220,7 @@ Ein Sicherheitsdeskriptor besteht aus einer Sicherheits-ACL (SACL) und einer Erm
 
 Wenn ein einfaches `chmod` Wird auf einer Datei oder einem Ordner mit NFSv4.1 ACLs gesetzt ausgeführt, bestehende Benutzer- und Gruppen-ACLs bleiben erhalten, aber der STANDARDEIGENTÜMER@, GROUP@, EVERYONE@ ACLs werden geändert.
 
-Ein Client, der NFSv4.1 ACLs verwendet, kann ACLs für Dateien und Verzeichnisse auf dem System festlegen und anzeigen. Wenn eine neue Datei oder ein Unterverzeichnis in einem Verzeichnis erstellt wird, das über eine ACL verfügt, erbt dieses Objekt alle Asse in der ACL, die mit dem entsprechenden gekennzeichnet wurden http://linux.die.net/man/5/nfs4_acl["Ervererbungsflaggen"^].
+Ein Client, der NFSv4.1 ACLs verwendet, kann ACLs für Dateien und Verzeichnisse auf dem System festlegen und anzeigen. Wenn eine neue Datei oder ein Unterverzeichnis in einem Verzeichnis erstellt wird, das über eine ACL verfügt, erbt dieses Objekt alle Asse in der ACL, die mit dem entsprechenden gekennzeichnet wurden http://["Ervererbungsflaggen"^].
 
 Wenn eine Datei oder ein Verzeichnis über eine NFSv4.1-ACL verfügt, wird diese ACL verwendet, um den Zugriff zu steuern, unabhängig davon, welches Protokoll für den Zugriff auf die Datei oder das Verzeichnis verwendet wird.
 
@@ -238,15 +238,15 @@ Wenn eine Datei oder ein Verzeichnis als Ergebnis einer NFSv4-Anforderung erstel
 
 === ACE-Berechtigungen
 
-Die Berechtigungen für NFSv4.1 ACLs verwenden eine Reihe von Groß- und Kleinbuchstaben (z. B. `rxtncy`) Um den Zugriff zu steuern. Weitere Informationen zu diesen Buchstabenwerten finden Sie unter https://www.osc.edu/book/export/html/4523["WIE: Verwenden Sie NFSv4 ACL"^].
+Die Berechtigungen für NFSv4.1 ACLs verwenden eine Reihe von Groß- und Kleinbuchstaben (z. B. `rxtncy`) Um den Zugriff zu steuern. Weitere Informationen zu diesen Buchstabenwerten finden Sie unter https://["WIE: Verwenden Sie NFSv4 ACL"^].
 
 
 
 === NFSv4.1 ACL-Verhalten mit Umask und ACL-Vererbung
 
-http://linux.die.net/man/5/nfs4_acl["NFSv4 ACLs bieten die Möglichkeit, eine ACL-Vererbung anzubieten"^]. ACL-Vererbung bedeutet, dass Dateien oder Ordner, die unter Objekten mit NFSv4.1 ACLs-Satz erstellt wurden, die ACLs basierend auf der Konfiguration des erben können http://linux.die.net/man/5/nfs4_acl["ACL-Vererbungskennzeichnung"^].
+http://["NFSv4 ACLs bieten die Möglichkeit, eine ACL-Vererbung anzubieten"^]. ACL-Vererbung bedeutet, dass Dateien oder Ordner, die unter Objekten mit NFSv4.1 ACLs-Satz erstellt wurden, die ACLs basierend auf der Konfiguration des erben können http://["ACL-Vererbungskennzeichnung"^].
 
-https://man7.org/linux/man-pages/man2/umask.2.html["Umfragen"^] Wird verwendet, um die Berechtigungsstufe zu steuern, auf der Dateien und Ordner in einem Verzeichnis ohne Administratorinteraktion erstellt werden. Standardmäßig können mit Cloud Volumes Service übernommene ACLs überschrieben werden. Dies ist ein erwartetes Verhalten wie per https://datatracker.ietf.org/doc/html/rfc5661["RFC 5661"^].
+https://["Umfragen"^] Wird verwendet, um die Berechtigungsstufe zu steuern, auf der Dateien und Ordner in einem Verzeichnis ohne Administratorinteraktion erstellt werden. Standardmäßig können mit Cloud Volumes Service übernommene ACLs überschrieben werden. Dies ist ein erwartetes Verhalten wie per https://["RFC 5661"^].
 
 
 
@@ -262,7 +262,7 @@ Das vorangegangene Beispiel folgt den Richtlinien im ACL-Format von:
 ....
 type:flags:principal:permissions
 ....
-Einen Typ von `A` Bedeutet „Zulassen“. Die Erben-Flags werden in diesem Fall nicht festgelegt, da der Principal keine Gruppe ist und keine Vererbung beinhaltet. Da es sich bei ACE nicht um EINEN AUDIT-Eintrag handelt, müssen die Audit-Flags nicht festgelegt werden. Weitere Informationen zu NFSv4.1 ACLs finden Sie unter http://linux.die.net/man/5/nfs4_acl["http://linux.die.net/man/5/nfs4_acl"^].
+Einen Typ von `A` Bedeutet „Zulassen“. Die Erben-Flags werden in diesem Fall nicht festgelegt, da der Principal keine Gruppe ist und keine Vererbung beinhaltet. Da es sich bei ACE nicht um EINEN AUDIT-Eintrag handelt, müssen die Audit-Flags nicht festgelegt werden. Weitere Informationen zu NFSv4.1 ACLs finden Sie unter http://["http://linux.die.net/man/5/nfs4_acl"^].
 
 Wenn die NFSv4.1 ACL nicht richtig eingestellt ist (oder eine Namenszeichenfolge nicht vom Client und Server aufgelöst werden kann), verhält sich die ACL möglicherweise nicht wie erwartet. Andernfalls kann die ACL-Änderung nicht angewendet werden und einen Fehler verursacht.
 
@@ -428,7 +428,7 @@ In fast allen Fällen, wenn Sie sehen `nobody` Bei Benutzer- und Gruppenlisten v
 
 Wenn Sie NFSv4.1 verwenden, gibt es ein Name-String-Mapping, das während NFS-Vorgängen stattfindet, wie zuvor beschrieben.
 
-Zusätzlich zu verwenden `/var/log/messages` Um ein Problem mit NFSv4-IDs zu finden, können Sie das verwenden https://man7.org/linux/man-pages/man5/nfsidmap.5.html["Nfsidmap -l"^] Befehl auf dem NFS Client, um anzuzeigen, welche Benutzernamen der NFSv4-Domäne ordnungsgemäß zugeordnet haben.
+Zusätzlich zu verwenden `/var/log/messages` Um ein Problem mit NFSv4-IDs zu finden, können Sie das verwenden https://["Nfsidmap -l"^] Befehl auf dem NFS Client, um anzuzeigen, welche Benutzernamen der NFSv4-Domäne ordnungsgemäß zugeordnet haben.
 
 Dies wird beispielsweise nach einem Benutzer ausgegeben, der vom Client gefunden werden kann und Cloud Volumes Service auf einen NFSv4.x Mount zugreift:
 

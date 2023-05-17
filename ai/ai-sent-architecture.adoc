@@ -32,7 +32,7 @@ Das NetApp DataOps Toolkit ist eine Python Library, die Entwickler, Data Scienti
 
 Das folgende Diagramm zeigt die Lösungsarchitektur. Es gibt drei Hauptkategorien: Die Cloud, der Core und der Edge. Jede der Kategorien kann geografisch verteilt sein. Die Cloud enthält z. B. Objektspeicher mit Audiodateien in Buckets aus verschiedenen Regionen, während der Core Datacenter enthalten kann, die über ein Hochgeschwindigkeits-Netzwerk oder NetApp Cloud Sync verbunden sind. Die Randknoten bezeichnen die täglichen Arbeitsplattformen des einzelnen menschlichen Agenten, auf denen interaktive Dashboard-Tools und Mikrofone zur Visualisierung der Stimmung und zur Erfassung von Audiodaten aus Gesprächen mit Kunden zur Verfügung stehen.
 
-Bei GPU-beschleunigten Datacentern können Unternehmen das NVIDIA verwenden https://docs.nvidia.com/deeplearning/riva/user-guide/docs/index.html["RIVA"^] Framework zum Erstellen dialogbasierter KI-Applikationen, mit denen das erstellt werden kann https://developer.nvidia.com/tao["Tao Toolkit"^] Verbindungen für Modellabbildung und Umschulung mithilfe von Transfer L-Learning-Techniken. Computing-Applikationen und Workflows werden von dem bereitgestellt https://github.com/NetApp/netapp-dataops-toolkit["NetApp DataOps Toolkit"^], Bereitstellung der besten Datenmanagement-Funktionen, die ONTAP zu bieten hat. Mit dem Toolkit können Datenteams schnell Prototypen ihrer Modelle mit strukturierten und unstrukturierten Daten erstellen. Diese lassen sich über Snapshots und Klone für Rückverfolgbarkeit, Versionierung, A/B-Tests einsetzen und bieten so Sicherheit, Governance, Und Einhaltung gesetzlicher Vorschriften. Siehe Abschnitt link:ai-sent-design-considerations.html#storage-design["Storage-Design"] Entnehmen.
+Bei GPU-beschleunigten Datacentern können Unternehmen das NVIDIA verwenden https://["RIVA"^] Framework zum Erstellen dialogbasierter KI-Applikationen, mit denen das erstellt werden kann https://["Tao Toolkit"^] Verbindungen für Modellabbildung und Umschulung mithilfe von Transfer L-Learning-Techniken. Computing-Applikationen und Workflows werden von dem bereitgestellt https://["NetApp DataOps Toolkit"^], Bereitstellung der besten Datenmanagement-Funktionen, die ONTAP zu bieten hat. Mit dem Toolkit können Datenteams schnell Prototypen ihrer Modelle mit strukturierten und unstrukturierten Daten erstellen. Diese lassen sich über Snapshots und Klone für Rückverfolgbarkeit, Versionierung, A/B-Tests einsetzen und bieten so Sicherheit, Governance, Und Einhaltung gesetzlicher Vorschriften. Siehe Abschnitt link:ai-sent-design-considerations.html#storage-design["Storage-Design"] Entnehmen.
 
 Diese Lösung zeigt die Verarbeitung von Audiodateien, das NLP-Modelltraining, das Transfer Learning und die Detailschritte zum Datenmanagement. Die daraus resultierende End-to-End-Pipeline erzeugt eine Sentimentzusammenfassung, die in Echtzeit auf den Dashboards von Mitarbeitern des menschlichen Supports angezeigt wird.
 
@@ -109,7 +109,7 @@ ONTAP 9.9, die jüngste Generation der Storage-Managementsoftware von NetApp, er
 
 ==== NetApp Cloud Sync
 
-https://docs.netapp.com/us-en/occm/concept_cloud_sync.html["Cloud-Synchronisierung"^] Ist ein NetApp Service für schnelle und sichere Datensynchronisierung, ermöglicht die Übertragung von Dateien zwischen lokalen NFS- oder SMB-Dateifreigaben an eines der folgenden Ziele:
+https://["Cloud-Synchronisierung"^] Ist ein NetApp Service für schnelle und sichere Datensynchronisierung, ermöglicht die Übertragung von Dateien zwischen lokalen NFS- oder SMB-Dateifreigaben an eines der folgenden Ziele:
 
 * NetApp StorageGRID
 * NetApp ONTAP S3
@@ -128,7 +128,7 @@ Cloud Sync verschiebt Dateien schnell und sicher dorthin, wo sie benötigt werde
 
 ==== NetApp StorageGRID
 
-Die softwaredefinierte Objekt-Storage Suite von StorageGRID unterstützt eine Vielzahl von Anwendungsfällen für nahtlose Public-, Private- und Hybrid-Multi-Cloud-Umgebungen. Branchenführende Innovationen sorgen dafür, dass NetApp StorageGRID unstrukturierte Daten für eine heterogene Nutzung speichert, sichert, sichert und schützt. Dazu gehört auch automatisiertes Lifecycle Management über längere Zeit. Weitere Informationen finden Sie im https://www.netapp.com/data-storage/storagegrid/documentation/["NetApp StorageGRID"^] Standort.
+Die softwaredefinierte Objekt-Storage Suite von StorageGRID unterstützt eine Vielzahl von Anwendungsfällen für nahtlose Public-, Private- und Hybrid-Multi-Cloud-Umgebungen. Branchenführende Innovationen sorgen dafür, dass NetApp StorageGRID unstrukturierte Daten für eine heterogene Nutzung speichert, sichert, sichert und schützt. Dazu gehört auch automatisiertes Lifecycle Management über längere Zeit. Weitere Informationen finden Sie im https://["NetApp StorageGRID"^] Standort.
 
 
 
@@ -243,6 +243,6 @@ Zur Sentimentanalyse dient die Textausgabe der automatischen Spracherkennung als
 
 image:ai-sent-image8.png["Fehler: Fehlendes Grafikbild"]
 
-Eine ähnliche Pipeline wird sowohl für die sprach-zu-Text- als auch für die Sentimentanalyse im TAO Toolkit verwendet. Der große Unterschied ist die Verwendung von Etiketten, die für die Feinabstimmung der Modelle erforderlich sind. Die TAO Toolkit-Pipeline beginnt mit der Verarbeitung der Datendateien. Dann die vortrainierten Modelle (aus dem https://ngc.nvidia.com/catalog["NVIDIA NGC-Katalog"^]) Sind mit den Support-Center-Daten fein abgestimmt. Die fein abgestimmten Modelle werden anhand ihrer entsprechenden Leistungskennzahlen bewertet und, wenn sie performanter sind als die vortrainierten Modelle, auf DEM RIVA-Server eingesetzt.
+Eine ähnliche Pipeline wird sowohl für die sprach-zu-Text- als auch für die Sentimentanalyse im TAO Toolkit verwendet. Der große Unterschied ist die Verwendung von Etiketten, die für die Feinabstimmung der Modelle erforderlich sind. Die TAO Toolkit-Pipeline beginnt mit der Verarbeitung der Datendateien. Dann die vortrainierten Modelle (aus dem https://["NVIDIA NGC-Katalog"^]) Sind mit den Support-Center-Daten fein abgestimmt. Die fein abgestimmten Modelle werden anhand ihrer entsprechenden Leistungskennzahlen bewertet und, wenn sie performanter sind als die vortrainierten Modelle, auf DEM RIVA-Server eingesetzt.
 
 link:ai-sent-design-considerations.html["Als Nächstes: Design-Überlegungen."]

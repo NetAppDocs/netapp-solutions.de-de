@@ -14,9 +14,9 @@ summary: 'Cloud Volumes Service verwendet für die Bereitstellung des Service Go
 
 
 [role="lead"]
-Cloud Volumes Service verwendet in ähnlicher Weise wie andere Cloud-native Dienste von Google wie CloudSQL, Google Cloud VMware Engine (GCVE) und FileStore https://cloud.google.com/vpc/docs/private-services-access?hl=en_US["Google PSA"^] Für die Bereitstellung des Service. In PSA werden Dienste innerhalb eines Service-Producer-Projekts aufgebaut, das verwendet wird https://cloud.google.com/vpc/docs/vpc-peering?hl=en_US["VPC-Netzwerk-Peering"^] So stellen Sie eine Verbindung zum Serviceverbraucher her. Der Hersteller des Service wird von NetApp bereitgestellt und betrieben. Der Serviceverbraucher ist eine VPC in einem Kundenprojekt und hostet die Clients, die auf Cloud Volumes Service Dateifreigaben zugreifen möchten.
+Cloud Volumes Service verwendet in ähnlicher Weise wie andere Cloud-native Dienste von Google wie CloudSQL, Google Cloud VMware Engine (GCVE) und FileStore https://["Google PSA"^] Für die Bereitstellung des Service. In PSA werden Dienste innerhalb eines Service-Producer-Projekts aufgebaut, das verwendet wird https://["VPC-Netzwerk-Peering"^] So stellen Sie eine Verbindung zum Serviceverbraucher her. Der Hersteller des Service wird von NetApp bereitgestellt und betrieben. Der Serviceverbraucher ist eine VPC in einem Kundenprojekt und hostet die Clients, die auf Cloud Volumes Service Dateifreigaben zugreifen möchten.
 
-Die folgende Abbildung, auf die im Bezug genommen wird https://cloud.google.com/architecture/partners/netapp-cloud-volumes/architecture?hl=en_US["Abschnitt zur Architektur"^] In der Cloud Volumes Service-Dokumentation wird eine allgemeine Ansicht angezeigt.
+Die folgende Abbildung, auf die im Bezug genommen wird https://["Abschnitt zur Architektur"^] In der Cloud Volumes Service-Dokumentation wird eine allgemeine Ansicht angezeigt.
 
 image:ncvs-gc-image1.png["Fehler: Fehlendes Grafikbild"]
 
@@ -46,7 +46,7 @@ Das bedeutet, dass auf der Netzwerkebene alle mit der gemeinsam genutzten VPC ve
 
 VPC-Service-Kontrollen einrichten eine Zugriffskontrollumgebung um Google Cloud Services herum, die mit dem Internet verbunden sind und weltweit zugänglich sind. Diese Dienste bieten Zugriffskontrolle über Benutzeridentitäten, können aber nicht einschränken, aus welchen Netzwerkstandortanforderungen stammen. Die VPC-Service-Kontrollen schließen diese Lücke, indem sie Funktionen zur Einschränkung des Zugriffs auf definierte Netzwerke einführen.
 
-Die Cloud Volumes Service-Datenebene ist nicht mit dem externen Internet verbunden, sondern mit privaten VPCs mit klar definierten Netzwerkgrenzen (Perimeter). Innerhalb dieses Netzwerks verwendet jedes Volume eine protokollspezifische Zugriffssteuerung. Jegliche externe Netzwerkverbindung wird explizit von Google Cloud-Projektadministratoren erstellt. Die Kontrollebene bietet jedoch nicht denselben Schutz wie die Datenebene und kann von jedem beliebigen Ort mit gültigen Zugangsdaten aufgerufen werden ( https://datatracker.ietf.org/doc/html/rfc7519["JWT-Token"^]).
+Die Cloud Volumes Service-Datenebene ist nicht mit dem externen Internet verbunden, sondern mit privaten VPCs mit klar definierten Netzwerkgrenzen (Perimeter). Innerhalb dieses Netzwerks verwendet jedes Volume eine protokollspezifische Zugriffssteuerung. Jegliche externe Netzwerkverbindung wird explizit von Google Cloud-Projektadministratoren erstellt. Die Kontrollebene bietet jedoch nicht denselben Schutz wie die Datenebene und kann von jedem beliebigen Ort mit gültigen Zugangsdaten aufgerufen werden ( https://["JWT-Token"^]).
 
 Kurz gesagt, die Cloud Volumes Service Datenebene bietet die Möglichkeit der Netzwerk-Zugriffssteuerung, ohne dass die VPC-Service-Kontrollen unterstützt werden müssen. Außerdem werden nicht explizit VPC-Service-Controls verwendet.
 
@@ -73,7 +73,7 @@ image:ncvs-gc-image4.png["Fehler: Fehlendes Grafikbild"]
 
 === VM-Netzwerkschnittstellen
 
-Angreifer können versuchen, eine neue Netzwerkschnittstellenkarte (NIC) zu einer VM in hinzuzufügen https://en.wikipedia.org/wiki/Promiscuous_mode["Promiskuous Modus"^] (Port-Spiegelung) oder aktivieren Sie den Promiskuus-Modus auf einer vorhandenen NIC, um den gesamten Datenverkehr zu entschnüffeln. Beim Hinzufügen einer neuen NIC muss in Google Cloud eine VM vollständig heruntergefahren werden, was zu Warnmeldungen führt. So können Angreifer nicht unbemerkt das tun.
+Angreifer können versuchen, eine neue Netzwerkschnittstellenkarte (NIC) zu einer VM in hinzuzufügen https://["Promiskuous Modus"^] (Port-Spiegelung) oder aktivieren Sie den Promiskuus-Modus auf einer vorhandenen NIC, um den gesamten Datenverkehr zu entschnüffeln. Beim Hinzufügen einer neuen NIC muss in Google Cloud eine VM vollständig heruntergefahren werden, was zu Warnmeldungen führt. So können Angreifer nicht unbemerkt das tun.
 
 Darüber hinaus können NICs überhaupt nicht auf den promiskuitiven Modus eingestellt werden und erzeugen in Google Cloud Warnmeldungen.
 
