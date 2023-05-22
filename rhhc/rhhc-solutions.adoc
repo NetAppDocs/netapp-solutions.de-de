@@ -1,0 +1,80 @@
+---
+sidebar: sidebar 
+permalink: rhhc/rhhc-solutions.html 
+keywords: NetApp Solutions, hybrid cloud, container workloads, containers, Red Hat OpenShift, RedHat OpenShift, VMware, ROSA, ACC, Astra Control Center, Advanced Cluster Management, ACM, Hub Cluster 
+summary:  
+---
+= Unterstützte Lösungen für die NetApp Hybrid-Multi-Cloud-Umgebung für Container-Workloads mit Red hat OpenShift
+:hardbreaks:
+:allow-uri-read: 
+:nofooter: 
+:icons: font
+:linkattrs: 
+:imagesdir: ./../media/
+
+
+[role="lead"]
+Die Lösung testet und validiert Migration und zentralisierte Datensicherung mit OpenShift Container-Plattform (OCP), OpenShift Advanced Cluster Manager (ACM), NetApp ONTAP, NetApp BlueXP und NetApp Astra Control Center (ACC).
+
+Folgende Szenarien werden von NetApp getestet und validiert. Die Lösung ist in mehrere Szenarien aufgeteilt, die auf folgenden Merkmalen basieren:
+
+* On-Premises
+* Cloud
++
+** Selbst gemanagte OpenShift-Cluster und selbstverwalteter NetApp Storage
+** Von Providern gemanagte OpenShift-Cluster und NetApp Storage, der vom Provider gemanagt wird
+
+
+
+
+**Wir werden in Zukunft weitere Lösungen und Anwendungsfälle entwickeln.**
+
+
+
+== Szenario 1: Datenschutz und Migration innerhalb der On-Premise-Umgebung mittels ACC
+
+**Lokal: Selbst gemanagte OpenShift-Cluster und automatisierter NetApp Storage**
+
+* Erstellen Sie mithilfe von ACC Snapshot Kopien, Backups und Wiederherstellungen für den Datenschutz.
+* Führen Sie mithilfe von ACC eine SnapMirror Replizierung der Container-Applikationen durch.
+
+
+
+
+=== Szenario 1
+
+image:rhhc-on-premises.png[""]
+
+
+
+== Szenario 2: Datensicherung und Migration aus der On-Premises-Umgebung in die AWS-Umgebung mittels ACC:
+
+**On-Premises: Selbst verwalteter OpenShift-Cluster und selbstverwalteter Storage** **AWS Cloud: Selbstverwalteter OpenShift-Cluster und selbstverwalteter Storage**
+
+* Führen Sie mithilfe von ACC Backups und Wiederherstellungen für den Datenschutz durch.
+* Führen Sie mithilfe von ACC eine SnapMirror Replizierung der Container-Applikationen durch.
+
+
+
+
+=== Szenario 2
+
+image:rhhc-self-managed-aws.png[""]
+
+
+
+== Szenario 3: Datensicherung und Migration aus der On-Premises-Umgebung in die AWS-Umgebung:
+
+**On-Premises: Selbstverwalteter OpenShift-Cluster und selbstverwalteter Storage** **AWS Cloud: Vom Provider verwaltetes OpenShift-Cluster (ROSA) und Provider-Managed Storage (FSxN)**
+
+* Führen Sie mit BlueXP die Replizierung persistenter Volumes (FSxN) durch.
+* Erstellen Sie mithilfe von OpenShift GitOps Anwendungsmetadaten neu.
+
+
+
+
+=== Szenario 3
+
+image:rhhc-rosa-with-fsxn.png[""]
+
+Hinweise zur Verwendung von ONTAP in einer MetroCluster-Konfiguration finden Sie unter link:https://docs.netapp.com/us-en/ontap-metrocluster/install-stretch/concept_considerations_when_using_ontap_in_a_mcc_configuration.html["Hier"].

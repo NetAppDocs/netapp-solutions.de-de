@@ -39,11 +39,11 @@ Kubectl -n default-tenant apply -f <your yaml file>
 
 == Weisen Sie NetApp Volume dem Jupyter Notebook zu
 
-Iguazio bietet verschiedene Managed Services, um Data Scientists einen vollständigen End-to-End-Stack für die Entwicklung und Implementierung von KI/ML-Applikationen bereitzustellen. Weitere Informationen zu diesen Komponenten finden Sie unter https://["Iguazio Übersicht über Anwendungsdienste und -Tools"^].
+Iguazio bietet verschiedene Managed Services, um Data Scientists einen vollständigen End-to-End-Stack für die Entwicklung und Implementierung von KI/ML-Applikationen bereitzustellen. Weitere Informationen zu diesen Komponenten finden Sie unter https://www.iguazio.com/docs/intro/latest-release/ecosystem/app-services/["Iguazio Übersicht über Anwendungsdienste und -Tools"^].
 
 Einer der Managed Services ist Jupyter Notebook. Jeder Entwickler erhält seinen eigenen Einsatz eines Notebook-Containers mit den nötigen Ressourcen für die Entwicklung. Um ihnen Zugriff auf das NetApp Cloud Volume zu geben, können Sie das Volume ihrem Container zuweisen und die Ressourcenzuweisung, den laufenden Benutzer sowie die Einstellungen für Umgebungsvariablen für Persistent Volume Claims nutzen. Das folgende Bild ist dargestellt:
 
-Informationen zu einer On-Premises-Konfiguration finden Sie unter https://["TR-4798"^] Bei dem Setup von Trident sind die Datenmanagementfunktionen von NetApp ONTAP aktiviert, wie z. B. die Erstellung von Snapshot Kopien Ihrer Daten oder des Modells zur Versionierung. Fügen Sie in Ihrer Trident Back-End-Konfigurationsdatei die folgende Zeile ein, um Snapshot Verzeichnisse sichtbar zu machen:
+Informationen zu einer On-Premises-Konfiguration finden Sie unter https://www.netapp.com/us/media/tr-4798.pdf["TR-4798"^] Bei dem Setup von Trident sind die Datenmanagementfunktionen von NetApp ONTAP aktiviert, wie z. B. die Erstellung von Snapshot Kopien Ihrer Daten oder des Modells zur Versionierung. Fügen Sie in Ihrer Trident Back-End-Konfigurationsdatei die folgende Zeile ein, um Snapshot Verzeichnisse sichtbar zu machen:
 
 ....
 {
@@ -53,7 +53,7 @@ Informationen zu einer On-Premises-Konfiguration finden Sie unter https://["TR-4
     }
 }
 ....
-Sie müssen eine Back-End-Konfigurationsdatei von Trident im JSON-Format erstellen und dann Folgendes ausführen https://["Trident-Befehl"^] So verwenden Sie sie:
+Sie müssen eine Back-End-Konfigurationsdatei von Trident im JSON-Format erstellen und dann Folgendes ausführen https://netapp-trident.readthedocs.io/en/stable-v18.07/kubernetes/operations/tasks/backends.html["Trident-Befehl"^] So verwenden Sie sie:
 
 ....
 tridentctl create backend -f <backend-file>

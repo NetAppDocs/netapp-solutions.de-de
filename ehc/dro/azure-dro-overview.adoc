@@ -30,11 +30,11 @@ image:azure-dro-image1.png["Fehler: Fehlendes Grafikbild"]
 
 === Voraussetzungen und allgemeine Empfehlungen
 
-* Vergewissern Sie sich, dass Sie die regionsübergreifende Replikation aktiviert haben, indem Sie Replikations-Peering erstellen. Siehe https://["Volume-Replizierung für Azure NetApp Files erstellen"^].
+* Vergewissern Sie sich, dass Sie die regionsübergreifende Replikation aktiviert haben, indem Sie Replikations-Peering erstellen. Siehe https://learn.microsoft.com/en-us/azure/azure-netapp-files/cross-region-replication-create-peering["Volume-Replizierung für Azure NetApp Files erstellen"^].
 * Sie müssen ExpressRoute Global Reach zwischen den Private Clouds der Quell- und Ziellösung von Azure VMware konfigurieren.
 * Sie müssen über einen Dienstprinzipal verfügen, der auf Ressourcen zugreifen kann.
 * Die folgende Topologie wird unterstützt: Primärer AVS-Standort zum sekundären AVS-Standort.
-* Konfigurieren Sie die https://["Replizierung"^] Planen Sie für jedes Volume entsprechend den Geschäftsanforderungen und der Datenänderungsrate ein.
+* Konfigurieren Sie die https://learn.microsoft.com/en-us/azure/azure-netapp-files/cross-region-replication-introduction["Replizierung"^] Planen Sie für jedes Volume entsprechend den Geschäftsanforderungen und der Datenänderungsrate ein.
 
 
 
@@ -48,9 +48,9 @@ NOTE: Kaskadierung und Fan-in- und Fan-out-Topologien werden nicht unterstützt.
 
 === Implementieren Sie die Azure-VMware-Lösung
 
-Der https://["Azure VMware Lösung"^] (AVS) ist ein Hybrid-Cloud-Service mit voll funktionsfähigen VMware SDDCs in einer Microsoft Azure Public Cloud. AVS ist eine Lösung eines Erstanbieters, die vollständig von Microsoft verwaltet und unterstützt wird und von VMware überprüft wurde, die eine Azure-Infrastruktur nutzt. Daher erhalten Kunden VMware ESXi für die Compute-Virtualisierung, vSAN für hyperkonvergenten Storage und NSX für Netzwerk und Sicherheit. Gleichzeitig profitieren sie von der globalen Präsenz und den erstklassigen Datacenter-Einrichtungen von Microsoft Azure sowie der Nähe zum umfassenden Ecosystem nativer Azure-Services und -Lösungen. Eine Kombination aus Azure VMware Solution SDDC und Azure NetApp Files bietet die beste Performance bei minimaler Netzwerklatenz.
+Der https://learn.microsoft.com/en-us/azure/azure-vmware/introduction["Azure VMware Lösung"^] (AVS) ist ein Hybrid-Cloud-Service mit voll funktionsfähigen VMware SDDCs in einer Microsoft Azure Public Cloud. AVS ist eine Lösung eines Erstanbieters, die vollständig von Microsoft verwaltet und unterstützt wird und von VMware überprüft wurde, die eine Azure-Infrastruktur nutzt. Daher erhalten Kunden VMware ESXi für die Compute-Virtualisierung, vSAN für hyperkonvergenten Storage und NSX für Netzwerk und Sicherheit. Gleichzeitig profitieren sie von der globalen Präsenz und den erstklassigen Datacenter-Einrichtungen von Microsoft Azure sowie der Nähe zum umfassenden Ecosystem nativer Azure-Services und -Lösungen. Eine Kombination aus Azure VMware Solution SDDC und Azure NetApp Files bietet die beste Performance bei minimaler Netzwerklatenz.
 
-Gehen Sie wie folgt vor, um eine AVS Private Cloud auf Azure zu konfigurieren https://["Verlinken"^] Zu NetApp-Dokumentation und in diesem https://["Verlinken"^] Für Microsoft-Dokumentation. Für DR-Zwecke kann eine Pilotumgebung mit minimaler Konfiguration verwendet werden. Dieses Setup enthält nur Kernkomponenten zur Unterstützung kritischer Applikationen. Es kann horizontal skalierbar sein und weitere Hosts aufbauen, um den Großteil der Auslastung bei einem Failover zu übernehmen.
+Gehen Sie wie folgt vor, um eine AVS Private Cloud auf Azure zu konfigurieren https://docs.netapp.com/us-en/netapp-solutions/ehc/azure/azure-setup.html["Verlinken"^] Zu NetApp-Dokumentation und in diesem https://learn.microsoft.com/en-us/azure/azure-vmware/deploy-azure-vmware-solution?tabs=azure-portal["Verlinken"^] Für Microsoft-Dokumentation. Für DR-Zwecke kann eine Pilotumgebung mit minimaler Konfiguration verwendet werden. Dieses Setup enthält nur Kernkomponenten zur Unterstützung kritischer Applikationen. Es kann horizontal skalierbar sein und weitere Hosts aufbauen, um den Großteil der Auslastung bei einem Failover zu übernehmen.
 
 
 NOTE: In der ersten Version unterstützt DRO einen vorhandenen AVS SDDC-Cluster. Die Erstellung eines On-Demand SDDC wird in einer kommenden Version verfügbar sein.
@@ -59,7 +59,7 @@ NOTE: In der ersten Version unterstützt DRO einen vorhandenen AVS SDDC-Cluster.
 
 === Bereitstellung und Konfiguration von Azure NetApp Files
 
-https://["Azure NetApp Dateien"^] Der hochperformante gemessene File-Storage-Service der Enterprise-Klasse. Befolgen Sie die hier beschriebenen Schritte https://["Verlinken"^] Die Bereitstellung und Konfiguration von Azure NetApp Files als NFS-Datastore zur Optimierung von AVS Private-Cloud-Implementierungen.
+https://learn.microsoft.com/en-us/azure/azure-netapp-files/azure-netapp-files-introduction["Azure NetApp Dateien"^] Der hochperformante gemessene File-Storage-Service der Enterprise-Klasse. Befolgen Sie die hier beschriebenen Schritte https://learn.microsoft.com/en-us/azure/azure-vmware/attach-azure-netapp-files-to-azure-vmware-solution-hosts?tabs=azure-portal["Verlinken"^] Die Bereitstellung und Konfiguration von Azure NetApp Files als NFS-Datastore zur Optimierung von AVS Private-Cloud-Implementierungen.
 
 
 
@@ -69,7 +69,7 @@ Der erste Schritt besteht darin, regionsübergreifende Replikation für die gew�
 
 image:azure-dro-image2.png["Fehler: Fehlendes Grafikbild"]
 
-Befolgen Sie die hier beschriebenen Schritte https://["Verlinken"^] Zur Einrichtung einer regionsübergreifenden Replikation durch Erstellen von Replikations-Peering. Das Service-Level für den Zielkapazitätspool kann mit dem des Quell-Kapazitäts-Pools übereinstimmen. Für diesen speziellen Anwendungsfall können Sie jedoch das Standard-Service-Level und dann auswählen https://["Ändern Sie den Service-Level"^] Im Falle einer echten Katastrophe oder DR-Simulationen.
+Befolgen Sie die hier beschriebenen Schritte https://learn.microsoft.com/en-us/azure/azure-netapp-files/cross-region-replication-create-peering["Verlinken"^] Zur Einrichtung einer regionsübergreifenden Replikation durch Erstellen von Replikations-Peering. Das Service-Level für den Zielkapazitätspool kann mit dem des Quell-Kapazitäts-Pools übereinstimmen. Für diesen speziellen Anwendungsfall können Sie jedoch das Standard-Service-Level und dann auswählen https://learn.microsoft.com/en-us/azure/azure-netapp-files/dynamic-change-volume-service-level["Ändern Sie den Service-Level"^] Im Falle einer echten Katastrophe oder DR-Simulationen.
 
 
 NOTE: Eine regionsübergreifende Replikationsbeziehung ist Voraussetzung und muss zuvor erstellt werden.
@@ -183,7 +183,7 @@ NOTE: Das Hinzufügen einer Quellwebsite wird zu Demonstrationszwecken in diesem
 
 . Aktualisieren Sie die vCenter-Details. Wählen Sie dazu die Anmeldedaten, die Azure-Region und die Ressourcengruppe aus der Dropdown-Liste für das primäre AVS-SDDC aus.
 . DRO listet alle verfügbaren SDDCs innerhalb der Region auf. Wählen Sie die entsprechende Private-Cloud-URL aus der Dropdown-Liste aus.
-. Geben Sie das ein `cloudadmin@vsphere.local` Benutzeranmeldeinformationen. Auf diese kann über das Azure-Portal zugegriffen werden. Befolgen Sie die hier beschriebenen Schritte https://["Verlinken"^]. Klicken Sie anschließend auf *Weiter*.
+. Geben Sie das ein `cloudadmin@vsphere.local` Benutzeranmeldeinformationen. Auf diese kann über das Azure-Portal zugegriffen werden. Befolgen Sie die hier beschriebenen Schritte https://learn.microsoft.com/en-us/azure/azure-vmware/tutorial-access-private-cloud["Verlinken"^]. Klicken Sie anschließend auf *Weiter*.
 +
 image:azure-dro-image6.png["Fehler: Fehlendes Grafikbild"]
 
@@ -328,22 +328,22 @@ Sehen Sie sich die folgenden Dokumente und/oder Websites an, um mehr über die i
 
 * Volume-Replizierung für Azure NetApp Files erstellen
 +
-https://["https://learn.microsoft.com/en-us/azure/azure-netapp-files/cross-region-replication-create-peering"^]
+https://learn.microsoft.com/en-us/azure/azure-netapp-files/cross-region-replication-create-peering["https://learn.microsoft.com/en-us/azure/azure-netapp-files/cross-region-replication-create-peering"^]
 
 * Regionsübergreifende Replizierung von Azure NetApp Files Volumes
 +
-https://["https://learn.microsoft.com/en-us/azure/azure-netapp-files/cross-region-replication-introduction#service-level-objectives"^]
+https://learn.microsoft.com/en-us/azure/azure-netapp-files/cross-region-replication-introduction%23service-level-objectives["https://learn.microsoft.com/en-us/azure/azure-netapp-files/cross-region-replication-introduction#service-level-objectives"^]
 
-* https://["Azure VMware Lösung"^]
+* https://learn.microsoft.com/en-us/azure/azure-vmware/introduction["Azure VMware Lösung"^]
 +
-https://["https://learn.microsoft.com/en-us/azure/azure-vmware/introduction"^]
+https://learn.microsoft.com/en-us/azure/azure-vmware/introduction["https://learn.microsoft.com/en-us/azure/azure-vmware/introduction"^]
 
 * Implementieren und Konfigurieren der Virtualisierungsumgebung auf Azure
 +
-https://["https://docs.netapp.com/us-en/netapp-solutions/ehc/azure/azure-setup.html"^]
+https://docs.netapp.com/us-en/netapp-solutions/ehc/azure/azure-setup.html["https://docs.netapp.com/us-en/netapp-solutions/ehc/azure/azure-setup.html"^]
 
 * Implementierung und Konfiguration der Azure-VMware-Lösung
 +
-https://["https://learn.microsoft.com/en-us/azure/azure-vmware/deploy-azure-vmware-solution?tabs=azure-portal"^]
+https://learn.microsoft.com/en-us/azure/azure-vmware/deploy-azure-vmware-solution?tabs=azure-portal["https://learn.microsoft.com/en-us/azure/azure-vmware/deploy-azure-vmware-solution?tabs=azure-portal"^]
 
 

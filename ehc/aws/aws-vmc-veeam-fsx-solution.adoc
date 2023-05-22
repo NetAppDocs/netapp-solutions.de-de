@@ -78,7 +78,7 @@ Der Zweck dieser Lösung besteht darin, die Datensicherung von Virtual Machines 
 
 . Oracle Database VMs mit VMDKs und Applikationsdaten auf FSX für ONTAP NFS-Datastores.
 . Linux- und Windows-File-Server-VMs mit VMDKs, die auf FSX für ONTAP-NFS-Datastores liegen.
-. Veeam benötigt spezielle TCP Ports für die Kommunikation zwischen Servern und den Komponenten in der Backup-Umgebung. Auf den Komponenten der Veeam Backup-Infrastruktur werden automatisch die erforderlichen Firewall-Regeln erstellt. Eine vollständige Liste der Anforderungen an den Netzwerkport finden Sie im Abschnitt Ports des https://["Veeam Backup and Replication User Guide for VMware vSphere"].
+. Veeam benötigt spezielle TCP Ports für die Kommunikation zwischen Servern und den Komponenten in der Backup-Umgebung. Auf den Komponenten der Veeam Backup-Infrastruktur werden automatisch die erforderlichen Firewall-Regeln erstellt. Eine vollständige Liste der Anforderungen an den Netzwerkport finden Sie im Abschnitt Ports des https://helpcenter.veeam.com/docs/backup/vsphere/used_ports.html?zoom_highlight=network+ports&ver=120["Veeam Backup and Replication User Guide for VMware vSphere"].
 
 
 ====
@@ -114,11 +114,11 @@ In dieser Lösung stellen wir detaillierte Anweisungen für die Implementierung 
 
 Wir werden FSX für die Erstellung von ONTAP-Dateisystemen durchgehen, iSCSI-Volumes für die Verwendung als Backup-Repositorys mounten, Backup-Jobs erstellen und ausführen und VM- und Datenbank-Restores durchführen.
 
-Nähere Informationen zu FSX für NetApp ONTAP finden Sie im https://["FSX for ONTAP Benutzerhandbuch"^].
+Nähere Informationen zu FSX für NetApp ONTAP finden Sie im https://docs.aws.amazon.com/fsx/latest/ONTAPGuide/what-is-fsx-ontap.html["FSX for ONTAP Benutzerhandbuch"^].
 
-Detaillierte Informationen zu Veeam Backup and Replication finden Sie im https://["Technische Dokumentation Des Veeam Help Center"^] Standort.
+Detaillierte Informationen zu Veeam Backup and Replication finden Sie im https://www.veeam.com/documentation-guides-datasheets.html?productId=8&version=product%3A8%2F221["Technische Dokumentation Des Veeam Help Center"^] Standort.
 
-Hinweise zu Überlegungen und Einschränkungen bei der Verwendung von Veeam Backup and Replication mit VMware Cloud on AWS finden Sie unter https://["VMware Cloud on AWS und VMware Cloud on Dell EMC Support. Überlegungen und Einschränkungen"].
+Hinweise zu Überlegungen und Einschränkungen bei der Verwendung von Veeam Backup and Replication mit VMware Cloud on AWS finden Sie unter https://www.veeam.com/kb2414["VMware Cloud on AWS und VMware Cloud on Dell EMC Support. Überlegungen und Einschränkungen"].
 
 
 
@@ -128,11 +128,11 @@ Ein Veeam-Proxyserver ist eine Komponente der Veeam Backup & Replication-Softwar
 
 Bei der Auswahl eines Veeam Proxy-Server-Designs müssen die Anzahl der gleichzeitigen Aufgaben und der gewünschte Transportmodus oder die Art des Storage-Zugriffs berücksichtigt werden.
 
-Informationen zur Dimensionierung der Anzahl von Proxy-Servern und zu deren Systemanforderungen finden Sie im https://["Veeam VMware vSphere Best Practice Guide"].
+Informationen zur Dimensionierung der Anzahl von Proxy-Servern und zu deren Systemanforderungen finden Sie im https://bp.veeam.com/vbr/2_Design_Structures/D_Veeam_Components/D_backup_proxies/vmware_proxies.html["Veeam VMware vSphere Best Practice Guide"].
 
 Der Veeam Data Mover ist eine Komponente des Veeam Proxy Servers und verwendet einen Transport Mode als Methode, um VM-Daten von der Quelle zu erhalten und an das Ziel zu übertragen. Der Transportmodus wird während der Konfiguration des Backup-Jobs festgelegt. Mithilfe des direkten Storage-Zugriffs ist es möglich, die Effizienz von Backups von NFS-Datenspeichern zu erhöhen.
 
-Weitere Informationen zu den Transportmodi finden Sie im https://["Veeam Backup and Replication User Guide for VMware vSphere"].
+Weitere Informationen zu den Transportmodi finden Sie im https://helpcenter.veeam.com/docs/backup/vsphere/transport_modes.html?ver=120["Veeam Backup and Replication User Guide for VMware vSphere"].
 
 Im folgenden Schritt behandeln wir die Bereitstellung des Veeam Proxy Servers auf einer Windows VM im VMware Cloud SDDC.
 
@@ -214,7 +214,7 @@ Erstellen und konfigurieren Sie die iSCSI-LUNs auf FSX für ONTAP und mounten Si
 NOTE: Das Erstellen einer iSCSI-LUN auf FSX für ONTAP ist ein mehrstufiger Prozess. Der erste Schritt zur Erstellung der Volumes kann über die Amazon FSX-Konsole oder über die NetApp ONTAP-CLI durchgeführt werden.
 
 
-NOTE: Weitere Informationen zur Verwendung von FSX für ONTAP finden Sie im https://["FSX for ONTAP Benutzerhandbuch"^].
+NOTE: Weitere Informationen zur Verwendung von FSX für ONTAP finden Sie im https://docs.aws.amazon.com/fsx/latest/ONTAPGuide/what-is-fsx-ontap.html["FSX for ONTAP Benutzerhandbuch"^].
 
 . Erstellen Sie über die NetApp ONTAP CLI die anfänglichen Volumes mit dem folgenden Befehl:
 +
@@ -282,7 +282,7 @@ image::aws-vmc-veeam-16.png[Wählen Sie Server mounten]
 
 === Veeam Backup-Jobs konfigurieren
 
-Backup-Jobs sollten mithilfe der Backup-Repositorys im vorherigen Abschnitt erstellt werden. Die Erstellung von Backup-Jobs gehört normalerweise zum Repertoire eines Storage-Administrators und wir werden hier nicht alle Schritte besprechen. Nähere Informationen zum Erstellen von Backup-Jobs in Veeam finden Sie auf der https://["Technische Dokumentation Des Veeam Help Center"^].
+Backup-Jobs sollten mithilfe der Backup-Repositorys im vorherigen Abschnitt erstellt werden. Die Erstellung von Backup-Jobs gehört normalerweise zum Repertoire eines Storage-Administrators und wir werden hier nicht alle Schritte besprechen. Nähere Informationen zum Erstellen von Backup-Jobs in Veeam finden Sie auf der https://www.veeam.com/documentation-guides-datasheets.html?productId=8&version=product%3A8%2F221["Technische Dokumentation Des Veeam Help Center"^].
 
 In dieser Lösung wurden separate Backup-Jobs erstellt für:
 
@@ -313,7 +313,7 @@ image::aws-vmc-veeam-18.png[Richtlinie für die langfristige Datenaufbewahrung]
 
 Der erste Schritt zur Wiederherstellung einer Applikation ist die vollständige Wiederherstellung mit Veeam. Wir validierten, dass vollständige Restores unserer VMs eingeschaltet waren und alle Services normal liefen.
 
-Die Wiederherstellung von Servern ist normalerweise Teil des Repertoires eines Storage-Administrators und wir decken nicht alle hier aufgeführten Schritte ab. Weitere Informationen zur Durchführung vollständiger Wiederherstellungen in Veeam finden Sie im https://["Technische Dokumentation Des Veeam Help Center"^].
+Die Wiederherstellung von Servern ist normalerweise Teil des Repertoires eines Storage-Administrators und wir decken nicht alle hier aufgeführten Schritte ab. Weitere Informationen zur Durchführung vollständiger Wiederherstellungen in Veeam finden Sie im https://www.veeam.com/documentation-guides-datasheets.html?productId=8&version=product%3A8%2F221["Technische Dokumentation Des Veeam Help Center"^].
 
 
 
@@ -358,7 +358,7 @@ image::aws-vmc-veeam-24.png[Überwachen Sie den sql Server-Wiederherstellungspro
 
 
 ====
-Weitere Informationen zum Durchführen von SQL Server-Wiederherstellungsvorgängen mit Veeam Explorer finden Sie im Abschnitt Microsoft SQL Server in der https://["Benutzerhandbuch Für Veeam Explorers"].
+Weitere Informationen zum Durchführen von SQL Server-Wiederherstellungsvorgängen mit Veeam Explorer finden Sie im Abschnitt Microsoft SQL Server in der https://helpcenter.veeam.com/docs/backup/explorers/vesql_user_guide.html?ver=120["Benutzerhandbuch Für Veeam Explorers"].
 
 
 
@@ -366,7 +366,7 @@ Weitere Informationen zum Durchführen von SQL Server-Wiederherstellungsvorgäng
 
 Mit dem Veeam Explorer für Oracle Database können Sie eine standardmäßige Wiederherstellung von Oracle-Datenbanken oder eine unterbrechungsfreie Wiederherstellung mithilfe von Instant Recovery durchführen. Es unterstützt auch die Veröffentlichung von Datenbanken für schnellen Zugriff, Recovery von Data Guard-Datenbanken und Wiederherstellungen von RMAN-Backups.
 
-Weitere Informationen zur Wiederherstellung von Oracle-Datenbanken mit Veeam Explorer finden Sie im Abschnitt Oracle in der https://["Benutzerhandbuch Für Veeam Explorers"].
+Weitere Informationen zur Wiederherstellung von Oracle-Datenbanken mit Veeam Explorer finden Sie im Abschnitt Oracle in der https://helpcenter.veeam.com/docs/backup/explorers/veor_user_guide.html?ver=120["Benutzerhandbuch Für Veeam Explorers"].
 
 .Stellen Sie Oracle Datenbanken mit Veeam Explorer wieder her
 [%collapsible]
@@ -457,7 +457,7 @@ Der in dieser Dokumentation präsentierte Anwendungsfall konzentriert sich auf b
 
 Weitere Informationen zu den in dieser Lösung vorgestellten Technologien finden Sie in den folgenden zusätzlichen Informationen.
 
-* https://["FSX for ONTAP Benutzerhandbuch"^]
-* https://["Technische Dokumentation Des Veeam Help Center"^]
-* https://["VMware Cloud auf AWS Unterstützung: Überlegungen und Einschränkungen"]
+* https://docs.aws.amazon.com/fsx/latest/ONTAPGuide/what-is-fsx-ontap.html["FSX for ONTAP Benutzerhandbuch"^]
+* https://www.veeam.com/documentation-guides-datasheets.html?productId=8&version=product%3A8%2F221["Technische Dokumentation Des Veeam Help Center"^]
+* https://www.veeam.com/kb2414["VMware Cloud auf AWS Unterstützung: Überlegungen und Einschränkungen"]
 

@@ -26,7 +26,7 @@ VMware HCX ist primär eine Mobilitätsplattform, die speziell zur Cloud-übergr
 
 Dieses Dokument bietet eine Schritt-für-Schritt-Anleitung zur Implementierung und Konfiguration von VMware HCX, einschließlich aller Hauptkomponenten – vor Ort und im Cloud-Datacenter –, die verschiedene VM-Migrationsmechanismen unterstützt.
 
-Weitere Informationen finden Sie unter https://["Einführung in HCX-Implementierungen"^] Und https://["Checkliste B – HCX mit einer VMware Cloud auf AWS SDDC Zielumgebung installieren"^].
+Weitere Informationen finden Sie unter https://docs.vmware.com/en/VMware-HCX/4.4/hcx-getting-started/GUID-DE0AD0AE-A6A6-4769-96ED-4D200F739A68.html["Einführung in HCX-Implementierungen"^] Und https://docs.vmware.com/en/VMware-HCX/4.4/hcx-getting-started/GUID-70F9C40C-804C-4FC8-9FBD-77F9B2FA77CA.html["Checkliste B – HCX mit einer VMware Cloud auf AWS SDDC Zielumgebung installieren"^].
 
 .Allgemeine Schritte
 [%collapsible]
@@ -47,14 +47,14 @@ Diese Liste enthält grundlegende Schritte zur Installation und Konfiguration vo
 .Voraussetzungen
 [%collapsible]
 ====
-Bevor Sie beginnen, stellen Sie sicher, dass die folgenden Voraussetzungen erfüllt sind. Weitere Informationen finden Sie unter https://["Vorbereitung der HCX-Installation"^]. Nachdem die Voraussetzungen einschließlich Konnektivität erfüllt sind, konfigurieren und aktivieren Sie HCX, indem Sie einen Lizenzschlüssel aus der VMware HCX-Konsole bei VMC generieren. Nach der Aktivierung von HCX wird das vCenter Plug-in implementiert und kann über die vCenter-Konsole zur Verwaltung aufgerufen werden.
+Bevor Sie beginnen, stellen Sie sicher, dass die folgenden Voraussetzungen erfüllt sind. Weitere Informationen finden Sie unter https://docs.vmware.com/en/VMware-HCX/4.4/hcx-user-guide/GUID-A631101E-8564-4173-8442-1D294B731CEB.html["Vorbereitung der HCX-Installation"^]. Nachdem die Voraussetzungen einschließlich Konnektivität erfüllt sind, konfigurieren und aktivieren Sie HCX, indem Sie einen Lizenzschlüssel aus der VMware HCX-Konsole bei VMC generieren. Nach der Aktivierung von HCX wird das vCenter Plug-in implementiert und kann über die vCenter-Konsole zur Verwaltung aufgerufen werden.
 
 Die folgenden Installationsschritte müssen ausgeführt werden, bevor Sie mit der HCX-Aktivierung und -Bereitstellung fortfahren:
 
-. Verwenden Sie ein vorhandenes VMC SDDC oder erstellen Sie nach diesem Vorgang ein neues SDDC https://["Link von NetApp"^] Oder hier https://["Link zu VMware"^].
+. Verwenden Sie ein vorhandenes VMC SDDC oder erstellen Sie nach diesem Vorgang ein neues SDDC https://docs.netapp.com/us-en/netapp-solutions/ehc/aws/aws-setup.html["Link von NetApp"^] Oder hier https://docs.vmware.com/en/VMware-Cloud-on-AWS/services/com.vmware.vmc-aws.getting-started/GUID-EF198D55-03E3-44D1-AC48-6E2ABA31FF02.html["Link zu VMware"^].
 . Der Netzwerkpfad von der lokalen vCenter Umgebung zu VMC SDDC muss die Migration von VMs über vMotion unterstützen.
-. Stellen Sie sicher, dass die erforderlichen https://["Firewall-Regeln und -Ports"^] Sind für vMotion Traffic zwischen dem lokalen vCenter Server und dem SDDC vCenter zulässig.
-. Das FSX für ONTAP-NFS-Volume sollte als zusätzlicher Datastore im VMC SDDC gemountet werden. Befolgen Sie die in diesem Schritt beschriebenen Schritte, um die NFS-Datenspeicher an den entsprechenden Cluster anzuhängen https://["Link von NetApp"^] Oder hier https://["Link zu VMware"^].
+. Stellen Sie sicher, dass die erforderlichen https://docs.vmware.com/en/VMware-HCX/4.4/hcx-user-guide/GUID-A631101E-8564-4173-8442-1D294B731CEB.html["Firewall-Regeln und -Ports"^] Sind für vMotion Traffic zwischen dem lokalen vCenter Server und dem SDDC vCenter zulässig.
+. Das FSX für ONTAP-NFS-Volume sollte als zusätzlicher Datastore im VMC SDDC gemountet werden. Befolgen Sie die in diesem Schritt beschriebenen Schritte, um die NFS-Datenspeicher an den entsprechenden Cluster anzuhängen https://docs.netapp.com/us-en/netapp-solutions/ehc/aws/aws-native-overview.html["Link von NetApp"^] Oder hier https://docs.vmware.com/en/VMware-Cloud-on-AWS/services/com.vmware.vmc-aws-operations/GUID-D55294A3-7C40-4AD8-80AA-B33A25769CCA.html["Link zu VMware"^].
 
 
 ====
@@ -79,7 +79,7 @@ Führen Sie die folgenden Schritte aus, um die Implementierung dieser Lösung ab
 ====
 Gehen Sie wie folgt vor, um die Installation durchzuführen:
 
-. Melden Sie sich an der VMC-Konsole unter an https://["vmc.vmware.com"^] Und greifen Sie auf das Inventar zu.
+. Melden Sie sich an der VMC-Konsole unter an https://vmc.vmware.com/home["vmc.vmware.com"^] Und greifen Sie auf das Inventar zu.
 . Um das entsprechende SDDC auszuwählen und auf Add-ons zuzugreifen, klicken Sie auf Details anzeigen im SDDC und wählen Sie die Registerkarte Add-ons aus.
 . Klicken Sie auf Aktivieren für VMware HCX.
 +
@@ -105,7 +105,7 @@ Damit der On-Premises Connector mit dem HCX Manager in VMC kommunizieren kann, s
 image:fsx-hcx-image5.png["Fehler: Fehlendes Grafikbild"]
 
 . Geben Sie die erforderlichen Informationen im Assistenten zur Bereitstellung von OVF-Vorlagen ein, klicken Sie auf Weiter und anschließend auf Fertig stellen, um die OVA des VMware HCX-Connectors bereitzustellen.
-. Schalten Sie das virtuelle Gerät manuell ein.Schritt-für-Schritt-Anleitungen finden Sie unter https://["VMware HCX-Benutzerhandbuch"^].
+. Schalten Sie das virtuelle Gerät manuell ein.Schritt-für-Schritt-Anleitungen finden Sie unter https://docs.vmware.com/en/VMware-HCX/services/user-guide/GUID-BFD7E194-CFE5-4259-B74B-991B26A51758.html["VMware HCX-Benutzerhandbuch"^].
 
 
 ====
@@ -123,7 +123,7 @@ image:fsx-hcx-image7.png["Fehler: Fehlendes Grafikbild"]
 
 NOTE: Für jeden HCX Connector, der vor Ort eingesetzt wird, ist ein separater Schlüssel erforderlich.
 
-. Melden Sie sich beim lokalen VMware HCX Connector unter an https://["https://hcxconnectorIP:9443"^] Administratordaten werden verwendet.
+. Melden Sie sich beim lokalen VMware HCX Connector unter an https://hcxconnectorIP:9443["https://hcxconnectorIP:9443"^] Administratordaten werden verwendet.
 +
 
 NOTE: Verwenden Sie das während der OVA-Bereitstellung definierte Passwort.
@@ -198,7 +198,7 @@ Die VMware HCX Interconnect (HCX-IX) Appliance bietet sichere Tunnelfunktionen �
 NOTE: Computing-Profile beinhalten die Parameter für die Computing-, Storage- und Netzwerkimplementierung, die für die Implementierung einer virtuellen Interconnect Appliance erforderlich sind. Außerdem wird angegeben, welcher Teil des VMware Datacenters für den HCX-Service verfügbar sein soll.
 
 +
-Ausführliche Anweisungen finden Sie unter https://["Erstellen eines Computing-Profils"^].
+Ausführliche Anweisungen finden Sie unter https://docs.vmware.com/en/VMware-HCX/4.4/hcx-user-guide/GUID-BBAC979E-8899-45AD-9E01-98A132CE146E.html["Erstellen eines Computing-Profils"^].
 
 +
 image:fsx-hcx-image13.png["Fehler: Fehlendes Grafikbild"]
@@ -213,7 +213,7 @@ NOTE: Dafür benötigen Sie mindestens zwei IP-Adressen. Diese IP-Adressen werde
 image:fsx-hcx-image14.png["Fehler: Fehlendes Grafikbild"]
 
 +
-Ausführliche Anweisungen finden Sie unter https://["Erstellen eines Netzwerkprofils"^].
+Ausführliche Anweisungen finden Sie unter https://docs.vmware.com/en/VMware-HCX/4.4/hcx-user-guide/GUID-184FCA54-D0CB-4931-B0E8-A81CD6120C52.html["Erstellen eines Netzwerkprofils"^].
 
 +
 
@@ -254,7 +254,7 @@ image:fsx-hcx-image18.png["Fehler: Fehlendes Grafikbild"]
 ====
 HCX bietet bidirektionale Migrationsservices zwischen zwei oder mehr Umgebungen, beispielsweise On-Premises- und VMC SDDCs. Applikations-Workloads können mithilfe verschiedener Migrationstechnologien wie HCX Bulk Migration, HCX vMotion, HCX Cold Migration, HCX Replication Assisted vMotion (erhältlich mit HCX Enterprise Edition) und HCX OS Assisted Migration (erhältlich mit HCX Enterprise Edition) zu und von aktivierten Standorten migriert werden (mit HCX Enterprise Edition erhältlich).
 
-Weitere Informationen über verfügbare HCX-Migrationstechnologien finden Sie unter https://["Migrationstypen von VMware HCX"^]
+Weitere Informationen über verfügbare HCX-Migrationstechnologien finden Sie unter https://docs.vmware.com/en/VMware-HCX/4.4/hcx-user-guide/GUID-8A31731C-AA28-4714-9C23-D9E924DBB666.html["Migrationstypen von VMware HCX"^]
 
 Die HCX-IX Appliance verwendet den Mobility Agent Service, um vMotion-, Cold- und Replication Assisted vMotion-Migrationen (RAV) durchzuführen.
 
@@ -286,7 +286,7 @@ image:fsx-hcx-image22.png["Fehler: Fehlendes Grafikbild"]
 . Klicken Sie nach Abschluss der Validierungsprüfungen auf Los, um die Migration zu starten.
 +
 
-NOTE: Der vMotion Transfer erfasst den aktiven VM-Speicher, seinen Ausführungszustand, seine IP-Adresse und seine MAC-Adresse. Weitere Informationen zu den Anforderungen und Einschränkungen von HCX vMotion finden Sie unter https://["VMware HCX vMotion und „Cold Migration“ verstehen"^].
+NOTE: Der vMotion Transfer erfasst den aktiven VM-Speicher, seinen Ausführungszustand, seine IP-Adresse und seine MAC-Adresse. Weitere Informationen zu den Anforderungen und Einschränkungen von HCX vMotion finden Sie unter https://docs.vmware.com/en/VMware-HCX/4.1/hcx-user-guide/GUID-517866F6-AF06-4EFC-8FAE-DA067418D584.html["VMware HCX vMotion und „Cold Migration“ verstehen"^].
 
 . Über das Dashboard HCX > Migration können Sie den Fortschritt und den Abschluss von vMotion überwachen.
 +
@@ -309,7 +309,7 @@ Die Dauer der Replizierung kann gegenüber vMotion einer kleinen Anzahl von VMs 
 image:fsx-hcx-image25.png["Fehler: Fehlendes Grafikbild"]
 
 =====
-Weitere Informationen zu den HCX-Migrationsoptionen und zur Migration von Workloads von On-Premises zu VMware Cloud on AWS mit HCX finden Sie im https://["VMware HCX-Benutzerhandbuch"^].
+Weitere Informationen zu den HCX-Migrationsoptionen und zur Migration von Workloads von On-Premises zu VMware Cloud on AWS mit HCX finden Sie im https://docs.vmware.com/en/VMware-HCX/4.4/hcx-user-guide/GUID-14D48C15-3D75-485B-850F-C5FCB96B5637.html["VMware HCX-Benutzerhandbuch"^].
 
 
 NOTE: VMware HCX vMotion erfordert eine Durchsatzfunktion von 100 MB/s oder mehr.
@@ -343,14 +343,14 @@ Weitere Informationen zu den in diesem Dokument beschriebenen Daten finden Sie u
 
 * Dokumentation zu VMware Cloud
 +
-https://["https://docs.vmware.com/en/VMware-Cloud-on-AWS/"^]
+https://docs.vmware.com/en/VMware-Cloud-on-AWS/["https://docs.vmware.com/en/VMware-Cloud-on-AWS/"^]
 
 * Dokumentation zu Amazon FSX für NetApp ONTAP
 +
-https://["https://docs.aws.amazon.com/fsx/latest/ONTAPGuide"^]
+https://docs.aws.amazon.com/fsx/latest/ONTAPGuide["https://docs.aws.amazon.com/fsx/latest/ONTAPGuide"^]
 
 +
 VMware HCX-Benutzerhandbuch
 
-* https://["https://docs.vmware.com/en/VMware-HCX/4.4/hcx-user-guide/GUID-BFD7E194-CFE5-4259-B74B-991B26A51758.html"^]
+* https://docs.vmware.com/en/VMware-HCX/4.4/hcx-user-guide/GUID-BFD7E194-CFE5-4259-B74B-991B26A51758.html["https://docs.vmware.com/en/VMware-HCX/4.4/hcx-user-guide/GUID-BFD7E194-CFE5-4259-B74B-991B26A51758.html"^]
 

@@ -1,0 +1,65 @@
+---
+sidebar: sidebar 
+permalink: rhhc/rhhc-storage-options.html 
+keywords: NetApp Solutions, hybrid cloud, container workloads, containers, Red Hat OpenShift, RedHat OpenShift, VMware, ROSA, ACC, Astra Control Center, Advanced Cluster Management, ACM, Hub Cluster, VMware CSI, nconnect, session trunking, SMBC 
+summary:  
+---
+= Unterstützte NetApp Storage-Integrationen in Red hat Open Shift Container
+:hardbreaks:
+:allow-uri-read: 
+:nofooter: 
+:icons: font
+:linkattrs: 
+:imagesdir: ./../media/
+
+
+[role="lead"]
+Ganz gleich, ob die Red hat Open Shift Container auf VMware oder in den Hyperscalern ausgeführt werden, NetApp Astra Trident kann als CSI-bereitstellung für die verschiedenen von ihm unterstützten Back-End-Storage-Typen von NetApp verwendet werden.
+
+In der folgenden Abbildung sind die verschiedenen NetApp Back-End-Storage-Systeme dargestellt, die mithilfe von NetApp Astra Trident in OpenShift-Cluster integriert werden können.
+
+image:a-w-n_astra_trident.png[""]
+
+Die ONTAP Storage Virtual Machine (SVM) bietet sichere Mandantenfähigkeit. Ein einziger OpenShift-Cluster kann eine Verbindung zu einer einzelnen SVM oder mehreren SVMs oder sogar zu mehreren ONTAP-Clustern herstellen. Die Storage-Klasse filtert den Back-End-Speicher nach Parametern oder Etiketten. Storage-Administratoren definieren die Parameter für die Verbindung zum Storage-System über eine dreigearbeitete Backend-Konfiguration. Bei erfolgreichem Verbindungsaufbau erstellt es das dreilagige Backend und füllt die Informationen aus, die von der Speicherklasse gefiltert werden können.
+
+Die Beziehung zwischen Storageclass und Backend ist unten dargestellt.
+
+image:rhhc-storage-options-sc2ontap.png["Beziehung zwischen Storage-Klasse und ONTAP"]
+
+Applikationseigentümer fordert persistentes Volume mithilfe von Storage-Klassen an. Die Storage-Klasse filtert den Back-End Storage. Die Beziehung zwischen dem Pod und dem Back-End Storage wird unten dargestellt.
+
+image:rhhc_storage_opt_pod2vol.png["Pod-ONTAP-Volume-Beziehung"]
+
+
+
+== CSI-Optionen (Container Storage Interface)
+
+In vSphere Umgebungen können Kunden zur Integration mit ONTAP VMware CSI-Treiber und/oder Astra Trident CSI wählen. Mit VMware CSI werden die persistenten Volumes als lokale SCSI-Festplatten verwendet, mit Trident dagegen über ein Netzwerk. Da VMware CSI keine RWX-Zugriffsmodi mit ONTAP unterstützt, müssen Applikationen Trident CSI verwenden, wenn der RWX-Modus erforderlich ist. FC-basierte Implementierungen bevorzugen VMware CSI und SnapMirror Business Continuity (SMBC) bietet Hochverfügbarkeit auf Zonenebene.
+
+
+
+=== VMware CSI unterstützt
+
+* Core-Block-basierte Datastores (FC, FCoE, iSCSI, NVMeoF)
+* Dateibasierte Core-Datastores (NFS v3, v4)
+* VVol Datastores (Block und Datei)
+
+
+
+
+=== Trident verfügt über folgende Treiber zur Unterstützung von ONTAP
+
+* ontap-san (dediziertes Volume)
+* ontap-san-Economy (gemeinsam genutztes Volume)
+* ontap-nas (dediziertes Volume)
+* ontap-nas-Economy (gemeinsam genutztes Volume)
+* ontap-nas-Flexgroup (dediziertes, großes Volume)
+
+
+Sowohl für VMware CSI als auch für Astra Trident CSI unterstützt ONTAP nconnect, Session-Trunking, kerberos usw. für NFS- und Multipathing, chap-Authentifizierung usw. für Blockprotokolle.
+
+In AWS kann FSX für NetApp ONTAP (FSxN) in einer einzelnen Verfügbarkeitszone (AZ) oder in Multi AZ implementiert werden. Für Produktions-Workloads, die Hochverfügbarkeit erfordern, bietet eine Multi-AZ-Fehlertoleranz auf zonaler Ebene und einen besseren NVMe-Lese-Cache als eine einzelne AZ. Weitere Informationen finden Sie unter link:https://docs.aws.amazon.com/fsx/latest/ONTAPGuide/performance.html["AWS Performance-Richtlinien"]. Um Kosten für den Disaster Recovery-Standort zu sparen, kann ein einzelner AZ FSX ONTAP genutzt werden.
+
+image:rhhc_storage_options_fsxn_options.png["Replizierung zwischen Multi-AZ und Single-AZ"]
+
+Weitere Informationen zur Anzahl der von FSX ONTAP unterstützten SVMs finden Sie unter link:https://docs.aws.amazon.com/fsx/latest/ONTAPGuide/managing-svms.html#max-svms["Management der FSX ONTAP-Storage-Virtual Machine"]

@@ -57,7 +57,7 @@ Die Quell- und Ziel-ONTAP Systeme müssen sich in Netzwerken befinden, die über
 Die folgenden Schritte sind zum Einrichten von SnapMirror Beziehungen zwischen einem lokalen ONTAP System und FSX ONTAP erforderlich:
 
 
-NOTE: Siehe https://["FSX für ONTAP – ONTAP-Benutzerhandbuch"^] Weitere Informationen zum Erstellen von SnapMirror Beziehungen mit FSX.
+NOTE: Siehe https://docs.aws.amazon.com/fsx/latest/ONTAPGuide/ONTAPGuide.pdf["FSX für ONTAP – ONTAP-Benutzerhandbuch"^] Weitere Informationen zum Erstellen von SnapMirror Beziehungen mit FSX.
 
 .Zeichnen Sie die logischen Schnittstellen von Intercluster und Ziel auf
 [%collapsible]
@@ -160,7 +160,7 @@ Das folgende Beispiel zeigt ein SnapMirror-Etikett, das an allen Snapshots vorha
 
 image:dr-vmc-aws-image17.png["Fehler: Fehlendes Grafikbild"]
 
-Weitere Informationen zum Erstellen von SnapCenter-Richtlinien für eine SQL Server-Datenbank finden Sie im https://["SnapCenter-Dokumentation"^].
+Weitere Informationen zum Erstellen von SnapCenter-Richtlinien für eine SQL Server-Datenbank finden Sie im https://docs.netapp.com/us-en/snapcenter/protect-scsql/task_create_backup_policies_for_sql_server_databases.html["SnapCenter-Dokumentation"^].
 
 Sie müssen zuerst eine SnapMirror-Richtlinie mit Regeln erstellen, die die Anzahl der beizubehaltenden Snapshot-Kopien vorschreiben.
 
@@ -226,9 +226,9 @@ FSx-Dest::> volume create -vserver DestSVM -volume DestVolName -aggregate DestAg
 ====
 Diese Lösung verwendet NetApp SnapCenter zur Erstellung applikationskonsistenter Backups von SQL Server und Oracle Datenbanken. Zusammen mit Veeam Backup & Replication zum Backup von VMDKs für Virtual Machines stellt dies eine umfassende Disaster-Recovery-Lösung für lokale und Cloud-basierte Datacenter bereit.
 
-SnapCenter Software ist über die NetApp Support Site erhältlich und kann auf Microsoft Windows Systemen installiert werden, die sich entweder in einer Domäne oder Arbeitsgruppe befinden. Ein detaillierter Planungsleitfaden und Installationsanweisungen finden Sie unter https://["NetApp Documentation Center"^].
+SnapCenter Software ist über die NetApp Support Site erhältlich und kann auf Microsoft Windows Systemen installiert werden, die sich entweder in einer Domäne oder Arbeitsgruppe befinden. Ein detaillierter Planungsleitfaden und Installationsanweisungen finden Sie unter https://docs.netapp.com/us-en/snapcenter/install/install_workflow.html["NetApp Documentation Center"^].
 
-Die SnapCenter-Software ist erhältlich unter https://["Dieser Link"^].
+Die SnapCenter-Software ist erhältlich unter https://mysupport.netapp.com["Dieser Link"^].
 
 Nach der Installation können Sie über einen Webbrowser mit _\https://Virtual_Cluster_IP_or_FQDN:8146_ auf die SnapCenter Konsole zugreifen.
 
@@ -254,7 +254,7 @@ image:dr-vmc-aws-image20.png["Fehler: Fehlendes Grafikbild"]
 
 
 
-Weitere Informationen zum Hinzufügen von Storage-Systemen zum SnapCenter finden Sie in der Dokumentation unter https://["Dieser Link"^].
+Weitere Informationen zum Hinzufügen von Storage-Systemen zum SnapCenter finden Sie in der Dokumentation unter https://docs.netapp.com/us-en/snapcenter/install/task_add_storage_systems.html["Dieser Link"^].
 
 ====
 .Fügen Sie Hosts zum SnapCenter hinzu
@@ -283,9 +283,9 @@ Sie können auf die Richtlinien im Abschnitt Einstellungen des SnapCenter-Webcli
 
 image:dr-vmc-aws-image23.png["Fehler: Fehlendes Grafikbild"]
 
-Vollständige Informationen zum Erstellen von Richtlinien für SQL Server-Backups finden Sie im https://["SnapCenter-Dokumentation"^].
+Vollständige Informationen zum Erstellen von Richtlinien für SQL Server-Backups finden Sie im https://docs.netapp.com/us-en/snapcenter/protect-scsql/task_create_backup_policies_for_sql_server_databases.html["SnapCenter-Dokumentation"^].
 
-Vollständige Informationen zum Erstellen von Richtlinien für Oracle-Backups finden Sie im https://["SnapCenter-Dokumentation"^].
+Vollständige Informationen zum Erstellen von Richtlinien für Oracle-Backups finden Sie im https://docs.netapp.com/us-en/snapcenter/protect-sco/task_create_backup_policies_for_oracle_database.html["SnapCenter-Dokumentation"^].
 
 *Hinweise:*
 
@@ -312,16 +312,16 @@ image:dr-vmc-aws-image25.png["Fehler: Fehlendes Grafikbild"]
 
 Die SnapCenter-Dokumentation umfasst Schritt-für-Schritt-Details zum Erstellen von Ressourcengruppen für SQL Server und Oracle-Datenbanken.
 
-Folgen Sie zum Backup von SQL-Ressourcen https://["Dieser Link"^].
+Folgen Sie zum Backup von SQL-Ressourcen https://docs.netapp.com/us-en/snapcenter/protect-scsql/task_back_up_sql_resources.html["Dieser Link"^].
 
-Folgen Sie zum Backup von Oracle Ressourcen https://["Dieser Link"^].
+Folgen Sie zum Backup von Oracle Ressourcen https://docs.netapp.com/us-en/snapcenter/protect-sco/task_back_up_oracle_resources.html["Dieser Link"^].
 
 ====
 
 
 === Bereitstellung und Konfiguration von Veeam Backup Server
 
-Veeam Backup & Replication Software verwendet in dieser Lösung das Backup unserer Virtual Machines für Applikationen und die Archivierung einer Kopie der Backups in einem Amazon S3 Bucket mithilfe eines Veeam Scale-Out-Backup-Repositorys (SOBR). Veeam wird auf einem Windows-Server in dieser Lösung implementiert. Eine Anleitung zur Implementierung von Veeam finden Sie im https://["Technische Dokumentation des Veeam Help Center"^].
+Veeam Backup & Replication Software verwendet in dieser Lösung das Backup unserer Virtual Machines für Applikationen und die Archivierung einer Kopie der Backups in einem Amazon S3 Bucket mithilfe eines Veeam Scale-Out-Backup-Repositorys (SOBR). Veeam wird auf einem Windows-Server in dieser Lösung implementiert. Eine Anleitung zur Implementierung von Veeam finden Sie im https://www.veeam.com/documentation-guides-datasheets.html["Technische Dokumentation des Veeam Help Center"^].
 
 .Veeam Scale-out-Backup-Repository konfigurieren
 [%collapsible]
@@ -364,7 +364,7 @@ image:dr-vmc-aws-image30.png["Fehler: Fehlendes Grafikbild"]
 +
 image:dr-vmc-aws-image31.png["Fehler: Fehlendes Grafikbild"]
 
-. Führen Sie alle Schritte im Assistenten für das Neue Backup-Repository aus, um das Repository zu erstellen. Detaillierte Informationen zum Erstellen von Veeam Backup Repositorys finden Sie im https://["Veeam-Dokumentation"^].
+. Führen Sie alle Schritte im Assistenten für das Neue Backup-Repository aus, um das Repository zu erstellen. Detaillierte Informationen zum Erstellen von Veeam Backup Repositorys finden Sie im https://www.veeam.com/documentation-guides-datasheets.html["Veeam-Dokumentation"^].
 +
 image:dr-vmc-aws-image32.png["Fehler: Fehlendes Grafikbild"]
 
@@ -419,7 +419,7 @@ image:dr-vmc-aws-image39.png["Fehler: Fehlendes Grafikbild"]
 .Erstellen Sie die Scale-out-Backup-Repository-Jobs
 [%collapsible]
 =====
-Der letzte Schritt zur Konfiguration von Veeam ist die Erstellung von Backup-Jobs anhand des neu erstellten SOBR als Backup-Ziel. Das Erstellen von Backupjobs ist ein normaler Teil des Repertoires eines Speicheradministrators und wir decken die einzelnen Schritte hier nicht ab. Nähere Informationen zum Erstellen von Backup-Jobs in Veeam finden Sie auf der https://["Technische Dokumentation Des Veeam Help Center"^].
+Der letzte Schritt zur Konfiguration von Veeam ist die Erstellung von Backup-Jobs anhand des neu erstellten SOBR als Backup-Ziel. Das Erstellen von Backupjobs ist ein normaler Teil des Repertoires eines Speicheradministrators und wir decken die einzelnen Schritte hier nicht ab. Nähere Informationen zum Erstellen von Backup-Jobs in Veeam finden Sie auf der https://www.veeam.com/documentation-guides-datasheets.html["Technische Dokumentation Des Veeam Help Center"^].
 
 =====
 ====
@@ -434,9 +434,9 @@ Um ein Failover von Applikations-VMs und Datenbank-Volumes auf VMware Cloud Volu
 ====
 SnapCenter Server wird im VMware Cloud SDDC implementiert oder auf einer EC2 Instanz in einer VPC mit Netzwerkkonnektivität für die VMware Cloud-Umgebung installiert.
 
-SnapCenter Software ist über die NetApp Support Site erhältlich und kann auf Microsoft Windows Systemen installiert werden, die sich entweder in einer Domäne oder Arbeitsgruppe befinden. Ein detaillierter Planungsleitfaden und Installationsanweisungen finden Sie unter https://["NetApp Dokumentationszentrum"^].
+SnapCenter Software ist über die NetApp Support Site erhältlich und kann auf Microsoft Windows Systemen installiert werden, die sich entweder in einer Domäne oder Arbeitsgruppe befinden. Ein detaillierter Planungsleitfaden und Installationsanweisungen finden Sie unter https://docs.netapp.com/us-en/snapcenter/install/install_workflow.html["NetApp Dokumentationszentrum"^].
 
-Die Software von SnapCenter finden Sie unter https://["Dieser Link"^].
+Die Software von SnapCenter finden Sie unter https://mysupport.netapp.com["Dieser Link"^].
 
 ====
 .Konfigurieren Sie den sekundären Windows SnapCenter-Server
@@ -459,7 +459,7 @@ Weitere Informationen zum Durchführen dieser Schritte finden Sie im Abschnitt l
 .Bereitstellung eines sekundären Veeam Backup & Amp; Replication Servers
 [#deploy-secondary-veeam%collapsible]
 ====
-Sie können den Veeam Backup & Replication Server auf einem Windows-Server in der VMware Cloud auf AWS oder in einer EC2-Instanz installieren. Eine detaillierte Anleitung zur Implementierung finden Sie im https://["Technische Dokumentation Des Veeam Help Center"^].
+Sie können den Veeam Backup & Replication Server auf einem Windows-Server in der VMware Cloud auf AWS oder in einer EC2-Instanz installieren. Eine detaillierte Anleitung zur Implementierung finden Sie im https://www.veeam.com/documentation-guides-datasheets.html["Technische Dokumentation Des Veeam Help Center"^].
 
 ====
 .Konfigurieren Sie den sekundären Veeam Backup & Replication Server
@@ -482,7 +482,7 @@ Weitere Informationen zum Wiederherstellen von VMs mit Veeam finden Sie im Absch
 
 === Backup von SnapCenter Datenbanken für Disaster Recovery
 
-SnapCenter ermöglicht das Backup und Recovery seiner zugrunde liegenden MySQL Datenbank und Konfigurationsdaten, um bei einem Ausfall den SnapCenter Server wiederherzustellen. Für unsere Lösung haben wir die SnapCenter-Datenbank und die Konfiguration auf einer AWS EC2 Instanz in unserer VPC wiederhergestellt. Weitere Informationen zu diesem Schritt finden Sie unter https://["Dieser Link"^].
+SnapCenter ermöglicht das Backup und Recovery seiner zugrunde liegenden MySQL Datenbank und Konfigurationsdaten, um bei einem Ausfall den SnapCenter Server wiederherzustellen. Für unsere Lösung haben wir die SnapCenter-Datenbank und die Konfiguration auf einer AWS EC2 Instanz in unserer VPC wiederhergestellt. Weitere Informationen zu diesem Schritt finden Sie unter https://docs.netapp.com/us-en/snapcenter/sc-automation/rest_api_workflows_disaster_recovery_of_snapcenter_server.html["Dieser Link"^].
 
 .Voraussetzungen für SnapCenter-Backup
 [%collapsible]
@@ -515,7 +515,7 @@ Für die SnapCenter-Sicherung sind folgende Voraussetzungen erforderlich:
 .Backup der SnapCenter-Datenbank und -Konfiguration
 [%collapsible]
 ====
-SnapCenter stellt eine Web-Client-Schnittstelle zum Ausführen VON REST-API-Befehlen bereit. Weitere Informationen zum Zugriff auf DIE REST-APIs über Swagger finden Sie in der SnapCenter-Dokumentation unter https://["Dieser Link"^].
+SnapCenter stellt eine Web-Client-Schnittstelle zum Ausführen VON REST-API-Befehlen bereit. Weitere Informationen zum Zugriff auf DIE REST-APIs über Swagger finden Sie in der SnapCenter-Dokumentation unter https://docs.netapp.com/us-en/snapcenter/sc-automation/overview_rest_apis.html["Dieser Link"^].
 
 .Melden Sie sich bei Swagger an und erhalten Sie ein Autorisierungs-Token
 [%collapsible]
@@ -966,9 +966,9 @@ Sehen Sie sich die folgenden Dokumente und/oder Websites an, um mehr über die i
 
 * Links zur Lösungsdokumentation
 +
-https://["NetApp Hybrid-Multi-Cloud mit VMware Lösungen"]
+https://docs.netapp.com/us-en/netapp-solutions/ehc/index.html["NetApp Hybrid-Multi-Cloud mit VMware Lösungen"]
 
 +
-https://["NetApp Lösungen"]
+https://docs.netapp.com/us-en/netapp-solutions/index.html["NetApp Lösungen"]
 
 

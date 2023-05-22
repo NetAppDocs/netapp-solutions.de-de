@@ -68,12 +68,12 @@ Informationen über das Administrator-Team, das diese Service-Upgrades durchfüh
 Die Verschlüsselung ruhender Daten ist wichtig, um sensible Daten bei Diebstahl, Rückgabe oder neuer Verwendung einer Festplatte zu schützen. Daten in Cloud Volumes Service werden mithilfe von softwarebasierter Verschlüsselung im Ruhezustand gesichert.
 
 * Google-generierte Schlüssel werden für CVS-SW verwendet.
-* Für die CVS-Performance werden die Schlüssel pro Volume in einem in Cloud Volumes Service integrierten Schlüsselmanager gespeichert, der mit NetApp ONTAP CryptoMod die AES-256-Verschlüsselung generiert. CryptoMod ist in der nach FIPS 140-2 validierten CMVP-Modulliste aufgeführt. Siehe https://["FIPS 140-2 Zertifikat #4144"^].
+* Für die CVS-Performance werden die Schlüssel pro Volume in einem in Cloud Volumes Service integrierten Schlüsselmanager gespeichert, der mit NetApp ONTAP CryptoMod die AES-256-Verschlüsselung generiert. CryptoMod ist in der nach FIPS 140-2 validierten CMVP-Modulliste aufgeführt. Siehe https://csrc.nist.gov/projects/cryptographic-module-validation-program/certificate/4144["FIPS 140-2 Zertifikat #4144"^].
 
 
 Im November 2021 wurde eine Vorschau auf die Funktionalität Customer-Managed Encryption (CMEK) für CVS-Performance bereitgestellt. Diese Funktionalität ermöglicht Ihnen die Verschlüsselung der Schlüssel pro Volume mit Master-Schlüsseln für einzelne Projekte und Regionen, die im Google Key Management Service (KMS) gehostet werden. KMS ermöglicht es Ihnen, externe Schlüsselmanager anzubinden.
 
-Details zur Konfiguration von KMS für CVS-Performance finden Sie unter https://["Weitere Informationen finden Sie in der Cloud Volumes Service-Dokumentation"^].
+Details zur Konfiguration von KMS für CVS-Performance finden Sie unter https://cloud.google.com/architecture/partners/netapp-cloud-volumes/customer-managed-keys?hl=en_US["Weitere Informationen finden Sie in der Cloud Volumes Service-Dokumentation"^].
 
 Weitere Informationen zur Architektur finden Sie im Abschnitt link:ncvs-gc-cloud-volumes-service-architecture.html["„Cloud Volumes Service Architecture“."]
 
@@ -106,9 +106,9 @@ NOTE: Derzeit wird mit Cloud Volumes Service nur Active Directory LDAP zur LDAP-
 
 Ransomware, Malware und Viren sind für Administratoren eine persistente Bedrohung. Die Erkennung, das Vorbeugen und die Minimierung dieser Bedrohungen steht für Unternehmen immer im Mittelpunkt. Ein einzelnes Ransomware-Ereignis auf einem kritischen Datensatz kann potenziell Millionen US-Dollar kosten. Daher ist es vorteilhaft, alles zu tun, um das Risiko zu minimieren.
 
-Obwohl Cloud Volumes Service derzeit nicht schließt native Detection oder Prävention Maßnahmen, wie Virenschutz oder https://["Automatische Ransomware-Erkennung"^], Es gibt Möglichkeiten, nach einem Ransomware-Ereignis schnell wiederherzustellen, indem es regelmäßige Snapshot-Zeitpläne ermöglicht. Snapshot-Kopien sind unveränderliche und schreibgeschützte Verweise auf geänderte Blöcke im Filesystem, werden praktisch sofort erzeugt, haben minimale Auswirkungen auf die Performance und verbrauchen nur Speicherplatz, wenn Daten geändert oder gelöscht werden. Sie können Zeitpläne für Snapshot Kopien einrichten, die auf Ihre gewünschte akzeptable Recovery Point Objective (RPO)/Recovery Time Objective (RTO) abgestimmt sind und bis zu 1,024 Snapshot Kopien pro Volume aufbewahren.
+Obwohl Cloud Volumes Service derzeit nicht schließt native Detection oder Prävention Maßnahmen, wie Virenschutz oder https://www.netapp.com/blog/prevent-ransomware-spread-ONTAP/["Automatische Ransomware-Erkennung"^], Es gibt Möglichkeiten, nach einem Ransomware-Ereignis schnell wiederherzustellen, indem es regelmäßige Snapshot-Zeitpläne ermöglicht. Snapshot-Kopien sind unveränderliche und schreibgeschützte Verweise auf geänderte Blöcke im Filesystem, werden praktisch sofort erzeugt, haben minimale Auswirkungen auf die Performance und verbrauchen nur Speicherplatz, wenn Daten geändert oder gelöscht werden. Sie können Zeitpläne für Snapshot Kopien einrichten, die auf Ihre gewünschte akzeptable Recovery Point Objective (RPO)/Recovery Time Objective (RTO) abgestimmt sind und bis zu 1,024 Snapshot Kopien pro Volume aufbewahren.
 
-Snapshot Support ist ohne zusätzliche Kosten enthalten (Storage-Kosten für veränderte Blöcke/Daten, die von Snapshot Kopien aufbewahrt Cloud Volumes Service werden) und kann bei einem Ransomware-Angriff genutzt werden, um ein Rollback auf eine Snapshot Kopie vor dem Angriff durchzuführen. Snapshot Wiederherstellungen dauern nur wenige Sekunden und Daten können wieder wie gewohnt bereit sein. Weitere Informationen finden Sie unter https://["NetApp Lösung gegen Ransomware"^].
+Snapshot Support ist ohne zusätzliche Kosten enthalten (Storage-Kosten für veränderte Blöcke/Daten, die von Snapshot Kopien aufbewahrt Cloud Volumes Service werden) und kann bei einem Ransomware-Angriff genutzt werden, um ein Rollback auf eine Snapshot Kopie vor dem Angriff durchzuführen. Snapshot Wiederherstellungen dauern nur wenige Sekunden und Daten können wieder wie gewohnt bereit sein. Weitere Informationen finden Sie unter https://www.netapp.com/pdf.html?item=/media/16716-sb-3938pdf.pdf&v=202093745["NetApp Lösung gegen Ransomware"^].
 
 Die Auswirkungen von Ransomware auf Ihr Unternehmen zu verhindern, ist ein mehrschichtiger Ansatz erforderlich, der einen oder mehrere der folgenden Elemente umfasst:
 
@@ -138,8 +138,8 @@ Da Snapshot Kopien in Cloud Volumes Service schreibgeschützt sind, können dies
 
 Cloud Volumes Service bietet standardmäßige NAS-Client-Backup-Funktionen (z. B. Backups über NFS oder SMB).
 
-* CVS-Performance bietet regionenübergreifende Volume-Replizierung zu anderen CVS-Performance Volumes. Weitere Informationen finden Sie unter https://["Volume-Replizierung"^] In der Cloud Volumes Service-Dokumentation.
-* CVS-SW bietet Service-native Backup-/Restore-Funktionen für Volumes. Weitere Informationen finden Sie unter https://["Cloud-Backup"^] In der Cloud Volumes Service-Dokumentation.
+* CVS-Performance bietet regionenübergreifende Volume-Replizierung zu anderen CVS-Performance Volumes. Weitere Informationen finden Sie unter https://cloud.google.com/architecture/partners/netapp-cloud-volumes/volume-replication?hl=en_US["Volume-Replizierung"^] In der Cloud Volumes Service-Dokumentation.
+* CVS-SW bietet Service-native Backup-/Restore-Funktionen für Volumes. Weitere Informationen finden Sie unter https://cloud.google.com/architecture/partners/netapp-cloud-volumes/back-up?hl=en_US["Cloud-Backup"^] In der Cloud Volumes Service-Dokumentation.
 
 
 Die Volume-Replizierung liefert eine exakte Kopie des Quell-Volumes für schnelles Failover im Falle eines Ausfalls, einschließlich Ransomware-Ereignissen.
@@ -156,7 +156,7 @@ Alle Berechtigungen für Dateien und Ordner werden auf das sekundäre Volume rep
 
 Volume-Replikate sind schreibgeschützt, d. h. eine unveränderliche Kopie der Daten an einem externen Standort zur schnellen Recovery von Daten in Instanzen, in denen ein Virus infizierte Daten hat oder Ransomware den primären Datensatz verschlüsselt hat. Nur-Lese-Daten werden nicht verschlüsselt, aber, wenn das primäre Volume betroffen ist und Replikation auftritt, die infizierten Blöcke replizieren auch. Zur Wiederherstellung können Sie ältere, nicht betroffene Snapshot Kopien verwenden. Je nachdem, wie schnell ein Angriff erkannt wird, fallen jedoch unter Umständen die versprochenen RTO/RPO-Vorgaben aus.
 
-Darüber hinaus können Sie mit dem Management der regionsübergreifenden Replizierung (CRR) in Google Cloud böswillige Administratoraktionen, wie z. B. Volume-Löschungen, Snapshot-Löschungen oder Änderungen bei Snapshot-Planungen, verhindern. Dazu werden benutzerdefinierte Rollen erstellt, die Volume-Administratoren trennen, die Quell-Volumes löschen, aber keine Spiegelungen unterbrechen und daher keine Ziel-Volumes von CRR-Administratoren löschen können, die keine Volume-Vorgänge ausführen können. Siehe https://["Überlegungen Zur Sicherheit"^] In der Cloud Volumes Service-Dokumentation finden Sie Berechtigungen, die von den einzelnen Administratorgruppen zulässig sind.
+Darüber hinaus können Sie mit dem Management der regionsübergreifenden Replizierung (CRR) in Google Cloud böswillige Administratoraktionen, wie z. B. Volume-Löschungen, Snapshot-Löschungen oder Änderungen bei Snapshot-Planungen, verhindern. Dazu werden benutzerdefinierte Rollen erstellt, die Volume-Administratoren trennen, die Quell-Volumes löschen, aber keine Spiegelungen unterbrechen und daher keine Ziel-Volumes von CRR-Administratoren löschen können, die keine Volume-Vorgänge ausführen können. Siehe https://cloud.google.com/architecture/partners/netapp-cloud-volumes/security-considerations?hl=en_US["Überlegungen Zur Sicherheit"^] In der Cloud Volumes Service-Dokumentation finden Sie Berechtigungen, die von den einzelnen Administratorgruppen zulässig sind.
 
 
 
@@ -164,18 +164,18 @@ Darüber hinaus können Sie mit dem Management der regionsübergreifenden Repliz
 
 Cloud Volumes Service bietet zwar eine hohe Datenaufbewahrung, externe Ereignisse können jedoch zu Datenverlusten führen. Falls es zu Sicherheitsereignisse wie Viren oder Ransomware kommt, werden Backups und Restores so wichtig, dass der Datenzugriff rechtzeitig wiederaufgenommen werden kann. Ein Administrator kann ein Cloud Volumes Service Volume versehentlich löschen. Oder Benutzer möchten einfach noch viele Monate Backup-Versionen ihrer Daten aufbewahren und den zusätzlichen Speicherplatz für Snapshot-Kopien innerhalb des Volumes zu einer Kostenanforderung machen. Snapshot-Kopien sollten die bevorzugte Methode sein, Backup-Versionen für die letzten Wochen zu behalten, um verlorene Daten von ihnen wiederherzustellen, sie befinden sich jedoch im Volume und gehen verloren, wenn das Volume entfernt wird.
 
-Aus allen diesen Gründen bietet NetApp Cloud Volumes Service Backup-Services über an https://["Cloud Volumes Service-Backup"^].
+Aus allen diesen Gründen bietet NetApp Cloud Volumes Service Backup-Services über an https://cloud.google.com/architecture/partners/netapp-cloud-volumes/back-up?hl=en_US["Cloud Volumes Service-Backup"^].
 
 Cloud Volumes Service Backup erzeugt eine Kopie des Volumes auf Google Cloud Storage (GCS). Es sichert nur die tatsächlichen Daten, die innerhalb des Volume gespeichert sind, nicht den freien Speicherplatz. Es funktioniert wie immer inkrementell, d. h., es überträgt den Volume-Inhalt einmal und von dort auf wird nur geänderte Daten gesichert. Im Vergleich zu klassischen Backup-Konzepten mit mehreren vollständigen Backups spart das Unternehmen viel Storage und senkt dadurch die Kosten. Da der monatliche Preis von Backup-Speicherplatz im Vergleich zu einem Volume niedriger ist, ist es der ideale Ort, um Backup-Versionen länger zu halten.
 
 Benutzer können ein Cloud Volumes Service Backup verwenden, um jede Backup-Version auf demselben oder einem anderen Volume innerhalb derselben Region wiederherzustellen. Wenn das Quell-Volume gelöscht wird, werden die Backup-Daten aufbewahrt und müssen unabhängig gemanagt werden (beispielsweise gelöscht).
 
-Cloud Volumes Service Backup ist optional in Cloud Volumes Service integriert. Benutzer legen fest, welche Volumes gesichert werden sollen, indem Cloud Volumes Service Backup für einzelne Volumes aktiviert wird. Siehe https://["Cloud Volumes Service Backup-Dokumentation"^] Weitere Informationen zu Backups finden Sie im https://["Anzahl der maximal unterstützten Backup-Versionen"^], Planung, und https://["Preisgestaltung"^].
+Cloud Volumes Service Backup ist optional in Cloud Volumes Service integriert. Benutzer legen fest, welche Volumes gesichert werden sollen, indem Cloud Volumes Service Backup für einzelne Volumes aktiviert wird. Siehe https://cloud.google.com/architecture/partners/netapp-cloud-volumes/back-up?hl=en_US["Cloud Volumes Service Backup-Dokumentation"^] Weitere Informationen zu Backups finden Sie im https://cloud.google.com/architecture/partners/netapp-cloud-volumes/resource-limits-quotas?hl=en_US["Anzahl der maximal unterstützten Backup-Versionen"^], Planung, und https://cloud.google.com/architecture/partners/netapp-cloud-volumes/costs?hl=en_US["Preisgestaltung"^].
 
 Alle Backup-Daten eines Projekts werden innerhalb eines GCS-Buckets gespeichert, der durch den Service gemanagt wird und für den Benutzer nicht sichtbar ist. Jedes Projekt verwendet einen anderen Bucket. Derzeit befinden sich die Buckets im gleichen Bereich wie die Cloud Volumes Service Volumes, es werden jedoch noch weitere Optionen erläutert. In der Dokumentation finden Sie den aktuellen Status.
 
 Der Datentransport von einem Cloud Volumes Service-Bucket zu GCS nutzt Service-interne Google-Netzwerke mit HTTPS und TLS1.2. Die Daten werden im Ruhezustand mit von Google gemanagten Schlüsseln verschlüsselt.
 
-Um Cloud Volumes Service-Backups zu managen (Backups erstellen, löschen und wiederherstellen), muss ein Benutzer über die verfügen https://["Rollen/netappCloudVolumes.admin"^] Rolle:
+Um Cloud Volumes Service-Backups zu managen (Backups erstellen, löschen und wiederherstellen), muss ein Benutzer über die verfügen https://cloud.google.com/architecture/partners/netapp-cloud-volumes/security-considerations?hl=en_US["Rollen/netappCloudVolumes.admin"^] Rolle:
 
 link:ncvs-gc-architecture_overview.html["Weiter: Architekturübersicht."]

@@ -22,7 +22,7 @@ image:osrunai_image2.png["Fehler: Fehlendes Grafikbild"]
 
 == In dieser Lösung verwendete Hardware
 
-Diese Lösung wurde mit der ONTAP AI Referenzarchitektur zwei DGX-1-Nodes und einem AFF A800 Storage-System validiert. Siehe https://["NVA-1121"^] Weitere Informationen zur in dieser Validierung verwendeten Infrastruktur
+Diese Lösung wurde mit der ONTAP AI Referenzarchitektur zwei DGX-1-Nodes und einem AFF A800 Storage-System validiert. Siehe https://www.netapp.com/us/media/nva-1121-design.pdf["NVA-1121"^] Weitere Informationen zur in dieser Validierung verwendeten Infrastruktur
 
 In der folgenden Tabelle werden die Hardwarekomponenten aufgeführt, die für die Implementierung der getesteten Lösung erforderlich sind.
 
@@ -42,7 +42,7 @@ In der folgenden Tabelle werden die Hardwarekomponenten aufgeführt, die für di
 
 == Softwareanforderungen
 
-Diese Lösung wurde mit einer grundlegenden Kubernetes-Implementierung validiert, bei der der Run:AI Operator installiert ist. Kubernetes wurde mit dem implementiert https://["NVIDIA DeepOps"^] Deployment Engine: Hier werden alle erforderlichen Komponenten für eine produktionsbereite Umgebung implementiert. DeepOps wird automatisch implementiert https://["NetApp Trident"^] Zur persistenten Storage-Integration in die Umgebung k8s wurden StandardStorage-Klassen erstellt, sodass Container Storage aus dem AFF A800 Storage-System nutzen können. Weitere Informationen zu Trident mit Kubernetes zu ONTAP AI finden Sie unter https://["TR-4798"^].
+Diese Lösung wurde mit einer grundlegenden Kubernetes-Implementierung validiert, bei der der Run:AI Operator installiert ist. Kubernetes wurde mit dem implementiert https://github.com/NVIDIA/deepops["NVIDIA DeepOps"^] Deployment Engine: Hier werden alle erforderlichen Komponenten für eine produktionsbereite Umgebung implementiert. DeepOps wird automatisch implementiert https://netapp.io/persistent-storage-provisioner-for-kubernetes/["NetApp Trident"^] Zur persistenten Storage-Integration in die Umgebung k8s wurden StandardStorage-Klassen erstellt, sodass Container Storage aus dem AFF A800 Storage-System nutzen können. Weitere Informationen zu Trident mit Kubernetes zu ONTAP AI finden Sie unter https://www.netapp.com/us/media/tr-4798.pdf["TR-4798"^].
 
 In der folgenden Tabelle werden die Softwarekomponenten aufgeführt, die für die Implementierung der Lösung erforderlich sind.
 
@@ -73,6 +73,6 @@ In der folgenden Tabelle werden die Softwarekomponenten aufgeführt, die für di
 
 | Docker-Container-Plattform | 18.06.1-ce [e68fc7a] 
 |===
-Weitere Software-Anforderungen für Run:AI finden Sie unter https://["Run:AI-GPU-Cluster-Voraussetzungen"^].
+Weitere Software-Anforderungen für Run:AI finden Sie unter https://docs.run.ai/Administrator/Cluster-Setup/Run-AI-GPU-Cluster-Prerequisites/["Run:AI-GPU-Cluster-Voraussetzungen"^].
 
 link:osrunai_optimal_cluster_and_gpu_utilization_with_run_ai_overview.html["Nächste: Optimale Cluster- und GPU-Auslastung mit KI-Einsatz"]

@@ -26,12 +26,12 @@ Um die in diesem Abschnitt beschriebenen Aufgaben auszuführen, müssen Sie auf 
 
 * Kubectl (für Zugriff auf ein vorhandenes Kubernetes-Cluster konfiguriert)
 +
-** Anweisungen zur Installation und Konfiguration finden Sie https://["Hier"^].
+** Anweisungen zur Installation und Konfiguration finden Sie https://kubernetes.io/docs/tasks/tools/["Hier"^].
 
 
 * NetApp DataOps Toolkit für Kubernetes
 +
-** Installationsanweisungen finden Sie https://["Hier"^].
+** Installationsanweisungen finden Sie https://github.com/NetApp/netapp-dataops-toolkit/tree/main/netapp_dataops_k8s["Hier"^].
 
 
 
@@ -125,7 +125,7 @@ Volume successfully created and bound to PersistentVolumeClaim (PVC) 'inference-
 ....
 . Füllen Sie das neue persistente Volume mit den Daten, auf denen Sie die Inferenz durchführen möchten.
 +
-Es gibt verschiedene Methoden zum Laden von Daten auf ein PVC. Wenn Ihre Daten aktuell in einer S3-kompatiblen Objekt-Storage-Plattform wie NetApp StorageGRID oder Amazon S3 gespeichert sind, können Sie verwenden https://["Funktionen des NetApp DataOps Toolkit S3 Data Mover"^]. Eine weitere einfache Methode ist es, einen JupyterLab-Arbeitsbereich zu erstellen und dann Dateien über die JupyterLab-Webschnittstelle hochzuladen, wie in den Schritten 3 bis 5 im Abschnitt “ beschrieben<<Szenario 1 – On-Demand-Inferenz in JupyterLab>>.“
+Es gibt verschiedene Methoden zum Laden von Daten auf ein PVC. Wenn Ihre Daten aktuell in einer S3-kompatiblen Objekt-Storage-Plattform wie NetApp StorageGRID oder Amazon S3 gespeichert sind, können Sie verwenden https://github.com/NetApp/netapp-dataops-toolkit/blob/main/netapp_dataops_k8s/docs/data_movement.md["Funktionen des NetApp DataOps Toolkit S3 Data Mover"^]. Eine weitere einfache Methode ist es, einen JupyterLab-Arbeitsbereich zu erstellen und dann Dateien über die JupyterLab-Webschnittstelle hochzuladen, wie in den Schritten 3 bis 5 im Abschnitt “ beschrieben<<Szenario 1 – On-Demand-Inferenz in JupyterLab>>.“
 
 . Erstellen eines Kubernetes-Jobs für die Batch-Inferenz. Das folgende Beispiel zeigt einen Batch-Inferenzauftrag für einen Anwendungsfall zur Bilderkennung. Dieser Job führt die Inferenz auf jedem Bild in einem Satz von Bildern durch und schreibt Metriken zur Inferenzgenauigkeit.
 +
@@ -271,7 +271,7 @@ Creating PersistentVolumeClaim (PVC) 'triton-model-repo' in namespace 'inference
 PersistentVolumeClaim (PVC) 'triton-model-repo' created. Waiting for Kubernetes to bind volume to PVC.
 Volume successfully created and bound to PersistentVolumeClaim (PVC) 'triton-model-repo' in namespace 'inference'.
 ....
-. Sie können Ihr Modell auf dem neuen persistenten Volume in einem speichern https://["Formatieren"^] Das wird vom NVIDIA Triton Inferenz Server erkannt.
+. Sie können Ihr Modell auf dem neuen persistenten Volume in einem speichern https://github.com/triton-inference-server/server/blob/main/docs/user_guide/model_repository.md["Formatieren"^] Das wird vom NVIDIA Triton Inferenz Server erkannt.
 +
 Es gibt verschiedene Methoden zum Laden von Daten auf ein PVC. Eine einfache Methode ist es, einen JupyterLab-Arbeitsbereich zu erstellen und dann Dateien über die JupyterLab-Webschnittstelle hochzuladen, wie in den Schritten 3 bis 5 in “ beschrieben<<Szenario 1 – On-Demand-Inferenz in JupyterLab>>. „
 

@@ -22,7 +22,7 @@ Autoren: Pat Sithusan und Niyaz Mohamed, NetApp
 
 Viele Unternehmen, die Applikationen von lokalen Storage-Systemen und Cloud-Storage-Services migrieren möchten, stellen fest, dass sie diesem Aufwand durch die Unterschiede in den Funktionen von On-Premises-Storage-Systemen und Cloud-Storage-Services gedient haben. Diese Lücke hat die Migration von Enterprise-Applikationen wie Microsoft SQL Server erheblich problematisch gemacht. Insbesondere Mängel bei den Services, die zur Ausführung einer Enterprise-Applikation erforderlich sind, wie beispielsweise zuverlässige Snapshots, Storage-Effizienz-Funktionen, hohe Verfügbarkeit, Zuverlässigkeit und konsistente Performance, haben Kunden gezwungen, Kompromisse beim Design einzugehen oder Applikationsmigration zu gehen. Mit FSX für NetApp ONTAP müssen Kunden keine Kompromisse mehr eingehen. FSX für NetApp ONTAP ist ein nativer AWS-Service (vom ersten Anbieter), der von AWS vertrieben, unterstützt, abgerechnet und vollständig gemanagt wird. Mit der leistungsstarken ONTAP bietet diese Architektur dieselben Storage- und Datenmanagement-Funktionen der Enterprise-Klasse, die NetApp seit drei Jahrzehnten in AWS als Managed Service vor Ort bietet.
 
-Mit SQL Server auf EC2 Instanzen können Datenbankadministratoren ihre Datenbankumgebung und das zugrunde liegende Betriebssystem aufrufen und anpassen. Eine SQL Server auf EC2-Instanz in Kombination mit https://["AWS FSX ONTAP"^] Zum Speichern der Datenbankdateien bietet das Unternehmen hohe Performance, Datenmanagement und einen einfachen und einfachen Migrationspfad über Replizierung auf Blockebene. Daher können Sie Ihre komplexe Datenbank auf AWS VPC mit einem einfachen „Lift-and-Shift“-Ansatz, weniger Klicks und keine Schemakonvertierung ausführen.
+Mit SQL Server auf EC2 Instanzen können Datenbankadministratoren ihre Datenbankumgebung und das zugrunde liegende Betriebssystem aufrufen und anpassen. Eine SQL Server auf EC2-Instanz in Kombination mit https://docs.aws.amazon.com/fsx/latest/ONTAPGuide/what-is-fsx-ontap.html["AWS FSX ONTAP"^] Zum Speichern der Datenbankdateien bietet das Unternehmen hohe Performance, Datenmanagement und einen einfachen und einfachen Migrationspfad über Replizierung auf Blockebene. Daher können Sie Ihre komplexe Datenbank auf AWS VPC mit einem einfachen „Lift-and-Shift“-Ansatz, weniger Klicks und keine Schemakonvertierung ausführen.
 
 
 
@@ -104,7 +104,7 @@ Mit FSX ONTAP ist die Beschaffung von Speicher die einfachste Aufgabe und kann d
 |===
 Mit dieser Konfiguration kann die Gesamtgröße der Volumes größer sein als der tatsächlich im Dateisystem verfügbare Speicher. Wenn die LUNs oder Snapshot Kopien mehr Speicherplatz benötigen, als im Volume verfügbar ist, wachsen die Volumes automatisch und nehmen mehr Speicherplatz aus dem zugehörigen File-System in Anspruch. Autogrow ermöglicht FSX ONTAP, die Volume-Größe automatisch auf eine maximale Größe zu erhöhen, die Sie vorab bestimmen. Um das automatische Wachstum des Volumes zu unterstützen, muss im Filesystem Platz vorhanden sein. Bei aktiviertem Autogrow sollten Sie daher den freien Speicherplatz im Dateisystem überwachen und bei Bedarf das Dateisystem aktualisieren.
 
-Stellen Sie außerdem das ein https://["Speicherplatzzuweisung"^] Option bei LUN aktivieren, damit FSX ONTAP den EC2-Host benachrichtigt, wenn der Speicherplatz des Volume knapp wird, und die LUN im Volume keine Schreibvorgänge akzeptieren kann. Mit dieser Option kann FSX für ONTAP außerdem automatisch Speicherplatz zurückgewinnen, wenn SQL Server auf EC2 Host Daten löscht. Die Option für die Speicherplatzzuweisung ist standardmäßig auf deaktiviert eingestellt.
+Stellen Sie außerdem das ein https://kb.netapp.com/Advice_and_Troubleshooting/Data_Storage_Software/ONTAP_OS/What_does_the_LUN_option_space_alloc_do%3F["Speicherplatzzuweisung"^] Option bei LUN aktivieren, damit FSX ONTAP den EC2-Host benachrichtigt, wenn der Speicherplatz des Volume knapp wird, und die LUN im Volume keine Schreibvorgänge akzeptieren kann. Mit dieser Option kann FSX für ONTAP außerdem automatisch Speicherplatz zurückgewinnen, wenn SQL Server auf EC2 Host Daten löscht. Die Option für die Speicherplatzzuweisung ist standardmäßig auf deaktiviert eingestellt.
 
 
 NOTE: Wenn eine space-reservierte LUN in einem ohne garantierte Performance-Volume erstellt wird, verhält sich die LUN wie eine nicht-space-reservierte LUN. Das liegt daran, dass ein nicht garantiertes Volume keinen Platz hat, der LUN zuzuweisen. Das Volume selbst kann aufgrund seiner keinen Garantie nur Speicherplatz zuweisen, da es geschrieben wird.
@@ -143,7 +143,7 @@ Um SQL-Servervorgänge mit SnapCenter durchzuführen, müssen Sie zuerst Volumes
 ====
 Führen Sie die folgenden Schritte aus, um Volumes und LUNs für SQL Server zu erstellen:
 
-. Öffnen Sie die Amazon FSX-Konsole bei https://[]
+. Öffnen Sie die Amazon FSX-Konsole bei https://console.aws.amazon.com/fsx/[]
 . Erstellen Sie mit der Option „Standard erstellen“ unter „Erstellungsmethode“ ein Amazon FSX für das Filesystem von NetApp ONTAP. So können Sie FSxadmin- und vsadmin-Anmeldeinformationen definieren.
 +
 image:sql-awsec2-image1.png["Fehler: Fehlendes Grafikbild"]
@@ -156,7 +156,7 @@ image:sql-awsec2-image2.png["Fehler: Fehlendes Grafikbild"]
 +
 image:sql-awsec2-image3.png["Fehler: Fehlendes Grafikbild"]
 
-. Erstellen Sie Volumes, indem Sie den Schritt befolgen, der in aufgeführt ist https://["Erstellung eines Volumes auf FSX für NetApp ONTAP"^].
+. Erstellen Sie Volumes, indem Sie den Schritt befolgen, der in aufgeführt ist https://docs.aws.amazon.com/fsx/latest/ONTAPGuide/creating-volumes.html["Erstellung eines Volumes auf FSX für NetApp ONTAP"^].
 +
 |===
 
@@ -212,7 +212,7 @@ lun create -path /vol/vol_awssqlprod01_data/lun_awssqlprod01_data -size 700GB -o
 +
 image:sql-awsec2-image5.png["Fehler: Fehlendes Grafikbild"]
 
-. Verwenden Sie Windows_2008 als empfohlenen LUN-Typ, um die I/O-Ausrichtung mit dem OS-Partitionierungsschema zu erreichen. Siehe https://["Hier"^] Finden Sie weitere Informationen.
+. Verwenden Sie Windows_2008 als empfohlenen LUN-Typ, um die I/O-Ausrichtung mit dem OS-Partitionierungsschema zu erreichen. Siehe https://docs.netapp.com/us-en/ontap/san-admin/io-misalignments-properly-aligned-luns-concept.html["Hier"^] Finden Sie weitere Informationen.
 . Verwenden Sie den folgenden SSH-Befehl für die Zuordnung der Initiatorgruppe zu den LUNs, die Sie gerade erstellt haben.
 +
 ....
@@ -345,9 +345,9 @@ Minimaler Installationsspeicherplatz: 10 GB für das Repository: 10 GB
 
 
 |===
-Ausführliche Informationen finden Sie unter Speicherplatz und Größenanforderung 
+Ausführliche Informationen finden Sie unter Speicherplatz und Größenanforderung (https://docs.netapp.com/us-en/snapcenter/install/reference_space_and_sizing_requirements.html)[]
 
-Informationen zur Versionskompatibilität finden Sie im https://["NetApp Interoperabilitäts-Matrix-Tool"^].
+Informationen zur Versionskompatibilität finden Sie im https://mysupport.netapp.com/matrix/["NetApp Interoperabilitäts-Matrix-Tool"^].
 
 ====
 .Datenbank-Storage-Layout
@@ -386,7 +386,7 @@ NOTE: Wenn Sie eine neue Datenbank erstellen, empfiehlt Microsoft, getrennte Lau
 .Installation und Einrichtung für SnapCenter
 [%collapsible]
 ====
-Folgen Sie den https://["Installieren Sie den SnapCenter-Server"^] Und https://["Installieren des SnapCenter Plug-ins für Microsoft SQL Server"^] Um SnapCenter zu installieren und einzurichten.
+Folgen Sie den https://docs.netapp.com/us-en/snapcenter/install/task_install_the_snapcenter_server_using_the_install_wizard.html["Installieren Sie den SnapCenter-Server"^] Und https://docs.netapp.com/us-en/snapcenter/protect-scsql/task_add_hosts_and_install_snapcenter_plug_ins_package_for_windows.html["Installieren des SnapCenter Plug-ins für Microsoft SQL Server"^] Um SnapCenter zu installieren und einzurichten.
 
 Führen Sie nach der Installation von SnapCenter die folgenden Schritte aus, um sie einzurichten.
 
@@ -590,10 +590,10 @@ video::SQLonFSxN.mp4[width=400]
 ====
 Die folgende .yaml-Datei kann mit der Cloud-Formationsvorlage in der AWS-Konsole verwendet werden.
 
-* https://["https://github.com/NetApp-Automation/fsxn-iscsisetup-cft"^]
+* https://github.com/NetApp-Automation/fsxn-iscsisetup-cft["https://github.com/NetApp-Automation/fsxn-iscsisetup-cft"^]
 
 
-Um DIE ISCSI-LUN-Erstellung und die NetApp SnapCenter-Installation mit PowerShell zu automatisieren, klonen Sie die repo von https://["Dieser GitHub-Link"^].
+Um DIE ISCSI-LUN-Erstellung und die NetApp SnapCenter-Installation mit PowerShell zu automatisieren, klonen Sie die repo von https://github.com/NetApp-Automation/fsxn-iscsisetup-ps["Dieser GitHub-Link"^].
 
 ====
 .Anhang B: PowerShell Skripte für die Bereitstellung von Volumes und LUNs
@@ -719,30 +719,30 @@ Führen Sie die Datei aus `EnableMPIO.ps1` Zuerst und das zweite Skript wird aut
 
 * Amazon FSX für NetApp ONTAP
 +
-https://["https://docs.aws.amazon.com/fsx/latest/ONTAPGuide/what-is-fsx-ontap.html"^]
+https://docs.aws.amazon.com/fsx/latest/ONTAPGuide/what-is-fsx-ontap.html["https://docs.aws.amazon.com/fsx/latest/ONTAPGuide/what-is-fsx-ontap.html"^]
 
 * Erste Schritte mit FSX für NetApp ONTAP
 +
-https://["https://docs.aws.amazon.com/fsx/latest/ONTAPGuide/getting-started.html"^]
+https://docs.aws.amazon.com/fsx/latest/ONTAPGuide/getting-started.html["https://docs.aws.amazon.com/fsx/latest/ONTAPGuide/getting-started.html"^]
 
 * Überblick über die SnapCenter Schnittstelle
 +
-https://["https://www.youtube.com/watch?v=lVEBF4kV6Ag&t=0s"^]
+https://www.youtube.com/watch?v=lVEBF4kV6Ag&t=0s["https://www.youtube.com/watch?v=lVEBF4kV6Ag&t=0s"^]
 
 * Tour durch Optionen im SnapCenter-Navigationsbereich
 +
-https://["https://www.youtube.com/watch?v=_lDKt-koySQ"^]
+https://www.youtube.com/watch?v=_lDKt-koySQ["https://www.youtube.com/watch?v=_lDKt-koySQ"^]
 
 * SnapCenter 4.0 für SQL Server Plug-in einrichten
 +
-https://["https://www.youtube.com/watch?v=MopbUFSdHKE"^]
+https://www.youtube.com/watch?v=MopbUFSdHKE["https://www.youtube.com/watch?v=MopbUFSdHKE"^]
 
 * So sichern und wiederherstellen Sie Datenbanken mit SnapCenter mit SQL Server Plug-in
 +
-https://["https://www.youtube.com/watch?v=K343qPD5_Ys"^]
+https://www.youtube.com/watch?v=K343qPD5_Ys["https://www.youtube.com/watch?v=K343qPD5_Ys"^]
 
 * Wie man eine Datenbank mit SnapCenter mit SQL Server Plug-in klonen kann
 +
-https://["https://www.youtube.com/watch?v=ogEc4DkGv1E"^]
+https://www.youtube.com/watch?v=ogEc4DkGv1E["https://www.youtube.com/watch?v=ogEc4DkGv1E"^]
 
 

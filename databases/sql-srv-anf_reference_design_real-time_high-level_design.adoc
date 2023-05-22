@@ -78,8 +78,8 @@ NOTE: Zur Wiederherstellung von 21 Datenbanken dauerte der Einsatz ungefähr neu
 Zu den anderen Migrationsoptionen, die Daten von einem lokalen SQL Server auf Azure NetApp Files verschieben, zählen:
 
 * Trennen Sie die Daten- und Protokolldateien, kopieren Sie sie in den Azure Blob Storage und verbinden Sie sie anschließend über die URL mit SQL Server in der Azure VM. Dabei wird eine ANF-Dateifreigabe angehängt.
-* Wenn Sie eine lokale Implementierung von Always-On-Verfügbarkeitsgruppen verwenden, verwenden Sie das https://["Assistent Zum Hinzufügen Von Azure Replikaten"^] Um ein Replikat in Azure zu erstellen und dann Failover auszuführen.
-* Verwenden Sie SQL Server https://["Transaktionsorientierte Replizierung"^] Um die Azure SQL Server-Instanz als Abonnent zu konfigurieren, deaktivieren Sie die Replikation und weisen Sie Benutzer auf die Azure-Datenbankinstanz zu.
+* Wenn Sie eine lokale Implementierung von Always-On-Verfügbarkeitsgruppen verwenden, verwenden Sie das https://docs.microsoft.com/en-us/previous-versions/azure/virtual-machines/windows/sqlclassic/virtual-machines-windows-classic-sql-onprem-availability["Assistent Zum Hinzufügen Von Azure Replikaten"^] Um ein Replikat in Azure zu erstellen und dann Failover auszuführen.
+* Verwenden Sie SQL Server https://docs.microsoft.com/en-us/sql/relational-databases/replication/transactional/transactional-replication["Transaktionsorientierte Replizierung"^] Um die Azure SQL Server-Instanz als Abonnent zu konfigurieren, deaktivieren Sie die Replikation und weisen Sie Benutzer auf die Azure-Datenbankinstanz zu.
 * Senden Sie die Festplatte mithilfe des Windows Import/Export-Dienstes.
 
 
@@ -89,7 +89,7 @@ Zu den anderen Migrationsoptionen, die Daten von einem lokalen SQL Server auf Az
 
 Backup und Recovery sind ein wichtiger Aspekt jeder SQL Server-Implementierung. Es ist zwingend erforderlich, dass das entsprechende Sicherheitsnetz in Verbindung mit Hochverfügbarkeitslösungen wie AOAG schnell von verschiedenen Datenversagen- und -Verlustszenarien wiederhergestellt wird. Zum Ausführen eines applikationskonsistenten Backups der Datenbanken können SQL Server Database Quiesce Tool, Azure Backup (Streaming) oder ein Backup-Tool eines Drittanbieters wie beispielsweise CommVault verwendet werden.
 
-Mit der Azure NetApp Files Snapshot Technologie können Sie ganz einfach eine zeitpunktgenaue Kopie der Benutzerdatenbanken erstellen, ohne die Performance oder Netzwerkauslastung zu beeinträchtigen. Mit dieser Technologie können Sie außerdem eine Snapshot Kopie auf einem neuen Volume wiederherstellen oder das betroffene Volume schnell auf den Zustand zurücksetzen, in dem es sich zum Zeitpunkt der Erstellung der Snapshot Kopie mithilfe der Funktion zum Zurücksetzen des Volumes befand. Der Azure NetApp Files-Snapshot-Prozess ist sehr schnell und effizient, wodurch mehrere tägliche Backups möglich sind, im Gegensatz zum Streaming Backup des Azure-Backup. Da mehrere Snapshot Kopien an einem bestimmten Tag möglich sind, lassen sich die RPO- und RTO-Zeiten erheblich reduzieren. Um die Applikationskonsistenz der intakten Daten und vor dem Erstellen der Snapshot-Kopie ordnungsgemäß auf der Festplatte zu speichern, nutzen Sie das Quiesce-Tool für die SQL Server-Datenbank (https://["SCSQLAPI-Tool"^]; Für den Zugriff auf diesen Link sind NetApp SSO Login-Anmeldedaten erforderlich). Dieses Tool kann in PowerShell ausgeführt werden, das die SQL Server Datenbank enthält und wiederum die applikationskonsistente Storage Snapshot Kopie für Backups erstellen kann.
+Mit der Azure NetApp Files Snapshot Technologie können Sie ganz einfach eine zeitpunktgenaue Kopie der Benutzerdatenbanken erstellen, ohne die Performance oder Netzwerkauslastung zu beeinträchtigen. Mit dieser Technologie können Sie außerdem eine Snapshot Kopie auf einem neuen Volume wiederherstellen oder das betroffene Volume schnell auf den Zustand zurücksetzen, in dem es sich zum Zeitpunkt der Erstellung der Snapshot Kopie mithilfe der Funktion zum Zurücksetzen des Volumes befand. Der Azure NetApp Files-Snapshot-Prozess ist sehr schnell und effizient, wodurch mehrere tägliche Backups möglich sind, im Gegensatz zum Streaming Backup des Azure-Backup. Da mehrere Snapshot Kopien an einem bestimmten Tag möglich sind, lassen sich die RPO- und RTO-Zeiten erheblich reduzieren. Um die Applikationskonsistenz der intakten Daten und vor dem Erstellen der Snapshot-Kopie ordnungsgemäß auf der Festplatte zu speichern, nutzen Sie das Quiesce-Tool für die SQL Server-Datenbank (https://mysupport.netapp.com/site/tools/tool-eula/scsqlapi["SCSQLAPI-Tool"^]; Für den Zugriff auf diesen Link sind NetApp SSO Login-Anmeldedaten erforderlich). Dieses Tool kann in PowerShell ausgeführt werden, das die SQL Server Datenbank enthält und wiederum die applikationskonsistente Storage Snapshot Kopie für Backups erstellen kann.
 
 *Hinweise: *
 
@@ -98,7 +98,7 @@ Mit der Azure NetApp Files Snapshot Technologie können Sie ganz einfach eine ze
 * Isolieren Sie die Dateien von der jeweiligen Datenbank, indem Sie sie auf einem separaten Azure NetApp Files Volume ablegen.
 
 
-Wegen der großen Einschränkungen der SCSQL API, https://["Azure Backup"^] Wurde für die Datensicherung zur Erfüllung der SLA-Anforderungen eingesetzt. Sie bietet ein Stream-basiertes Backup von SQL Server, das in Azure Virtual Machines und Azure NetApp Files ausgeführt wird. Azure Backup ermöglicht einen RPO von 15 Minuten mit häufigen Protokoll-Backups und zeitpunktgenauer Recovery von bis zu einer Sekunde.
+Wegen der großen Einschränkungen der SCSQL API, https://docs.microsoft.com/en-us/azure/backup/backup-azure-sql-database["Azure Backup"^] Wurde für die Datensicherung zur Erfüllung der SLA-Anforderungen eingesetzt. Sie bietet ein Stream-basiertes Backup von SQL Server, das in Azure Virtual Machines und Azure NetApp Files ausgeführt wird. Azure Backup ermöglicht einen RPO von 15 Minuten mit häufigen Protokoll-Backups und zeitpunktgenauer Recovery von bis zu einer Sekunde.
 
 
 
@@ -144,7 +144,7 @@ Disaster Recovery ist bei jeder Implementierung im Allgemeinen ein Nebensache. D
 
 === Langfristiges Archiv der Snapshot-Kopien
 
-Viele Unternehmen müssen ihre Snapshot Daten langfristig aus Datenbankdateien aufbewahren, um Compliance-Anforderungen zu erfüllen. Obwohl dieser Prozess in dieser HLD nicht verwendet wird, kann er einfach mit einem einfachen Batch-Skript mit durchgeführt werden https://["AzCopy"^] Um das Snapshot-Verzeichnis in den Azure Blob-Container zu kopieren. Das Batch-Skript kann unter Verwendung geplanter Aufgaben nach einem bestimmten Zeitplan ausgelöst werden. Der Prozess ist unkompliziert und beinhaltet folgende Schritte:
+Viele Unternehmen müssen ihre Snapshot Daten langfristig aus Datenbankdateien aufbewahren, um Compliance-Anforderungen zu erfüllen. Obwohl dieser Prozess in dieser HLD nicht verwendet wird, kann er einfach mit einem einfachen Batch-Skript mit durchgeführt werden https://docs.microsoft.com/en-us/azure/storage/common/storage-use-azcopy-v10["AzCopy"^] Um das Snapshot-Verzeichnis in den Azure Blob-Container zu kopieren. Das Batch-Skript kann unter Verwendung geplanter Aufgaben nach einem bestimmten Zeitplan ausgelöst werden. Der Prozess ist unkompliziert und beinhaltet folgende Schritte:
 
 . Laden Sie die ausführbare Datei AzCopy V10 herunter. Es gibt nichts zu installieren, weil es ein ist `exe` Datei:
 . Autorisieren Sie AzCopy, indem Sie ein SAS-Token auf der Containerebene mit den entsprechenden Berechtigungen verwenden.
@@ -154,7 +154,7 @@ Viele Unternehmen müssen ihre Snapshot Daten langfristig aus Datenbankdateien a
 *Hinweise:*
 
 * Stellen Sie in Batch-Dateien sicher, dass die in SAS-Token angezeigten %-Zeichen nicht mehr verwendet werden. Dies kann durch Hinzufügen eines zusätzlichen %-Zeichens neben vorhandenen %-Zeichen in der SAS-Token-Zeichenfolge erreicht werden.
-* Der https://["Sichere Übertragung Erforderlich"^] Die Einrichtung eines Speicherkontos bestimmt, ob die Verbindung zu einem Speicherkonto mit Transport Layer Security (TLS) gesichert ist. Diese Einstellung ist standardmäßig aktiviert. Das folgende Batch-Skript-Beispiel kopiert rekursiv Daten aus dem Verzeichnis der Snapshot-Kopie in einen festgelegten Blob-Container:
+* Der https://docs.microsoft.com/en-us/azure/storage/common/storage-require-secure-transfer["Sichere Übertragung Erforderlich"^] Die Einrichtung eines Speicherkontos bestimmt, ob die Verbindung zu einem Speicherkonto mit Transport Layer Security (TLS) gesichert ist. Diese Einstellung ist standardmäßig aktiviert. Das folgende Batch-Skript-Beispiel kopiert rekursiv Daten aus dem Verzeichnis der Snapshot-Kopie in einen festgelegten Blob-Container:
 
 
 ....

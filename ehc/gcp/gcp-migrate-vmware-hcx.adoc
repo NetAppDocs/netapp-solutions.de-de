@@ -48,16 +48,16 @@ Diese Liste enthält die grundlegenden Schritte, die zum Pairing und Migrieren d
 .Voraussetzungen
 [%collapsible]
 ====
-Bevor Sie beginnen, stellen Sie sicher, dass die folgenden Voraussetzungen erfüllt sind. Weitere Informationen finden Sie unter https://["Verlinken"^]. Nachdem die Voraussetzungen, einschließlich Konnektivität, vorhanden sind, laden Sie den HCX-Lizenzschlüssel aus dem Google Cloud VMware Engine-Portal herunter. Nach dem Herunterladen des OVA-Installationsprogramms gehen Sie wie unten beschrieben mit der Installation vor.
+Bevor Sie beginnen, stellen Sie sicher, dass die folgenden Voraussetzungen erfüllt sind. Weitere Informationen finden Sie unter https://cloud.google.com/vmware-engine/docs/workloads/howto-migrate-vms-using-hcx["Verlinken"^]. Nachdem die Voraussetzungen, einschließlich Konnektivität, vorhanden sind, laden Sie den HCX-Lizenzschlüssel aus dem Google Cloud VMware Engine-Portal herunter. Nach dem Herunterladen des OVA-Installationsprogramms gehen Sie wie unten beschrieben mit der Installation vor.
 
 
-NOTE: HCX Advanced ist die Standardoption und die VMware HCX Enterprise Edition ist auch über ein Support-Ticket erhältlich und wird ohne zusätzliche Kosten unterstützt. Siehe https://["Dieser Link"^]
+NOTE: HCX Advanced ist die Standardoption und die VMware HCX Enterprise Edition ist auch über ein Support-Ticket erhältlich und wird ohne zusätzliche Kosten unterstützt. Siehe https://cloud.google.com/blog/products/compute/whats-new-with-google-cloud-vmware-engine["Dieser Link"^]
 
-* Verwenden Sie ein vorhandenes softwaredefiniertes Google Cloud VMware Engine Datacenter (SDDC) oder erstellen Sie mithilfe dieses Modells eine Private Cloud https://["Link von NetApp"^] Oder hier https://["Google-Link"^].
-* Die Migration von VMs und zugehörigen Daten vom lokalen Datacenter mit VMware vSphere erfordert Netzwerkkonnektivität vom Datacenter zur SDDC-Umgebung. Vor der Migration von Workloads https://["Einrichten eines Cloud-VPN oder einer Cloud Interconnect-Verbindung"^] Zwischen der lokalen Umgebung und der jeweiligen Private Cloud verschieben.
+* Verwenden Sie ein vorhandenes softwaredefiniertes Google Cloud VMware Engine Datacenter (SDDC) oder erstellen Sie mithilfe dieses Modells eine Private Cloud https://docs.netapp.com/us-en/netapp-solutions/ehc/gcp/gcp-setup.html["Link von NetApp"^] Oder hier https://cloud.google.com/vmware-engine/docs/create-private-cloud["Google-Link"^].
+* Die Migration von VMs und zugehörigen Daten vom lokalen Datacenter mit VMware vSphere erfordert Netzwerkkonnektivität vom Datacenter zur SDDC-Umgebung. Vor der Migration von Workloads https://cloud.google.com/vmware-engine/docs/networking/howto-connect-to-onpremises["Einrichten eines Cloud-VPN oder einer Cloud Interconnect-Verbindung"^] Zwischen der lokalen Umgebung und der jeweiligen Private Cloud verschieben.
 * Der Netzwerkpfad von der lokalen VMware vCenter Server Umgebung zur privaten Cloud der Google Cloud VMware Engine muss die Migration von VMs mithilfe von vMotion unterstützen.
-* Stellen Sie sicher, dass die erforderlichen https://["Firewall-Regeln und -Ports"^] Sind für vMotion Traffic zwischen dem lokalen vCenter Server und SDDC vCenter zulässig.
-* Cloud Volume Service NFS-Volume sollte als Datastore in der Google Cloud VMware Engine gemountet werden. Befolgen Sie die in diesem Schritt beschriebenen Schritte https://["Verlinken"^] Cloud Volume Service-Datenspeicher an Google Cloud VMware Engines Hosts anhängen.
+* Stellen Sie sicher, dass die erforderlichen https://ports.esp.vmware.com/home/VMware-HCX["Firewall-Regeln und -Ports"^] Sind für vMotion Traffic zwischen dem lokalen vCenter Server und SDDC vCenter zulässig.
+* Cloud Volume Service NFS-Volume sollte als Datastore in der Google Cloud VMware Engine gemountet werden. Befolgen Sie die in diesem Schritt beschriebenen Schritte https://cloud.google.com/vmware-engine/docs/vmware-ecosystem/howto-cloud-volumes-service-datastores["Verlinken"^] Cloud Volume Service-Datenspeicher an Google Cloud VMware Engines Hosts anhängen.
 
 
 ====
@@ -68,7 +68,7 @@ Die Lab-Umgebung vor Ort für diese Validierung wurde zu Testzwecken über ein C
 
 image:gcpd-hcx-image1.png["Dieses Bild zeigt die in dieser Lösung verwendete allgemeine Architektur."]
 
-Nähere Informationen zu HCX finden Sie unter https://["Link zu VMware"^]
+Nähere Informationen zu HCX finden Sie unter https://www.vmware.com/content/dam/digitalmarketing/vmware/en/pdf/products/vmw-google-cloud-vmware-engine-logical-design-poster-for-workload-mobility.pdf["Link zu VMware"^]
 
 ====
 
@@ -111,7 +111,7 @@ NOTE: Schalten Sie die virtuelle Appliance manuell ein.
 
 
 
-Eine Schritt-für-Schritt-Anleitung finden Sie im https://["VMware HCX-Benutzerhandbuch"^].
+Eine Schritt-für-Schritt-Anleitung finden Sie im https://docs.vmware.com/en/VMware-HCX/4.5/hcx-user-guide/GUID-47774FEA-6BDA-48E5-9D5F-ABEAD64FDDF7.html["VMware HCX-Benutzerhandbuch"^].
 
 ====
 .Schritt 3: HCX Connector mit dem Lizenzschlüssel aktivieren
@@ -120,7 +120,7 @@ Eine Schritt-für-Schritt-Anleitung finden Sie im https://["VMware HCX-Benutzerh
 Nachdem Sie den VMware HCX Connector OVA vor Ort bereitgestellt und das Gerät gestartet haben, führen Sie die folgenden Schritte aus, um den HCX Connector zu aktivieren. Generieren Sie den Lizenzschlüssel aus dem Google Cloud VMware Engine Portal und aktivieren Sie ihn im VMware HCX Manager.
 
 . Klicken Sie im VMware Engine-Portal auf Ressourcen, wählen Sie die Private Cloud und *Klicken Sie auf das Download-Symbol unter HCX Manager Cloud Version*.image:gcpd-hcx-image6.png["HCX-Lizenz herunterladen"]Öffnen Sie die heruntergeladene Datei und kopieren Sie die Zeichenfolge für den Lizenzschlüssel.
-. Melden Sie sich beim lokalen VMware HCX Manager unter an https://["https://hcxmanagerIP:9443"^] Administratordaten werden verwendet.
+. Melden Sie sich beim lokalen VMware HCX Manager unter an https://hcxmanagerIP:9443["https://hcxmanagerIP:9443"^] Administratordaten werden verwendet.
 +
 
 NOTE: Verwenden Sie die hcxmanagerIP und das Passwort, das während der OVA-Bereitstellung definiert wurde.
@@ -230,7 +230,7 @@ image:gcpd-hcx-image14.png["Screenshot der HCX-Geräte auf der Seite vSphere Cli
 ====
 Workloads können mithilfe verschiedener VMware HCX Migrationstechnologien bidirektional zwischen lokalen und GCVE SDDCs migriert werden. VMs können mithilfe von mehreren Migrationstechnologien wie HCX Bulk Migration, HCX vMotion, HCX Cold Migration, HCX Replication Assisted vMotion (erhältlich mit HCX Enterprise Edition) und HCX OS Assisted Migration (erhältlich mit der HCX Enterprise Edition) in und von VMware HCX Enterprise Edition verschoben werden.
 
-Weitere Informationen zu verschiedenen HCX-Migrationsmechanismen finden Sie unter https://["Migrationstypen von VMware HCX"^].
+Weitere Informationen zu verschiedenen HCX-Migrationsmechanismen finden Sie unter https://docs.vmware.com/en/VMware-HCX/4.5/hcx-user-guide/GUID-8A31731C-AA28-4714-9C23-D9E924DBB666.html["Migrationstypen von VMware HCX"^].
 
 Die HCX-IX Appliance verwendet den Mobility Agent Service, um vMotion-, Cold- und Replication Assisted vMotion-Migrationen (RAV) durchzuführen.
 
@@ -259,7 +259,7 @@ image:gcpd-hcx-image17.png["Fehler: Fehlendes Grafikbild"]
 . Klicken Sie nach Abschluss der Validierungsprüfungen auf Los, um die Migration zu starten.
 +
 
-NOTE: Der vMotion Transfer erfasst den aktiven VM-Speicher, seinen Ausführungszustand, seine IP-Adresse und seine MAC-Adresse. Weitere Informationen zu den Anforderungen und Einschränkungen von HCX vMotion finden Sie unter https://["VMware HCX vMotion und „Cold Migration“ verstehen"^].
+NOTE: Der vMotion Transfer erfasst den aktiven VM-Speicher, seinen Ausführungszustand, seine IP-Adresse und seine MAC-Adresse. Weitere Informationen zu den Anforderungen und Einschränkungen von HCX vMotion finden Sie unter https://docs.vmware.com/en/VMware-HCX/4.5/hcx-user-guide/GUID-517866F6-AF06-4EFC-8FAE-DA067418D584.html["VMware HCX vMotion und „Cold Migration“ verstehen"^].
 
 . Über das Dashboard HCX > Migration können Sie den Fortschritt und den Abschluss von vMotion überwachen.
 +
@@ -318,14 +318,14 @@ Weitere Informationen zu den in diesem Dokument beschriebenen Daten finden Sie u
 
 * Dokumentation der Google Cloud VMware Engine
 +
-https://["https://cloud.google.com/vmware-engine/docs/overview"^]
+https://cloud.google.com/vmware-engine/docs/overview/["https://cloud.google.com/vmware-engine/docs/overview"^]
 
 * Dokumentation des Cloud Volume Service
 +
-https://["https://cloud.google.com/architecture/partners/netapp-cloud-volumes"^]
+https://cloud.google.com/architecture/partners/netapp-cloud-volumes["https://cloud.google.com/architecture/partners/netapp-cloud-volumes"^]
 
 * VMware HCX-Benutzerhandbuch
 +
-https://["https://docs.vmware.com/en/VMware-HCX/index.html"^]
+https://docs.vmware.com/en/VMware-HCX/index.html["https://docs.vmware.com/en/VMware-HCX/index.html"^]
 
 

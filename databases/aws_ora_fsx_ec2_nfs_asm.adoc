@@ -1,0 +1,924 @@
+---
+sidebar: sidebar 
+permalink: databases/aws_ora_fsx_ec2_nfs_asm.html 
+keywords: Oracle, AWS, FSx ONTAP, Database, Oracle ASM, Oracle Restart, Oracle 19c, NFS, dNFS 
+summary: Die Lösung bietet Überblick und Details zur Implementierung und zum Schutz der Oracle-Datenbank in AWS FSX ONTAP Storage und EC2 Computing-Instanz mit NFS-Protokoll und Oracle-Datenbank, die im Standalone Restart mit asm als Volume Manager konfiguriert ist. 
+---
+= TR-XXXX: Oracle 19c in Standalone Restart on AWS FSX/EC2 with NFS/ASM
+:hardbreaks:
+:allow-uri-read: 
+:nofooter: 
+:icons: font
+:linkattrs: 
+:imagesdir: ./../media/
+
+
+Allen Cao, Niyaz Mohamed, NetApp
+
+
+
+== Zweck
+
+ASM (Automatic Storage Management) ist ein beliebter Oracle Storage Volume Manager, der in vielen Oracle-Installationen eingesetzt wird. Es ist außerdem die von Oracle empfohlene Storage-Managementlösung. Sie stellt eine Alternative zu herkömmlichen Volume Managern und Filesystemen dar. Seit Oracle Version 11g wurde ASM mit Grid-Infrastruktur anstatt mit einer Datenbank verpackt. Um Oracle ASM für das Storage-Management ohne RAC zu nutzen, müssen Sie daher die Oracle Grid-Infrastruktur auf einem eigenständigen Server installieren, der auch als Oracle Restart bezeichnet wird. Dies führt zweifellos zu einer größeren Komplexität in einer ansonsten einfacheren Oracle-Datenbankimplementierung. Wie der Name jedoch andeutet, werden bei der Bereitstellung von Oracle im Restart-Modus ausgefallene Oracle-Dienste nach einem Host-Neustart ohne Benutzereingriff neu gestartet, was ein gewisses Maß an Hochverfügbarkeit oder HA-Funktionalität bietet.
+
+Oracle ASM wird allgemein in FC-, iSCSI-Storage-Protokollen und luns als Roh-Storage-Geräten eingesetzt. Die Konfiguration von ASM auf NFS-Protokoll und NFS-Dateisystem wird jedoch auch von Oracle unterstützt. In dieser Dokumentation zeigen wir, wie eine Oracle 19c-Datenbank mit dem NFS-Protokoll und Oracle ASM in einer Amazon FSX für ONTAP Storage-Umgebung mit EC2 Computing-Instanzen implementiert wird. Wir zeigen Ihnen auch, wie Sie den NetApp SnapCenter-Service über die NetApp BlueXP Konsole nutzen können, um Ihre Oracle Datenbank für Entwicklung/Tests zu sichern, wiederherzustellen und zu klonen. Andere Anwendungsfälle für den Storage-effizienten Datenbankbetrieb in der AWS Public Cloud zeigen wir Ihnen auch, wie.
+
+Diese Lösung eignet sich für folgende Anwendungsfälle:
+
+* Oracle Database-Implementierung in Amazon FSX for ONTAP Storage und EC2-Computing-Instanzen mit NFS/ASM
+* Test und Validierung eines Oracle-Workloads in der Public AWS Cloud mit NFS/ASM
+* Testen und Validieren der in AWS bereitgestellten Funktionen zum Neustart von Oracle-Datenbanken
+
+
+
+
+== Zielgruppe
+
+Diese Lösung ist für folgende Personen gedacht:
+
+* Ein DBA, der Oracle in einer AWS Public Cloud mit NFS/ASM implementieren möchte.
+* Ein Solution Architect für Datenbanken, der Oracle-Workloads in der AWS-Public Cloud testen möchte.
+* Storage-Administrator, der eine in AWS FSX Storage implementierte Oracle-Datenbank implementieren und managen möchte.
+* Der Applikationseigentümer, der eine Oracle Database in AWS FSX/EC2 einrichten möchte.
+
+
+
+
+== Test- und Validierungsumgebung der Lösung
+
+Tests und Validierungen dieser Lösung wurden in einer AWS FSX- und EC2-Umgebung durchgeführt, die möglicherweise nicht mit der endgültigen Implementierungsumgebung übereinstimmt. Weitere Informationen finden Sie im Abschnitt <<Key Factors for Deployment Consideration>>.
+
+
+
+=== Der Netapp Architektur Sind
+
+image::aws_ora_fsx_ec2_nfs_asm_architecture.png[Dieses Bild zeigt ein detailliertes Bild der Oracle-Implementierungskonfiguration in AWS Public Cloud mit iSCSI und ASM.]
+
+
+
+=== Hardware- und Softwarekomponenten
+
+|===
+
+
+3+| *Hardware* 
+
+
+| FSX ONTAP-Storage | Aktuelle Version von AWS angeboten | Ein FSX HA-Cluster in der gleichen VPC und Verfügbarkeitszone 
+
+
+| EC2 Instanz für Computing | t2.xlarge/4vCPU/16G | Zwei EC2 T2 xlarge EC2-Instanzen, eine als primärer DB-Server und die andere als Klon-DB-Server 
+
+
+3+| *Software* 
+
+
+| Redhat Linux | RHEL-8.6.0_HVM-20220503-x86_64-2-Hourly2-GP2 | Bereitstellung der RedHat Subscription für Tests 
+
+
+| Oracle Grid Infrastructure | Version 19.18 | RU-Patch p34762026_190000_Linux-x86-64.zip angewendet 
+
+
+| Oracle Datenbank | Version 19.18 | RU-Patch p34765931_190000_Linux-x86-64.zip angewendet 
+
+
+| Oracle OPatch | Version 12.2.0.1.36 | Neuestes Patch p6880880_190000_Linux-x86-64.zip 
+
+
+| SnapCenter-Service | Version | v2.3.1.2324 
+|===
+
+
+=== Wichtige Faktoren für die Implementierung
+
+* *EC2 Compute-Instanzen.* in diesen Tests und Validierungen haben wir einen Instanztyp AWS EC2 t2.xlarge für die Compute-Instanz der Oracle-Datenbank verwendet. NetApp empfiehlt, in der Produktionsumgebung eine EC2-Instanz vom Typ M5 als Computing-Instanz für Oracle zu verwenden, da sie für Datenbank-Workloads optimiert ist. Sie müssen die Größe der EC2-Instanz entsprechend der Anzahl der vCPUs und der Menge des RAM anpassen, basierend auf den tatsächlichen Workload-Anforderungen.
+* *FSX Storage HA Cluster Single- oder Multi-Zone-Implementierung.* bei diesen Tests und Validierungen haben wir einen FSX HA-Cluster in einer einzelnen AWS Verfügbarkeitszone implementiert. Für die Implementierung in der Produktion empfiehlt NetApp die Implementierung eines FSX HA-Paars in zwei verschiedenen Verfügbarkeitszonen. Ein FSX HA-Cluster wird in einem HA-Paar bereitgestellt, das in einem Paar aktiv/Passiv-Filesysteme gespiegelt wird, um Redundanz auf Storage-Ebene bereitzustellen. Die Implementierung mit mehreren Zonen verbessert die Hochverfügbarkeit bei einem Ausfall in einer einzelnen AWS Zone noch weiter.
+* *FSX Storage-Cluster-Sizing.* ein Amazon FSX for ONTAP Storage-Dateisystem bietet bis zu 160,000 RAW SSD IOPS, einen Durchsatz von bis zu 4 Gbit/s und eine maximale Kapazität von 192 tib. Sie können das Cluster jedoch in Bezug auf die bereitgestellten IOPS, den Durchsatz und die Storage-Grenze (mindestens 1,024 gib) anpassen, basierend auf Ihren tatsächlichen Anforderungen zum Zeitpunkt der Implementierung. Die Kapazität lässt sich spontan dynamisch anpassen, ohne dass die Applikationsverfügbarkeit beeinträchtigt wird.
+* *Oracle Daten- und Protokolllayout.* in unseren Tests und Validierungen haben wir jeweils zwei ASM-Datenträgergruppen für Daten und Logs eingesetzt. Innerhalb der +DATA asm-Datenträgergruppe haben wir vier Platten in einem Daten NFS File System Mount-Punkt bereitgestellt. Innerhalb der +LOGS asm-Datenträgergruppe haben wir zwei Platten in einem logs NFS-Dateisystem Mount-Punkt bereitgestellt. Bei großen Datenbankimplementierungen können ASM-Festplattengruppen so aufgebaut werden, dass sie mehrere FSX Dateisysteme mit ASM-NFS-Festplatten umfassen, die über mehrere NFS-Mount-Punkte verteilt sind, die auf FSX-Dateisystemen verankert sind. Diese spezielle Einrichtung wurde speziell dafür entwickelt, den Datenbankdurchsatz mit mehr als 4 GB/s und 160,000 SSD-Brutto-IOPS zu erreichen.
+* *DNFS-Konfiguration.* dNFS ist in den Oracle-Kernel integriert und ist dafür bekannt, die Performance von Oracle-Datenbanken drastisch zu steigern, wenn Oracle auf NFS-Speicher bereitgestellt wird. DNFS ist in Oracle-Binärdatei verpackt, ist aber nicht standardmäßig aktiviert. Sie sollte für jede Oracle Database-Bereitstellung auf NFS aktiviert werden. Bei der Bereitstellung mehrerer FSX-Dateisysteme für große Datenbanken sollte dNFS-Multi-Path ordnungsgemäß konfiguriert werden.
+* *Oracle ASM-Redundanzebene, die für jede Oracle ASM-Datenträgergruppe verwendet werden soll, die Sie erstellen.* Da FSX den Speicher bereits auf der FSX-Clusterebene spiegelt, sollten Sie dies tun `ONLY` Verwenden Sie die Option Externe Redundanz. Dies bedeutet, dass Oracle ASM den Inhalt der Laufwerksgruppe nicht spiegeln kann. Dies ist besonders wichtig, da die Speicherung von NFS für Oracle-Datenbankdaten EINE HARTE NFS-Mount-Option erfordert, die für das Spiegeln von ASM-Inhalten auf Oracle-Ebene NICHT wünschenswert ist.
+* *Datenbank-Backup.* NetApp bietet eine SaaS-Version des SnapCenter Softwareservice zum Sichern, Wiederherstellen und Klonen von Datenbanken in der Cloud, die über die NetApp BlueXP Konsolen-UI verfügbar ist. NetApp empfiehlt die Implementierung eines solchen Service, um schnelle Snapshot Backups (unter einer Minute), schnelle Datenbank-Restores (wenige Minuten) und Datenbankklone zu erreichen.
+
+
+
+
+== Lösungsimplementierung
+
+Im folgenden Abschnitt werden schrittweise Bereitstellungsverfahren beschrieben.
+
+
+
+=== Voraussetzungen für die Bereitstellung
+
+[%collapsible]
+====
+Die Bereitstellung erfordert die folgenden Voraussetzungen.
+
+. Es wurde ein AWS Konto eingerichtet, und die erforderlichen VPC und Netzwerksegmente wurden in Ihrem AWS Konto erstellt.
+. Über die AWS EC2-Konsole müssen Sie zwei EC2 Linux-Instanzen implementieren, eine als primärer Oracle DB Server und einen optionalen alternativen Clone-Ziel-DB-Server. Im Architekturdiagramm im vorherigen Abschnitt finden Sie weitere Details zum Umgebungs-Setup. Sehen Sie sich auch die an link:https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/concepts.html["Benutzerhandbuch für Linux-Instanzen"^] Finden Sie weitere Informationen.
+. Über die AWS EC2-Konsole implementieren Sie Amazon FSX for ONTAP Storage HA-Cluster, um die Oracle Database Volumes zu hosten. Wenn Sie mit der Bereitstellung von FSX-Speicher nicht vertraut sind, lesen Sie die Dokumentation link:https://docs.aws.amazon.com/fsx/latest/ONTAPGuide/creating-file-systems.html["Erstellen von FSX für ONTAP-Dateisysteme"^] Schritt-für-Schritt-Anleitungen.
+. Die Schritte 2 und 3 können mit dem folgenden Terraform Automatisierungs-Toolkit durchgeführt werden, das eine EC2-Instanz mit dem Namen erstellt `ora_01` Und ein FSX Dateisystem mit dem Namen `fsx_01`. Überprüfen Sie die Anweisung sorgfältig, und ändern Sie die Variablen vor der Ausführung entsprechend Ihrer Umgebung.
++
+....
+git clone https://github.com/NetApp-Automation/na_aws_fsx_ec2_deploy.git
+....
+
+
+
+NOTE: Stellen Sie sicher, dass Sie mindestens 50G im Root-Volume der EC2-Instanz zugewiesen haben, damit genügend Speicherplatz für die Bereitstellung der Oracle Installationsdateien zur Verfügung steht.
+
+====
+
+
+=== Konfiguration des EC2-Instance-Kernels
+
+[%collapsible]
+====
+Melden Sie sich bei den bereitgestellten Voraussetzungen als ec2-User bei der EC2-Instanz an und sudo to root-Benutzer, um den Linux-Kernel für die Oracle-Installation zu konfigurieren.
+
+. Erstellen Sie ein Staging-Verzeichnis `/tmp/archive` Und legen Sie die fest `777` Berechtigung.
++
+....
+mkdir /tmp/archive
+
+chmod 777 /tmp/archive
+....
+. Laden Sie die Oracle-Binärinstallationsdateien und andere erforderliche rpm-Dateien herunter, und stellen Sie sie auf den bereit `/tmp/archive` Verzeichnis.
++
+Siehe die folgende Liste der Installationsdateien, die in aufgeführt sind `/tmp/archive` Auf der EC2-Instanz.
+
++
+....
+[ec2-user@ip-172-30-15-58 ~]$ ls -l /tmp/archive
+total 10537316
+-rw-rw-r--. 1 ec2-user ec2-user      19112 Mar 21 15:57 compat-libcap1-1.10-7.el7.x86_64.rpm
+-rw-rw-r--  1 ec2-user ec2-user 3059705302 Mar 21 22:01 LINUX.X64_193000_db_home.zip
+-rw-rw-r--  1 ec2-user ec2-user 2889184573 Mar 21 21:09 LINUX.X64_193000_grid_home.zip
+-rw-rw-r--. 1 ec2-user ec2-user     589145 Mar 21 15:56 netapp_linux_unified_host_utilities-7-1.x86_64.rpm
+-rw-rw-r--. 1 ec2-user ec2-user      31828 Mar 21 15:55 oracle-database-preinstall-19c-1.0-2.el8.x86_64.rpm
+-rw-rw-r--  1 ec2-user ec2-user 2872741741 Mar 21 22:31 p34762026_190000_Linux-x86-64.zip
+-rw-rw-r--  1 ec2-user ec2-user 1843577895 Mar 21 22:32 p34765931_190000_Linux-x86-64.zip
+-rw-rw-r--  1 ec2-user ec2-user  124347218 Mar 21 22:33 p6880880_190000_Linux-x86-64.zip
+-rw-r--r--  1 ec2-user ec2-user     257136 Mar 22 16:25 policycoreutils-python-utils-2.9-9.el8.noarch.rpm
+....
+. Installieren Sie Oracle 19c RPM, das die meisten Anforderungen an die Kernel-Konfiguration erfüllt.
++
+....
+yum install /tmp/archive/oracle-database-preinstall-19c-1.0-2.el8.x86_64.rpm
+....
+. Laden Sie die fehlenden Dateien herunter, und installieren Sie sie `compat-libcap1` Unter Linux 8.
++
+....
+yum install /tmp/archive/compat-libcap1-1.10-7.el7.x86_64.rpm
+....
+. Laden Sie von NetApp die NetApp Host Utilities herunter und installieren Sie sie.
++
+....
+yum install /tmp/archive/netapp_linux_unified_host_utilities-7-1.x86_64.rpm
+....
+. Installieren `policycoreutils-python-utils`, Die in der EC2-Instanz nicht verfügbar ist.
++
+....
+yum install /tmp/archive/policycoreutils-python-utils-2.9-9.el8.noarch.rpm
+....
+. Installieren Sie Open JDK Version 1.8.
++
+....
+yum install java-1.8.0-openjdk.x86_64
+....
+. installieren sie nfs-utils.
++
+....
+yum install nfs-utils
+....
+. Deaktivieren Sie transparente hugepages im aktuellen System.
++
+....
+echo never > /sys/kernel/mm/transparent_hugepage/enabled
+echo never > /sys/kernel/mm/transparent_hugepage/defrag
+....
++
+Fügen Sie die folgenden Zeilen in hinzu `/etc/rc.local` Zu deaktivieren `transparent_hugepage` Nach dem Neustart:
+
++
+....
+  # Disable transparent hugepages
+          if test -f /sys/kernel/mm/transparent_hugepage/enabled; then
+            echo never > /sys/kernel/mm/transparent_hugepage/enabled
+          fi
+          if test -f /sys/kernel/mm/transparent_hugepage/defrag; then
+            echo never > /sys/kernel/mm/transparent_hugepage/defrag
+          fi
+....
+. Deaktivieren sie selinux, indem Sie ändern `SELINUX=enforcing` Bis `SELINUX=disabled`. Sie müssen den Host neu starten, damit die Änderung wirksam wird.
++
+....
+vi /etc/sysconfig/selinux
+....
+. Fügen Sie die folgenden Zeilen zu hinzu `limit.conf` So legen Sie die Dateibeschreibungsgrenze und die Stapelgröße ohne Anführungszeichen fest `" "`.
++
+....
+vi /etc/security/limits.conf
+  "*               hard    nofile          65536"
+  "*               soft    stack           10240"
+....
+. Fügen Sie der EC2-Instanz Swap-Speicherplatz hinzu, indem Sie diese Anweisung befolgen: link:https://aws.amazon.com/premiumsupport/knowledge-center/ec2-memory-swap-file/["Wie weisen ich Speicher zu, um durch Verwendung einer Auslagerungsdatei als Auslagerungsspeicher in einer Amazon EC2 Instanz zu arbeiten?"^] Die genaue Menge des zu addieren Speicherplatzes hängt von der Größe des RAM bis zu 16G ab.
+. Fügen Sie die ASM-Gruppe hinzu, die für die asm-Sysasm-Gruppe verwendet werden soll
++
+....
+groupadd asm
+....
+. Ändern Sie den oracle-Benutzer, um ASM als sekundäre Gruppe hinzuzufügen (der oracle-Benutzer sollte nach der RPM-Installation von Oracle vor der Installation erstellt worden sein).
++
+....
+usermod -a -G asm oracle
+....
+. EC2-Instanz neu booten
+
+
+====
+
+
+=== Bereitstellen und Exportieren von NFS-Volumes, die auf den EC2-Instanz-Host gemountet werden sollen
+
+[%collapsible]
+====
+Stellen Sie drei Volumes über die Befehlszeile bereit, indem Sie sich beim FSX Cluster über ssh anmelden als fsxadmin-Benutzer mit FSX Cluster Management IP, um die binären, Daten- und Protokolldateien der Oracle-Datenbank zu hosten.
+
+. Melden Sie sich über SSH als Benutzer von fsxadmin am FSX-Cluster an.
++
+....
+ssh fsxadmin@172.30.15.53
+....
+. Führen Sie den folgenden Befehl aus, um ein Volume für die Oracle-Binärdatei zu erstellen.
++
+....
+vol create -volume ora_01_biny -aggregate aggr1 -size 50G -state online  -type RW -junction-path /ora_01_biny -snapshot-policy none -tiering-policy snapshot-only
+....
+. Führen Sie den folgenden Befehl aus, um ein Volume für Oracle-Daten zu erstellen.
++
+....
+vol create -volume ora_01_data -aggregate aggr1 -size 100G -state online  -type RW -junction-path /ora_01_data -snapshot-policy none -tiering-policy snapshot-only
+....
+. Führen Sie den folgenden Befehl aus, um ein Volume für Oracle-Protokolle zu erstellen.
++
+....
+vol create -volume ora_01_logs -aggregate aggr1 -size 100G -state online  -type RW -junction-path /ora_01_logs -snapshot-policy none -tiering-policy snapshot-only
+....
+. Erstellte DB-Volumes validieren
++
+....
+vol show
+....
++
+Es wird erwartet, dass dies wieder zutrifft:
+
++
+....
+FsxId02ad7bf3476b741df::> vol show
+  (vol show)
+FsxId06c3c8b2a7bd56458::> vol show
+Vserver   Volume       Aggregate    State      Type       Size  Available Used%
+--------- ------------ ------------ ---------- ---- ---------- ---------- -----
+svm_ora   ora_01_biny  aggr1        online     RW         50GB    47.50GB    0%
+svm_ora   ora_01_data  aggr1        online     RW        100GB    95.00GB    0%
+svm_ora   ora_01_logs  aggr1        online     RW        100GB    95.00GB    0%
+svm_ora   svm_ora_root aggr1        online     RW          1GB    972.1MB    0%
+4 entries were displayed.
+....
+
+
+====
+
+
+=== Konfiguration des Datenbank-Storage
+
+[%collapsible]
+====
+Importieren und richten Sie nun den FSX Storage für die Oracle Grid-Infrastruktur und die Datenbankinstallation auf dem EC2-Instanzhost ein.
+
+. Melden Sie sich über SSH als ec2-Benutzer mit Ihrem SSH-Schlüssel und der IP-Adresse der EC2-Instanz an.
++
+....
+ssh -i ora_01.pem ec2-user@172.30.15.58
+....
+. Erstellen Sie das Verzeichnis /u01, um das Binärdateisystem von Oracle zu mounten
++
+....
+sudo mkdir /u01
+....
+. Mounten Sie das binäre Volume in `/u01`, Geändert zu Ihrer FSX NFS LIF IP-Adresse. Wenn Sie FSX Cluster über das Automatisierungs-Toolkit von NetApp implementiert haben, wird die NFS-LIF-IP-Adresse des virtuellen Storage-Servers in der Ausgabe am Ende der Ausführung der Ressourcenbereitstellung aufgeführt. Andernfalls kann es von der AWS FSX Konsolen-UI abgerufen werden.
++
+....
+sudo mount -t nfs 172.30.15.19:/ora_01_biny /u01 -o rw,bg,hard,vers=3,proto=tcp,timeo=600,rsize=65536,wsize=65536
+....
+. Ändern `/u01` Mount Point Ownership für den Oracle-Benutzer und die zugehörige primäre Gruppe.
++
+....
+sudo chown oracle:oinstall /u01
+....
+. Erstellen Sie das Verzeichnis /oradata, um das Oracle-Datendateisystem zu mounten
++
+....
+sudo mkdir /oradata
+....
+. Mounten Sie das Daten-Volume auf `/oradata`, Geändert zu Ihrer FSX NFS LIF IP-Adresse
++
+....
+sudo mount -t nfs 172.30.15.19:/ora_01_data /oradata -o rw,bg,hard,vers=3,proto=tcp,timeo=600,rsize=65536,wsize=65536
+....
+. Ändern `/oradata` Mount Point Ownership für den Oracle-Benutzer und die zugehörige primäre Gruppe.
++
+....
+sudo chown oracle:oinstall /oradata
+....
+. Erstellen Sie das Verzeichnis /oralogs, um das Dateisystem Oracle logs zu mounten
++
+....
+sudo mkdir /oralogs
+....
+. Mounten Sie das Protokoll-Volume in `/oralogs`, Geändert zu Ihrer FSX NFS LIF IP-Adresse
++
+....
+sudo mount -t nfs 172.30.15.19:/ora_01_logs /oralogs -o rw,bg,hard,vers=3,proto=tcp,timeo=600,rsize=65536,wsize=65536
+....
+. Ändern `/oralogs` Mount Point Ownership für den Oracle-Benutzer und die zugehörige primäre Gruppe.
++
+....
+sudo chown oracle:oinstall /oralogs
+....
+. Hinzufügen eines Mount-Punkts zu `/etc/fstab`.
++
+....
+sudo vi /etc/fstab
+....
++
+Fügen Sie die folgende Zeile hinzu.
+
++
+....
+172.30.15.19:/ora_01_biny       /u01            nfs     rw,bg,hard,vers=3,proto=tcp,timeo=600,rsize=65536,wsize=65536   0       0
+172.30.15.19:/ora_01_data       /oradata        nfs     rw,bg,hard,vers=3,proto=tcp,timeo=600,rsize=65536,wsize=65536   0       0
+172.30.15.19:/ora_01_logs       /oralogs        nfs     rw,bg,hard,vers=3,proto=tcp,timeo=600,rsize=65536,wsize=65536   0       0
+
+....
+. Erstellen sie für oracle-Benutzer asm-Ordner, um asm-Festplattendateien zu speichern
++
+....
+sudo su
+su - oracle
+mkdir /oradata/asm
+mkdir /oralogs/asm
+....
+. Erstellen Sie als oracle-Benutzer asm-Datenfestplattendateien, und ändern Sie die Anzahl so, dass sie mit der Größe der Festplatte mit der Blockgröße übereinstimmt.
++
+....
+dd if=/dev/zero of=/oradata/asm/nfs_data_disk01 bs=1M count=20480 oflag=direct
+dd if=/dev/zero of=/oradata/asm/nfs_data_disk02 bs=1M count=20480 oflag=direct
+dd if=/dev/zero of=/oradata/asm/nfs_data_disk03 bs=1M count=20480 oflag=direct
+dd if=/dev/zero of=/oradata/asm/nfs_data_disk04 bs=1M count=20480 oflag=direct
+....
+. Ändern Sie als Root-Benutzer die Berechtigung für die Datenplattendatei auf 640
++
+....
+chmod 640 /oradata/asm/*
+....
+. ERSTELLEN SIE ALS oracle-Benutzer asm-Protokolldateien, und ändern Sie die Anzahl, um sie der Größe der Festplatte mit der Blockgröße anzupassen.
++
+....
+dd if=/dev/zero of=/oralogs/asm/nfs_logs_disk01 bs=1M count=40960 oflag=direct
+dd if=/dev/zero of=/oralogs/asm/nfs_logs_disk02 bs=1M count=40960 oflag=direct
+....
+. Ändern Sie als Root-Benutzer die Berechtigung für die Protokolldatenträger in 640
++
+....
+chmod 640 /oralogs/asm/*
+....
+. Booten Sie den EC2-Instanzhost neu.
+
+
+====
+
+
+=== Installation der Oracle Grid-Infrastruktur
+
+[%collapsible]
+====
+. Melden Sie sich als ec2-Benutzer über SSH bei der EC2-Instanz an und aktivieren Sie die Passwortauthentifizierung durch Entkommentieren `PasswordAuthentication yes` Und dann kommentiert `PasswordAuthentication no`.
++
+....
+sudo vi /etc/ssh/sshd_config
+....
+. Starten Sie den sshd-Dienst neu.
++
+....
+sudo systemctl restart sshd
+....
+. Setzen Sie das Oracle-Benutzerpasswort zurück.
++
+....
+sudo passwd oracle
+....
+. Melden Sie sich als Oracle Restart Software Owner User (oracle) an. Erstellen Sie ein Oracle-Verzeichnis wie folgt:
++
+....
+mkdir -p /u01/app/oracle
+mkdir -p /u01/app/oraInventory
+....
+. Ändern Sie die Verzeichnisberechtigungseinstellung.
++
+....
+chmod -R 775 /u01/app
+....
+. Erstellen Sie ein Grid-Home-Verzeichnis, und ändern Sie es.
++
+....
+mkdir -p /u01/app/oracle/product/19.0.0/grid
+cd /u01/app/oracle/product/19.0.0/grid
+....
+. Entpacken Sie die Grid-Installationsdateien.
++
+....
+unzip -q /tmp/archive/LINUX.X64_193000_grid_home.zip
+....
+. Löschen Sie von der Startseite des Rasters aus die `OPatch` Verzeichnis.
++
+....
+rm -rf OPatch
+....
+. Kopieren Sie von der Grid Home-Funktion `p6880880_190000_Linux-x86-64.zip` An GRID_Home, und entpacken Sie sie.
++
+....
+cp /tmp/archive/p6880880_190000_Linux-x86-64.zip .
+unzip p6880880_190000_Linux-x86-64.zip
+....
+. Von der Startseite des Rasters aus, überarbeiten `cv/admin/cvu_config`, Entkommentieren und ersetzen `CV_ASSUME_DISTID=OEL5` Mit `CV_ASSUME_DISTID=OL7`.
++
+....
+vi cv/admin/cvu_config
+....
+. Bereiten Sie ein vor `gridsetup.rsp` Datei für die automatische Installation und legen Sie die rsp-Datei im ab `/tmp/archive` Verzeichnis. Die rsp-Datei sollte die Abschnitte A, B und G mit den folgenden Informationen abdecken:
++
+....
+INVENTORY_LOCATION=/u01/app/oraInventory
+oracle.install.option=HA_CONFIG
+ORACLE_BASE=/u01/app/oracle
+oracle.install.asm.OSDBA=dba
+oracle.install.asm.OSOPER=oper
+oracle.install.asm.OSASM=asm
+oracle.install.asm.SYSASMPassword="SetPWD"
+oracle.install.asm.diskGroup.name=DATA
+oracle.install.asm.diskGroup.redundancy=EXTERNAL
+oracle.install.asm.diskGroup.AUSize=4
+oracle.install.asm.diskGroup.disks=/oradata/asm/*,/oralogs/asm/*
+oracle.install.asm.diskGroup.diskDiscoveryString=/oradata/asm/nfs_data_disk01,/oradata/asm/nfs_data_disk02,/oradata/asm/nfs_data_disk03,/oradata/asm/nfs_data_disk04
+oracle.install.asm.monitorPassword="SetPWD"
+oracle.install.asm.configureAFD=false
+....
+. Melden Sie sich als Root-Benutzer bei der EC2-Instanz an.
+. Installieren `cvuqdisk-1.0.10-1.rpm`.
++
+....
+rpm -ivh /u01/app/oracle/product/19.0.0/grid/cv/rpm/cvuqdisk-1.0.10-1.rpm
+....
+. Melden Sie sich als Oracle-Benutzer bei der EC2-Instanz an und extrahieren Sie den Patch in `/tmp/archive` Ordner.
++
+....
+unzip p34762026_190000_Linux-x86-64.zip
+....
+. Starten Sie von Grid Home /u01/App/oracle/Product/19.0.0/GRID aus und als oracle-Benutzer `gridSetup.sh` Für die Installation der Netzinfrastruktur.
++
+....
+ ./gridSetup.sh -applyRU /tmp/archive/34762026/ -silent -responseFile /tmp/archive/gridsetup.rsp
+....
++
+Ignorieren Sie die Warnungen über falsche Gruppen für die Netzinfrastruktur. Wir verwenden einen einzigen Oracle-Benutzer, um Oracle Restart zu verwalten. Das wird also erwartet.
+
+. Führen Sie als root-Benutzer folgende(n) Skript(e) aus:
++
+....
+/u01/app/oraInventory/orainstRoot.sh
+
+/u01/app/oracle/product/19.0.0/grid/root.sh
+....
+. Führen Sie als Oracle-Benutzer den folgenden Befehl aus, um die Konfiguration abzuschließen:
++
+....
+/u01/app/oracle/product/19.0.0/grid/gridSetup.sh -executeConfigTools -responseFile /tmp/archive/gridsetup.rsp -silent
+....
+. Erstellen Sie als Oracle-Benutzer die PROTOKOLLDATENTRÄGER-Gruppe.
++
+....
+bin/asmca -silent -sysAsmPassword 'yourPWD' -asmsnmpPassword 'yourPWD' -createDiskGroup -diskGroupName LOGS -disk '/oralogs/asm/nfs_logs_disk*' -redundancy EXTERNAL -au_size 4
+....
+. Validieren Sie als Oracle-Benutzer nach der Installation die Grid-Services.
++
+....
+bin/crsctl stat res -t
++
+Name                Target  State        Server                   State details
+Local Resources
+ora.DATA.dg         ONLINE  ONLINE       ip-172-30-15-58          STABLE
+ora.LISTENER.lsnr   ONLINE  ONLINE       ip-172-30-15-58          STABLE
+ora.LOGS.dg         ONLINE  ONLINE       ip-172-30-15-58          STABLE
+ora.asm             ONLINE  ONLINE       ip-172-30-15-58          Started,STABLE
+ora.ons             OFFLINE OFFLINE      ip-172-30-15-58          STABLE
+Cluster Resources
+ora.cssd            ONLINE  ONLINE       ip-172-30-15-58          STABLE
+ora.diskmon         OFFLINE OFFLINE                               STABLE
+ora.driver.afd      ONLINE  ONLINE       ip-172-30-15-58          STABLE
+ora.evmd            ONLINE  ONLINE       ip-172-30-15-58          STABLE
+....
+
+
+====
+
+
+=== Installation der Oracle Database
+
+[%collapsible]
+====
+. Melden Sie sich als Oracle-Benutzer an, und heben Sie die Einstellung auf `$ORACLE_HOME` Und `$ORACLE_SID` Wenn es eingestellt ist.
++
+....
+unset ORACLE_HOME
+unset ORACLE_SID
+....
+. Erstellen Sie das Oracle DB Home-Verzeichnis, und ändern Sie es.
++
+....
+mkdir /u01/app/oracle/product/19.0.0/db1
+cd /u01/app/oracle/product/19.0.0/db1
+....
+. Entpacken Sie die Oracle DB-Installationsdateien.
++
+....
+unzip -q /tmp/archive/LINUX.X64_193000_db_home.zip
+....
+. Löschen Sie von der DB-Startseite aus die `OPatch` Verzeichnis.
++
+....
+rm -rf OPatch
+....
+. Kopieren Sie von der DB-Startseite aus `p6880880_190000_Linux-x86-64.zip` Bis `grid_home`Und dann entpacken Sie es.
++
+....
+cp /tmp/archive/p6880880_190000_Linux-x86-64.zip .
+unzip p6880880_190000_Linux-x86-64.zip
+....
+. Überarbeiten Sie von der DB-Startseite aus `cv/admin/cvu_config`Und entkommentieren und ersetzen `CV_ASSUME_DISTID=OEL5` Mit `CV_ASSUME_DISTID=OL7`.
++
+....
+vi cv/admin/cvu_config
+....
+. Von `/tmp/archive` Das DB 19.18 RU-Patch entpacken.
++
+....
+unzip p34765931_190000_Linux-x86-64.zip
+....
+. Bereiten Sie die automatische DB-Installationsdatei in vor `/tmp/archive/dbinstall.rsp` Verzeichnis mit folgenden Werten:
++
+....
+oracle.install.option=INSTALL_DB_SWONLY
+UNIX_GROUP_NAME=oinstall
+INVENTORY_LOCATION=/u01/app/oraInventory
+ORACLE_HOME=/u01/app/oracle/product/19.0.0/db1
+ORACLE_BASE=/u01/app/oracle
+oracle.install.db.InstallEdition=EE
+oracle.install.db.OSDBA_GROUP=dba
+oracle.install.db.OSOPER_GROUP=oper
+oracle.install.db.OSBACKUPDBA_GROUP=oper
+oracle.install.db.OSDGDBA_GROUP=dba
+oracle.install.db.OSKMDBA_GROUP=dba
+oracle.install.db.OSRACDBA_GROUP=dba
+oracle.install.db.rootconfig.executeRootScript=false
+....
+. Führen Sie von db1 Home /u01/App/oracle/Product/19.0.0/db1 aus die automatische, rein softwarebasierte DB-Installation aus.
++
+....
+ ./runInstaller -applyRU /tmp/archive/34765931/ -silent -ignorePrereqFailure -responseFile /tmp/archive/dbinstall.rsp
+....
+. Führen Sie als Root-Benutzer den aus `root.sh` Skript nach der Installation nur für Software.
++
+....
+/u01/app/oracle/product/19.0.0/db1/root.sh
+....
+. Erstellen Sie als Oracle-Benutzer den `dbca.rsp` Datei mit folgenden Einträgen:
++
+....
+gdbName=db1.demo.netapp.com
+sid=db1
+createAsContainerDatabase=true
+numberOfPDBs=3
+pdbName=db1_pdb
+useLocalUndoForPDBs=true
+pdbAdminPassword="yourPWD"
+templateName=General_Purpose.dbc
+sysPassword="yourPWD"
+systemPassword="yourPWD"
+dbsnmpPassword="yourPWD"
+storageType=ASM
+diskGroupName=DATA
+characterSet=AL32UTF8
+nationalCharacterSet=AL16UTF16
+listeners=LISTENER
+databaseType=MULTIPURPOSE
+automaticMemoryManagement=false
+totalMemory=8192
+....
++
+
+NOTE: Legen Sie den Gesamtspeicher auf der Grundlage des verfügbaren Speichers im EC2-Instanzhost fest. Oracle weist 75 % der `totalMemory` Zu DB-Instanz-SGA oder Puffer-Cache.
+
+. Als Oracle-Benutzer, lauch DB-Erstellung mit dbca.
++
+....
+bin/dbca -silent -createDatabase -responseFile /tmp/archive/dbca.rsp
+
+output:
+Prepare for db operation
+7% complete
+Registering database with Oracle Restart
+11% complete
+Copying database files
+33% complete
+Creating and starting Oracle instance
+35% complete
+38% complete
+42% complete
+45% complete
+48% complete
+Completing Database Creation
+53% complete
+55% complete
+56% complete
+Creating Pluggable Databases
+60% complete
+64% complete
+69% complete
+78% complete
+Executing Post Configuration Actions
+100% complete
+Database creation complete. For details check the logfiles at:
+ /u01/app/oracle/cfgtoollogs/dbca/db1.
+Database Information:
+Global Database Name:db1.demo.netapp.com
+System Identifier(SID):db1
+Look at the log file "/u01/app/oracle/cfgtoollogs/dbca/db1/db1.log" for further details.
+....
+. Validieren Sie als Oracle-Benutzer Oracle Neustart der HA-Services nach der DB-Erstellung.
++
+....
+[oracle@ip-172-30-15-58 db1]$ ../grid/bin/crsctl stat res -t
+--------------------------------------------------------------------------------
+Name           Target  State        Server                   State details
+--------------------------------------------------------------------------------
+Local Resources
+--------------------------------------------------------------------------------
+ora.DATA.dg
+               ONLINE  ONLINE       ip-172-30-15-58          STABLE
+ora.LISTENER.lsnr
+               ONLINE  ONLINE       ip-172-30-15-58          STABLE
+ora.LOGS.dg
+               ONLINE  ONLINE       ip-172-30-15-58          STABLE
+ora.asm
+               ONLINE  ONLINE       ip-172-30-15-58          Started,STABLE
+ora.ons
+               OFFLINE OFFLINE      ip-172-30-15-58          STABLE
+--------------------------------------------------------------------------------
+Cluster Resources
+--------------------------------------------------------------------------------
+ora.cssd
+      1        ONLINE  ONLINE       ip-172-30-15-58          STABLE
+ora.db1.db
+      1        ONLINE  ONLINE       ip-172-30-15-58          Open,HOME=/u01/app/o
+                                                             racle/product/19.0.0
+                                                             /db1,STABLE
+ora.diskmon
+      1        OFFLINE OFFLINE                               STABLE
+ora.evmd
+      1        ONLINE  ONLINE       ip-172-30-15-58          STABLE
+--------------------------------------------------------------------------------
+[oracle@ip-172-30-15-58 db1]$
+
+....
+. Legen Sie den Oracle-Benutzer fest `.bash_profile`.
++
+....
+vi ~/.bash_profile
+....
+. Folgende Einträge hinzufügen:
++
+....
+export ORACLE_HOME=/u01/app/oracle/product/19.0.0/db1
+export ORACLE_SID=db1
+export PATH=$PATH:$ORACLE_HOME/bin
+alias asm='export ORACLE_HOME=/u01/app/oracle/product/19.0.0/grid;export ORACLE_SID=+ASM;export PATH=$PATH:$ORACLE_HOME/bin'
+....
+. Überprüfen Sie die erstellte CDB/PDB.
++
+....
+. ~/.bash_profile
+
+sqlplus / as sysdba
+
+SQL> select name, open_mode from v$database;
+
+NAME      OPEN_MODE
+
+DB1       READ WRITE
+
+SQL> select name from v$datafile;
+
+NAME
+
++DATA/DB1/DATAFILE/system.256.1132176177
++DATA/DB1/DATAFILE/sysaux.257.1132176221
++DATA/DB1/DATAFILE/undotbs1.258.1132176247
++DATA/DB1/86B637B62FE07A65E053F706E80A27CA/DATAFILE/system.265.1132177009
++DATA/DB1/86B637B62FE07A65E053F706E80A27CA/DATAFILE/sysaux.266.1132177009
++DATA/DB1/DATAFILE/users.259.1132176247
++DATA/DB1/86B637B62FE07A65E053F706E80A27CA/DATAFILE/undotbs1.267.1132177009
++DATA/DB1/F7852758DCD6B800E0533A0F1EAC1DC6/DATAFILE/system.271.1132177853
++DATA/DB1/F7852758DCD6B800E0533A0F1EAC1DC6/DATAFILE/sysaux.272.1132177853
++DATA/DB1/F7852758DCD6B800E0533A0F1EAC1DC6/DATAFILE/undotbs1.270.1132177853
++DATA/DB1/F7852758DCD6B800E0533A0F1EAC1DC6/DATAFILE/users.274.1132177871
+
+NAME
+
++DATA/DB1/F785288BBCD1BA78E0533A0F1EACCD6F/DATAFILE/system.276.1132177871
++DATA/DB1/F785288BBCD1BA78E0533A0F1EACCD6F/DATAFILE/sysaux.277.1132177871
++DATA/DB1/F785288BBCD1BA78E0533A0F1EACCD6F/DATAFILE/undotbs1.275.1132177871
++DATA/DB1/F785288BBCD1BA78E0533A0F1EACCD6F/DATAFILE/users.279.1132177889
++DATA/DB1/F78529A14DD8BB18E0533A0F1EACB8ED/DATAFILE/system.281.1132177889
++DATA/DB1/F78529A14DD8BB18E0533A0F1EACB8ED/DATAFILE/sysaux.282.1132177889
++DATA/DB1/F78529A14DD8BB18E0533A0F1EACB8ED/DATAFILE/undotbs1.280.1132177889
++DATA/DB1/F78529A14DD8BB18E0533A0F1EACB8ED/DATAFILE/users.284.1132177907
+
+19 rows selected.
+
+SQL> show pdbs
+
+    CON_ID CON_NAME                       OPEN MODE  RESTRICTED
+
+         2 PDB$SEED                       READ ONLY  NO
+         3 DB1_PDB1                       READ WRITE NO
+         4 DB1_PDB2                       READ WRITE NO
+         5 DB1_PDB3                       READ WRITE NO
+SQL>
+....
+. Wechseln Sie als oracle-Benutzer zu Oracle Database Home Directory /u01/App/oracle/Product/19.0.0/db1, und aktivieren Sie dNFS
++
+....
+cd /u01/app/oracle/product/19.0.0/db1
+
+mkdir rdbms/lib/odm
+
+cp lib/libnfsodm19.so rdbms/lib/odm/
+....
+. Konfigurieren Sie die oranfstab-Datei in ORACLE_HOME
++
+....
+vi $ORACLE_HOME/dbs/oranfstab
+
+add following entries:
+
+server: fsx_01
+local: 172.30.15.58 path: 172.30.15.19
+nfs_version: nfsv3
+export: /ora_01_biny mount: /u01
+export: /ora_01_data mount: /oradata
+export: /ora_01_logs mount: /oralogs
+....
+. Melden Sie sich als oracle-Benutzer bei der Datenbank von sqlplus an und legen Sie die Größe und den Speicherort der DB-Wiederherstellung auf die +LOGS-Laufwerksgruppe fest.
++
+....
+
+. ~/.bash_profile
+
+sqlplus / as sysdba
+
+alter system set db_recovery_file_dest_size = 80G scope=both;
+
+alter system set db_recovery_file_dest = '+LOGS' scope=both;
+....
+. Aktivieren Sie den Archivprotokollmodus, und starten Sie die Oracle DB-Instanz neu
++
+....
+
+shutdown immediate;
+
+startup mount;
+
+alter database archivelog;
+
+alter database open;
+
+alter system switch logfile;
+
+....
+. Überprüfen Sie den DB-Protokollmodus und dNFS nach dem Neustart der Instanz
++
+....
+
+SQL> select name, log_mode from v$database;
+
+NAME      LOG_MODE
+--------- ------------
+DB1       ARCHIVELOG
+
+SQL> select svrname, dirname from v$dnfs_servers;
+
+SVRNAME
+--------------------------------------------------------------------------------
+DIRNAME
+--------------------------------------------------------------------------------
+fsx_01
+/ora_01_data
+
+fsx_01
+/ora_01_biny
+
+fsx_01
+/ora_01_logs
+
+....
+. Validierung von Oracle ASM
++
+....
+[oracle@ip-172-30-15-58 db1]$ asm
+[oracle@ip-172-30-15-58 db1]$ sqlplus / as sysasm
+
+SQL*Plus: Release 19.0.0.0.0 - Production on Tue May 9 20:39:39 2023
+Version 19.18.0.0.0
+
+Copyright (c) 1982, 2022, Oracle.  All rights reserved.
+
+
+Connected to:
+Oracle Database 19c Enterprise Edition Release 19.0.0.0.0 - Production
+Version 19.18.0.0.0
+
+SQL> set lin 200
+SQL> col path form a30
+SQL> select name, path, header_status, mount_status, state from v$asm_disk;
+
+NAME                           PATH                           HEADER_STATU MOUNT_S STATE
+------------------------------ ------------------------------ ------------ ------- --------
+DATA_0002                      /oradata/asm/nfs_data_disk01   MEMBER       CACHED  NORMAL
+DATA_0000                      /oradata/asm/nfs_data_disk02   MEMBER       CACHED  NORMAL
+DATA_0001                      /oradata/asm/nfs_data_disk03   MEMBER       CACHED  NORMAL
+DATA_0003                      /oradata/asm/nfs_data_disk04   MEMBER       CACHED  NORMAL
+LOGS_0000                      /oralogs/asm/nfs_logs_disk01   MEMBER       CACHED  NORMAL
+LOGS_0001                      /oralogs/asm/nfs_logs_disk02   MEMBER       CACHED  NORMAL
+
+6 rows selected.
+
+
+SQL> select name, state, ALLOCATION_UNIT_SIZE, TOTAL_MB, FREE_MB from v$asm_diskgroup;
+
+NAME                           STATE       ALLOCATION_UNIT_SIZE   TOTAL_MB    FREE_MB
+------------------------------ ----------- -------------------- ---------- ----------
+DATA                           MOUNTED                  4194304      81920      73536
+LOGS                           MOUNTED                  4194304      81920      81640
+
+This completes Oracle 19c version 19.18 Restart deployment on an Amazon FSx for ONTAP and EC2 compute instance with NFS/ASM. If desired, NetApp recommends relocating the Oracle control file and online log files to the +LOGS disk group.
+....
+
+
+====
+
+
+=== Automatische Bereitstellungsoption
+
+NetApp veröffentlicht ein vollständig automatisiertes Toolkit für die Lösungsbereitstellung mit Ansible, um die Implementierung dieser Lösung zu erleichtern. Bitte überprüfen Sie die Verfügbarkeit des Toolkits. Nach der Veröffentlichung wird hier ein Link gepostet.
+
+
+
+== Backup, Wiederherstellung und Klonen von Oracle Datenbanken mit SnapCenter Services
+
+Siehe link:snapctr_svcs_ora.html["SnapCenter-Services für Oracle"^] Weitere Informationen zu Backup, Wiederherstellung und Klonen von Oracle Datenbanken erhalten Sie über die NetApp BlueXP Konsole.
+
+
+
+== Wo Sie weitere Informationen finden
+
+Weitere Informationen zu den in diesem Dokument beschriebenen Daten finden Sie in den folgenden Dokumenten bzw. auf den folgenden Websites:
+
+* Installieren der Oracle Grid-Infrastruktur für einen eigenständigen Server mit einer neuen Datenbankinstallation
++
+link:https://docs.oracle.com/en/database/oracle/oracle-database/19/ladbi/installing-oracle-grid-infrastructure-for-a-standalone-server-with-a-new-database-installation.html#GUID-0B1CEE8C-C893-46AA-8A6A-7B5FAAEC72B3["https://docs.oracle.com/en/database/oracle/oracle-database/19/ladbi/installing-oracle-grid-infrastructure-for-a-standalone-server-with-a-new-database-installation.html#GUID-0B1CEE8C-C893-46AA-8A6A-7B5FAAEC72B3"^]
+
+* Installieren und Konfigurieren von Oracle Database mithilfe von Antwortdateien
++
+link:https://docs.oracle.com/en/database/oracle/oracle-database/19/ladbi/installing-and-configuring-oracle-database-using-response-files.html#GUID-D53355E9-E901-4224-9A2A-B882070EDDF7["https://docs.oracle.com/en/database/oracle/oracle-database/19/ladbi/installing-and-configuring-oracle-database-using-response-files.html#GUID-D53355E9-E901-4224-9A2A-B882070EDDF7"^]
+
+* Amazon FSX für NetApp ONTAP
++
+link:https://aws.amazon.com/fsx/netapp-ontap/["https://aws.amazon.com/fsx/netapp-ontap/"^]
+
+* Amazon EC2
++
+link:https://aws.amazon.com/pm/ec2/?trk=36c6da98-7b20-48fa-8225-4784bced9843&sc_channel=ps&s_kwcid=AL!4422!3!467723097970!e!!g!!aws%20ec2&ef_id=Cj0KCQiA54KfBhCKARIsAJzSrdqwQrghn6I71jiWzSeaT9Uh1-vY-VfhJixF-xnv5rWwn2S7RqZOTQ0aAh7eEALw_wcB:G:s&s_kwcid=AL!4422!3!467723097970!e!!g!!aws%20ec2["https://aws.amazon.com/pm/ec2/?trk=36c6da98-7b20-48fa-8225-4784bced9843&sc_channel=ps&s_kwcid=AL!4422!3!467723097970!e!!g!!aws%20ec2&ef_id=Cj0KCQiA54KfBhCKARIsAJzSrdqwQrghn6I71jiWzSeaT9Uh1-vY-VfhJixF-xnv5rWwn2S7RqZOTQ0aAh7eEALw_wcB:G:s&s_kwcid=AL!4422!3!467723097970!e!!g!!aws%20ec2"^]
+
+

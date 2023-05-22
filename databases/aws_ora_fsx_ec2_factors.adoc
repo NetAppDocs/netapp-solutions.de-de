@@ -59,7 +59,9 @@ image:aws_ora_fsx_ec2_stor_13.PNG["Fehler: Fehlendes Grafikbild"]
 
 == NFS-Konfiguration
 
-Linux, das gängigste Betriebssystem, umfasst native NFS-Funktionen. Oracle bietet den direkten NFS-Client (dNFS), der nativ in Oracle integriert ist. Oracle unterstützt NFSv3 seit über 20 Jahren, und NFSv4 wird mit Oracle 12.1.0.2 und höher unterstützt. Die automatisierte Oracle-Implementierung mit dem NetApp Automatisierungs-Toolkit konfiguriert dNFS auf NFSv3 automatisch.
+Linux, das gängigste Betriebssystem, umfasst native NFS-Funktionen. Oracle bietet den direkten NFS-Client (dNFS), der nativ in Oracle integriert ist. Oracle unterstützt NFSv3 seit über 20 Jahren. DNFS wird mit NFSv3 mit allen Versionen von Oracle unterstützt. NFSv4 wird von allen Betriebssystemen unterstützt, die dem NFSv4-Standard entsprechen. DNFS-Unterstützung für NFSv4 erfordert Oracle 12.1.0.2 oder höher. Für NFSv4.1 ist besondere Unterstützung des Betriebssystems erforderlich. Das NetApp Interoperabilitäts-Matrix-Tool (IMT) enthält weitere Informationen zu unterstützten Betriebssystemen. DNFS-Unterstützung für NFSv4.1 erfordert Oracle Version 19.3.0.0 oder höher.
+
+Die automatisierte Oracle-Implementierung mit dem NetApp Automatisierungs-Toolkit konfiguriert dNFS auf NFSv3 automatisch.
 
 Weitere Faktoren, die berücksichtigt werden sollten:
 
@@ -79,7 +81,7 @@ image:aws_ora_fsx_ec2_nfs_01.PNG["Fehler: Fehlendes Grafikbild"]
 
 
 
-NOTE: Überprüfen Sie vor der Verwendung von dNFS, ob die in Oracle Doc 1495104.1 beschriebenen Patches installiert sind. DNFS unterstützt ab Oracle 12c NFSv3, NFSv4 und NFSv4.1. NetApp Support-Richtlinien decken v3 und v4 für alle Clients ab. Zum Zeitpunkt der Erstellung dieses Berichts wurde NFSv4.1 jedoch nicht für die Verwendung mit Oracle dNFS unterstützt.
+NOTE: Überprüfen Sie vor der Verwendung von dNFS, ob die in Oracle Doc 1495104.1 beschriebenen Patches installiert sind. Die NetApp Support-Matrix für NFSv3 und NFSv4 enthält keine spezifischen Betriebssysteme. Alle Betriebssysteme, die der RFC entsprechen, werden unterstützt. Wenn Sie die Online-IMT nach Unterstützung für NFSv3 oder NFSv4 suchen, wählen Sie kein bestimmtes Betriebssystem aus, da keine Treffer angezeigt werden. Alle Betriebssysteme werden implizit von der allgemeinen Richtlinie unterstützt.
 
 
 

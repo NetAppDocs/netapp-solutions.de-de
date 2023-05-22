@@ -32,7 +32,7 @@ NetApp Snapshot ist in den Trainingscode integriert und erfasst den Status der D
 
 == AKS-Einrichtung und Installation
 
-Zur Einrichtung und Installation des AKS-Clusters gehen Sie zu https://["Erstellen Sie einen AKS-Cluster"^]. Führen Sie dann die folgenden Schritte aus:
+Zur Einrichtung und Installation des AKS-Clusters gehen Sie zu https://docs.microsoft.com/azure/aks/kubernetes-walkthrough-portal["Erstellen Sie einen AKS-Cluster"^]. Führen Sie dann die folgenden Schritte aus:
 
 . Wählen Sie bei der Auswahl des Node-Typs (unabhängig davon, ob es sich um System- (CPU) oder „worker“-Nodes (GPU) handelt, Folgendes aus:
 +
@@ -47,8 +47,8 @@ NOTE: Implementierung dauert 5 bis 10 Minuten.
 
 
 
-. Klicken Sie nach Abschluss der Bereitstellung auf mit Cluster verbinden. Um eine Verbindung mit dem neu erstellten AKS-Cluster herzustellen, installieren Sie das Kubernetes-Befehlszeilen-Tool aus Ihrer lokalen Umgebung (Laptop/PC). Besuchen Sie https://["Tools Installieren"^] So installieren Sie es nach Ihrem Betriebssystem.
-. https://["Installieren Sie die Azure CLI in Ihrer lokalen Umgebung"^].
+. Klicken Sie nach Abschluss der Bereitstellung auf mit Cluster verbinden. Um eine Verbindung mit dem neu erstellten AKS-Cluster herzustellen, installieren Sie das Kubernetes-Befehlszeilen-Tool aus Ihrer lokalen Umgebung (Laptop/PC). Besuchen Sie https://kubernetes.io/docs/tasks/tools/install-kubectl/["Tools Installieren"^] So installieren Sie es nach Ihrem Betriebssystem.
+. https://docs.microsoft.com/cli/azure/install-azure-cli["Installieren Sie die Azure CLI in Ihrer lokalen Umgebung"^].
 . Um über das Terminal auf den AKS-Cluster zuzugreifen, geben Sie zuerst ein `az login` Und geben Sie die Zugangsdaten ein.
 . Führen Sie die folgenden beiden Befehle aus:
 +
@@ -103,13 +103,13 @@ Benutzer von Services können Storage auf unterschiedliche Weise von der Plattfo
 
 == Einrichtung von Azure NetApp Files
 
-Um die Einrichtung von Azure NetApp Files abzuschließen, müssen Sie sie zuerst wie in beschrieben konfigurieren https://["QuickStart: Azure NetApp Files einrichten und ein NFS-Volume erstellen"^].
+Um die Einrichtung von Azure NetApp Files abzuschließen, müssen Sie sie zuerst wie in beschrieben konfigurieren https://docs.microsoft.com/azure/azure-netapp-files/azure-netapp-files-quickstart-set-up-account-create-volumes["QuickStart: Azure NetApp Files einrichten und ein NFS-Volume erstellen"^].
 
 Sie können jedoch die Schritte zur Erstellung eines NFS Volumes für Azure NetApp Files weglassen, wie Sie Volumes über Trident erstellen. Bevor Sie fortfahren, sollten Sie Folgendes beachten:
 
-. https://["Registriert für Azure NetApp Files und NetApp Resource Provider (über den Azure Cloud Shell)"^].
-. https://["In Azure NetApp Files wurde ein Konto erstellt"^].
-. https://["Richten Sie einen Kapazitäts-Pool ein"^] (Mindestens 4 tib Standard oder Premium, je nach Ihren Anforderungen)
+. https://docs.microsoft.com/azure/azure-netapp-files/azure-netapp-files-register["Registriert für Azure NetApp Files und NetApp Resource Provider (über den Azure Cloud Shell)"^].
+. https://docs.microsoft.com/azure/azure-netapp-files/azure-netapp-files-create-netapp-account["In Azure NetApp Files wurde ein Konto erstellt"^].
+. https://docs.microsoft.com/en-us/azure/azure-netapp-files/azure-netapp-files-set-up-capacity-pool["Richten Sie einen Kapazitäts-Pool ein"^] (Mindestens 4 tib Standard oder Premium, je nach Ihren Anforderungen)
 
 
 
@@ -141,7 +141,7 @@ NOTE: Lassen Sie alle nicht-Sternchen-Abschnitte standardmäßig unverändert
 . Klicken Sie AUF HINZUFÜGEN oder OK, um das Peering zum virtuellen Netzwerk hinzuzufügen.
 
 
-Weitere Informationen finden Sie unter https://["Virtuelles Netzwerk-Peering erstellen, ändern oder löschen"^].
+Weitere Informationen finden Sie unter https://docs.microsoft.com/azure/virtual-network/tutorial-connect-virtual-networks-portal["Virtuelles Netzwerk-Peering erstellen, ändern oder löschen"^].
 
 
 
@@ -157,7 +157,7 @@ NetApp Trident ermöglicht eine reibungslose Integration in K8s, indem persisten
 
 So installieren Sie die Trident Software:
 
-. https://["Zuerst Helm einbauen"^].
+. https://helm.sh/docs/intro/install/["Zuerst Helm einbauen"^].
 . Laden Sie das Trident 21.01.1-Installationsprogramm herunter und extrahieren Sie es.
 +
 ....
@@ -207,7 +207,7 @@ Gehen Sie wie folgt vor, um das Azure NetApp Files Back-End und die Storage-Klas
 ....
 cd ~
 ....
-. Klonen Sie die https://["Projekt-Repository"^] `lane-detection-SCNN-horovod`.
+. Klonen Sie die https://github.com/dedmari/lane-detection-SCNN-horovod.git["Projekt-Repository"^] `lane-detection-SCNN-horovod`.
 . Wechseln Sie zum `trident-config` Verzeichnis.
 +
 ....
@@ -321,7 +321,7 @@ kubectl create -f https://raw.githubusercontent.com/kubernetes-csi/external-snap
 kubectl apply -f https://raw.githubusercontent.com/kubernetes-csi/external-snapshotter/release-3.0/deploy/kubernetes/snapshot-controller/rbac-snapshot-controller.yaml
 kubectl apply -f https://raw.githubusercontent.com/kubernetes-csi/external-snapshotter/release-3.0/deploy/kubernetes/snapshot-controller/setup-snapshot-controller.yaml
 ....
-. K8s einrichten `volumesnapshotclass`: Vor der Erstellung eines Volume-Snapshot, a https://["Volume Snapshot-Klasse"^] Muss eingerichtet werden. Erstellen Sie einen Volume-Snapshot für Azure NetApp Files, und erstellen Sie mit dieser Technologie eine ML-Versionierung. Erstellen `volumesnapshotclass netapp-csi-snapclass` Und stellen Sie ihn als Standard `volumesnapshotclass `wie folgt ein:
+. K8s einrichten `volumesnapshotclass`: Vor der Erstellung eines Volume-Snapshot, a https://netapp-trident.readthedocs.io/en/stable-v20.01/kubernetes/concepts/objects.html["Volume Snapshot-Klasse"^] Muss eingerichtet werden. Erstellen Sie einen Volume-Snapshot für Azure NetApp Files, und erstellen Sie mit dieser Technologie eine ML-Versionierung. Erstellen `volumesnapshotclass netapp-csi-snapclass` Und stellen Sie ihn als Standard `volumesnapshotclass `wie folgt ein:
 +
 ....
 kubectl create -f netapp-volume-snapshot-class.yaml
@@ -351,12 +351,12 @@ image:runai-ld_image10.png["Fehler: Fehlendes Grafikbild"]
 
 So installieren SIE RUN:AI:
 
-. https://["Installieren SIE RUN:AI Cluster auf AKS"^].
+. https://docs.run.ai/Administrator/Cluster-Setup/cluster-install/["Installieren SIE RUN:AI Cluster auf AKS"^].
 . Gehen Sie zu app.runai.ai, klicken Sie auf Neues Projekt erstellen und benennen Sie es Lane-Detection. Es wird einen Namespace auf einem K8s-Cluster erstellen, der mit beginnt `runai`- Gefolgt vom Projektnamen. In diesem Fall wäre der erstellte Namespace Runai-Lane-Erkennung.
 +
 image:runai-ld_image11.png["Fehler: Fehlendes Grafikbild"]
 
-. https://["INSTALLIEREN SIE RUN:AI CLI"^].
+. https://docs.run.ai/Administrator/Cluster-Setup/cluster-install/["INSTALLIEREN SIE RUN:AI CLI"^].
 . Stellen Sie auf Ihrem Terminal standardmäßig die Lane-Detection ein: AI-Projekt mit folgendem Befehl:
 +
 ....
@@ -740,7 +740,7 @@ image:runai-ld_image38.png["Fehler: Fehlendes Grafikbild"]
 
 == Azure NetApp Files Service-Level
 
-Sie können den Service-Level eines vorhandenen Volumes ändern, indem Sie das Volume in einen anderen Kapazitätspool verschieben, der den verwendet https://["Service-Level"^] Sie wollen für das Volume. Bei dieser bestehenden Service-Level-Änderung für das Volume müssen Sie keine Daten migrieren. Er hat auch keinen Einfluss auf den Zugriff auf das Volume.
+Sie können den Service-Level eines vorhandenen Volumes ändern, indem Sie das Volume in einen anderen Kapazitätspool verschieben, der den verwendet https://docs.microsoft.com/azure/azure-netapp-files/azure-netapp-files-service-levels["Service-Level"^] Sie wollen für das Volume. Bei dieser bestehenden Service-Level-Änderung für das Volume müssen Sie keine Daten migrieren. Er hat auch keinen Einfluss auf den Zugriff auf das Volume.
 
 
 
@@ -762,9 +762,9 @@ image:runai-ld_image40.png["Fehler: Fehlendes Grafikbild"]
 
 === Automatisieren Sie Service Level Change
 
-Die dynamische Änderung des Service-Levels befindet sich derzeit noch in der öffentlichen Vorschau, ist aber standardmäßig nicht aktiviert. Um diese Funktion auf dem Azure-Abonnement zu aktivieren, folgen Sie diesen Schritten im Dokument “ file://["Profitieren Sie von einer dynamischen Änderung des Service-Levels eines Volumes"^].“
+Die dynamische Änderung des Service-Levels befindet sich derzeit noch in der öffentlichen Vorschau, ist aber standardmäßig nicht aktiviert. Um diese Funktion auf dem Azure-Abonnement zu aktivieren, folgen Sie diesen Schritten im Dokument “ file:///C:\Users\crich\Downloads\•%09https:\docs.microsoft.com\azure\azure-netapp-files\dynamic-change-volume-service-level["Profitieren Sie von einer dynamischen Änderung des Service-Levels eines Volumes"^].“
 
-* Für Azure können Sie auch die folgenden Befehle verwenden: CLI. Weitere Informationen zum Ändern der Pool-Größe von Azure NetApp Files finden Sie unter https://["az netappfiles-Volume: Managt Azure NetApp Files (ANF) Volume-Ressourcen"^].
+* Für Azure können Sie auch die folgenden Befehle verwenden: CLI. Weitere Informationen zum Ändern der Pool-Größe von Azure NetApp Files finden Sie unter https://docs.microsoft.com/cli/azure/netappfiles/volume?view=azure-cli-latest-az_netappfiles_volume_pool_change["az netappfiles-Volume: Managt Azure NetApp Files (ANF) Volume-Ressourcen"^].
 +
 ....
 az netappfiles volume pool-change -g mygroup
@@ -773,7 +773,7 @@ az netappfiles volume pool-change -g mygroup
 --name myvolname
 --new-pool-resource-id mynewresourceid
 ....
-* Der `set- aznetappfilesvolumepool` Cmdlet, das hier angezeigt wird, kann den Pool eines Azure NetApp Files Volume ändern. Weitere Informationen zum Ändern der Volume-Pool-Größe und Azure PowerShell finden Sie unter https://["Ändern Sie den Pool für ein Azure NetApp Files-Volume"^].
+* Der `set- aznetappfilesvolumepool` Cmdlet, das hier angezeigt wird, kann den Pool eines Azure NetApp Files Volume ändern. Weitere Informationen zum Ändern der Volume-Pool-Größe und Azure PowerShell finden Sie unter https://docs.microsoft.com/powershell/module/az.netappfiles/set-aznetappfilesvolumepool?view=azps-5.8.0["Ändern Sie den Pool für ein Azure NetApp Files-Volume"^].
 +
 ....
 Set-AzNetAppFilesVolumePool
