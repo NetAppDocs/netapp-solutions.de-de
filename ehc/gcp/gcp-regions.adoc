@@ -14,8 +14,12 @@ summary:
 
 
 [role="lead"]
-Die Verfügbarkeit von zusätzlichen NFS-Datenspeichern auf GCP / GCVE ist durch Google festgelegt. Zunächst müssen Sie feststellen, ob GCVE und CVS in einer bestimmten Region verfügbar sind. Als Nächstes müssen Sie feststellen, ob der CVS zusätzliche NFS-Datastore in dieser Region unterstützt wird.
+Zusätzlicher NFS-Datastore für GCVE wird von NetApp Cloud Volume Service unterstützt.
 
-* Prüfen Sie die Verfügbarkeit von GCVE und CVS link:["Hier"].
-* Prüfen Sie die Verfügbarkeit des zusätzlichen CVS NFS Datastore link:["Hier"].
 
+NOTE: Für den GCVE NFS Datastore können nur CVS-Performance Volumes verwendet werden.
+Informationen zum verfügbaren Speicherort finden Sie unter link:https://bluexp.netapp.com/cloud-volumes-global-regions#cvsGc["Globale Regionalkarte"]
+
+Google Cloud VMware Engine ist an folgenden Standorten verfügbar image:gcve_regions_Mar2023.png[""]
+Um die Latenz zu minimieren, sollten sich NetApp CVS Volume und GCVE, wo Sie das Volume mounten möchten, in derselben Verfügbarkeitszone befinden.
+Arbeiten Sie mit Google und NetApp Solution Architects zusammen, um Verfügbarkeit und TCO-Optimierung zu optimieren.
