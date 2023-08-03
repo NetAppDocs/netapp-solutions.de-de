@@ -11,6 +11,8 @@
 
 === Oracle-Installation validieren
 
+. Melden Sie sich beim Oracle-Server als Oracle-Benutzer an und führen Sie die folgenden Befehle aus:
+
 
 [source, cli]
 ----
@@ -18,6 +20,8 @@ ps -ef | grep ora
 ----
 
 NOTE: Auf diese Weise werden die oracle-Prozesse aufgeführt, wenn die Installation wie erwartet abgeschlossen wurde und die oracle DB gestartet wurde
+
+. Melden Sie sich bei der Datenbank an, um die db-Konfigurationseinstellungen und die PDBs zu überprüfen, die mit den folgenden Befehlssätzen erstellt wurden.
 
 
 [source, cli]
@@ -68,6 +72,8 @@ SVRNAME-NAME NFSVERSION ------------------------------------------ -------------
 ----
 This confirms that dNFS is working properly.
 ----
+. Stellen Sie über Listener eine Verbindung zur Datenbank her, um die Konfiguration des Oracle Listener mit dem folgenden Befehl zu überprüfen. Wechseln Sie zum entsprechenden Listener-Port und Datenbankdienstnamen.
+
 
 [source, cli]
 ----

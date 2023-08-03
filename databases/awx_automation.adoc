@@ -42,7 +42,10 @@ In diesem Abschnitt wird die Einrichtung von Inventar, Gruppen, Hosts und Zugang
 .. Navigieren Sie zu Administration → Credential Types, und klicken Sie auf Add.
 .. Geben Sie den Namen und eine Beschreibung an.
 .. Fügen Sie den folgenden Inhalt in die Eingabekonfiguration ein:
-+
+
+
+
+
 [source, cli]
 ----
 fields:
@@ -58,8 +61,9 @@ fields:
     label: vsadmin_password
     secret: true
 ----
-.. Fügen Sie folgenden Inhalt in die Konfiguration des Injektors ein:
-+
+. Fügen Sie folgenden Inhalt in die Konfiguration des Injektors ein:
+
+
 [source, cli]
 ----
 extra_vars:
@@ -67,8 +71,6 @@ extra_vars:
   username: '{{ username }}'
   vsadmin_password: '{{ vsadmin_password }}'
 ----
-
-
 . Konfigurieren Sie die Anmeldedaten.
 +
 .. Navigieren Sie zu Resources → Credentials, und klicken Sie auf Add.
@@ -115,7 +117,40 @@ NOTE: Die blauen Elemente müssen an Ihre Umgebung angepasst werden.
 
 === Host VARS-Konfiguration
 
+[source, shell]
+----
+######################################################################
+##############      Host Variables Configuration        ##############
+######################################################################
 
+# Add your Oracle Host
+ansible_host: "10.61.180.15"
+
+# Oracle db log archive mode: true - ARCHIVELOG or false - NOARCHIVELOG
+log_archive_mode: "true"
+
+# Number of pluggable databases per container instance identified by sid. Pdb_name specifies the prefix for container database naming in this case cdb2_pdb1, cdb2_pdb2, cdb2_pdb3
+oracle_sid: "cdb2"
+pdb_num: "3"
+pdb_name: "{{ oracle_sid }}_pdb"
+
+# CDB listener port, use different listener port for additional CDB on same host
+listener_port: "1523"
+
+# CDB is created with SGA at 75% of memory_limit, MB. Consider how many databases to be hosted on the node and how much ram to be allocated to each DB. The grand total SGA should not exceed 75% available RAM on node.
+memory_limit: "5464"
+
+# Set "em_configuration: DBEXPRESS" to install enterprise manager express and choose a unique port from 5500 to 5599 for each sid on the host.
+# Leave them black if em express is not installed.
+em_configuration: "DBEXPRESS"
+em_express_port: "5501"
+
+# {{groups.oracle[0]}} represents first Oracle DB server as defined in Oracle hosts group [oracle]. For concurrent multiple Oracle DB servers deployment, [0] will be incremented for each additional DB server. For example,  {{groups.oracle[1]}}" represents DB server 2, "{{groups.oracle[2]}}" represents DB server 3 ... As a good practice and the default, minimum three volumes is allocated to a DB server with corresponding /u01, /u02, /u03 mount points, which store oracle binary, oracle data, and oracle recovery files respectively. Additional volumes can be added by click on "More NFS volumes" but the number of volumes allocated to a DB server must match with what is defined in global vars file by volumes_nfs parameter, which dictates how many volumes are to be created for each DB server.
+host_datastores_nfs:
+  - {vol_name: "{{groups.oracle[0]}}_u01", aggr_name: "aggr01_node01", lif: "172.21.94.200", size: "25"}
+  - {vol_name: "{{groups.oracle[0]}}_u02", aggr_name: "aggr01_node01", lif: "172.21.94.200", size: "25"}
+  - {vol_name: "{{groups.oracle[0]}}_u03", aggr_name: "aggr01_node01", lif: "172.21.94.200", size: "25"}
+----
 . Füllen Sie alle Variablen in die blauen Felder ein.
 . Klicken Sie nach Abschluss der Variablen auf die Schaltfläche Kopieren im Formular, um alle Variablen zu kopieren, die an AWX oder Tower übertragen werden sollen.
 . Navigieren Sie zurück zu AWX oder Tower, und gehen Sie zu Ressourcen → Hosts, und wählen Sie und öffnen Sie die Konfigurationsseite für den Oracle-Server.
@@ -131,17 +166,100 @@ NOTE: Die blauen Elemente müssen an Ihre Umgebung angepasst werden.
 Die in diesem Abschnitt definierten Variablen gelten für alle Oracle Hosts, Datenbanken und den ONTAP Cluster.
 
 . Geben Sie Ihre umgebungsspezifischen Parameter in das folgende eingebettete globale Variablen oder Vars-Formular ein.
-+
+
+
 
 NOTE: Die blauen Elemente müssen an Ihre Umgebung angepasst werden.
 
+[source, shell]
+----
+#######################################################################
+###### Oracle 19c deployment global user configuration variables ######
+######  Consolidate all variables from ontap, linux and oracle   ######
+#######################################################################
+
+###########################################
+### Ontap env specific config variables ###
+###########################################
+
+#Inventory group name
+#Default inventory group name - 'ontap'
+#Change only if you are changing the group name either in inventory/hosts file or in inventory groups in case of AWX/Tower
+hosts_group: "ontap"
+
+#CA_signed_certificates (ONLY CHANGE to 'true' IF YOU ARE USING CA SIGNED CERTIFICATES)
+ca_signed_certs: "false"
+
+#Names of the Nodes in the ONTAP Cluster
+nodes:
+ - "AFF-01"
+ - "AFF-02"
 
 
+#Storage VLANs
+#Add additional rows for vlans as necessary
+storage_vlans:
+   - {vlan_id: "203", name: "infra_NFS", protocol: "NFS"}
+More Storage VLANsEnter Storage VLANs details
+
+#Details of the Data Aggregates that need to be created
+#If Aggregate creation takes longer, subsequent tasks of creating volumes may fail.
+#There should be enough disks already zeroed in the cluster, otherwise aggregate create will zero the disks and will take long time
+data_aggregates:
+  - {aggr_name: "aggr01_node01"}
+  - {aggr_name: "aggr01_node02"}
+
+#SVM name
+svm_name: "ora_svm"
 
 
-=== VARS
+# SVM Management LIF Details
+svm_mgmt_details:
+  - {address: "172.21.91.100", netmask: "255.255.255.0", home_port: "e0M"}
 
+# NFS storage parameters when data_protocol set to NFS. Volume named after Oracle hosts name identified by mount point as follow for oracle DB server 1. Each mount point dedicates to a particular Oracle files: u01 - Oracle binary, u02 - Oracle data, u03 - Oracle redo. Add additional volumes by click on "More NFS volumes" and also add the volumes list to corresponding host_vars as host_datastores_nfs variable. For multiple DB server deployment, additional volumes sets needs to be added for additional DB server. Input variable "{{groups.oracle[1]}}_u01", "{{groups.oracle[1]}}_u02", and "{{groups.oracle[1]}}_u03" as vol_name for second DB server. Place volumes for multiple DB servers alternatingly between controllers for balanced IO performance, e.g. DB server 1 on controller node1, DB server 2 on controller node2 etc. Make sure match lif address with controller node.
+volumes_nfs:
+  - {vol_name: "{{groups.oracle[0]}}_u01", aggr_name: "aggr01_node01", lif: "172.21.94.200", size: "25"}
+  - {vol_name: "{{groups.oracle[0]}}_u02", aggr_name: "aggr01_node01", lif: "172.21.94.200", size: "25"}
+  - {vol_name: "{{groups.oracle[0]}}_u03", aggr_name: "aggr01_node01", lif: "172.21.94.200", size: "25"}
 
+#NFS LIFs IP address and netmask
+nfs_lifs_details:
+  - address: "172.21.94.200" #for node-1
+    netmask: "255.255.255.0"
+  - address: "172.21.94.201" #for node-2
+    netmask: "255.255.255.0"
+
+#NFS client match
+client_match: "172.21.94.0/24"
+
+###########################################
+### Linux env specific config variables ###
+###########################################
+
+#NFS Mount points for Oracle DB volumes
+mount_points:
+  - "/u01"
+  - "/u02"
+  - "/u03"
+
+# Up to 75% of node memory size divided by 2mb. Consider how many databases to be hosted on the node and how much ram to be allocated to each DB.
+# Leave it blank if hugepage is not configured on the host.
+hugepages_nr: "1234"
+
+# RedHat subscription username and password
+redhat_sub_username: "xxx"
+redhat_sub_password: "xxx"
+
+####################################################
+### DB env specific install and config variables ###
+####################################################
+
+db_domain: "your.domain.com"
+
+# Set initial password for all required Oracle passwords. Change them after installation.
+initial_pwd_all: "netapp123"
+----
 . Alle Variablen in blaue Felder eintragen.
 . Klicken Sie nach Abschluss der Variablen auf die Schaltfläche Kopieren im Formular, um alle Variablen zu kopieren, die an AWX oder Tower übertragen werden sollen, in die folgende Jobvorlage.
 
@@ -167,29 +285,30 @@ NOTE: Die blauen Elemente müssen an Ihre Umgebung angepasst werden.
 .. Navigieren Sie zu Ressourcen → Vorlagen.
 .. Klicken Sie auf die gewünschte Vorlage und dann auf Starten.
 .. Wenn Sie beim Start nach Job-Tags gefragt werden, geben Sie Anforderungen_config ein. Möglicherweise müssen Sie unter Requirements_config auf die Zeile Job-Tag erstellen klicken, um die Job-Tag-Nummer einzugeben.
-+
+
+
+
+
 
 NOTE: Requirements_config stellt sicher, dass Sie über die richtigen Bibliotheken verfügen, um die anderen Rollen auszuführen.
 
-.. Klicken Sie auf Weiter und dann auf Start, um den Job zu starten.
-.. Klicken Sie auf Ansicht → Jobs, um die Jobausgabe und den Fortschritt zu überwachen.
-.. Wenn Sie zur Einführung von Job-Tags aufgefordert werden, geben sie ontap_config ein. Sie müssen möglicherweise direkt unter ontap_config auf die Zeile „Job Tag erstellen“ klicken, um das Job-Tag einzugeben.
-.. Klicken Sie auf Weiter und dann auf Start, um den Job zu starten.
-.. Klicken Sie auf Ansicht → Jobs, um die Jobausgabe und den Fortschritt zu überwachen
-.. Führen Sie nach Abschluss der rolle ontap_config den Prozess für linux_config erneut aus.
-.. Navigieren Sie zu Ressourcen → Vorlagen.
-.. Wählen Sie die gewünschte Vorlage aus, und klicken Sie dann auf Starten.
-.. Wenn Sie beim Start aufgefordert werden, geben Sie die Job-Tags in linux_config ein, müssen Sie möglicherweise die Zeile „Job-Tag erstellen“ direkt unter linux_config auswählen, um das Job-Tag einzugeben.
-.. Klicken Sie auf Weiter und dann auf Start, um den Job zu starten.
-.. Wählen Sie Ansicht → Jobs, um die Jobausgabe und den Fortschritt zu überwachen.
-.. Führen Sie nach Abschluss der rolle linux_config den Prozess für oracle_config erneut aus.
-.. Gehen Sie zu Ressourcen → Vorlagen.
-.. Wählen Sie die gewünschte Vorlage aus, und klicken Sie dann auf Starten.
-.. Wenn Sie beim Start nach Job-Tags gefragt werden, geben sie oracle_config ein. Sie müssen möglicherweise die Zeile „Job Tag erstellen“ direkt unter oracle_config auswählen, um das Job-Tag einzugeben.
-.. Klicken Sie auf Weiter und dann auf Start, um den Job zu starten.
-.. Wählen Sie Ansicht → Jobs, um die Jobausgabe und den Fortschritt zu überwachen.
-
-
+. Klicken Sie auf Weiter und dann auf Start, um den Job zu starten.
+. Klicken Sie auf Ansicht → Jobs, um die Jobausgabe und den Fortschritt zu überwachen.
+. Wenn Sie zur Einführung von Job-Tags aufgefordert werden, geben sie ontap_config ein. Sie müssen möglicherweise direkt unter ontap_config auf die Zeile „Job Tag erstellen“ klicken, um das Job-Tag einzugeben.
+. Klicken Sie auf Weiter und dann auf Start, um den Job zu starten.
+. Klicken Sie auf Ansicht → Jobs, um die Jobausgabe und den Fortschritt zu überwachen
+. Führen Sie nach Abschluss der rolle ontap_config den Prozess für linux_config erneut aus.
+. Navigieren Sie zu Ressourcen → Vorlagen.
+. Wählen Sie die gewünschte Vorlage aus, und klicken Sie dann auf Starten.
+. Wenn Sie beim Start aufgefordert werden, geben Sie die Job-Tags in linux_config ein, müssen Sie möglicherweise die Zeile „Job-Tag erstellen“ direkt unter linux_config auswählen, um das Job-Tag einzugeben.
+. Klicken Sie auf Weiter und dann auf Start, um den Job zu starten.
+. Wählen Sie Ansicht → Jobs, um die Jobausgabe und den Fortschritt zu überwachen.
+. Führen Sie nach Abschluss der rolle linux_config den Prozess für oracle_config erneut aus.
+. Gehen Sie zu Ressourcen → Vorlagen.
+. Wählen Sie die gewünschte Vorlage aus, und klicken Sie dann auf Starten.
+. Wenn Sie beim Start nach Job-Tags gefragt werden, geben sie oracle_config ein. Sie müssen möglicherweise die Zeile „Job Tag erstellen“ direkt unter oracle_config auswählen, um das Job-Tag einzugeben.
+. Klicken Sie auf Weiter und dann auf Start, um den Job zu starten.
+. Wählen Sie Ansicht → Jobs, um die Jobausgabe und den Fortschritt zu überwachen.
 
 
 
@@ -214,6 +333,8 @@ Der Oracle Teil des Playbook erstellt pro Ausführung eine einzelne Oracle-Conta
 
 === Oracle-Installation validieren
 
+. Melden Sie sich beim Oracle-Server als Oracle-Benutzer an und führen Sie die folgenden Befehle aus:
+
 
 [source, cli]
 ----
@@ -221,6 +342,8 @@ ps -ef | grep ora
 ----
 
 NOTE: Auf diese Weise werden die oracle-Prozesse aufgeführt, wenn die Installation wie erwartet abgeschlossen wurde und die oracle DB gestartet wurde
+
+. Melden Sie sich bei der Datenbank an, um die db-Konfigurationseinstellungen und die PDBs zu überprüfen, die mit den folgenden Befehlssätzen erstellt wurden.
 
 
 [source, cli]
@@ -271,6 +394,8 @@ SVRNAME-NAME NFSVERSION ------------------------------------------ -------------
 ----
 This confirms that dNFS is working properly.
 ----
+. Stellen Sie über Listener eine Verbindung zur Datenbank her, um die Konfiguration des Oracle Listener mit dem folgenden Befehl zu überprüfen. Wechseln Sie zum entsprechenden Listener-Port und Datenbankdienstnamen.
+
 
 [source, cli]
 ----
