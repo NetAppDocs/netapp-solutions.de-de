@@ -62,15 +62,12 @@ VMware vSphere APIs for Storage Awareness (VASA) erleichtern es VM-Administrator
 
 Es gibt zwei Elemente:
 
-[cols="20%, 80%"]
-|===
+. *Storage Capability Profile (SCP)*
+Ein Storage-Funktionsprofil (Storage Capability Profile, SCP) ist eine Form von Storage-Vorlage. Damit können vCenter Administratoren festlegen, welche Storage-Funktionen benötigt werden, ohne dass ein Verständnis für das Management dieser Funktionen in ONTAP erforderlich ist. Mit Hilfe einer Vorlage können Administratoren problemlos Storage-Services auf konsistente und vorhersehbare Weise bereitstellen. Zu den in einem SCP beschriebenen Funktionen zählen Performance, Protokolle, Storage-Effizienz und weitere Funktionen. Die spezifischen Funktionen sind je nach Version unterschiedlich. Sie werden mit dem Menü ONTAP Tools für VMware vSphere in der vCenter UI erstellt. SIE können AUCH REST-APIs zum Erstellen von SCPs verwenden. Sie können manuell durch Auswahl einzelner Funktionen erstellt oder automatisch aus vorhandenen (herkömmlichen) Datenspeichern generiert werden.
+. *VM-Speicherrichtlinie*
+VM Storage-Richtlinien werden in vCenter unter Richtlinien und Profile erstellt. Erstellen Sie für VVols mithilfe von Regeln des NetApp VVols Storage-Typ-Providers ein Regelwerk. ONTAP Tools bietet einen vereinfachten Ansatz, da Sie ein SCP einfach auswählen können, anstatt Sie zur Angabe einzelner Regeln zu zwingen.
 
 
-| *Storage Capability Profile (SCP)* | Ein Storage-Funktionsprofil (Storage Capability Profile, SCP) ist eine Form von Storage-Vorlage. Damit können vCenter Administratoren festlegen, welche Storage-Funktionen benötigt werden, ohne dass ein Verständnis für das Management dieser Funktionen in ONTAP erforderlich ist. Mit Hilfe einer Vorlage können Administratoren problemlos Storage-Services auf konsistente und vorhersehbare Weise bereitstellen. Zu den in einem SCP beschriebenen Funktionen zählen Performance, Protokolle, Storage-Effizienz und weitere Funktionen. Die spezifischen Funktionen sind je nach Version unterschiedlich. Sie werden mit dem Menü ONTAP Tools für VMware vSphere in der vCenter UI erstellt. SIE können AUCH REST-APIs zum Erstellen von SCPs verwenden. Sie können manuell durch Auswahl einzelner Funktionen erstellt oder automatisch aus vorhandenen (herkömmlichen) Datenspeichern generiert werden. 
-
-
-| *VM-Speicherrichtlinie* | VM Storage-Richtlinien werden in vCenter unter Richtlinien und Profile erstellt. Erstellen Sie für VVols mithilfe von Regeln des NetApp VVols Storage-Typ-Providers ein Regelwerk. ONTAP Tools bietet einen vereinfachten Ansatz, da Sie ein SCP einfach auswählen können, anstatt Sie zur Angabe einzelner Regeln zu zwingen. 
-|===
 Wie oben erwähnt, kann die Verwendung von Richtlinien zur Vereinfachung der Bereitstellung von Volumes beitragen. Wählen Sie einfach eine entsprechende Richtlinie aus. VASA Provider zeigt VVols-Datastores an, die diese Richtlinie unterstützen, und platziert das vVol in einem individuellen, konformen FlexVol Volume (Abbildung 1).
 
 

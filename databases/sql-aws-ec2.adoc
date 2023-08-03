@@ -123,17 +123,13 @@ NOTE: Snapshot Kopien, die zur Erstellung von FlexClone Volumes genutzt werden, 
 
 NOTE: Eine Überbelegung von Storage muss für eine geschäftskritische Applikation wie SQL Server sorgfältig geprüft und gemanagt werden. Selbst ein minimaler Ausfall ist nicht tolerierbar. In solch einem Fall ist es am besten, Trends in der Storage-Nutzung zu überwachen, um festzustellen, wie viel oder wann überhaupt eine Überbelegung akzeptabel ist.
 
-|===
-| Best Practices In Sich Vereint 
+*Best Practices*
+
+. Für eine optimale Storage-Performance sollten Sie die Filesystem-Kapazität bis zum 1,35-fachen der gesamten Datenbankauslastung bereitstellen.
+. Zur Vermeidung von Applikations-Downtime ist eine angemessene Überwachung sowie ein effektiver Aktionsplan mit Thin Provisioning erforderlich.
+. Achten Sie darauf, die Warnmeldungen zu CloudWatch und anderen Monitoring-Tools so einzurichten, dass jederzeit Kontakt mit Mitarbeitern aufgenommen wird, wenn der Storage gefüllt ist.
 
 
- a| 
-* Für eine optimale Storage-Performance sollten Sie die Filesystem-Kapazität bis zum 1,35-fachen der gesamten Datenbankauslastung bereitstellen.
-* Zur Vermeidung von Applikations-Downtime ist eine angemessene Überwachung sowie ein effektiver Aktionsplan mit Thin Provisioning erforderlich.
-* Achten Sie darauf, die Warnmeldungen zu CloudWatch und anderen Monitoring-Tools so einzurichten, dass jederzeit Kontakt mit Mitarbeitern aufgenommen wird, wenn der Storage gefüllt ist.
-
-
-|===
 ====
 
 
@@ -161,20 +157,15 @@ image:sql-awsec2-image3.png["Fehler: Fehlendes Grafikbild"]
 
 . Erstellen Sie Volumes, indem Sie den Schritt befolgen, der in aufgeführt ist https://docs.aws.amazon.com/fsx/latest/ONTAPGuide/creating-volumes.html["Erstellung eines Volumes auf FSX für NetApp ONTAP"^].
 +
-|===
+*Best Practices*
 
-
-| Best Practices in sich vereint 
-
-
- a| 
++
 ** Deaktivieren Sie Zeitpläne für Storage Snapshot Kopien und Aufbewahrungsrichtlinien. Verwenden Sie stattdessen NetApp SnapCenter, um Snapshot Kopien der SQL Server Daten und Protokoll-Volumes zu koordinieren.
 ** Konfigurieren Sie Datenbanken auf einzelnen LUNs auf separaten Volumes, um von einer schnellen und granularen Restore-Funktion zu profitieren.
 ** Platzieren Sie Benutzerdatendateien (.mdf) auf separaten Volumes, da es sich um Workloads mit zufälligen Lese-/Schreibzugriffen handelt. Es ist üblich, Transaktions-Log-Backups häufiger zu erstellen als Datenbank-Backups. Aus diesem Grund legen Sie Transaktions-Log-Dateien (.ldf) auf ein separates Volume von den Datendateien ab, so dass für jedes einzelne unabhängige Backup-Zeitpläne erstellt werden können. Durch diese Trennung werden auch die I/O-Vorgänge bei sequenziellen Schreibvorgängen aus den I/O-Vorgängen für zufällige Lese-/Schreibzugriffe von Datendateien isoliert und die SQL Server Performance deutlich verbessert.
 ** Tempdb ist eine Systemdatenbank, die von Microsoft SQL Server als temporärer Arbeitsbereich verwendet wird, insbesondere für I/O-intensive DBCC CHECKDB-Vorgänge. Platzieren Sie daher diese Datenbank auf einem dedizierten Volume. In großen Umgebungen, in denen die Volume-Anzahl eine Herausforderung ist, können Sie tempdb in weniger Volumes konsolidieren und im gleichen Volume wie andere Systemdatenbanken nach einer sorgfältigen Planung speichern. Datensicherung für tempdb ist keine hohe Priorität, da diese Datenbank bei jedem Neustart von Microsoft SQL Server neu erstellt wird.
 
 
-|===
 . Verwenden Sie den folgenden SSH-Befehl zum Erstellen von Volumes:
 +
 ....
@@ -249,17 +240,14 @@ foreach ($TargetPortal in $TargetPortals) {New-IscsiTargetPortal -TargetPortalAd
 image:sql-awsec2-image10.png["Fehler: Fehlendes Grafikbild"]
 
 +
-|===
-| Best Practices In Sich Vereint 
+*Best Practices*
 
-
- a| 
++
 ** Konfigurieren Sie fünf iSCSI-Sitzungen pro Zielschnittstelle, um eine optimale Performance zu erzielen.
 ** Konfiguration einer Round Robin-Richtlinie zur besten iSCSI-Performance insgesamt
 ** Stellen Sie beim Formatieren der LUNs sicher, dass die Zuordnungseinheit für Partitionen auf 64K eingestellt ist
 
 
-|===
 . Führen Sie den folgenden PowerShell-Befehl aus, um sicherzustellen, dass die iSCSI-Sitzung beibehalten wird.
 +
 ....
@@ -350,7 +338,6 @@ Minimaler Installationsspeicherplatz: 10 GB für das Repository: 10 GB
 
 |===
 Weitere Informationen finden Sie unter link:https://docs.netapp.com/us-en/snapcenter/install/reference_space_and_sizing_requirements.html["Platz- und Dimensionierungsanforderungen"].
-Weitere Informationen finden Sie unter link:https://docs.netapp.com/us-en/snapcenter/install/reference_space_and_sizing_requirements.html["Platz- und Dimensionierungsanforderungen"].
 
 Informationen zur Versionskompatibilität finden Sie im https://mysupport.netapp.com/matrix/["NetApp Interoperabilitäts-Matrix-Tool"^].
 
@@ -362,20 +349,16 @@ Die folgende Abbildung zeigt einige Überlegungen beim Erstellen des Microsoft S
 
 image:sql-awsec2-image13.png["Fehler: Fehlendes Grafikbild"]
 
-|===
-| Best Practices in sich vereint 
+*Best Practices*
+
+. Platzieren Sie Datenbanken mit I/O-intensiven Abfragen oder einer großen Datenbankgröße (beispielsweise 500 GB oder mehr) auf einem separaten Volume, um eine schnellere Recovery zu ermöglichen. Dieses Volumen sollte auch durch separate Jobs gesichert werden.
+. Konsolidierung von Datenbanken kleiner bis mittlerer Größe, die weniger kritisch sind oder weniger I/O-Anforderungen auf ein einzelnes Volume haben Wenn eine große Anzahl von Datenbanken auf demselben Volume gesichert wird, benötigen Sie weniger Snapshot Kopien. Als Best Practice wird außerdem empfohlen, Microsoft SQL Server Instanzen zu konsolidieren, um dieselben Volumes zu verwenden, um die Anzahl der erstellten Backup-Snapshot-Kopien zu steuern.
+. Erstellen Sie separate LUNs, um Dateien zu vollständigen Text und Datei-Streaming zu speichern.
+. Weisen Sie separate LUNs pro Host zu, um Microsoft SQL Server-Protokoll-Backups zu speichern.
+. Systemdatenbanken, in denen Metadaten des Datenbankservers konfiguriert und Einzelheiten zu Jobs gespeichert sind, werden nicht häufig aktualisiert. Legen Sie Systemdatenbanken/tempdb in separate Laufwerke oder LUNs. Platzieren Sie keine Systemdatenbanken auf demselben Volume wie die Benutzerdatenbanken. Benutzerdatenbanken haben eine andere Backup-Richtlinie, und die Häufigkeit der Backups in der Benutzerdatenbank ist bei Systemdatenbanken nicht identisch.
+. Legen Sie für die Einrichtung der Microsoft SQL Server Availability Group Daten und Protokolldateien für Replikate in einer identischen Ordnerstruktur auf allen Knoten ab.
 
 
- a| 
-* Platzieren Sie Datenbanken mit I/O-intensiven Abfragen oder einer großen Datenbankgröße (beispielsweise 500 GB oder mehr) auf einem separaten Volume, um eine schnellere Recovery zu ermöglichen. Dieses Volumen sollte auch durch separate Jobs gesichert werden.
-* Konsolidierung von Datenbanken kleiner bis mittlerer Größe, die weniger kritisch sind oder weniger I/O-Anforderungen auf ein einzelnes Volume haben Wenn eine große Anzahl von Datenbanken auf demselben Volume gesichert wird, benötigen Sie weniger Snapshot Kopien. Als Best Practice wird außerdem empfohlen, Microsoft SQL Server Instanzen zu konsolidieren, um dieselben Volumes zu verwenden, um die Anzahl der erstellten Backup-Snapshot-Kopien zu steuern.
-* Erstellen Sie separate LUNs, um Dateien zu vollständigen Text und Datei-Streaming zu speichern.
-* Weisen Sie separate LUNs pro Host zu, um Microsoft SQL Server-Protokoll-Backups zu speichern.
-* Systemdatenbanken, in denen Metadaten des Datenbankservers konfiguriert und Einzelheiten zu Jobs gespeichert sind, werden nicht häufig aktualisiert. Legen Sie Systemdatenbanken/tempdb in separate Laufwerke oder LUNs. Platzieren Sie keine Systemdatenbanken auf demselben Volume wie die Benutzerdatenbanken. Benutzerdatenbanken haben eine andere Backup-Richtlinie, und die Häufigkeit der Backups in der Benutzerdatenbank ist bei Systemdatenbanken nicht identisch.
-* Legen Sie für die Einrichtung der Microsoft SQL Server Availability Group Daten und Protokolldateien für Replikate in einer identischen Ordnerstruktur auf allen Knoten ab.
-
-
-|===
 Neben dem Performance-Vorteil, den das Benutzerdatenbanklayout in verschiedene Volumes aufzuteilen, wirkt sich die Datenbank auch deutlich auf die für Backups und Restores erforderliche Zeit aus. Die Verwendung separater Volumes für Daten- und Log-Dateien verkürzt die Wiederherstellungszeit erheblich, im Vergleich zu einem Volume, das mehrere Benutzerdatendateien hostet. Außerdem sind Benutzerdatenbanken mit einer hohen I/O-intensiven Applikation anfällig für eine höhere Backup-Zeit. Eine ausführlichere Erläuterung der Backup- und Restore-Verfahren finden Sie weiter unten in diesem Dokument.
 
 
@@ -438,53 +421,42 @@ Sie können nun Backup-, Restore- und Klonvorgänge für SQL Server ausführen.
 ====
 Nachdem Sie die Datenbank und die Protokolldateien auf den FSX ONTAP LUNs platziert haben, kann SnapCenter zum Sichern der Datenbanken verwendet werden. Mit den folgenden Prozessen wird ein vollständiges Backup erstellt.
 
-|===
+*Best Practices*
 
-
-| Best Practices In Sich Vereint 
-
-
- a| 
 * In SnapCenter wird RPO als Backup-Häufigkeit identifiziert, beispielsweise wie oft das Backup geplant werden soll, damit sich der Datenverlust auf bis zu wenige Minuten reduzieren lässt. Mit SnapCenter lassen sich Backups alle fünf Minuten planen. Allerdings kann es einige Instanzen geben, in denen ein Backup während der Transaktionszeiten nicht innerhalb von fünf Minuten abgeschlossen wird, oder wenn die Änderungsrate der Daten in der gegebenen Zeit eher liegt. Als Best Practice empfiehlt es sich, häufige Transaktions-Log-Backups anstelle vollständiger Backups zu planen.
 * Es gibt zahlreiche Ansätze für RPO und RTO. Eine Alternative zu diesem Backup-Ansatz besteht darin, separate Backup-Richtlinien für Daten und Protokolle mit unterschiedlichen Intervallen zu verwenden. Von SnapCenter aus sollten Sie beispielsweise Backup-Protokolle in 15-Minuten-Intervallen planen und Daten-Backups in 6-Stunden-Intervallen durchführen.
 * Verwenden Sie eine Ressourcengruppe für eine Backup-Konfiguration zur Snapshot-Optimierung und zur Anzahl der zu verwaltenden Jobs.
-
-
-|===
-. Wählen Sie *Ressourcen*, und wählen Sie dann *Microsoft SQL Server *im Dropdown-Menü oben links. Wählen Sie *Ressourcen Aktualisieren*.
++
+.. Wählen Sie *Ressourcen*, und wählen Sie dann *Microsoft SQL Server *im Dropdown-Menü oben links. Wählen Sie *Ressourcen Aktualisieren*.
 +
 image:sql-awsec2-image19.png["Fehler: Fehlendes Grafikbild"]
 
-. Wählen Sie die zu sichernde Datenbank aus, und wählen Sie dann *Weiter* und (*+*), um die Policy hinzuzufügen, falls noch keine erstellt wurde. Befolgen Sie die * Neue SQL Server Backup Policy*, um eine neue Richtlinie zu erstellen.
+.. Wählen Sie die zu sichernde Datenbank aus, und wählen Sie dann *Weiter* und (*+*), um die Policy hinzuzufügen, falls noch keine erstellt wurde. Befolgen Sie die * Neue SQL Server Backup Policy*, um eine neue Richtlinie zu erstellen.
 +
 image:sql-awsec2-image20.png["Fehler: Fehlendes Grafikbild"]
 
-. Wählen Sie ggf. den Überprüfungsserver aus. Dieser Server ist der Server, auf dem SnapCenter DBCC CHECKDB ausgeführt wird, nachdem eine vollständige Sicherung erstellt wurde. Klicken Sie auf *Weiter*, um eine Benachrichtigung zu erhalten, und wählen Sie zur Überprüfung *Zusammenfassung*. Klicken Sie nach der Überprüfung auf *Fertig stellen*.
+.. Wählen Sie ggf. den Überprüfungsserver aus. Dieser Server ist der Server, auf dem SnapCenter DBCC CHECKDB ausgeführt wird, nachdem eine vollständige Sicherung erstellt wurde. Klicken Sie auf *Weiter*, um eine Benachrichtigung zu erhalten, und wählen Sie zur Überprüfung *Zusammenfassung*. Klicken Sie nach der Überprüfung auf *Fertig stellen*.
 +
 image:sql-awsec2-image21.png["Fehler: Fehlendes Grafikbild"]
 
-. Klicken Sie auf *Jetzt sichern*, um das Backup zu testen. Wählen Sie in den Popup-Fenstern die Option *Backup* aus.
+.. Klicken Sie auf *Jetzt sichern*, um das Backup zu testen. Wählen Sie in den Popup-Fenstern die Option *Backup* aus.
 +
 image:sql-awsec2-image22.png["Fehler: Fehlendes Grafikbild"]
 
-. Wählen Sie *Monitor*, um zu überprüfen, ob die Sicherung abgeschlossen wurde.
+.. Wählen Sie *Monitor*, um zu überprüfen, ob die Sicherung abgeschlossen wurde.
 +
 image:sql-awsec2-image23.png["Fehler: Fehlendes Grafikbild"]
 
 
 
-|===
 
 
-| Best Practices In Sich Vereint 
+*Best Practices*
 
-
- a| 
 * Sichern Sie das Transaktions-Log-Backup von SnapCenter, damit SnapCenter während des Wiederherstellungsprozesses alle Backup-Dateien lesen und automatisch nacheinander wiederherstellen kann.
 * Wenn Produkte von Drittanbietern für Backups verwendet werden, wählen Sie Backup in SnapCenter kopieren aus, um Probleme mit der Protokollsequenz zu vermeiden, und testen Sie die Wiederherstellungsfunktion, bevor Sie in die Produktion gehen.
 
 
-|===
 ====
 .Datenbank mit SnapCenter wiederherstellen
 [%collapsible]
@@ -523,25 +495,19 @@ Alle drei Backup-Jobs werden parallel ausgeführt und sichern gleichzeitig 1,200
 
 Zusätzlich zum vollständigen Backup empfiehlt NetApp, ein Transaktions-Log-Backup für kritische Datenbanken zu konfigurieren. Stellen Sie sicher, dass die Datenbankeigenschaft auf ein vollständiges Recovery-Modell eingestellt ist.
 
-|===
+*Best Practices*
+
+. Nehmen Sie die tempdb-Datenbank nicht in ein Backup auf, da die darin enthaltenen Daten temporär sind. Platzieren Sie tempdb auf eine LUN oder eine SMB-Freigabe, die sich in einem Storage-System-Volume befindet, in dem keine Snapshot Kopien erstellt werden.
+. Eine Microsoft SQL Server Instanz mit einer hohen I/O-intensiven Applikation sollte in einem anderen Backup-Job isoliert werden, um die gesamte Backup-Zeit für andere Ressourcen zu reduzieren.
+. Begrenzen Sie die Anzahl der Datenbanken, die gleichzeitig auf etwa 100 gesichert werden sollen, und Staffeln Sie die übrigen Datenbank-Backups, um einen gleichzeitigen Prozess zu vermeiden.
+. Verwenden Sie den Instanznamen für Microsoft SQL Server in der Ressourcengruppe anstelle mehrerer Datenbanken, da SnapCenter beim Erstellen neuer Datenbanken in der Microsoft SQL Server-Instanz automatisch eine neue Datenbank für das Backup berücksichtigt.
+. Wenn Sie die Datenbankkonfiguration ändern, wie beispielsweise das Datenbank-Recovery-Modell in das vollständige Recovery-Modell ändern, führen Sie sofort ein Backup durch, um up-to-the-minute-Wiederherstellungsvorgänge zu ermöglichen.
+. SnapCenter kann Transaktions-Log-Backups, die außerhalb von SnapCenter erstellt wurden, nicht wiederherstellen.
+. Stellen Sie beim Klonen von FlexVol Volumes sicher, dass ausreichend Speicherplatz für die Klon-Metadaten vorhanden ist.
+. Stellen Sie beim Wiederherstellen von Datenbanken sicher, dass auf dem Volume ausreichend Speicherplatz verfügbar ist.
+. Erstellen einer separaten Richtlinie für das Management und die Sicherung von Systemdatenbanken mindestens einmal pro Woche
 
 
-| Best Practices in sich vereint 
-
-
- a| 
-* Nehmen Sie die tempdb-Datenbank nicht in ein Backup auf, da die darin enthaltenen Daten temporär sind. Platzieren Sie tempdb auf eine LUN oder eine SMB-Freigabe, die sich in einem Storage-System-Volume befindet, in dem keine Snapshot Kopien erstellt werden.
-* Eine Microsoft SQL Server Instanz mit einer hohen I/O-intensiven Applikation sollte in einem anderen Backup-Job isoliert werden, um die gesamte Backup-Zeit für andere Ressourcen zu reduzieren.
-* Begrenzen Sie die Anzahl der Datenbanken, die gleichzeitig auf etwa 100 gesichert werden sollen, und Staffeln Sie die übrigen Datenbank-Backups, um einen gleichzeitigen Prozess zu vermeiden.
-* Verwenden Sie den Instanznamen für Microsoft SQL Server in der Ressourcengruppe anstelle mehrerer Datenbanken, da SnapCenter beim Erstellen neuer Datenbanken in der Microsoft SQL Server-Instanz automatisch eine neue Datenbank für das Backup berücksichtigt.
-* Wenn Sie die Datenbankkonfiguration ändern, wie beispielsweise das Datenbank-Recovery-Modell in das vollständige Recovery-Modell ändern, führen Sie sofort ein Backup durch, um up-to-the-minute-Wiederherstellungsvorgänge zu ermöglichen.
-* SnapCenter kann Transaktions-Log-Backups, die außerhalb von SnapCenter erstellt wurden, nicht wiederherstellen.
-* Stellen Sie beim Klonen von FlexVol Volumes sicher, dass ausreichend Speicherplatz für die Klon-Metadaten vorhanden ist.
-* Stellen Sie beim Wiederherstellen von Datenbanken sicher, dass auf dem Volume ausreichend Speicherplatz verfügbar ist.
-* Erstellen einer separaten Richtlinie für das Management und die Sicherung von Systemdatenbanken mindestens einmal pro Woche
-
-
-|===
 ====
 .Klonen von Datenbanken mit SnapCenter
 [%collapsible]
