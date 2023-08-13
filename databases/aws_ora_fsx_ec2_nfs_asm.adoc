@@ -58,20 +58,21 @@ image::aws_ora_fsx_ec2_nfs_asm_architecture.png[Dieses Bild zeigt ein detaillier
 
 === Hardware- und Softwarekomponenten
 
+*Hardware*
+
 [cols="33%, 33%, 33%"]
 |===
-
-
-3+| *Hardware* 
 
 
 | FSX ONTAP-Storage | Aktuelle Version von AWS angeboten | Ein FSX HA-Cluster in der gleichen VPC und Verfügbarkeitszone 
 
 
 | EC2 Instanz für Computing | t2.xlarge/4vCPU/16G | Zwei EC2 T2 xlarge EC2-Instanzen, eine als primärer DB-Server und die andere als Klon-DB-Server 
+|===
+*Software*
 
-
-3+| *Software* 
+[cols="33%, 33%, 33%"]
+|===
 
 
 | Redhat Linux | RHEL-8.6.0_HVM-20220503-x86_64-2-Hourly2-GP2 | Bereitstellung der RedHat Subscription für Tests 
@@ -898,7 +899,7 @@ NetApp veröffentlicht ein vollständig automatisiertes Toolkit für die Lösung
 
 == Backup, Wiederherstellung und Klonen von Oracle Datenbanken mit SnapCenter Services
 
-Siehe link:snapctr_svcs_ora.html["SnapCenter-Services für Oracle"^] Weitere Informationen zu Backup, Wiederherstellung und Klonen von Oracle Datenbanken erhalten Sie über die NetApp BlueXP Konsole.
+Derzeit wird Oracle-Datenbanken mit NFS- und ASM-Speicheroption nur von dem herkömmlichen UI-Tool SnapCenter Server unterstützt, siehe link:hybrid_dbops_snapcenter_usecases.html["Hybrid-Cloud-Datenbanklösungen mit SnapCenter"^] Weitere Informationen zum Backup, zur Wiederherstellung und zum Klonen von Oracle-Datenbanken erhalten Sie in der Benutzeroberfläche von NetApp SnapCenter.
 
 
 

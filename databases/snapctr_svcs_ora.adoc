@@ -2,9 +2,9 @@
 sidebar: sidebar 
 permalink: databases/snapctr_svcs_ora.html 
 keywords: Oracle, Database, SnapCenter, SnapShot, FlexClone, BlueXP, Database Backup, Database Restore, Database Clone 
-summary: Die Lösung bietet Übersicht und Details zu Backups, Wiederherstellungen und Klonen von Oracle Datenbanken mit NetApp SnapCenter SaaS über die BlueXP Konsole. 
+summary: Die Lösung bietet Übersicht und Details zur Sicherung, Wiederherstellung und Klonen von Oracle Datenbanken mit NetApp SnapCenter SaaS über die BlueXP Konsole in der Azure Cloud. 
 ---
-= TR-4964: Backup, Wiederherstellung und Klonen von Oracle Datenbanken mit SnapCenter Services
+= TR-4964: Sicherung, Wiederherstellung und Klonen von Oracle-Datenbanken mit SnapCenter Services - AWS
 :hardbreaks:
 :allow-uri-read: 
 :nofooter: 
@@ -13,6 +13,7 @@ summary: Die Lösung bietet Übersicht und Details zu Backups, Wiederherstellung
 :imagesdir: ./../media/
 
 
+[role="lead"]
 Allen Cao, Niyaz Mohamed, NetApp
 
 
@@ -60,19 +61,21 @@ Dieses Bild zeigt detailliert Cloud Backup for Application in der BlueXP Konsole
 
 === Hardware- und Softwarekomponenten
 
+*Hardware*
+
 [cols="33%, 33%, 33%"]
 |===
 
 
-| 3^ | *Hardware* | FSX ONTAP-Storage 
+| FSX ONTAP-Storage | Aktuelle Version von AWS angeboten | Ein FSX HA-Cluster in der gleichen VPC und Verfügbarkeitszone 
 
 
-| Aktuelle Version von AWS angeboten | Ein FSX HA-Cluster in der gleichen VPC und Verfügbarkeitszone | EC2 Instanz für Computing 
+| EC2 Instanz für Computing | t2.xlarge/4vCPU/16G | Zwei EC2 T2 xlarge EC2-Instanzen, eine als primärer DB-Server und die andere als Clone-DB-Server 
+|===
+*Software*
 
-
-| t2.xlarge/4vCPU/16G | Zwei EC2 T2 xlarge EC2-Instanzen, eine als primärer DB-Server und die andere als Clone-DB-Server
-
-3^ | *Software* 
+[cols="33%, 33%, 33%"]
+|===
 
 
 | Redhat Linux | RHEL-8.6.0_HVM-20220503-x86_64-2-Hourly2-GP2 | Bereitstellung der RedHat Subscription für Tests 
@@ -94,10 +97,10 @@ Dieses Bild zeigt detailliert Cloud Backup for Application in der BlueXP Konsole
 === Wichtige Faktoren für die Implementierung
 
 * *Connector in der gleichen VPC wie Datenbank und FSX bereitgestellt werden.* Wenn möglich, sollte der Connector in der gleichen AWS VPC bereitgestellt werden, was die Anbindung an den FSX Storage und die EC2-Compute-Instanz ermöglicht.
-* *Eine für den SnapCenter-Konnektor erstellte AWS IAM-Richtlinie.* die Richtlinie im JSON-Format ist in der detaillierten SnapCenter-Service-Dokumentation verfügbar. Wenn Sie die Connector-Implementierung über die BlueXP Konsole starten, werden Sie aufgefordert, die Voraussetzungen einzurichten. Die Richtlinie sollte dem AWS-Benutzerkonto zugewiesen werden, dem der Connector gehört.
-* *Der Zugriffsschlüssel für das AWS-Konto und das im AWS-Konto erstellte SSH-Schlüsselpaar.* das SSH-Schlüsselpaar wird dem ec2-Benutzer zur Anmeldung am Connector-Host und zur Bereitstellung eines Datenbank-Plug-ins an den EC2-DB-Server-Host zugewiesen. Der Zugriffsschlüssel gewährt die Berechtigung zum Bereitstellen des erforderlichen Connectors.
-* *Eine Zertifizierung wurde zur BlueXP Konsoleneinstellung hinzugefügt.* um Amazon FSX for ONTAP zur BlueXP Arbeitsumgebung hinzuzufügen, sind in der BlueXP Konsoleneinstellung Berechtigungen für den Zugriff auf Amazon FSX for ONTAP eingerichtet.
-* *SnapCenter-Plug-in auf dem EC2-Datenbankinstanzhost bereitgestellt.* SnapCenter-Dienste führen API-Aufrufe durch, die vom SnapCenter-Plug-in auf dem EC2-Datenbankinstanzhost ausgeführt werden. Sie müssen sie bereitstellen, bevor Sie die Services einrichten.
+* *Eine für den SnapCenter-Konnektor erstellte AWS IAM-Richtlinie.* die Richtlinie im JSON-Format ist in der detaillierten SnapCenter-Service-Dokumentation verfügbar. Wenn Sie die Connector-Implementierung über die BlueXP Konsole starten, werden Sie auch aufgefordert, die Voraussetzungen mit Details der erforderlichen Berechtigung im JSON-Format einzurichten. Die Richtlinie sollte dem AWS-Benutzerkonto zugewiesen werden, dem der Connector gehört.
+* *Der Zugriffsschlüssel für das AWS-Konto und das im AWS-Konto erstellte SSH-Schlüsselpaar.* das SSH-Schlüsselpaar wird dem ec2-Benutzer zur Anmeldung am Connector-Host und zur Bereitstellung eines Datenbank-Plug-ins an den EC2-DB-Server-Host zugewiesen. Der Zugriffsschlüssel gewährt die Berechtigung zum Bereitstellen des erforderlichen Connectors mit der oben genannten IAM-Richtlinie.
+* *Zugangsdaten wurden zur BlueXP Konsoleneinstellung hinzugefügt.* um Amazon FSX for ONTAP zur BlueXP Arbeitsumgebung hinzuzufügen, sind in der BlueXP Konsoleneinstellung Zugangsdaten eingerichtet, die BlueXP Berechtigungen für den Zugriff auf Amazon FSX for ONTAP gewähren.
+* *java-11-openjdk auf dem Host der EC2-Datenbankinstanz installiert.* die Installation des SnapCenter-Dienstes erfordert die java-Version 11. Sie muss auf dem Anwendungshost installiert werden, bevor die Plug-in-Bereitstellung versucht wird.
 
 
 
@@ -123,9 +126,9 @@ video::4b0fd212-7641-46b8-9e55-b01200f9383a[panopto]
 Die Bereitstellung erfordert die folgenden Voraussetzungen.
 
 . Ein primärer Oracle Datenbankserver auf einer EC2-Instanz mit einer Oracle-Datenbank, die vollständig bereitgestellt ist und ausgeführt wird.
-. Ein in AWS implementierter Amazon FSX for ONTAP-Cluster, der die obige Datenbank hostet.
-. Ein optionaler Datenbankserver auf einer EC2-Instanz, der zum Testen des Klonens einer Oracle-Datenbank auf einen alternativen Host verwendet werden kann, um einen Entwicklungs-/Test-Workload zu unterstützen, oder andere Anwendungsfälle, die einen vollständigen Datensatz der Oracle-Produktionsdatenbank erfordern.
-. Wenn Sie Hilfe bei der Erfüllung der oben genannten Voraussetzungen für die Implementierung der Oracle-Datenbank auf Amazon FSX for ONTAP und EC2-Compute-Instanz benötigen, finden Sie weitere Informationen unter link:aws_ora_fsx_ec2_iscsi_asm.html["Implementierung und Schutz von Oracle Database in AWS FSX/EC2 mit iSCSI/ASM"^].
+. Ein in AWS implementierter Amazon FSX for ONTAP-Cluster, der die obigen Datenbank-Volumes hostet.
+. Ein optionaler Datenbankserver auf einer EC2-Instanz, der zum Testen des Klonens einer Oracle-Datenbank auf einem alternativen Host verwendet werden kann, um einen Entwicklungs-/Test-Workload zu unterstützen, oder andere Anwendungsfälle, die einen vollständigen Datensatz einer Oracle-Produktionsdatenbank erfordern.
+. Wenn Sie Hilfe bei der Erfüllung der oben genannten Voraussetzungen für die Implementierung der Oracle-Datenbank auf Amazon FSX for ONTAP und EC2-Compute-Instanz benötigen, finden Sie weitere Informationen unter link:aws_ora_fsx_ec2_iscsi_asm.html["Implementierung und Schutz von Oracle Database in AWS FSX/EC2 mit iSCSI/ASM"^] Oder Whitepaper link:aws_ora_fsx_ec2_deploy_intro.html["Oracle Database Deployment on EC2 und FSX Best Practices"^]
 
 
 ====
@@ -136,14 +139,14 @@ Die Bereitstellung erfordert die folgenden Voraussetzungen.
 [%collapsible]
 ====
 . Verwenden Sie den Link link:https://console.bluexp.netapp.com/["NetApp BlueXP"] Um sich für den Konsolenzugriff von BlueXP zu registrieren.
-. Um BlueXP für das Management von AWS Cloud-Ressourcen wie Amazon FSX for ONTAP einzurichten, sollten Sie bereits ein AWS-Konto eingerichtet haben. Anschließend können Sie sich bei Ihrem AWS-Konto anmelden, um eine IAM-Richtlinie zu erstellen, über die SnapCenter-Servicezugriff auf ein AWS-Konto für die Connector-Implementierung gewährt wird.
-
-
+. Melden Sie sich bei Ihrem AWS-Konto an, um eine IAM-Richtlinie mit entsprechenden Berechtigungen zu erstellen und die Richtlinie dem AWS-Konto zuzuweisen, das für die Implementierung des BlueXP Connectors verwendet wird.
++
 image:snapctr_svcs_connector_01-policy.png["Screenshot, der diesen Schritt in der GUI zeigt."]
 
-Die Richtlinie sollte mit einer JSON-Zeichenfolge konfiguriert werden, die beim Start der Connector-Bereitstellung verfügbar ist, und Sie werden als Erinnerung aufgefordert, dass eine IAM-Richtlinie erstellt und einem AWS-Konto gewährt wurde, das für die Connector-Bereitstellung verwendet wird.
++
+Die Richtlinie sollte mit einem JSON-String konfiguriert werden, der in der NetApp-Dokumentation verfügbar ist. Die JSON-Zeichenfolge kann auch von der Seite abgerufen werden, wenn die Connector-Bereitstellung gestartet wird und Sie zur Berechtigungszuweisung für die Voraussetzungen aufgefordert werden.
 
-. Sie brauchen auch die AWS VPC, einen Schlüssel und Geheimnisse für Ihr AWS-Konto, einen SSH-Schlüssel für EC2-Zugriff, eine Sicherheitsgruppe usw. – bereit für die Connector-Bereitstellung.
+. Sie benötigen außerdem die AWS VPC, das Subnetz, die Sicherheitsgruppe, den Zugriffsschlüssel und Schlüssel für das AWS Benutzerkonto, einen SSH-Schlüssel für ec2-User usw. für die Connector-Bereitstellung.
 
 
 ====
@@ -154,8 +157,7 @@ Die Richtlinie sollte mit einer JSON-Zeichenfolge konfiguriert werden, die beim 
 [%collapsible]
 ====
 . Melden Sie sich bei der BlueXP Konsole an. Für ein freigegebenes Konto empfiehlt es sich, einen individuellen Arbeitsbereich zu erstellen, indem Sie auf *Konto* > *Konto verwalten* > *Arbeitsbereich* klicken, um einen neuen Arbeitsbereich hinzuzufügen.
-
-
++
 image:snapctr_svcs_connector_02-wspace.png["Screenshot, der diesen Schritt in der GUI zeigt."]
 
 . Klicken Sie auf *Add a Connector*, um den Connector-Provisioning-Workflow zu starten.
@@ -173,9 +175,8 @@ image:snapctr_svcs_connector_04-aws.png["Screenshot, der diesen Schritt in der G
 
 image:snapctr_svcs_connector_05-remind.png["Screenshot, der diesen Schritt in der GUI zeigt."]
 
-. Geben Sie den Zugriffsschlüssel und den geheimen Schlüssel für die AWS-Kontonauthentifizierung ein.
-
-
+. Geben Sie die Authentifizierung Ihres AWS-Kontos mit *Zugriffsschlüssel* und *geheimer Schlüssel* ein.
++
 image:snapctr_svcs_connector_06-auth.png["Screenshot, der diesen Schritt in der GUI zeigt."]
 
 . Benennen Sie die Connector-Instanz und wählen Sie unter *Details* *Rolle erstellen.
@@ -183,14 +184,12 @@ image:snapctr_svcs_connector_06-auth.png["Screenshot, der diesen Schritt in der 
 
 image:snapctr_svcs_connector_07-details.png["Screenshot, der diesen Schritt in der GUI zeigt."]
 
-. Konfigurieren Sie das Netzwerk mit dem richtigen VPC, Subnetz und SSH-Schlüsselpaar für den EC2-Zugriff.
-
-
+. Konfigurieren Sie das Netzwerk mit dem richtigen *VPC*, *Subnetz* und SSH *Key Pair* für den Connector-Zugriff.
++
 image:snapctr_svcs_connector_08-network.png["Screenshot, der diesen Schritt in der GUI zeigt."]
 
-. Legen Sie die Sicherheitsgruppe für den Konnektor fest.
-
-
+. Stellen Sie die *Sicherheitsgruppe* für den Konnektor ein.
++
 image:snapctr_svcs_connector_09-security.png["Screenshot, der diesen Schritt in der GUI zeigt."]
 
 . Überprüfen Sie die Übersichtsseite, und klicken Sie auf *Hinzufügen*, um die Verbindungserstellung zu starten. Die Implementierung dauert in der Regel etwa 10 Minuten. Sobald der Vorgang abgeschlossen ist, wird die Connector-Instanz im AWS EC2-Dashboard angezeigt.
@@ -198,7 +197,43 @@ image:snapctr_svcs_connector_09-security.png["Screenshot, der diesen Schritt in 
 
 image:snapctr_svcs_connector_10-review.png["Screenshot, der diesen Schritt in der GUI zeigt."]
 
-. Melden Sie sich nach der Bereitstellung des Connectors als ec2-Benutzer mit einem SSH-Schlüssel beim EC2-Host an, um das SnapCenter-Plug-in wie folgt zu installieren: link:https://docs.netapp.com/us-en/cloud-manager-backup-restore/task-add-host-discover-oracle-databases.html#deploy-the-plug-in-using-script-and-add-host-from-ui-using-manual-option["Stellen Sie das Plug-in mithilfe des Skripts bereit, und fügen Sie den Host über die Benutzeroberfläche mithilfe der manuellen Option hinzu"^].
+====
+
+
+=== Definieren Sie Zugangsdaten für den Zugriff auf AWS Ressourcen in BlueXP
+
+[%collapsible]
+====
+. Erstellen Sie zunächst in der AWS EC2-Konsole eine Rolle im Menü *Identity and Access Management (IAM)* *Roles*, *Create role*, um den Workflow für die Rollenerstellung zu starten.
++
+image:snapctr_svcs_credential_01-aws.png["Screenshot, der diesen Schritt in der GUI zeigt."]
+
+. Wählen Sie auf der Seite *Select Trusted entity* die Option *AWS-Konto*, *ein anderes AWS-Konto* aus und fügen Sie die BlueXP Konto-ID ein, die von der BlueXP Konsole abgerufen werden kann.
++
+image:snapctr_svcs_credential_02-aws.png["Screenshot, der diesen Schritt in der GUI zeigt."]
+
+. Filtern Sie Berechtigungsrichtlinien nach fsx und fügen Sie der Rolle *Berechtigungsrichtlinien* hinzu.
++
+image:snapctr_svcs_credential_03-aws.png["Screenshot, der diesen Schritt in der GUI zeigt."]
+
+. Geben Sie auf der Seite *Rollendetails* einen Namen für die Rolle ein, fügen Sie eine Beschreibung hinzu, und klicken Sie dann auf *Rolle erstellen*.
++
+image:snapctr_svcs_credential_04-aws.png["Screenshot, der diesen Schritt in der GUI zeigt."]
+
+. Zurück zur BlueXP-Konsole, klicken Sie auf das Einstellungssymbol oben rechts in der Konsole, um die Seite *Account Credentials* zu öffnen, klicken Sie auf *Add credentials*, um den Workflow der Anmeldedatenkonfiguration zu starten.
++
+image:snapctr_svcs_credential_05-aws.png["Screenshot, der diesen Schritt in der GUI zeigt."]
+
+. Wählen Sie den Anmeldeinformationsspeicherort als - *Amazon Web Services - BlueXP*.
++
+image:snapctr_svcs_credential_06-aws.png["Screenshot, der diesen Schritt in der GUI zeigt."]
+
+. Definieren Sie AWS-Anmeldeinformationen mit richtiger *role ARN*, die aus der in Schritt 1 oben erstellten AWS IAM-Rolle abgerufen werden kann. BlueXP *Account-ID*, die zur Erstellung der AWS IAM-Rolle in Schritt 1 verwendet wird.
++
+image:snapctr_svcs_credential_07-aws.png["Screenshot, der diesen Schritt in der GUI zeigt."]
+
+. Bewertung und *Hinzufügen*.
+image:snapctr_svcs_credential_08-aws.png["Screenshot, der diesen Schritt in der GUI zeigt."]
 
 
 ====
@@ -208,7 +243,7 @@ image:snapctr_svcs_connector_10-review.png["Screenshot, der diesen Schritt in de
 
 [%collapsible]
 ====
-Mit dem bereitgestellten Connector können SnapCenter-Dienste nun wie folgt eingerichtet werden:
+Wenn der Connector bereitgestellt und die Zugangsdaten hinzugefügt wurden, können SnapCenter-Services jetzt wie folgt eingerichtet werden:
 
 . Klicken Sie unter *Meine Arbeitsumgebung* auf *Arbeitsumgebung hinzufügen*, um FSX in AWS bereitzustellen.
 
@@ -225,9 +260,8 @@ image:snapctr_svcs_setup_02.png["Screenshot, der diesen Schritt in der GUI zeigt
 
 image:snapctr_svcs_setup_03.png["Screenshot, der diesen Schritt in der GUI zeigt."]
 
-. Wählen Sie die Zugangsdaten aus, die BlueXP die erforderlichen Berechtigungen für das Management von FSX for ONTAP bietet. Wenn Sie keine Zugangsdaten hinzugefügt haben, können Sie diese über das Menü *Einstellungen* oben rechts in der BlueXP Konsole hinzufügen.
-
-
+. Wählen Sie den *Zugangsdaten-Namen* aus, den Sie im vorherigen Abschnitt erstellt haben, um BlueXP die Berechtigungen zu erteilen, die es benötigt, um FSX for ONTAP zu verwalten. Wenn Sie keine Zugangsdaten hinzugefügt haben, können Sie diese über das Menü *Einstellungen* oben rechts in der BlueXP Konsole hinzufügen.
++
 image:snapctr_svcs_setup_04.png["Screenshot, der diesen Schritt in der GUI zeigt."]
 
 . Wählen Sie die AWS-Region aus, in der Amazon FSX for ONTAP bereitgestellt wird, wählen Sie den FSX-Cluster aus, der die Oracle-Datenbank hostet, und klicken Sie auf Hinzufügen.
@@ -265,15 +299,23 @@ image:snapctr_svcs_setup_10.png["Screenshot, der diesen Schritt in der GUI zeigt
 
 image:snapctr_svcs_setup_13.png["Screenshot, der diesen Schritt in der GUI zeigt."]
 
-. Geben Sie zum Hinzufügen eines Hosts Details zum Oracle EC2 Instance Host an. Aktivieren Sie das Kontrollkästchen, um zu bestätigen, dass das Plug-in für Oracle auf dem Host installiert wurde, da Sie das Plug-in bereitstellen, nachdem der Connector bereitgestellt wurde.
+. Geben Sie Details zum Host der AWS EC2 Oracle Applikation ein. Wählen Sie *mit SSH* als *Host-Installationstyp* für eine schrittweise Plugin-Installation und Datenbankerkennung. Klicken Sie dann auf *SSH Private Key hinzufügen*.
++
+image:snapctr_svcs_setup_14.png["Screenshot, der diesen Schritt in der GUI zeigt."]
 
+. Fügen Sie Ihren ec2-User SSH-Schlüssel für die Datenbank EC2-Host ein und klicken Sie auf *Validate*, um fortzufahren.
++
+image:snapctr_svcs_setup_14-1.png["Screenshot, der diesen Schritt in der GUI zeigt."]
 
-image:snapctr_svcs_setup_16.png["Screenshot, der diesen Schritt in der GUI zeigt."]
+. Sie werden aufgefordert, *Validating Fingerprint* einzugeben, um fortzufahren.
++
+image:snapctr_svcs_setup_14-2.png["Screenshot, der diesen Schritt in der GUI zeigt."]
 
-. Ermitteln Sie den Oracle EC2-Host und fügen Sie ihn zu *Applications* hinzu. Alle Datenbanken auf dem Host werden ebenfalls erkannt und auf der Seite angezeigt. Die Datenbank *Schutzstatus* wird als *ungeschützt* angezeigt.
-
-
+. Klicken Sie auf *Weiter*, um ein Oracle Datenbank Plugin zu installieren und die Oracle Datenbanken auf dem EC2 Host zu ermitteln. Entdeckte Datenbanken werden zu *Anwendungen* hinzugefügt. Die Datenbank *Schutzstatus* wird als *ungeschützt* angezeigt, wenn sie zuerst entdeckt wird.
++
 image:snapctr_svcs_setup_17.png["Screenshot, der diesen Schritt in der GUI zeigt."]
+
+
 
 Damit ist die Ersteinrichtung der SnapCenter Services für Oracle abgeschlossen. In den nächsten drei Abschnitten dieses Dokuments werden die Backup-, Restore- und Klonvorgänge für Oracle-Datenbanken beschrieben.
 
