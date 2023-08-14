@@ -22,10 +22,10 @@ OpenShift auf Bare Metal ähnelt den virtuellen OpenShift-Implementierungen, die
 
 == OpenShift auf Bare Metal bietet folgende Funktionen:
 
-* *IPI oder Assisted Installer-Bereitstellung.* mit einem OpenShift-Cluster, der von Installer Provisioned Infrastructure (IPI) auf Bare-Metal-Servern bereitgestellt wird, können Kunden eine vielseitig skalierbare OpenShift-Umgebung direkt auf herkömmlichen Servern bereitstellen, ohne eine Hypervisor-Ebene verwalten zu müssen.
-* *Kompaktes Cluster-Design.* um die Hardwareanforderungen zu minimieren, ermöglicht OpenShift auf Bare Metal den Benutzern die Bereitstellung von Clustern mit nur 3 Knoten, indem die OpenShift Control Plane Nodes auch als Worker Nodes und Host Container fungieren können.
-* * OpenShift Virtualisierung.* OpenShift kann virtuelle Maschinen innerhalb von Containern mit OpenShift Virtualization ausführen. Bei dieser Container-nativen Virtualisierung wird der KVM-Hypervisor innerhalb eines Containers ausgeführt und persistente Volumes für den VM-Storage angebunden.
-* *KI/ML-optimierte Infrastruktur.* Einsatz von Anwendungen wie Kubeflow für Machine-Learning-Anwendungen durch die Integration GPU-basierter Worker-Nodes in Ihre OpenShift-Umgebung und Nutzung von OpenShift Advanced Scheduling.
+* *IPI oder assistierte Installerbereitstellung* mit einem OpenShift-Cluster, der von Installer Provisioned Infrastructure (IPI) auf Bare-Metal-Servern bereitgestellt wird, können Kunden eine äußerst vielseitige, einfach skalierbare OpenShift-Umgebung direkt auf herkömmlichen Servern bereitstellen, ohne dass eine Hypervisor-Schicht verwaltet werden muss.
+* *Kompaktes Clusterdesign* um die Hardwareanforderungen zu minimieren, ermöglicht OpenShift auf Bare Metal Benutzern die Bereitstellung von Clustern mit nur 3 Knoten, indem die OpenShift-Steuerungsebenen-Knoten auch als Workerknoten und Host-Container fungieren können.
+* *OpenShift Virtualization* OpenShift kann virtuelle Maschinen innerhalb von Containern mit OpenShift Virtualization ausführen. Bei dieser Container-nativen Virtualisierung wird der KVM-Hypervisor innerhalb eines Containers ausgeführt und persistente Volumes für den VM-Storage angebunden.
+* *KI/ML-optimierte Infrastruktur* Bereitstellen von Anwendungen wie Kubeflow für Machine-Learning-Anwendungen durch Einbindung GPU-basierter Workerknoten in Ihre OpenShift-Umgebung und Nutzung von OpenShift Advanced Scheduling.
 
 
 
@@ -36,8 +36,8 @@ Die Red hat OpenShift on NetApp Lösung verwendet zwei Daten-Switches für die p
 
 Für eine Bare-Metal-IPI-Bereitstellung mit OpenShift müssen Sie einen bereitstellungsknoten erstellen, einen Red hat Enterprise Linux 8-Rechner, für den Netzwerkschnittstellen mit separaten Netzwerken verbunden sein müssen.
 
-* *Provisioning-Netzwerk.* Dieses Netzwerk wird verwendet, um die Bare-Metal-Knoten zu booten und die notwendigen Images und Pakete zu installieren, um den OpenShift-Cluster bereitzustellen.
-* *Bare-Metal-Netzwerk.* Dieses Netzwerk wird nach seiner Bereitstellung für die Kommunikation mit öffentlichen Einrichtungen des Clusters verwendet.
+* *Provisioning-Netzwerk* Dieses Netzwerk wird verwendet, um die Bare-Metal-Knoten zu starten und die notwendigen Images und Pakete zu installieren, um den OpenShift-Cluster bereitzustellen.
+* *Bare-Metal-Netzwerk* Dieses Netzwerk wird nach der Bereitstellung für die öffentliche Kommunikation des Clusters verwendet.
 
 
 Für das Setup des bereitstellungsknoten erstellt der Kunde Bridge-Schnittstellen, die es dem Traffic ermöglichen, auf dem Node selbst und auf der Bootstrap-VM, die für Bereitstellungszwecke bereitgestellt wird, ordnungsgemäß zu leiten. Nach der Bereitstellung des Clusters werden die API- und Ingress-VIP-Adressen vom Bootstrap-Node zum neu implementierten Cluster migriert.
@@ -54,9 +54,8 @@ image:redhat_openshift_image37.png["Fehler: Fehlendes Grafikbild"]
 
 Die Lösung Red hat OpenShift mit NetApp wurde speziell zur logischen Trennung des Netzwerk-Traffic für unterschiedliche Zwecke mithilfe von Virtual Local Area Networks (VLANs) entwickelt.
 
+[cols="40%, 40%, 20%"]
 |===
-
-
 | VLANs | Zweck | VLAN-ID 
 
 

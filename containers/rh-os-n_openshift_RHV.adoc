@@ -16,15 +16,15 @@ summary: 'RHV ist eine virtuelle Rechenzentrumsplattform für Unternehmen, die a
 [role="lead"]
 Red hat Virtualization (RHV) ist eine virtuelle Rechenzentrumsplattform für Unternehmen, die auf Red hat Enterprise Linux (RHEL) ausgeführt wird und den KVM-Hypervisor verwendet.
 
-Weitere Informationen zu RHV finden Sie im https://www.redhat.com/en/technologies/virtualization/enterprise-virtualization["Red hat Virtualization Website"^].
+Weitere Informationen zu RHV finden Sie im link:https://www.redhat.com/en/technologies/virtualization/enterprise-virtualization["Red hat Virtualization Website"^].
 
 RHV bietet die folgenden Funktionen:
 
-* *Zentrales Management von VMs und Hosts.* der RHV-Manager läuft als physische oder virtuelle Maschine (VM) in der Bereitstellung und bietet eine webbasierte Benutzeroberfläche für die Verwaltung der Lösung über eine zentrale Schnittstelle.
-* *Self-Hosted Engine.* um die Hardwareanforderungen zu minimieren, ermöglicht RHV Manager (RHV-M) die Bereitstellung als VM auf denselben Hosts, auf denen Gast-VMs ausgeführt werden.
-* *Hohe Verfügbarkeit.* um Unterbrechungen bei Host-Ausfällen zu vermeiden, ermöglicht RHV die Konfiguration von VMs für hohe Verfügbarkeit. Die hochverfügbaren VMs werden auf Cluster-Ebene mithilfe von Resiliency-Richtlinien gesteuert.
-* *Hohe Skalierbarkeit.* Ein einziger RHV-Cluster kann bis zu 200 Hypervisor-Hosts haben, wodurch IT-Abteilungen Anforderungen großer VMs unterstützen können, um ressourcenschonende Workloads der Enterprise-Klasse zu hosten.
-* *Erhöhte Sicherheit.* die Technologien Secure Virtualization (sVirt) und Security Enhanced Linux (SELinux) werden von RHV zum Zweck einer erhöhten Sicherheit und Härtung für Hosts und VMs eingesetzt. Der wichtigste Vorteil dieser Funktionen ist die logische Isolierung einer VM und der damit verbundenen Ressourcen.
+* *Zentrales Management von VMs und Hosts* der RHV-Manager wird als physische oder virtuelle Maschine (VM) in der Bereitstellung ausgeführt und stellt eine webbasierte GUI für die Verwaltung der Lösung von einer zentralen Schnittstelle aus zur Verfügung.
+* *Self-Hosted Engine* um die Hardwareanforderungen zu minimieren, ermöglicht RHV es RHV Manager (RHV-M) als VM auf denselben Hosts bereitzustellen, auf denen Gast-VMs ausgeführt werden.
+* *Hohe Verfügbarkeit* um Störungen im Falle eines Host-Ausfalls zu vermeiden, erlaubt RHV die Konfiguration von VMs für hohe Verfügbarkeit. Die hochverfügbaren VMs werden auf Cluster-Ebene mithilfe von Resiliency-Richtlinien gesteuert.
+* * Hohe Skalierbarkeit* Ein einzelner RHV-Cluster kann bis zu 200 Hypervisor-Hosts haben, wodurch er die Anforderungen massiver VMs unterstützt, um ressourcenhungrige Workloads der Enterprise-Klasse zu hosten.
+* *Verbesserte Sicherheit*, die von den Technologien RHV, Secure Virtualization (sVirt) und Security Enhanced Linux (SELinux) übernommen wurde, wird von RHV für erhöhte Sicherheit und Hardening für Hosts und VMs eingesetzt. Der wichtigste Vorteil dieser Funktionen ist die logische Isolierung einer VM und der damit verbundenen Ressourcen.
 
 
 image:redhat_openshift_image3.png["Fehler: Fehlendes Grafikbild"]
@@ -41,6 +41,7 @@ Die Red hat OpenShift on NetApp Lösung verwendet zwei Daten-Switches für die p
 
 Red hat OpenShift auf RHV wurde entwickelt, um den Netzwerkverkehr für verschiedene Zwecke durch die Verwendung von Virtual Local Area Networks (VLANs) logisch zu trennen. Diese Konfiguration kann entsprechend den Kundenanforderungen skaliert werden oder um eine weitere Isolierung für spezifische Netzwerkservices zu bieten. In der folgenden Tabelle werden die für die Implementierung der Lösung erforderlichen VLANs bei der Validierung der Lösung bei NetApp aufgeführt.
 
+[cols="40%, 40%, 20%"]
 |===
 | VLANs | Zweck | VLAN-ID 
 
@@ -94,7 +95,7 @@ Affinity ermöglicht die Definition von Regeln für eine Gruppe von VMs und/oder
 
 Die für die Parameter definierten Bedingungen können eine harte Durchsetzung oder eine weiche Durchsetzung sein. Harte Durchsetzung stellt sicher, dass die VMs in einer Affinitätsgruppe immer die positive oder negative Affinität streng ohne Berücksichtigung von externen Bedingungen folgen. Die weiche Durchsetzung sorgt dafür, dass die VMs in einer Affinitätsgruppe, sofern dies möglich ist, eine höhere Vorliebe für die VMs festgelegt werden, um nach Möglichkeit eine positive oder negative Affinität zu verfolgen. In der in diesem Dokument beschriebenen zwei- oder drei-Hypervisor-Konfiguration ist die weiche Affinität die empfohlene Einstellung. In größeren Clustern kann die Verteilung von OpenShift-Nodes durch Hard-Affinität korrekt erfolgen.
 
-Informationen zum Konfigurieren von Affinitätsgruppen finden Sie im https://access.redhat.com/documentation/en-us/red_hat_virtualization/4.4/html/virtual_machine_management_guide/sect-affinity_groups["Red Hat 6.11 Dokumentation von Affinitätsgruppen"^].
+Informationen zum Konfigurieren von Affinitätsgruppen finden Sie im link:https://access.redhat.com/documentation/en-us/red_hat_virtualization/4.4/html/virtual_machine_management_guide/sect-affinity_groups["Red Hat 6.11 Dokumentation von Affinitätsgruppen"^].
 
 
 
@@ -102,6 +103,6 @@ Informationen zum Konfigurieren von Affinitätsgruppen finden Sie im https://acc
 
 IPI vereinfacht die Bereitstellung von OpenShift-Clustern durch den interaktiven Assistenten, den bereits in diesem Dokument erläutert wurde. Es ist jedoch möglich, dass es einige Standardwerte gibt, die im Rahmen der Cluster-Implementierung geändert werden müssen.
 
-In diesen Fällen können Sie den Assistenten ausführen und ausführen, ohne sofort ein Cluster bereitzustellen. Stattdessen wird eine Konfigurationsdatei erstellt, aus der der Cluster später bereitgestellt werden kann. Dies ist sehr nützlich, wenn Sie IPI-Standards ändern möchten oder mehrere identische Cluster in Ihrer Umgebung für andere Zwecke wie Mandantenfähigkeit implementieren möchten. Weitere Informationen zum Erstellen einer benutzerdefinierten Installationskonfiguration für OpenShift finden Sie unter https://docs.openshift.com/container-platform/4.4/installing/installing_rhv/installing-rhv-customizations.html["Red hat OpenShift Installieren eines Clusters auf RHV mit Anpassungen"^].
+In diesen Fällen können Sie den Assistenten ausführen und ausführen, ohne sofort ein Cluster bereitzustellen. Stattdessen wird eine Konfigurationsdatei erstellt, aus der der Cluster später bereitgestellt werden kann. Dies ist sehr nützlich, wenn Sie IPI-Standards ändern möchten oder mehrere identische Cluster in Ihrer Umgebung für andere Zwecke wie Mandantenfähigkeit implementieren möchten. Weitere Informationen zum Erstellen einer benutzerdefinierten Installationskonfiguration für OpenShift finden Sie unter link:https://docs.openshift.com/container-platform/4.4/installing/installing_rhv/installing-rhv-customizations.html["Red hat OpenShift Installieren eines Clusters auf RHV mit Anpassungen"^].
 
 link:rh-os-n_overview_netapp.html["Als Nächstes: NetApp Storage – Überblick"]
