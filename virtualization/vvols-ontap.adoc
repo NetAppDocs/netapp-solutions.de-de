@@ -34,7 +34,7 @@ image:vvols-image5.png["ONTAP Tools VASA Provider Architektur,240"]
 
 === Produktinstallation
 
-Bei Neuinstallationen implementieren Sie die virtuelle Appliance in Ihrer vSphere Umgebung. Aktuelle Versionen der ONTAP Tools werden sich automatisch bei Ihrem vCenter registrieren und VASA Provider standardmäßig aktivieren. Zusätzlich zu den ESXi-Host- und vCenter-Server-Informationen benötigen Sie auch die IP-Adresskonfigurationsdetails für die Appliance. Wie bereits erwähnt, muss für VASA Provider die Lizenz ONTAP FlexClone bereits auf allen ONTAP Clustern installiert sein, die Sie für VVols verwenden möchten. Die Appliance verfügt über einen integrierten Watchdog, um die Verfügbarkeit zu gewährleisten. Als Best Practice sollte sie mit VMware High Availability und optional mit Fault Tolerance-Funktionen konfiguriert werden. Weitere Informationen finden Sie in Abschnitt 4.1. Installieren oder verschieben Sie die ONTAP Tools Appliance oder vCenter Server Appliance (VCSA) nicht auf VVols Storage, da dies verhindern kann, dass die Appliances neu gestartet werden.
+Bei Neuinstallationen implementieren Sie die virtuelle Appliance in Ihrer vSphere Umgebung. Aktuelle Versionen der ONTAP Tools werden sich automatisch bei Ihrem vCenter registrieren und VASA Provider standardmäßig aktivieren. Zusätzlich zu den ESXi-Host- und vCenter-Server-Informationen benötigen Sie auch die IP-Adresskonfigurationsdetails für die Appliance. Wie bereits erwähnt, muss für VASA Provider die Lizenz ONTAP FlexClone bereits auf allen ONTAP Clustern installiert sein, die Sie für VVols verwenden möchten. Die Appliance verfügt über einen integrierten Watchdog, um die Verfügbarkeit zu gewährleisten. Als Best Practice sollte sie mit VMware High Availability und optional mit Fault Tolerance-Funktionen konfiguriert werden. Installieren oder verschieben Sie die ONTAP Tools Appliance oder vCenter Server Appliance (VCSA) nicht auf VVols Storage, da dies verhindern kann, dass die Appliances neu gestartet werden.
 
 In-Place-Upgrades von ONTAP Tools werden über die ISO-Datei für Upgrades unterstützt, die auf der NetApp Support Website (NSS) zum Download zur Verfügung steht. Befolgen Sie die Anweisungen des Bereitstellungs- und Setup-Handbuchs, um die Appliance zu aktualisieren.
 
@@ -170,7 +170,7 @@ Vermeiden Sie die Angabe von Funktionen, die nicht erforderlich sind, indem Sie 
 . *Verwenden Sie die Standard-SCPs als Beispielvorlagen, um Ihre eigenen zu erstellen.*
 Die im Lieferumfang enthaltenen SCPs sind für die meisten allgemeinen Anwendungen geeignet, aber Ihre Anforderungen können unterschiedlich sein.
 . *Erwägen Sie die Verwendung von max IOPS zur Steuerung unbekannter VMs oder zum Testen von VMs.*
-Erstmals in VASA Provider 7.1 verfügbar, können maximale IOPS verwendet werden, um IOPS bei einem unbekannten Workload auf ein bestimmtes vVol zu beschränken und so Auswirkungen auf andere, kritischere Workloads zu vermeiden. Tabelle 4 enthält weitere Informationen zum Performance-Management.
+Erstmals in VASA Provider 7.1 verfügbar, können maximale IOPS verwendet werden, um IOPS bei einem unbekannten Workload auf ein bestimmtes vVol zu beschränken und so Auswirkungen auf andere, kritischere Workloads zu vermeiden.
 . *Stellen Sie sicher, dass Sie ausreichend Daten-LIFs haben.*
 Erstellen Sie mindestens zwei LIFs pro Node und HA-Paar. Je nach Workload werden weitere erforderlich.
 . *Befolgen Sie alle Best Practices für Protokolle.*
