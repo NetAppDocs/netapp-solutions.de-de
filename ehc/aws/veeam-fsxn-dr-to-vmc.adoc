@@ -1,0 +1,228 @@
+---
+sidebar: sidebar 
+permalink: ehc/aws/veeam-fsxn-dr-to-vmc.html 
+keywords: disaster recovery, vmc, vmware cloud, aws, amazon web services, fsxn, fsx for ontap, fsx for netapp ontap, disaster recovery, dr, veeam, replication 
+summary:  
+---
+= Verwenden von Veeam Replizierung und FSX for ONTAP für die Disaster Recovery in VMware Cloud on AWS
+:hardbreaks:
+:allow-uri-read: 
+:nofooter: 
+:icons: font
+:linkattrs: 
+:imagesdir: ../../media/
+
+
+[role="lead"]
+Autor: Niyaz Mohamed - NetApp Solutions Engineering
+
+
+
+== Überblick
+
+Amazon FSX for NetApp ONTAP-Integration in VMware Cloud on AWS ist ein von AWS gemanagter externer NFS-Datastore, der auf dem NetApp ONTAP-Filesystem basiert und mit einem Cluster im SDDC verbunden werden kann. Sie bietet Kunden eine flexible, hochperformante virtualisierte Storage-Infrastruktur, die unabhängig von den Compute-Ressourcen skaliert werden kann.
+
+Für Kunden, die VMware Cloud on AWS SDDC als Disaster-Recovery-Ziel verwenden möchten, können FSX für ONTAP-Datastores verwendet werden, um Daten aus On-Premises-Umgebungen mithilfe einer beliebigen validierten Drittanbieterlösung mit VM-Replizierungsfunktionen zu replizieren. Durch das Hinzufügen von FSX for ONTAP Datastore wird eine kostenoptimierte Implementierung ermöglicht als die Einrichtung einer VMware Cloud auf AWS SDDC mit einer enormen Menge an ESXi-Hosts, die nur den Storage beherbergen.
+
+Dieser Ansatz hilft Kunden auch, Pilot-Light-Cluster in VMC zusammen mit FSX für ONTAP-Datastores zu verwenden, um VM-Replikate zu hosten. Derselbe Prozess kann auch als Migrationsoption in VMware Cloud on AWS durch ein ordnungsgemäges Failover des Replizierungsplans erweitert werden.
+
+
+
+== Problemstellung
+
+In diesem Dokument wird beschrieben, wie Sie FSX für ONTAP-Datastore und Veeam Backup and Replication verwenden, um die Disaster-Recovery für lokale VMware-VMs zu VMware Cloud on AWS mithilfe der VM-Replizierungsfunktion einzurichten.
+
+Veeam Backup & Replication ermöglicht On-Site- und Remote-Replizierung für Disaster Recovery (DR). Wenn Virtual Machines repliziert werden, erstellt Veeam Backup & Replication eine exakte Kopie der VMs im nativen VMware vSphere-Format auf dem Ziel-VMware Cloud auf dem AWS SDDC-Cluster und sorgt dafür, dass die Kopie mit der ursprünglichen VM synchronisiert wird.
+
+Die Replizierung bietet den besten RTO-Wert (Recovery Time Objective), da sich eine Kopie einer VM im Bereitschaftszustand befindet.  Dieser Replizierungsmechanismus sorgt dafür, dass die Workloads bei einem Ausfall schnell in VMware Cloud on AWS SDDC gestartet werden können. Die Veeam Backup & Replication Software optimiert darüber hinaus die Datenübertragung zur Replizierung über WAN und für langsame Verbindungen. Darüber hinaus werden doppelte Datenblöcke herausgefiltert und keine Datenblöcke eliminiert. Außerdem lassen sich Dateien auslagern und VM Gast-OS-Dateien ausschließen sowie der Daten-Traffic von Replikaten komprimiert.
+
+Um zu verhindern, dass Replikationsjobs die gesamte Netzwerkbandbreite verbrauchen, können WAN-Beschleuniger und Regeln zur Netzwerkdrosselung eingerichtet werden. Der Replizierungsprozess in Veeam Backup & Replication ist auftraggesteuert, d. h. die Replizierung wird durch Konfiguration von Replizierungsjobs durchgeführt. Bei einem Ausfall kann ein Failover zur Wiederherstellung der VMs durch einen Failover auf die Replikatkopie ausgelöst werden.
+
+Wenn ein Failover durchgeführt wird, übernimmt eine replizierte VM die Rolle der ursprünglichen VM. Ein Failover kann auf den neuesten Status eines Replikats oder auf einen der bekannten Wiederherstellungspunkte erfolgen. Dies ermöglicht bei Bedarf eine Wiederherstellung nach Ransomware-Angriffen oder isolierte Tests. In Veeam Backup & Replication sind Failover und Failback temporäre Zwischenschritte, die weiter abgeschlossen werden sollten. Veeam Backup & Replication bietet mehrere Optionen für unterschiedliche Disaster-Recovery-Szenarien.
+
+image:dr-veeam-fsx-image1.png["Diagramm des DR-Szenarios mit Veeam Replizierung und FSX ONTAP für VMC"]
+
+
+
+== Lösungsimplementierung
+
+
+
+=== Übergeordnete Schritte
+
+. Die Veeam Backup & Replication-Software wird in der On-Premises-Umgebung mit entsprechender Netzwerkkonnektivität ausgeführt.
+. Konfigurieren Sie VMware Cloud on AWS, lesen Sie den Artikel zur VMware Cloud Tech Zone link:https://vmc.techzone.vmware.com/fsx-guide["Implementierungs-Leitfaden zur Integration von VMware Cloud on AWS in Amazon FSX for NetApp ONTAP"] Konfigurieren Sie zur Implementierung VMware Cloud on AWS SDDC und FSX for ONTAP als NFS-Datastore. (Für DR-Zwecke kann eine Pilotumgebung mit minimaler Konfiguration verwendet werden. Bei einem Vorfall erfolgt ein Failover von VMs auf dieses Cluster, und es können weitere Nodes hinzugefügt werden).
+. Richten Sie Replikationsjobs ein, um VM-Replikate mit Veeam Backup and Replication zu erstellen.
+. Erstellen eines Failover-Plans und Durchführen eines Failover
+. Wechseln Sie zurück zu den Produktions-VMs, sobald der Notfall abgeschlossen und der primäre Standort eingerichtet ist.
+
+
+
+
+=== Voraussetzungen für die Veeam VM Replication to VMC und FSX for ONTAP Datastores
+
+. Stellen Sie sicher, dass die Backup-VM von Veeam Backup & Replication mit dem Quell-vCenter sowie der Ziel-VMware-Cloud auf AWS SDDC-Clustern verbunden ist.
+. Der Backup-Server muss in der Lage sein, Kurznamen aufzulösen und eine Verbindung zu Quell- und Ziel-vCenter herzustellen.
+. Das Ziel-FSX für ONTAP Datastore muss über genügend freien Speicherplatz verfügen, um VMDKs von replizierten VMs zu speichern
+
+
+Weitere Informationen finden Sie unter „Überlegungen und Einschränkungen“ link:https://helpcenter.veeam.com/docs/backup/vsphere/replica_limitations.html?ver=120["Hier"].
+
+
+
+=== Einzelheiten Zur Bereitstellung
+
+.Schritt: Replizierung von VMs
+[%collapsible]
+====
+Veeam Backup & Replication nutzt VMware vSphere Snapshot-Funktionen. Veeam Backup & Replication fordert während der Replizierung VMware vSphere zur Erstellung eines VM-Snapshots an. Der VM-Snapshot ist die zeitpunktgenaue Kopie einer VM, die virtuelle Festplatten, Systemstatus, Konfiguration usw. umfasst. Veeam Backup & Replication verwendet den Snapshot als Datenquelle für die Replizierung.
+
+Gehen Sie wie folgt vor, um VMs zu replizieren:
+
+. Öffnen Sie die Veeam Backup & Replication Console.
+. Wählen Sie in der Home-Ansicht Replikationsjob > Virtuelle Maschine > VMware vSphere aus.
+. Geben Sie einen Jobnamen an, und aktivieren Sie das entsprechende Kontrollkästchen für die erweiterte Steuerung. Klicken Sie Auf Weiter.
++
+** Aktivieren Sie das Kontrollkästchen Replikat-Seeding, wenn bei der Verbindung zwischen On-Premises und AWS eine eingeschränkte Bandbreite vorhanden ist.
+** Aktivieren Sie das Kontrollkästchen Network Remapping (für AWS VMC-Standorte mit unterschiedlichen Netzwerken), wenn Segmente auf VMware Cloud on AWS SDDC nicht mit denen auf lokalen Standortnetzwerken übereinstimmen.
+** Wenn sich das IP-Adressierungsschema am Produktionsstandort vor Ort vom Schema am AWS VMC-Standort unterscheidet, aktivieren Sie das Kontrollkästchen Replica RE-IP (für DR-Standorte mit unterschiedlichem IP-Adressierungsschema).
++
+image::dr-veeam-fsx-image2.png[dr veeam fsx image2]
+
+
+
+. Wählen Sie im Schritt *Virtual Machines* die VMs aus, die zum FSX for ONTAP-Datastore repliziert werden müssen, der mit VMware Cloud on AWS SDDC verbunden ist. Die Virtual Machines können auf vSAN platziert werden, um die verfügbare vSAN Datastore-Kapazität zu füllen. In einem Pilotcluster wird die nutzbare Kapazität eines 3-Knoten-Clusters begrenzt. Die restlichen Daten können auf FSX für ONTAP-Datenspeicher repliziert werden. Klicken Sie auf *Hinzufügen*, wählen Sie dann im Fenster *Objekt hinzufügen* die erforderlichen VMs oder VM-Container aus und klicken Sie auf *Hinzufügen*. Klicken Sie Auf *Weiter*.
++
+image::dr-veeam-fsx-image3.png[dr veeam fsx image3]
+
+. Wählen Sie anschließend das Ziel als VMware Cloud on AWS SDDC Cluster/Host und den entsprechenden Ressourcen-Pool, VM-Ordner und FSX for ONTAP Datastore für VM-Replikate aus. Klicken Sie Dann Auf *Weiter*.
++
+image::dr-veeam-fsx-image4.png[dr veeam fsx image4]
+
+. Erstellen Sie im nächsten Schritt die Zuordnung zwischen dem virtuellen Quell- und Zielnetzwerk nach Bedarf.
++
+image::dr-veeam-fsx-image5.png[dr veeam fsx image5]
+
+. Geben Sie im Schritt *Job-Einstellungen* das Backup-Repository an, in dem Metadaten für VM-Replikate, Aufbewahrungsrichtlinien usw. gespeichert werden.
+. Aktualisieren Sie die Proxy-Server *Source* und *Target* im Schritt *Data Transfer* und lassen Sie die Option *Automatic* (Standard) und halten Sie die Option *Direct* ausgewählt und klicken Sie auf *Next*.
+. Wählen Sie im Schritt *Gastverarbeitung* die Option *anwendungsorientierte Verarbeitung aktivieren* nach Bedarf aus. Klicken Sie Auf *Weiter*.
++
+image::dr-veeam-fsx-image6.png[dr veeam fsx image6]
+
+. Wählen Sie den Replikationszeitplan aus, um den Replikationsjob regelmäßig auszuführen.
+. Überprüfen Sie im Schritt *Zusammenfassung* des Assistenten die Details des Replikationsjobs. Um den Job direkt nach dem Schließen des Assistenten zu starten, aktivieren Sie das Kontrollkästchen *Job ausführen, wenn ich auf Fertig stellen klicke*, andernfalls lassen Sie das Kontrollkästchen deaktiviert. Klicken Sie dann auf *Fertig stellen*, um den Assistenten zu schließen.
++
+image::dr-veeam-fsx-image7.png[dr veeam fsx image7]
+
+
+
+Sobald der Replikationsjob gestartet wurde, werden die VMs mit dem angegebenen Suffix auf dem Ziel-VMC SDDC-Cluster/Host gefüllt.
+
+image::dr-veeam-fsx-image8.png[dr veeam fsx image8]
+
+Weitere Informationen zur Veeam-Replizierung finden Sie unter link:https://helpcenter.veeam.com/docs/backup/vsphere/replication_process.html?ver=120["Funktionsweise Der Replikation"].
+
+====
+.Schritt 2: Erstellen eines Failover-Plans
+[%collapsible]
+====
+Erstellen Sie nach Abschluss der ersten Replikation oder des Seeding den Failover-Plan. Mithilfe des Failover-Plans können Sie ein Failover für abhängige VMs einzeln oder als Gruppe automatisch durchführen. Der Failover-Plan ist das Modell für die Reihenfolge, in der die VMs verarbeitet werden, einschließlich der Boot-Verzögerungen. Der Failover-Plan trägt außerdem dazu bei, sicherzustellen, dass kritische abhängige VMs bereits laufen.
+
+Um den Plan zu erstellen, navigieren Sie zum neuen Unterabschnitt „Replikate“, und wählen Sie „Failover-Plan“ aus. Wählen Sie die entsprechenden VMs aus. Veeam Backup & Replication sucht nach den nächstgelegenen Wiederherstellungspunkten zu diesem Zeitpunkt und verwendet diese, um VM-Replikate zu starten.
+
+
+NOTE: Der Failover-Plan kann nur hinzugefügt werden, wenn die erste Replikation abgeschlossen ist und sich die VM-Replikate im Bereitschaftszustand befinden.
+
+
+NOTE: Es können maximal 10 VMs gleichzeitig gestartet werden, wenn ein Failover-Plan ausgeführt wird.
+
+
+NOTE: Während des Failover-Prozesses werden die Quell-VMs nicht ausgeschaltet.
+
+Um den *Failover Plan* zu erstellen, gehen Sie wie folgt vor:
+
+. Wählen Sie in der Home-Ansicht *Failover-Plan > VMware vSphere* aus.
+. Geben Sie als Nächstes einen Namen und eine Beschreibung für den Plan ein. Pre- und Post-Failover-Skript können bei Bedarf hinzugefügt werden. Führen Sie beispielsweise ein Skript aus, um die VMs vor dem Starten der replizierten VMs herunterzufahren.
++
+image::dr-veeam-fsx-image9.png[dr veeam fsx image9]
+
+. Fügen Sie die VMs zum Plan hinzu und ändern Sie die VM-Startreihenfolge und die Boot-Verzögerungen, um die Applikationsabhängigkeiten zu erfüllen.
++
+image::dr-veeam-fsx-image10.png[dr veeam fsx image10]
+
+
+
+Weitere Informationen zum Erstellen von Replikationsjobs finden Sie unter link:https://helpcenter.veeam.com/docs/backup/vsphere/replica_job.html?ver=120["Erstellen Von Replikationsjobs"].
+
+====
+.Schritt 3: Führen Sie den Failover-Plan aus
+[%collapsible]
+====
+Bei einem Failover wird die Quell-VM am Produktionsstandort auf ihr Replikat am Disaster-Recovery-Standort umgeschaltet. Im Rahmen des Failover-Prozesses stellt Veeam Backup & Replication das VM-Replikat zum erforderlichen Wiederherstellungspunkt wieder her und verschiebt alle I/O-Aktivitäten von der Quell-VM auf das Replikat. Replikate können nicht nur im Notfall verwendet werden, sondern auch DR-Übungen simulieren. Während der Failover-Simulation bleibt die Quell-VM aktiv. Sobald alle erforderlichen Tests durchgeführt wurden, können Sie das Failover rückgängig machen und zum normalen Betrieb zurückkehren.
+
+
+NOTE: Stellen Sie sicher, dass eine Netzwerksegmentierung vorhanden ist, um IP-Konflikte während des DR-Bohrvorgangs zu vermeiden.
+
+Um den Failover Plan zu starten, klicken Sie einfach auf die Registerkarte *Failover Plans* und klicken Sie mit der rechten Maustaste auf den Failover Plan. Wählen Sie *Start*. Dabei wird ein Failover mit den neuesten Wiederherstellungspunkten der VM-Replikate durchgeführt. Um ein Failover zu bestimmten Wiederherstellungspunkten von VM-Replikaten durchzuführen, wählen Sie *Start to* aus.
+
+image::dr-veeam-fsx-image11.png[dr veeam fsx image11]
+
+image::dr-veeam-fsx-image12.png[dr veeam fsx image12]
+
+Der Status der VM-Replikate ändert sich von „bereit“ zu „Failover“, und die VMs werden auf dem Ziel VMware Cloud auf dem AWS SDDC-Cluster/Host gestartet.
+
+image::dr-veeam-fsx-image13.png[dr veeam fsx image13]
+
+Sobald der Failover abgeschlossen ist, ändert sich der Status der VMs in „Failover“.
+
+image::dr-veeam-fsx-image14.png[dr veeam fsx image14]
+
+
+NOTE: Veeam Backup & Replication hält alle Replikationsaktivitäten für die Quell-VM an, bis das Replikat in den Bereitschaftszustand zurückkehrt.
+
+Ausführliche Informationen zu Failover-Plänen finden Sie unter link:https://helpcenter.veeam.com/docs/backup/vsphere/failover_plan.html?ver=120["Failover-Pläne"].
+
+====
+.Schritt 4: Failback zum Produktionsstandort
+[%collapsible]
+====
+Wenn der Failover-Plan ausgeführt wird, gilt er als Zwischenschritt und muss basierend auf den Anforderungen abgeschlossen werden. Folgende Optionen stehen zur Verfügung:
+
+* *Failback zur Produktion* - Wechseln Sie zurück zur ursprünglichen VM und übertragen Sie alle Änderungen, die während des VM-Replikats auf die ursprüngliche VM ausgeführt wurden.
+
+
+
+NOTE: Wenn Sie ein Failback durchführen, werden die Änderungen nur übertragen, aber nicht veröffentlicht. Wählen Sie *commit Failback* (sobald bestätigt wurde, dass die ursprüngliche VM wie erwartet funktioniert) oder *Undo Failback*, um zum VM-Replikat zurückzukehren, wenn die ursprüngliche VM nicht wie erwartet funktioniert.
+
+* *Rückgängigmachen des Failover* - Wechseln Sie zurück zur ursprünglichen VM und verwerfen Sie alle Änderungen, die während der Ausführung am VM-Replikat vorgenommen wurden.
+* *Permanent Failover* - Wechseln Sie dauerhaft von der ursprünglichen VM auf ein VM-Replikat und verwenden Sie dieses Replikat als ursprüngliche VM.
+
+
+In dieser Demo wurde „Failback zur Produktion“ gewählt. Failback auf die ursprüngliche VM wurde während des Zielschritts des Assistenten ausgewählt und das Kontrollkästchen „VM nach der Wiederherstellung einschalten“ war aktiviert.
+
+image::dr-veeam-fsx-image15.png[dr veeam fsx image15]
+
+image::dr-veeam-fsx-image16.png[dr veeam fsx image16]
+
+Failback-Commit ist eine der Möglichkeiten, den Failback-Vorgang abzuschließen. Wenn Failback durchgeführt wird, wird bestätigt, dass die an die zurückgeschickte VM (die Produktions-VM) gesendeten Änderungen wie erwartet funktionieren. Nach dem Commit-Vorgang setzt Veeam Backup & Replication die Replizierungsaktivitäten für die Produktions-VM fort.
+
+Detaillierte Informationen zum Failback-Prozess finden Sie in der Veeam-Dokumentation für link:https://helpcenter.veeam.com/docs/backup/vsphere/failover_failback.html?ver=120["Failover und Failback für die Replikation"].
+
+image::dr-veeam-fsx-image17.png[dr veeam fsx image17]
+
+image::dr-veeam-fsx-image18.png[dr veeam fsx image18]
+
+Nach einem erfolgreichen Failback zur Produktion werden die VMs alle auf den ursprünglichen Produktionsstandort zurückgestellt.
+
+image::dr-veeam-fsx-image19.png[dr veeam fsx image19]
+
+====
+
+
+== Schlussfolgerung
+
+Mit der Funktion FSX for ONTAP Datastore kann Veeam oder jedes beliebige validierte Drittanbieter-Tool eine kostengünstige DR-Lösung mit Pilot Light-Cluster bereitstellen, ohne eine große Anzahl von Hosts im Cluster einzurichten, nur um die VM-Replikatkopie aufzunehmen. Dies bietet eine leistungsstarke Lösung für einen individuellen Disaster-Recovery-Plan und ermöglicht zudem die interne Wiederverwendung vorhandener Backup-Produkte zur Erfüllung der DR-Anforderungen. Auf diese Weise ist eine Cloud-basierte Disaster Recovery durch das Beenden von DR-Datacentern vor Ort möglich. Failover lässt sich als geplanter Failover oder Failover mit einem Mausklick durchführen, wenn ein Notfall eintritt, und es wird entschieden, den DR-Standort zu aktivieren.
+
+Wenn Sie mehr über diesen Prozess erfahren möchten, folgen Sie bitte dem detaillierten Video zum Rundgang.
+
+video::15fed205-8614-4ef7-b2d0-b061015e925a[panopto,width=Video walkthrough of the solution]
