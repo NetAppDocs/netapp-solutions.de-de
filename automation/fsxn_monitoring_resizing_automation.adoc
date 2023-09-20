@@ -78,23 +78,21 @@ image:fsxn-monitoring-resizing-architecture.png["Dieses Bild zeigt die in dieser
 
 NOTE: Deckt einzelnes FSX für ONTAP Dateisystem ab.
 
-[%collapsible]
-====
 Führen Sie die folgenden Schritte aus, um die automatisierte Implementierung dieser Lösung abzuschließen:
 
 .Schritt 1: Klonen Sie das GitHub Repository
 [%collapsible]
-=====
+====
 GitHub-Repository auf Ihrem lokalen System klonen:
 
 [listing]
 ----
 git clone https://github.com/NetApp/fsxn-monitoring-auto-resizing.git
 ----
-=====
+====
 .Schritt 2: Einrichtung eines AWS S3 Buckets
 [%collapsible]
-=====
+====
 . Navigieren Sie zu AWS Console > *S3* und klicken Sie auf *Create bucket*. Erstellen Sie den Bucket mit den Standardeinstellungen.
 . Klicken Sie im Bucket auf *Upload* > *Dateien hinzufügen* und wählen Sie *Utilities.zip* aus dem geklonten GitHub-Repository auf Ihrem System aus.
 +
@@ -102,10 +100,10 @@ image:fsxn-monitoring-resizing-s3-upload-zip-files.png["Dieses Bild zeigt das S3
 
 
 
-=====
+====
 .Schritt 3: AWS SES SMTP Setup (erforderlich, wenn kein Internetzugang verfügbar)
 [%collapsible]
-=====
+====
 Befolgen Sie diesen Schritt, wenn Sie die Lösung ohne Internetzugang bereitstellen möchten (Hinweis: Es entstehen zusätzliche Kosten für die Einrichtung von VPC-Endpunkten).
 
 . Navigieren Sie zu AWS Console > *AWS Simple Email Service (SES)* > *SMTP Settings* und klicken Sie auf *Create SMTP Create*
@@ -119,10 +117,10 @@ image:fsxn-monitoring-resizing-ses-smtp-creds-addition.png["Diese Abbildung zeig
 
 
 
-=====
+====
 .Schritt 4: Implementierung von AWS CloudFormation
 [%collapsible]
-=====
+====
 . Navigieren Sie zu AWS Console > *CloudFormation* > Create Stack > with New Resources (Standard).
 +
 [listing]
@@ -164,7 +162,6 @@ image:fsxn-monitoring-resizing-email-2.png["Dieses Bild zeigt die E-Mail-Benachr
 
 
 
-=====
 ====
 
 
@@ -173,23 +170,21 @@ image:fsxn-monitoring-resizing-email-2.png["Dieses Bild zeigt die E-Mail-Benachr
 
 NOTE: Unterstützt das Monitoring mehrerer FSX für ONTAP-Dateisysteme in einer einzigen VPC.
 
-[%collapsible]
-====
 Führen Sie die folgenden Schritte aus, um die manuelle Bereitstellung dieser Lösung abzuschließen:
 
 .Schritt 1: Klonen Sie das GitHub Repository
 [%collapsible]
-=====
+====
 GitHub-Repository auf Ihrem lokalen System klonen:
 
 [listing]
 ----
 git clone https://github.com/NetApp/fsxn-monitoring-auto-resizing.git
 ----
-=====
+====
 .Schritt 2: AWS SES SMTP Setup (erforderlich, wenn kein Internetzugang verfügbar)
 [%collapsible]
-=====
+====
 Befolgen Sie diesen Schritt, wenn Sie die Lösung ohne Internetzugang bereitstellen möchten (Hinweis: Es entstehen zusätzliche Kosten für die Einrichtung von VPC-Endpunkten).
 
 . Navigieren Sie zu AWS Console > *AWS Simple Email Service (SES)* > SMTP Settings und klicken Sie auf *Create SMTP credentials*
@@ -199,10 +194,10 @@ image:fsxn-monitoring-resizing-ses-smtp-creds-addition.png["Diese Abbildung zeig
 
 
 
-=====
+====
 .Schritt 3: SSM-Parameter für fsxadmin-Passwort erstellen
 [%collapsible]
-=====
+====
 Navigieren Sie zu AWS Console > *Parameter Store* und klicken Sie auf *Parameter erstellen*.
 
 [listing]
@@ -215,16 +210,17 @@ KMS key source: My current account
 Value: <Enter the password for "fsxadmin" user configured on FSx for ONTAP>
 ----
 Klicken Sie auf *Parameter erstellen*.
+
 Wiederholen Sie die oben genannten Schritte für alle FSX für ONTAP-Dateisysteme, die überwacht werden sollen.
 
 image:fsxn-monitoring-resizing-ssm-parameter.png["Dieses Bild zeigt das Fenster zur Erstellung von SSM-Parametern in der AWS Konsole."]
 
 Führen Sie die gleichen Schritte zum Speichern des smtp-Benutzernamens und smtp-Kennworts aus, wenn Sie die Lösung ohne Internetzugang bereitstellen. Andernfalls überspringen Sie das Hinzufügen dieser 2 Parameter.
 
-=====
+====
 .Schritt 4: E-Mail-Dienst Einrichten
 [%collapsible]
-=====
+====
 Navigieren Sie zu AWS Console > *Simple Email Service (SES)* und klicken Sie auf *Create Identity*.
 
 [listing]
@@ -238,10 +234,10 @@ Die in der „Absender-E-Mail-ID“ genannte E-Mail-ID erhält eine E-Mail, in d
 
 image:fsxn-monitoring-resizing-ses.png["Dieses Bild zeigt das Fenster zur Erstellung der SES-Identität in der AWS Konsole."]
 
-=====
+====
 .Schritt 5: Einrichtung von VPC-Endpunkten (erforderlich, wenn kein Internetzugang verfügbar ist)
 [%collapsible]
-=====
+====
 
 NOTE: Nur erforderlich, wenn die Bereitstellung ohne Internetzugang erfolgt. Mit VPC-Endpunkten sind zusätzliche Kosten verbunden.
 
@@ -269,10 +265,10 @@ image:fsxn-monitoring-resizing-vpc-endpoint-create-2.png["Dieses Bild zeigt das 
 . Befolgen Sie denselben Prozess für die Erstellung von SES und SSM VPC-Endpunkten. Alle Parameter bleiben wie oben, außer Dienste, die *com.amazonaws.<region>.smtp* und *com.amazonaws.<region>.ssm* entsprechen.
 
 
-=====
+====
 .Schritt 6: Erstellen und Einrichten der AWS Lambda-Funktion
 [%collapsible]
-=====
+====
 . Navigieren Sie zu AWS Console > *AWS Lambda* > *Functions* und klicken Sie in derselben Region wie FSX for ONTAP auf *Create Function*
 . Verwenden Sie den Standardwert *Author from scratch* und aktualisieren Sie die folgenden Felder:
 +
@@ -397,7 +393,6 @@ image:fsxn-monitoring-resizing-eventbridge.png["Dieses Bild zeigt das Fenster zu
 
 
 
-=====
 ====
 
 

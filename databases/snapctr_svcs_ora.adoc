@@ -129,7 +129,6 @@ Die Bereitstellung erfordert die folgenden Voraussetzungen.
 . Ein in AWS implementierter Amazon FSX for ONTAP-Cluster, der die obigen Datenbank-Volumes hostet.
 . Ein optionaler Datenbankserver auf einer EC2-Instanz, der zum Testen des Klonens einer Oracle-Datenbank auf einem alternativen Host verwendet werden kann, um einen Entwicklungs-/Test-Workload zu unterstützen, oder andere Anwendungsfälle, die einen vollständigen Datensatz einer Oracle-Produktionsdatenbank erfordern.
 . Wenn Sie Hilfe bei der Erfüllung der oben genannten Voraussetzungen für die Implementierung der Oracle-Datenbank auf Amazon FSX for ONTAP und EC2-Compute-Instanz benötigen, finden Sie weitere Informationen unter link:aws_ora_fsx_ec2_iscsi_asm.html["Implementierung und Schutz von Oracle Database in AWS FSX/EC2 mit iSCSI/ASM"^] Oder Whitepaper link:aws_ora_fsx_ec2_deploy_intro.html["Oracle Database Deployment on EC2 und FSX Best Practices"^]
-. Wenn Sie Hilfe bei der Erfüllung der oben genannten Voraussetzungen für die Implementierung der Oracle-Datenbank auf Amazon FSX for ONTAP und EC2-Compute-Instanz benötigen, finden Sie weitere Informationen unter link:aws_ora_fsx_ec2_iscsi_asm.html["Implementierung und Schutz von Oracle Database in AWS FSX/EC2 mit iSCSI/ASM"^] Oder Whitepaper link:aws_ora_fsx_ec2_deploy_intro.html["Oracle Database Deployment on EC2 und FSX Best Practices"^]
 
 
 ====
@@ -197,6 +196,45 @@ image:snapctr_svcs_connector_09-security.png["Screenshot, der diesen Schritt in 
 
 
 image:snapctr_svcs_connector_10-review.png["Screenshot, der diesen Schritt in der GUI zeigt."]
+
+====
+
+
+=== Definieren Sie Zugangsdaten für den Zugriff auf AWS Ressourcen in BlueXP
+
+[%collapsible]
+====
+. Erstellen Sie zunächst in der AWS EC2-Konsole eine Rolle im Menü *Identity and Access Management (IAM)* *Roles*, *Create role*, um den Workflow für die Rollenerstellung zu starten.
++
+image:snapctr_svcs_credential_01-aws.png["Screenshot, der diesen Schritt in der GUI zeigt."]
+
+. Wählen Sie auf der Seite *Select Trusted entity* die Option *AWS-Konto*, *ein anderes AWS-Konto* aus und fügen Sie die BlueXP Konto-ID ein, die von der BlueXP Konsole abgerufen werden kann.
++
+image:snapctr_svcs_credential_02-aws.png["Screenshot, der diesen Schritt in der GUI zeigt."]
+
+. Filtern Sie Berechtigungsrichtlinien nach fsx und fügen Sie der Rolle *Berechtigungsrichtlinien* hinzu.
++
+image:snapctr_svcs_credential_03-aws.png["Screenshot, der diesen Schritt in der GUI zeigt."]
+
+. Geben Sie auf der Seite *Rollendetails* einen Namen für die Rolle ein, fügen Sie eine Beschreibung hinzu, und klicken Sie dann auf *Rolle erstellen*.
++
+image:snapctr_svcs_credential_04-aws.png["Screenshot, der diesen Schritt in der GUI zeigt."]
+
+. Zurück zur BlueXP-Konsole, klicken Sie auf das Einstellungssymbol oben rechts in der Konsole, um die Seite *Account Credentials* zu öffnen, klicken Sie auf *Add credentials*, um den Workflow der Anmeldedatenkonfiguration zu starten.
++
+image:snapctr_svcs_credential_05-aws.png["Screenshot, der diesen Schritt in der GUI zeigt."]
+
+. Wählen Sie den Anmeldeinformationsspeicherort als - *Amazon Web Services - BlueXP*.
++
+image:snapctr_svcs_credential_06-aws.png["Screenshot, der diesen Schritt in der GUI zeigt."]
+
+. Definieren Sie AWS-Anmeldeinformationen mit richtiger *role ARN*, die aus der in Schritt 1 oben erstellten AWS IAM-Rolle abgerufen werden kann. BlueXP *Account-ID*, die zur Erstellung der AWS IAM-Rolle in Schritt 1 verwendet wird.
++
+image:snapctr_svcs_credential_07-aws.png["Screenshot, der diesen Schritt in der GUI zeigt."]
+
+. Bewertung und *Hinzufügen*.
+image:snapctr_svcs_credential_08-aws.png["Screenshot, der diesen Schritt in der GUI zeigt."]
+
 
 ====
 
@@ -333,8 +371,10 @@ Damit ist die Ersteinrichtung der SnapCenter Services für Oracle abgeschlossen.
 image:snapctr_svcs_bkup_01.png["Screenshot, der diesen Schritt in der GUI zeigt."]
 
 . Darüber hinaus können Sie mit einer angepassten Backup-Häufigkeit und dem Zeitfenster für die Backup-Datenaufbewahrung Ihre eigenen Richtlinien erstellen.
- +
+
+
 image:snapctr_svcs_bkup_02.png["Screenshot, der diesen Schritt in der GUI zeigt."]
+
 . Wenn Sie mit der Richtlinienkonfiguration zufrieden sind, können Sie die gewünschte Richtlinie zum Schutz der Datenbank zuweisen.
 
 
@@ -427,6 +467,8 @@ image:snapctr_svcs_clone_07-status.png["Fehler: Fehlendes Grafikbild"]
 
 
 image:snapctr_svcs_clone_08-crs.png["Fehler: Fehlendes Grafikbild"]
+
+image:snapctr_svcs_clone_08-db.png["Fehler: Fehlendes Grafikbild"]
 
 ====
 
