@@ -1,0 +1,1006 @@
+---
+sidebar: sidebar 
+permalink: databases/aws_ora_fsx_ec2_data_guard.html 
+keywords: Oracle, AWS, FSx ONTAP, FSx, Database, Oracle 19c, Data Guard 
+summary: Die Lösung bietet Überblick und Details zur Konfiguration von Oracle Data Guard mit AWS FSX ONTAP als Standby-Standort Oracle Datenbank-Storage, um die Lizenz- und Betriebskosten der Oracle Data Guard HA/DR-Lösung in AWS zu reduzieren. 
+---
+= TR-4981: Aktive Kostenreduktion zur Datensicherheit mit AWS FSX ONTAP
+:hardbreaks:
+:allow-uri-read: 
+:nofooter: 
+:icons: font
+:linkattrs: 
+:imagesdir: ./../media/
+
+
+Allen Cao, Niyaz Mohamed, NetApp
+
+
+
+== Zweck
+
+Oracle Data Guard gewährleistet Hochverfügbarkeit, Datensicherung und Disaster Recovery für Unternehmensdaten in einer primären Datenbank und einer Standby-Datenbankreplizierungskonfiguration. Oracle Active Data Guard ermöglicht Benutzern den Zugriff auf Standby-Datenbanken, während die Datenreplikation von der primären Datenbank auf Standby-Datenbanken aktiv ist. Data Guard ist ein Bestandteil der Oracle Database Enterprise Edition. Eine separate Lizenzierung ist nicht erforderlich. Active Data Guard hingegen ist eine Oracle Database Enterprise Edition-Option, die daher eine separate Lizenzierung erfordert. Mehrere Standby-Datenbanken können in der Active Data Guard-Einrichtung eine Datenreplikation von einer primären Datenbank empfangen. Für jede zusätzliche Standby-Datenbank ist jedoch eine Active Data Guard Lizenz und zusätzlicher Storage als Größe der primären Datenbank erforderlich. Die Betriebskosten summieren sich schnell.
+
+Wenn Sie die Kosten für den Betrieb Ihrer Oracle-Datenbank senken möchten und einen Active Data Guard in AWS einrichten möchten, sollten Sie eine Alternative in Betracht ziehen. Anstelle von Active Data Guard replizieren Sie mit Data Guard von der primären Datenbank auf eine einzige physische Standby-Datenbank auf AWS FSX ONTAP Storage. Anschließend können mehrere Kopien dieser Standby-Datenbank geklont und für Lese-/Schreibzugriff für viele andere Anwendungsfälle wie Berichte, Entwicklung, Tests usw. geöffnet werden Die Nettoergebnisse stellen Funktionen von Active Data Guard effektiv bereit, wobei die Active Data Guard Lizenz sowie zusätzliche Storage-Kosten für jede zusätzliche Standby-Datenbank entfallen. In dieser Dokumentation zeigen wir, wie Sie einen Oracle Data Guard mit Ihrer vorhandenen primären Datenbank in AWS einrichten und die physische Standby-Datenbank auf dem AWS FSX ONTAP-Storage platzieren. Die Standby-Datenbank wird nach Bedarf über Snapshot gesichert und für Lese-/Schreibzugriff geklont.
+
+Diese Lösung eignet sich für folgende Anwendungsfälle:
+
+* Oracle Data Guard zwischen einer primären Datenbank auf jedem Storage in AWS bis Standby-Datenbank auf AWS FSX ONTAP Storage
+* Klonen der Standby-Datenbank während der Schließung zur Datenreplizierung für Anwendungsfälle wie Berichterstellung, Entwicklung, Test usw.
+
+
+
+
+== Zielgruppe
+
+Diese Lösung ist für folgende Personen gedacht:
+
+* Ein DBA, der Oracle Active Data Guard in AWS für Hochverfügbarkeit, Datensicherung und Disaster Recovery einrichtet.
+* Ein Datenbanklösungsarchitekt, der an der Oracle Active Data Guard-Konfiguration in der AWS-Cloud interessiert ist.
+* Ein Storage-Administrator, der den AWS FSX ONTAP Storage, der Oracle Data Guard unterstützt, managt.
+* Ein Applikationseigentümer, der Oracle Data Guard in AWS FSX/EC2-Umgebung einrichten möchte.
+
+
+
+
+== Test- und Validierungsumgebung der Lösung
+
+Das Testen und Validieren dieser Lösung wurde in einer AWS FSX ONTAP und EC2 Lab-Umgebung durchgeführt, die möglicherweise nicht mit der endgültigen Implementierungsumgebung übereinstimmt. Weitere Informationen finden Sie im Abschnitt <<Key Factors for Deployment Consideration>>.
+
+
+
+=== Der Netapp Architektur Sind
+
+image::aws_ora_fsx_data_guard_architecture.png[Dieses Bild zeigt ein detailliertes Bild der Oracle Data Guard-Implementierung in AWS mit FSxN.]
+
+
+
+=== Hardware- und Softwarekomponenten
+
+[cols="33%, 33%, 33%"]
+|===
+
+
+3+| *Hardware* 
+
+
+| FSX ONTAP-Storage | Aktuelle Version von AWS angeboten | Ein FSX HA-Cluster in der gleichen VPC und Verfügbarkeitszone 
+
+
+| EC2 Instanz für Computing | t2.xlarge/4vCPU/16G | Drei EC2 T2 xlarge EC2-Instanzen, eine als primärer DB-Server, eine als Standby-DB-Server und die dritte als Klon-DB-Server 
+
+
+3+| *Software* 
+
+
+| Redhat Linux | RHEL-8.6.0_HVM-20220503-x86_64-2-Hourly2-GP2 | Bereitstellung der RedHat Subscription für Tests 
+
+
+| Oracle Grid Infrastructure | Version 19.18 | RU-Patch p34762026_190000_Linux-x86-64.zip angewendet 
+
+
+| Oracle Datenbank | Version 19.18 | RU-Patch p34765931_190000_Linux-x86-64.zip angewendet 
+
+
+| Oracle OPatch | Version 12.2.0.1.36 | Neuestes Patch p6880880_190000_Linux-x86-64.zip 
+|===
+
+
+=== Konfiguration von Oracle Data Guard mit hypothetischer Einrichtung von NY zu LA DR
+
+[cols="33%, 33%, 33%"]
+|===
+
+
+3+|  
+
+
+| * Datenbank* | *DB_UNIQUE_NAME* | *Oracle Net Service Name* 
+
+
+| Primär | db1_NY | db1_NY.demo.netapp.com 
+
+
+| Physikalischer Standby | db1_LA | db1_LA.demo.netapp.com 
+|===
+
+
+=== Wichtige Faktoren für die Implementierung
+
+* *Funktionsweise von Oracle Standby Database FlexClone.* AWS FSX ONTAP FlexClone stellt freigegebene Kopien derselben Standby-Datenbank-Volumes bereit, die beschreibbar sind. Die Kopien der Volumes sind tatsächlich Zeiger, die zurück zu den ursprünglichen Datenblöcken verweisen, bis ein neuer Schreibvorgang des Klons initiiert wird. ONTAP weist dann neuen Speicherblöcken für die neuen Schreibvorgänge zu. Alle Lese-I/O-Vorgänge werden durch die ursprünglichen Datenblöcke verarbeitet, die bei der aktiven Replizierung zur Verfügung stehen. Der Klon ist somit sehr Storage-effizient und kann für viele andere Anwendungsfälle mit minimaler und inkrementeller neuer Storage-Zuweisung für neue Schreib-I/OS verwendet werden. Dies führt zu enormen Einsparungen bei den Storage-Kosten, indem der Platzbedarf für Active Data Guard Storage deutlich verringert wird. NetApp empfiehlt, FlexClone-Aktivitäten bei einem Datenbank-Wechsel vom primären Storage auf Standby FSX-Storage zu minimieren, um die Oracle-Performance auf hohem Niveau aufrechtzuerhalten.
+* *Oracle Software-Anforderungen.* im Allgemeinen muss eine physische Standby-Datenbank die gleiche Database Home-Version wie die primäre Datenbank haben, einschließlich Patch Set Exceptions (PSEs), Critical Patch Updates (CPUs), und Patch-Set-Updates (PSUs), es sei denn, es wird ein Oracle Data Guard Standby-First Patch Apply-Prozess durchgeführt (wie in My Oracle Support Note 1265700.1 unter beschrieben link:http://support.oracle.com.["support.oracle.com"^]
+* *Überlegungen zur Struktur des Standby-Datenbankverzeichnisses.* Wenn möglich, sollten die Datendateien, Protokolldateien und Kontrolldateien auf den primären und Standby-Systemen dieselben Namen und Pfadnamen haben und die Namenskonventionen für die optimale flexible Architektur (OFA) verwenden. Die Archivverzeichnisse in der Standby-Datenbank sollten auch zwischen Standorten identisch sein, einschließlich Größe und Struktur. Diese Strategie erlaubt es anderen Vorgängen wie Backups, Switchover und Failover, dieselben Schritte auszuführen, wodurch die Wartungskomplexität verringert wird.
+* *Protokollierungsmodus erzwingen.* um sich vor nicht eingeloggten direkten Schreibvorgängen in der primären Datenbank zu schützen, die nicht an die Standby-Datenbank weitergegeben werden kann, aktivieren Sie die Option PROTOKOLLIERUNG an der primären Datenbank ERZWINGEN, bevor Sie Datendatei-Backups für die Standby-Erstellung durchführen.
+* *Database Storage Management.* aus Gründen der Benutzerfreundlichkeit empfiehlt Oracle, dass Sie Oracle Automatic Storage Management (Oracle ASM) und Oracle Managed Files (OMF) in einer Oracle Data Guard-Konfiguration symmetrisch auf der primären und Standby-Datenbank(en) einrichten.
+* *EC2 Compute-Instanzen.* in diesen Tests und Validierungen haben wir eine AWS EC2 t2.xlarge-Instanz als Compute-Instanz der Oracle-Datenbank verwendet. NetApp empfiehlt, in der Produktionsumgebung eine EC2-Instanz vom Typ M5 als Computing-Instanz für Oracle zu verwenden, da sie für Datenbank-Workloads optimiert ist. Sie müssen die Größe der EC2-Instanz entsprechend der Anzahl der vCPUs und der Menge des RAM anpassen, basierend auf den tatsächlichen Workload-Anforderungen.
+* *FSX Storage HA Cluster Single- oder Multi-Zone-Implementierung.* bei diesen Tests und Validierungen haben wir einen FSX HA-Cluster in einer einzelnen AWS Verfügbarkeitszone implementiert. Für die Implementierung in der Produktion empfiehlt NetApp die Implementierung eines FSX HA-Paars in zwei verschiedenen Verfügbarkeitszonen. Ein FSX Cluster wird jeweils in einem HA-Paar bereitgestellt, das synchron in einem Paar aktiv/Passiv-Filesysteme gespiegelt ist, um Redundanz auf Storage-Ebene zu gewährleisten. Die Implementierung mit mehreren Zonen verbessert die Hochverfügbarkeit bei einem Ausfall in einer einzelnen AWS Zone noch weiter.
+* *FSX Storage-Cluster-Sizing.* ein Amazon FSX for ONTAP Storage-Dateisystem bietet bis zu 160,000 RAW SSD IOPS, einen Durchsatz von bis zu 4 Gbit/s und eine maximale Kapazität von 192 tib. Sie können das Cluster jedoch in Bezug auf die bereitgestellten IOPS, den Durchsatz und die Storage-Grenze (mindestens 1,024 gib) anpassen, basierend auf Ihren tatsächlichen Anforderungen zum Zeitpunkt der Implementierung. Die Kapazität lässt sich spontan dynamisch anpassen, ohne dass die Applikationsverfügbarkeit beeinträchtigt wird.
+
+
+
+
+== Lösungsimplementierung
+
+Es wird angenommen, dass Sie bereits Ihre primäre Oracle-Datenbank in einer VPC in der AWS EC2-Umgebung als Ausgangspunkt für die Einrichtung von Data Guard implementiert haben. Die primäre Datenbank wird mithilfe von Oracle ASM für das Storage-Management bereitgestellt.  Zwei ASM-Datenträgergruppen - +DATEN und +PROTOKOLLE werden für Oracle-Datendateien, Log-Dateien und Steuerdatei usw. erstellt Weitere Informationen zur Oracle-Implementierung in AWS mit ASM erhalten Sie in den folgenden technischen Berichten.
+
+* link:https://docs.netapp.com/us-en/netapp-solutions/databases/aws_ora_fsx_ec2_deploy_intro.html["Oracle Database Deployment on EC2 und FSX Best Practices"^]
+* link:https://docs.netapp.com/us-en/netapp-solutions/databases/aws_ora_fsx_ec2_iscsi_asm.html["Implementierung und Schutz von Oracle Database in AWS FSX/EC2 mit iSCSI/ASM"^]
+* link:https://docs.netapp.com/us-en/netapp-solutions/databases/aws_ora_fsx_ec2_nfs_asm.html["Oracle 19c im Standalone-Neustart auf AWS FSX/EC2 mit NFS/ASM"^]
+
+
+Ihre primäre Oracle-Datenbank kann entweder auf einem FSX ONTAP oder einem beliebigen Storage innerhalb des AWS EC2 Ecosystems ausgeführt werden. Der folgende Abschnitt enthält schrittweise Bereitstellungsverfahren für das Einrichten von Oracle Data Guard zwischen einer primären EC2 DB-Instanz mit ASM-Speicher auf einer Standby-EC2-DB-Instanz mit ASM-Speicher.
+
+
+
+=== Voraussetzungen für die Bereitstellung
+
+[%collapsible]
+====
+Die Bereitstellung erfordert die folgenden Voraussetzungen.
+
+. Es wurde ein AWS Konto eingerichtet, und die erforderlichen VPC und Netzwerksegmente wurden in Ihrem AWS Konto erstellt.
+. Über die AWS EC2-Konsole müssen Sie mindestens drei EC2 Linux-Instanzen implementieren, eine als primäre Oracle DB-Instanz, eine als Standby Oracle DB-Instanz und eine Clone-Ziel-DB-Instanz für Berichterstellung, Entwicklung und Test usw. Weitere Details zur Umgebungs-Einrichtung finden Sie im Architekturdiagramm im vorherigen Abschnitt. Sehen Sie sich auch die AWS-Übersicht an link:https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/concepts.html["Benutzerhandbuch für Linux-Instanzen"^] Finden Sie weitere Informationen.
+. Implementieren Sie über die AWS EC2 Konsole Amazon FSX for ONTAP Storage HA-Cluster, um Oracle Volumes zu hosten, die die Oracle-Standby-Datenbank speichern. Wenn Sie mit der Bereitstellung von FSX-Speicher nicht vertraut sind, lesen Sie die Dokumentation link:https://docs.aws.amazon.com/fsx/latest/ONTAPGuide/creating-file-systems.html["Erstellen von FSX für ONTAP-Dateisysteme"^] Schritt-für-Schritt-Anleitungen.
+. Die Schritte 2 und 3 können mit dem folgenden Terraform Automatisierungs-Toolkit durchgeführt werden, das eine EC2-Instanz mit dem Namen erstellt `ora_01` Und ein FSX Dateisystem mit dem Namen `fsx_01`. Überprüfen Sie die Anweisung sorgfältig, und ändern Sie die Variablen vor der Ausführung entsprechend Ihrer Umgebung. Sie können die Vorlage ganz einfach an Ihre eigenen Implementierungsanforderungen anpassen.
++
+[source, cli]
+----
+git clone https://github.com/NetApp-Automation/na_aws_fsx_ec2_deploy.git
+----
+
+
+
+NOTE: Stellen Sie sicher, dass Sie mindestens 50G im Root-Volume der EC2-Instanz zugewiesen haben, damit genügend Speicherplatz für die Bereitstellung der Oracle Installationsdateien zur Verfügung steht.
+
+====
+
+
+=== Bereiten Sie die primäre Datenbank für Data Guard vor
+
+[%collapsible]
+====
+In dieser Demonstration haben wir eine primäre Oracle-Datenbank namens db1 auf der primären EC2 DB-Instanz mit zwei ASM-Datenträgergruppen in Standalone Restart-Konfiguration mit Datendateien in ASM-Datenträgergruppe +DATEN und Flash-Recovery-Bereich in ASM-Datenträgergruppe +LOGS eingerichtet. Im Folgenden werden die detaillierten Verfahren zum Einrichten der primären Datenbank für Data Guard erläutert. Alle Schritte sollten als Datenbankeigentümer - oracle-Benutzer ausgeführt werden.
+
+. Konfiguration der primären Datenbank db1 auf der primären EC2 DB-Instanz ip-172-30-15-45. Die ASM-Laufwerksgruppen können sich auf jedem beliebigen Storage innerhalb der EC2-Umgebung befinden.
++
+....
+
+[oracle@ip-172-30-15-45 ~]$ cat /etc/oratab
+
+# This file is used by ORACLE utilities.  It is created by root.sh
+# and updated by either Database Configuration Assistant while creating
+# a database or ASM Configuration Assistant while creating ASM instance.
+
+# A colon, ':', is used as the field terminator.  A new line terminates
+# the entry.  Lines beginning with a pound sign, '#', are comments.
+#
+# Entries are of the form:
+#   $ORACLE_SID:$ORACLE_HOME:<N|Y>:
+#
+# The first and second fields are the system identifier and home
+# directory of the database respectively.  The third field indicates
+# to the dbstart utility that the database should , "Y", or should not,
+# "N", be brought up at system boot time.
+#
+# Multiple entries with the same $ORACLE_SID are not allowed.
+#
+#
++ASM:/u01/app/oracle/product/19.0.0/grid:N
+db1:/u01/app/oracle/product/19.0.0/db1:N
+
+[oracle@ip-172-30-15-45 ~]$ /u01/app/oracle/product/19.0.0/grid/bin/crsctl stat res -t
+--------------------------------------------------------------------------------
+Name           Target  State        Server                   State details
+--------------------------------------------------------------------------------
+Local Resources
+--------------------------------------------------------------------------------
+ora.DATA.dg
+               ONLINE  ONLINE       ip-172-30-15-45          STABLE
+ora.LISTENER.lsnr
+               ONLINE  ONLINE       ip-172-30-15-45          STABLE
+ora.LOGS.dg
+               ONLINE  ONLINE       ip-172-30-15-45          STABLE
+ora.asm
+               ONLINE  ONLINE       ip-172-30-15-45          Started,STABLE
+ora.ons
+               OFFLINE OFFLINE      ip-172-30-15-45          STABLE
+--------------------------------------------------------------------------------
+Cluster Resources
+--------------------------------------------------------------------------------
+ora.cssd
+      1        ONLINE  ONLINE       ip-172-30-15-45          STABLE
+ora.db1.db
+      1        ONLINE  ONLINE       ip-172-30-15-45          Open,HOME=/u01/app/o
+                                                             racle/product/19.0.0
+                                                             /db1,STABLE
+ora.diskmon
+      1        OFFLINE OFFLINE                               STABLE
+ora.driver.afd
+      1        ONLINE  ONLINE       ip-172-30-15-45          STABLE
+ora.evmd
+      1        ONLINE  ONLINE       ip-172-30-15-45          STABLE
+--------------------------------------------------------------------------------
+
+....
+. Aktivieren Sie von sqlplus die erzwungene Anmeldung auf dem primären Standort.
++
+[source, cli]
+----
+alter database force logging;
+----
+. Aktivieren Sie von sqlplus Flashback auf primär. Flashback ermöglicht die einfache Wiederherstellung der primären Datenbank als Standby nach einem Failover.
++
+[source, cli]
+----
+alter database flashback on;
+----
+. Konfigurieren der Authentifizierung für den Wiederherstelltransport mit Oracle-Passwortdatei - Erstellen Sie eine pwd-Datei auf dem primären System mit dem Dienstprogramm orapwd, falls nicht festgelegt, und kopieren Sie sie in das Verzeichnis ORACLE_HOME/dbs der Standby-Datenbank.
+. Erstellen Sie Standby-Wiederherstellungsprotokolle in der primären Datenbank mit der Größe der aktuellen Online-Protokolldatei. Protokollgruppen sind eine mehr als eine Online-Protokolldateigruppe. Die primäre Datenbank kann dann schnell in die Standby-Rolle überführen und bei Bedarf mit dem Empfang von Wiederherstellungsdaten beginnen.
++
+[source, cli]
+----
+alter database add standby logfile thread 1 size 200M;
+----
++
+....
+Validate after standby logs addition:
+
+SQL> select group#, type, member from v$logfile;
+
+    GROUP# TYPE    MEMBER
+---------- ------- ------------------------------------------------------------
+         3 ONLINE  +DATA/DB1/ONLINELOG/group_3.264.1145821513
+         2 ONLINE  +DATA/DB1/ONLINELOG/group_2.263.1145821513
+         1 ONLINE  +DATA/DB1/ONLINELOG/group_1.262.1145821513
+         4 STANDBY +DATA/DB1/ONLINELOG/group_4.286.1146082751
+         4 STANDBY +LOGS/DB1/ONLINELOG/group_4.258.1146082753
+         5 STANDBY +DATA/DB1/ONLINELOG/group_5.287.1146082819
+         5 STANDBY +LOGS/DB1/ONLINELOG/group_5.260.1146082821
+         6 STANDBY +DATA/DB1/ONLINELOG/group_6.288.1146082825
+         6 STANDBY +LOGS/DB1/ONLINELOG/group_6.261.1146082827
+         7 STANDBY +DATA/DB1/ONLINELOG/group_7.289.1146082835
+         7 STANDBY +LOGS/DB1/ONLINELOG/group_7.262.1146082835
+
+11 rows selected.
+....
+. Erstellen Sie aus sqlplus ein pfile aus spfile zur Bearbeitung.
++
+[source, cli]
+----
+create pfile='/home/oracle/initdb1.ora' from spfile;
+----
+. Überarbeiten Sie die pfile und fügen Sie die folgenden Parameter hinzu.
++
+....
+DB_NAME=db1
+DB_UNIQUE_NAME=db1_NY
+LOG_ARCHIVE_CONFIG='DG_CONFIG=(db1_NY,db1_LA)'
+LOG_ARCHIVE_DEST_1='LOCATION=USE_DB_RECOVERY_FILE_DEST VALID_FOR=(ALL_LOGFILES,ALL_ROLES) DB_UNIQUE_NAME=db1_NY'
+LOG_ARCHIVE_DEST_2='SERVICE=db1_LA ASYNC VALID_FOR=(ONLINE_LOGFILES,PRIMARY_ROLE) DB_UNIQUE_NAME=db1_LA'
+REMOTE_LOGIN_PASSWORDFILE=EXCLUSIVE
+FAL_SERVER=db1_LA
+STANDBY_FILE_MANAGEMENT=AUTO
+....
+. Erstellen Sie in sqlplus spfile im ASM +DATA-Verzeichnis aus überarbeitetem pfile im Verzeichnis /Home/oracle.
++
+[source, cli]
+----
+create spfile='+DATA' from pfile='/home/oracle/initdb1.ora';
+----
+. Suchen Sie die neu erstellte spfile unter +DATA Disk Group (ggf. mit dem Dienstprogramm asmcmd). Verwenden Sie srvctl, um das Raster zu ändern, um die Datenbank von neuem spfile zu starten, wie unten gezeigt.
++
+....
+[oracle@ip-172-30-15-45 db1]$ srvctl config database -d db1
+Database unique name: db1
+Database name: db1
+Oracle home: /u01/app/oracle/product/19.0.0/db1
+Oracle user: oracle
+Spfile: +DATA/DB1/PARAMETERFILE/spfile.270.1145822903
+Password file:
+Domain: demo.netapp.com
+Start options: open
+Stop options: immediate
+Database role: PRIMARY
+Management policy: AUTOMATIC
+Disk Groups: DATA
+Services:
+OSDBA group:
+OSOPER group:
+Database instance: db1
+[oracle@ip-172-30-15-45 db1]$ srvctl modify database -d db1 -spfile +DATA/DB1/PARAMETERFILE/spfiledb1.ora
+[oracle@ip-172-30-15-45 db1]$ srvctl config database -d db1
+Database unique name: db1
+Database name: db1
+Oracle home: /u01/app/oracle/product/19.0.0/db1
+Oracle user: oracle
+Spfile: +DATA/DB1/PARAMETERFILE/spfiledb1.ora
+Password file:
+Domain: demo.netapp.com
+Start options: open
+Stop options: immediate
+Database role: PRIMARY
+Management policy: AUTOMATIC
+Disk Groups: DATA
+Services:
+OSDBA group:
+OSOPER group:
+Database instance: db1
+....
+. Ändern Sie tnsnames.ora, um db_Unique_Name für die Namensauflösung hinzuzufügen.
++
+....
+# tnsnames.ora Network Configuration File: /u01/app/oracle/product/19.0.0/db1/network/admin/tnsnames.ora
+# Generated by Oracle configuration tools.
+
+db1_NY =
+  (DESCRIPTION =
+    (ADDRESS = (PROTOCOL = TCP)(HOST = ip-172-30-15-45.ec2.internal)(PORT = 1521))
+    (CONNECT_DATA =
+      (SERVER = DEDICATED)
+      (SID = db1)
+    )
+  )
+
+db1_LA =
+  (DESCRIPTION =
+    (ADDRESS = (PROTOCOL = TCP)(HOST = ip-172-30-15-67.ec2.internal)(PORT = 1521))
+    (CONNECT_DATA =
+      (SERVER = DEDICATED)
+      (SID = db1)
+    )
+  )
+
+LISTENER_DB1 =
+  (ADDRESS = (PROTOCOL = TCP)(HOST = ip-172-30-15-45.ec2.internal)(PORT = 1521))
+....
+. Fügen Sie der Datei Listener.ora den Namen des Data Guard-Dienstes db1_NY_DGMGRL.demo.netapp für die primäre Datenbank hinzu.
+
+
+....
+#Backup file is  /u01/app/oracle/crsdata/ip-172-30-15-45/output/listener.ora.bak.ip-172-30-15-45.oracle line added by Agent
+# listener.ora Network Configuration File: /u01/app/oracle/product/19.0.0/grid/network/admin/listener.ora
+# Generated by Oracle configuration tools.
+
+LISTENER =
+  (DESCRIPTION_LIST =
+    (DESCRIPTION =
+      (ADDRESS = (PROTOCOL = TCP)(HOST = ip-172-30-15-45.ec2.internal)(PORT = 1521))
+      (ADDRESS = (PROTOCOL = IPC)(KEY = EXTPROC1521))
+    )
+  )
+
+SID_LIST_LISTENER =
+  (SID_LIST =
+    (SID_DESC =
+      (GLOBAL_DBNAME = db1_NY_DGMGRL.demo.netapp.com)
+      (ORACLE_HOME = /u01/app/oracle/product/19.0.0/db1)
+      (SID_NAME = db1)
+    )
+  )
+
+ENABLE_GLOBAL_DYNAMIC_ENDPOINT_LISTENER=ON              # line added by Agent
+VALID_NODE_CHECKING_REGISTRATION_LISTENER=ON            # line added by Agent
+....
+. Fahren Sie die Datenbank mit srvctl herunter und starten Sie sie neu, und überprüfen Sie, ob die Data-Guard-Parameter jetzt aktiv sind.
++
+[source, cli]
+----
+srvctl stop database -d db1
+----
++
+[source, cli]
+----
+srvctl start database -d db1
+----
+
+
+Damit ist die Einrichtung der primären Datenbank für Data Guard abgeschlossen.
+
+====
+
+
+=== Bereiten Sie die Standby-Datenbank vor und aktivieren Sie Data Guard
+
+[%collapsible]
+====
+Für Oracle Data Guard sind eine Betriebssystemkernelkonfiguration und Oracle Software-Stacks einschließlich Patch-Sets auf der EC2-Standby-DB-Instanz erforderlich, die mit der primären EC2-DB-Instanz übereinstimmen. Um das Management und die Einfachheit zu vereinfachen, sollte die Konfiguration des Datenbank-Storage der EC2-Instanz im Standby-Modus auch mit der primären EC2 DB-Instanz übereinstimmen, z. B. Name, Anzahl und Größe der ASM-Festplattengruppen. Im Folgenden finden Sie detaillierte Verfahren zum Einrichten der Standby-EC2-DB-Instanz für Data Guard. Alle Befehle sollten als oracle-Benutzer-ID ausgeführt werden.
+
+. Prüfen Sie zunächst die Konfiguration der primären Datenbank auf der primären EC2 Instanz. In dieser Demonstration haben wir eine primäre Oracle-Datenbank namens db1 auf der primären EC2 DB-Instanz mit zwei ASM-Datenträgergruppen +DATA und +LOGS in Standalone-Restart-Konfiguration eingerichtet. Die primären ASM-Festplattengruppen können sich auf jedem beliebigen Storage innerhalb des EC2-Ecosystems befinden.
+. Befolgen Sie die Anweisungen in der Dokumentation link:https://docs.netapp.com/us-en/netapp-solutions/databases/aws_ora_fsx_ec2_iscsi_asm.html["TR-4965: Oracle Database Deployment and Protection in AWS FSX/EC2 with iSCSI/ASM"^] Grid und Oracle auf EC2 Standby-DB-Instanz installieren und konfigurieren, um mit der primären Datenbank abzugleichen Der Datenbank-Storage sollte bereitgestellt und der Standby-EC2-DB-Instanz von FSX ONTAP mit derselben Speicherkapazität wie die primäre EC2-DB-Instanz zugewiesen werden.
++
+
+NOTE: Stoppen Sie bei Schritt 10 in `Oracle database installation` Abschnitt. Die Standby-Datenbank wird mit der DBCA-Datenbankduplizierungsfunktion aus der primären Datenbank instanziiert.
+
+. Sobald die Oracle Software installiert und konfiguriert ist, kopieren Sie aus dem im Standby-modus für ORACLE_HOME festgelegten dbs-Verzeichnis das oracle-Passwort von der primären Datenbank.
++
+[source, cli]
+----
+scp oracle@172.30.15.45:/u01/app/oracle/product/19.0.0/db1/dbs/orapwdb1 .
+----
+. Erstellen Sie die Datei tnsnames.ora mit folgenden Einträgen.
++
+....
+
+# tnsnames.ora Network Configuration File: /u01/app/oracle/product/19.0.0/db1/network/admin/tnsnames.ora
+# Generated by Oracle configuration tools.
+
+db1_NY =
+  (DESCRIPTION =
+    (ADDRESS = (PROTOCOL = TCP)(HOST = ip-172-30-15-45.ec2.internal)(PORT = 1521))
+    (CONNECT_DATA =
+      (SERVER = DEDICATED)
+      (SID = db1)
+    )
+  )
+
+db1_LA =
+  (DESCRIPTION =
+    (ADDRESS = (PROTOCOL = TCP)(HOST = ip-172-30-15-67.ec2.internal)(PORT = 1521))
+    (CONNECT_DATA =
+      (SERVER = DEDICATED)
+      (SID = db1)
+    )
+  )
+
+....
+. Fügen Sie den Namen des DB Data Guard-Service zur Listener.ora-Datei hinzu.
++
+....
+
+#Backup file is  /u01/app/oracle/crsdata/ip-172-30-15-67/output/listener.ora.bak.ip-172-30-15-67.oracle line added by Agent
+# listener.ora Network Configuration File: /u01/app/oracle/product/19.0.0/grid/network/admin/listener.ora
+# Generated by Oracle configuration tools.
+
+LISTENER =
+  (DESCRIPTION_LIST =
+    (DESCRIPTION =
+      (ADDRESS = (PROTOCOL = TCP)(HOST = ip-172-30-15-67.ec2.internal)(PORT = 1521))
+      (ADDRESS = (PROTOCOL = IPC)(KEY = EXTPROC1521))
+    )
+  )
+
+SID_LIST_LISTENER =
+  (SID_LIST =
+    (SID_DESC =
+      (GLOBAL_DBNAME = db1_LA_DGMGRL.demo.netapp.com)
+      (ORACLE_HOME = /u01/app/oracle/product/19.0.0/db1)
+      (SID_NAME = db1)
+    )
+  )
+
+ENABLE_GLOBAL_DYNAMIC_ENDPOINT_LISTENER=ON              # line added by Agent
+VALID_NODE_CHECKING_REGISTRATION_LISTENER=ON            # line added by Agent
+
+....
+. Legen Sie oracle-Startseite und -Pfad fest.
++
+[source, cli]
+----
+export ORACLE_HOME=/u01/app/oracle/product/19.0.0/db1
+----
++
+[source, cli]
+----
+export PATH=$PATH:$ORACLE_HOME/bin
+----
+. Verwenden Sie dbca, um die Standby-Datenbank von der primären Datenbank db1 zu instanziieren.
++
+....
+
+[oracle@ip-172-30-15-67 bin]$ dbca -silent -createDuplicateDB -gdbName db1 -primaryDBConnectionString ip-172-30-15-45.ec2.internal:1521/db1_NY.demo.netapp.com -sid db1 -initParams fal_server=db1_NY -createAsStandby -dbUniqueName db1_LA
+Enter SYS user password:
+
+Prepare for db operation
+22% complete
+Listener config step
+44% complete
+Auxiliary instance creation
+67% complete
+RMAN duplicate
+89% complete
+Post duplicate database operations
+100% complete
+
+Look at the log file "/u01/app/oracle/cfgtoollogs/dbca/db1_LA/db1_LA.log" for further details.
+
+....
+. Duplizierte Standby-Datenbank validieren Neu duplizierte Standby-Datenbank zunächst im SCHREIBGESCHÜTZTEN Modus geöffnet.
++
+....
+
+[oracle@ip-172-30-15-67 bin]$ export ORACLE_SID=db1
+[oracle@ip-172-30-15-67 bin]$ sqlplus / as sysdba
+
+SQL*Plus: Release 19.0.0.0.0 - Production on Wed Aug 30 18:25:46 2023
+Version 19.18.0.0.0
+
+Copyright (c) 1982, 2022, Oracle.  All rights reserved.
+
+
+Connected to:
+Oracle Database 19c Enterprise Edition Release 19.0.0.0.0 - Production
+Version 19.18.0.0.0
+
+SQL> select name, open_mode from v$database;
+
+NAME      OPEN_MODE
+--------- --------------------
+DB1       READ ONLY
+
+SQL> show parameter name
+
+NAME                                 TYPE        VALUE
+------------------------------------ ----------- ------------------------------
+cdb_cluster_name                     string
+cell_offloadgroup_name               string
+db_file_name_convert                 string
+db_name                              string      db1
+db_unique_name                       string      db1_LA
+global_names                         boolean     FALSE
+instance_name                        string      db1
+lock_name_space                      string
+log_file_name_convert                string
+pdb_file_name_convert                string
+processor_group_name                 string
+
+NAME                                 TYPE        VALUE
+------------------------------------ ----------- ------------------------------
+service_names                        string      db1_LA.demo.netapp.com
+SQL>
+SQL> show parameter log_archive_config
+
+NAME                                 TYPE        VALUE
+------------------------------------ ----------- ------------------------------
+log_archive_config                   string      DG_CONFIG=(db1_NY,db1_LA)
+SQL> show parameter fal_server
+
+NAME                                 TYPE        VALUE
+------------------------------------ ----------- ------------------------------
+fal_server                           string      db1_NY
+
+SQL> select name from v$datafile;
+
+NAME
+--------------------------------------------------------------------------------
++DATA/DB1_LA/DATAFILE/system.261.1146248215
++DATA/DB1_LA/DATAFILE/sysaux.262.1146248231
++DATA/DB1_LA/DATAFILE/undotbs1.263.1146248247
++DATA/DB1_LA/03C5C01A66EE9797E0632D0F1EAC5F59/DATAFILE/system.264.1146248253
++DATA/DB1_LA/03C5C01A66EE9797E0632D0F1EAC5F59/DATAFILE/sysaux.265.1146248261
++DATA/DB1_LA/DATAFILE/users.266.1146248267
++DATA/DB1_LA/03C5C01A66EE9797E0632D0F1EAC5F59/DATAFILE/undotbs1.267.1146248269
++DATA/DB1_LA/03C5EFD07C41A1FAE0632D0F1EAC9BD8/DATAFILE/system.268.1146248271
++DATA/DB1_LA/03C5EFD07C41A1FAE0632D0F1EAC9BD8/DATAFILE/sysaux.269.1146248279
++DATA/DB1_LA/03C5EFD07C41A1FAE0632D0F1EAC9BD8/DATAFILE/undotbs1.270.1146248285
++DATA/DB1_LA/03C5EFD07C41A1FAE0632D0F1EAC9BD8/DATAFILE/users.271.1146248293
+
+NAME
+--------------------------------------------------------------------------------
++DATA/DB1_LA/03C5F0DDF35CA2B6E0632D0F1EAC8B6B/DATAFILE/system.272.1146248295
++DATA/DB1_LA/03C5F0DDF35CA2B6E0632D0F1EAC8B6B/DATAFILE/sysaux.273.1146248301
++DATA/DB1_LA/03C5F0DDF35CA2B6E0632D0F1EAC8B6B/DATAFILE/undotbs1.274.1146248309
++DATA/DB1_LA/03C5F0DDF35CA2B6E0632D0F1EAC8B6B/DATAFILE/users.275.1146248315
++DATA/DB1_LA/03C5F1C9B142A2F1E0632D0F1EACF21A/DATAFILE/system.276.1146248317
++DATA/DB1_LA/03C5F1C9B142A2F1E0632D0F1EACF21A/DATAFILE/sysaux.277.1146248323
++DATA/DB1_LA/03C5F1C9B142A2F1E0632D0F1EACF21A/DATAFILE/undotbs1.278.1146248331
++DATA/DB1_LA/03C5F1C9B142A2F1E0632D0F1EACF21A/DATAFILE/users.279.1146248337
+
+19 rows selected.
+
+SQL> select name from v$controlfile;
+
+NAME
+--------------------------------------------------------------------------------
++DATA/DB1_LA/CONTROLFILE/current.260.1146248209
++LOGS/DB1_LA/CONTROLFILE/current.257.1146248209
+
+SQL> select name from v$tempfile;
+
+NAME
+--------------------------------------------------------------------------------
++DATA/DB1_LA/TEMPFILE/temp.287.1146248371
++DATA/DB1_LA/03C5C01A66EE9797E0632D0F1EAC5F59/TEMPFILE/temp.288.1146248375
++DATA/DB1_LA/03C5EFD07C41A1FAE0632D0F1EAC9BD8/TEMPFILE/temp.290.1146248463
++DATA/DB1_LA/03C5F0DDF35CA2B6E0632D0F1EAC8B6B/TEMPFILE/temp.291.1146248463
++DATA/DB1_LA/03C5F1C9B142A2F1E0632D0F1EACF21A/TEMPFILE/temp.292.1146248463
+
+SQL> select group#, type, member from v$logfile order by 2, 1;
+
+    GROUP# TYPE    MEMBER
+---------- ------- ------------------------------------------------------------
+         1 ONLINE  +LOGS/DB1_LA/ONLINELOG/group_1.259.1146248349
+         1 ONLINE  +DATA/DB1_LA/ONLINELOG/group_1.280.1146248347
+         2 ONLINE  +DATA/DB1_LA/ONLINELOG/group_2.281.1146248351
+         2 ONLINE  +LOGS/DB1_LA/ONLINELOG/group_2.258.1146248353
+         3 ONLINE  +DATA/DB1_LA/ONLINELOG/group_3.282.1146248355
+         3 ONLINE  +LOGS/DB1_LA/ONLINELOG/group_3.260.1146248355
+         4 STANDBY +DATA/DB1_LA/ONLINELOG/group_4.283.1146248357
+         4 STANDBY +LOGS/DB1_LA/ONLINELOG/group_4.261.1146248359
+         5 STANDBY +DATA/DB1_LA/ONLINELOG/group_5.284.1146248361
+         5 STANDBY +LOGS/DB1_LA/ONLINELOG/group_5.262.1146248363
+         6 STANDBY +LOGS/DB1_LA/ONLINELOG/group_6.263.1146248365
+         6 STANDBY +DATA/DB1_LA/ONLINELOG/group_6.285.1146248365
+         7 STANDBY +LOGS/DB1_LA/ONLINELOG/group_7.264.1146248369
+         7 STANDBY +DATA/DB1_LA/ONLINELOG/group_7.286.1146248367
+
+14 rows selected.
+
+SQL> select name, open_mode from v$database;
+
+NAME      OPEN_MODE
+--------- --------------------
+DB1       READ ONLY
+
+....
+. Starten Sie die Standby-Datenbank in neu `mount` Stufen Sie den folgenden Befehl ein, um die von der Standby-Datenbank gemanagte Recovery zu aktivieren.
++
+[source, cli]
+----
+alter database recover managed standby database disconnect from session;
+----
++
+....
+
+SQL> shutdown immediate;
+Database closed.
+Database dismounted.
+ORACLE instance shut down.
+SQL> startup mount;
+ORACLE instance started.
+
+Total System Global Area 8053062944 bytes
+Fixed Size                  9182496 bytes
+Variable Size            1291845632 bytes
+Database Buffers         6744440832 bytes
+Redo Buffers                7593984 bytes
+Database mounted.
+SQL> alter database recover managed standby database disconnect from session;
+
+Database altered.
+
+....
+. Überprüfen Sie den Wiederherstellungsstatus der Standby-Datenbank. Beachten Sie die `recovery logmerger` In `APPLYING_LOG` Aktion.
++
+....
+
+SQL> SELECT ROLE, THREAD#, SEQUENCE#, ACTION FROM V$DATAGUARD_PROCESS;
+
+ROLE                        THREAD#  SEQUENCE# ACTION
+------------------------ ---------- ---------- ------------
+recovery apply slave              0          0 IDLE
+recovery apply slave              0          0 IDLE
+recovery apply slave              0          0 IDLE
+recovery apply slave              0          0 IDLE
+recovery logmerger                1         30 APPLYING_LOG
+RFS ping                          1         30 IDLE
+RFS async                         1         30 IDLE
+archive redo                      0          0 IDLE
+archive redo                      0          0 IDLE
+archive redo                      0          0 IDLE
+gap manager                       0          0 IDLE
+
+ROLE                        THREAD#  SEQUENCE# ACTION
+------------------------ ---------- ---------- ------------
+managed recovery                  0          0 IDLE
+redo transport monitor            0          0 IDLE
+log writer                        0          0 IDLE
+archive local                     0          0 IDLE
+redo transport timer              0          0 IDLE
+
+16 rows selected.
+
+SQL>
+
+....
+
+
+Damit ist die Data Guard-Schutzeinrichtung für db1 von primär bis Standby abgeschlossen, wobei die verwaltete Standby-Wiederherstellung aktiviert ist.
+
+====
+
+
+=== Data Guard Broker Einrichten
+
+[%collapsible]
+====
+Oracle Data Guard Broker ist ein verteiltes Management-Framework, das die Erstellung, Wartung und Überwachung von Oracle Data Guard Konfigurationen automatisiert und zentralisiert. Im folgenden Abschnitt wird erläutert, wie Data Guard Broker für die Verwaltung der Data Guard-Umgebung eingerichtet wird.
+
+. Starten Sie Data Guard Broker sowohl auf primären als auch auf Standby-Datenbanken mit folgendem Befehl über sqlplus.
++
+[source, cli]
+----
+alter system set dg_broker_start=true scope=both;
+----
+. Stellen Sie von der primären Datenbank eine Verbindung zu Data Guard Borker als SYSDBA her.
++
+....
+
+[oracle@ip-172-30-15-45 db1]$ dgmgrl sys@db1_NY
+DGMGRL for Linux: Release 19.0.0.0.0 - Production on Wed Aug 30 19:34:14 2023
+Version 19.18.0.0.0
+
+Copyright (c) 1982, 2019, Oracle and/or its affiliates.  All rights reserved.
+
+Welcome to DGMGRL, type "help" for information.
+Password:
+Connected to "db1_NY"
+Connected as SYSDBA.
+
+....
+. Erstellen und Aktivieren der Data Guard Broker-Konfiguration.
++
+....
+
+DGMGRL> create configuration dg_config as primary database is db1_NY connect identifier is db1_NY;
+Configuration "dg_config" created with primary database "db1_ny"
+DGMGRL> add database db1_LA as connect identifier is db1_LA;
+Database "db1_la" added
+DGMGRL> enable configuration;
+Enabled.
+DGMGRL> show configuration;
+
+Configuration - dg_config
+
+  Protection Mode: MaxPerformance
+  Members:
+  db1_ny - Primary database
+    db1_la - Physical standby database
+
+Fast-Start Failover:  Disabled
+
+Configuration Status:
+SUCCESS   (status updated 28 seconds ago)
+
+....
+. Überprüfung des Datenbankstatus im Data Guard Broker Management Framework
++
+....
+
+DGMGRL> show database db1_ny;
+
+Database - db1_ny
+
+  Role:               PRIMARY
+  Intended State:     TRANSPORT-ON
+  Instance(s):
+    db1
+
+Database Status:
+SUCCESS
+
+DGMGRL> show database db1_la;
+
+Database - db1_la
+
+  Role:               PHYSICAL STANDBY
+  Intended State:     APPLY-ON
+  Transport Lag:      0 seconds (computed 1 second ago)
+  Apply Lag:          0 seconds (computed 1 second ago)
+  Average Apply Rate: 2.00 KByte/s
+  Real Time Query:    OFF
+  Instance(s):
+    db1
+
+Database Status:
+SUCCESS
+
+DGMGRL>
+
+....
+
+
+Im Falle eines Ausfalls kann Data Guard Broker verwendet werden, um umgehend ein Failover der primären Datenbank in den Standby-Modus durchzuführen.
+
+====
+
+
+=== Clone Standby-Datenbank für andere Anwendungsfälle
+
+[%collapsible]
+====
+Der Hauptvorteil des Staging von Standby-Datenbank auf AWS FSX ONTAP in Data Guard besteht darin, dass mit FlexCloned viele andere Anwendungsfälle mit minimaler zusätzlicher Storage-Investition bedient werden können. Im folgenden Abschnitt zeigen wir, wie man für andere Zwecke wie ENTWICKLUNG, TEST, BERICHT usw. ein Snapshot von den gemounteten und unter Recovery-Standby-Datenbank-Volumes auf FSX ONTAP erstellt und klont. mit dem Tool NetApp SnapCenter.
+
+Im Folgenden werden allgemeine Verfahren zum Klonen einer LESE-/SCHREIBDATENBANK aus der verwalteten physischen Standby-Datenbank in Data Guard unter Verwendung von SnapCenter beschrieben. Detaillierte Anweisungen zum Einrichten und Konfigurieren von SnapCenter finden Sie unter link:https://docs.netapp.com/us-en/netapp-solutions/databases/hybrid_dbops_snapcenter_usecases.html["Hybrid-Cloud-Datenbanklösungen mit SnapCenter"^] Relavant Oracle Sektionen.
+
+. Wir beginnen damit, eine Testtabelle zu erstellen und eine Zeile in die Testtabelle der primären Datenbank einzufügen. Wir werden dann validieren, wenn die Transaktion in den Standby-Modus und schließlich den Klon durchlaufen wird.
++
+....
+[oracle@ip-172-30-15-45 db1]$ sqlplus / as sysdba
+
+SQL*Plus: Release 19.0.0.0.0 - Production on Thu Aug 31 16:35:53 2023
+Version 19.18.0.0.0
+
+Copyright (c) 1982, 2022, Oracle.  All rights reserved.
+
+
+Connected to:
+Oracle Database 19c Enterprise Edition Release 19.0.0.0.0 - Production
+Version 19.18.0.0.0
+
+SQL> alter session set container=db1_pdb1;
+
+Session altered.
+
+SQL> create table test(
+  2  id integer,
+  3  dt timestamp,
+  4  event varchar(100));
+
+Table created.
+
+SQL> insert into test values(1, sysdate, 'a test transaction on primary database db1 and ec2 db host: ip-172-30-15-45.ec2.internal');
+
+1 row created.
+
+SQL> commit;
+
+Commit complete.
+
+SQL> select * from test;
+
+        ID
+----------
+DT
+---------------------------------------------------------------------------
+EVENT
+--------------------------------------------------------------------------------
+         1
+31-AUG-23 04.49.29.000000 PM
+a test transaction on primary database db1 and ec2 db host: ip-172-30-15-45.ec2.
+internal
+
+SQL> select instance_name, host_name from v$instance;
+
+INSTANCE_NAME
+----------------
+HOST_NAME
+----------------------------------------------------------------
+db1
+ip-172-30-15-45.ec2.internal
+....
+. FSX Storage-Cluster hinzufügen zu `Storage Systems` In SnapCenter mit FSX Clustermanagement-IP und fsxadmin-Zugangsdaten.
++
+image::aws_ora_fsx_data_guard_clone_01.png[Screenshot, der diesen Schritt in der GUI zeigt.]
+
+. AWS ec2-User zu hinzufügen `Credential` In `Settings`.
++
+image::aws_ora_fsx_data_guard_clone_02.png[Screenshot, der diesen Schritt in der GUI zeigt.]
+
+. Fügen Sie Standby EC2 DB-Instanz hinzu und klonen Sie EC2 DB-Instanz zu `Hosts`.
++
+image::aws_ora_fsx_data_guard_clone_03.png[Screenshot, der diesen Schritt in der GUI zeigt.]
+
++
+
+NOTE: Für die EC2 DB-Kloninstanz sollten ähnliche Oracle-Software-Stacks installiert und konfiguriert sein. In unserem Testfall wurden die Grid-Infrastruktur und Oracle 19C installiert und konfiguriert, aber es wurde keine Datenbank erstellt.
+
+. Erstellen einer Backup-Richtlinie, die auf das Offline-/Mounten eines vollständigen Datenbank-Backups zugeschnitten ist
++
+image::aws_ora_fsx_data_guard_clone_04.png[Screenshot, der diesen Schritt in der GUI zeigt.]
+
+. Wenden Sie die Sicherungsrichtlinie an, um die Standby-Datenbank in zu schützen `Resources` Registerkarte.
++
+image::aws_ora_fsx_data_guard_clone_05.png[Screenshot, der diesen Schritt in der GUI zeigt.]
+
+. Klicken Sie auf Datenbanknamen, um die Seite Datenbank-Backups zu öffnen. Wählen Sie ein Backup aus, das für den Datenbankklon verwendet werden soll, und klicken Sie auf `Clone` Um den Clone-Workflow zu starten.
++
+image::aws_ora_fsx_data_guard_clone_06.png[Screenshot, der diesen Schritt in der GUI zeigt.]
+
+. Wählen Sie `Complete Database Clone` Und benennen Sie die Clone-Instanz-SID.
++
+image::aws_ora_fsx_data_guard_clone_07.png[Screenshot, der diesen Schritt in der GUI zeigt.]
+
+. Wählen Sie den Clone-Host aus, der die geklonte Datenbank aus der Standby-DB hostet. Akzeptieren Sie die Standardeinstellung für Datendateien, Steuerdateien und Wiederherstellungsprotokolle. Auf dem Clone-Host werden zwei ASM-Laufwerksgruppen erstellt, die den Laufwerksgruppen in der Standby-Datenbank entsprechen.
++
+image::aws_ora_fsx_data_guard_clone_08.png[Screenshot, der diesen Schritt in der GUI zeigt.]
+
+. Für die OS-basierte Authentifizierung sind keine Datenbankanmeldeinformationen erforderlich. Stimmen Sie die Oracle Home-Einstellung mit den Einstellungen in der EC2 Clone-Datenbankinstanz ab.
++
+image::aws_ora_fsx_data_guard_clone_09.png[Screenshot, der diesen Schritt in der GUI zeigt.]
+
+. Ändern Sie ggf. die Parameter der Klondatenbank und geben Sie ggf. Skripte an, die vor dem Cloen ausgeführt werden sollen.
++
+image::aws_ora_fsx_data_guard_clone_10.png[Screenshot, der diesen Schritt in der GUI zeigt.]
+
+. Geben Sie SQL ein, um nach dem Klon auszuführen. In der Demo führten wir Befehle aus, um den Datenbank-Archivmodus für eine Entwicklungs-/Test-/Berichtsdatenbank zu deaktivieren.
++
+image::aws_ora_fsx_data_guard_clone_11.png[Screenshot, der diesen Schritt in der GUI zeigt.]
+
+. Konfigurieren Sie bei Bedarf die E-Mail-Benachrichtigung.
++
+image::aws_ora_fsx_data_guard_clone_12.png[Screenshot, der diesen Schritt in der GUI zeigt.]
+
+. Überprüfen Sie die Zusammenfassung, und klicken Sie auf `Finish` Um den Klon zu starten.
++
+image::aws_ora_fsx_data_guard_clone_13.png[Screenshot, der diesen Schritt in der GUI zeigt.]
+
+. Überwachen Sie den Klonjob in `Monitor` Registerkarte. Wir beobachteten, dass es etwa 8 Minuten dauerte, um eine Datenbank mit einer Größe von 300 GB an Datenbank-Volumes zu klonen.
++
+image::aws_ora_fsx_data_guard_clone_14.png[Screenshot, der diesen Schritt in der GUI zeigt.]
+
+. Validierung der Klondatenbank von SnapCenter, die sofort bei registriert wird `Resources` Nach dem Klonvorgang rechts abwählen.
++
+image::aws_ora_fsx_data_guard_clone_15.png[Screenshot, der diesen Schritt in der GUI zeigt.]
+
+. Abfrage der Klondatenbank von EC2-Instanz des Klons. Wir validierten, dass die Testtransaktion, die in der primären Datenbank auftrat, bis zur Klondatenbank durchläuft war.
++
+....
+[oracle@ip-172-30-15-126 ~]$ export ORACLE_HOME=/u01/app/oracle/product/19.0.0/dev
+[oracle@ip-172-30-15-126 ~]$ export ORACLE_SID=db1dev
+[oracle@ip-172-30-15-126 ~]$ export PATH=$PATH:$ORACLE_HOME/bin
+[oracle@ip-172-30-15-126 ~]$ sqlplus / as sysdba
+
+SQL*Plus: Release 19.0.0.0.0 - Production on Wed Sep 6 16:41:41 2023
+Version 19.18.0.0.0
+
+Copyright (c) 1982, 2022, Oracle.  All rights reserved.
+
+
+Connected to:
+Oracle Database 19c Enterprise Edition Release 19.0.0.0.0 - Production
+Version 19.18.0.0.0
+
+SQL> select name, open_mode, log_mode from v$database;
+
+NAME      OPEN_MODE            LOG_MODE
+--------- -------------------- ------------
+DB1DEV    READ WRITE           NOARCHIVELOG
+
+SQL> select instance_name, host_name from v$instance;
+
+INSTANCE_NAME
+----------------
+HOST_NAME
+----------------------------------------------------------------
+db1dev
+ip-172-30-15-126.ec2.internal
+
+SQL> alter session set container=db1_pdb1;
+
+Session altered.
+
+SQL> select * from test;
+
+        ID
+----------
+DT
+---------------------------------------------------------------------------
+EVENT
+--------------------------------------------------------------------------------
+         1
+31-AUG-23 04.49.29.000000 PM
+a test transaction on primary database db1 and ec2 db host: ip-172-30-15-45.ec2.
+internal
+
+
+SQL>
+
+....
+
+
+Damit ist der Klon und die Validierung einer neuen Oracle-Datenbank aus der Standby-Datenbank in Data Guard auf FSX Storage für ENTWICKLUNG, TESTS, BERICHTE oder andere Anwendungsfälle abgeschlossen. Mehrere Oracle Datenbanken können in derselben Standby-Datenbank in Data Guard geklont werden.
+
+====
+
+
+== Wo Sie weitere Informationen finden
+
+Weitere Informationen zu den in diesem Dokument beschriebenen Daten finden Sie in den folgenden Dokumenten bzw. auf den folgenden Websites:
+
+* Data Guard-Konzepte und -Administration
++
+link:https://docs.oracle.com/en/database/oracle/oracle-database/19/sbydb/index.html#Oracle%C2%AE-Data-Guard["https://docs.oracle.com/en/database/oracle/oracle-database/19/sbydb/index.html#Oracle%C2%AE-Data-Guard"^]
+
+* WP-7357: Oracle Database Deployment on EC2 und FSX Best Practices
++
+link:https://docs.netapp.com/us-en/netapp-solutions/databases/aws_ora_fsx_ec2_deploy_intro.html["https://docs.netapp.com/us-en/netapp-solutions/databases/aws_ora_fsx_ec2_deploy_intro.html"^]
+
+* Amazon FSX für NetApp ONTAP
++
+link:https://aws.amazon.com/fsx/netapp-ontap/["https://aws.amazon.com/fsx/netapp-ontap/"^]
+
+* Amazon EC2
++
+link:https://aws.amazon.com/pm/ec2/?trk=36c6da98-7b20-48fa-8225-4784bced9843&sc_channel=ps&s_kwcid=AL!4422!3!467723097970!e!!g!!aws%20ec2&ef_id=Cj0KCQiA54KfBhCKARIsAJzSrdqwQrghn6I71jiWzSeaT9Uh1-vY-VfhJixF-xnv5rWwn2S7RqZOTQ0aAh7eEALw_wcB:G:s&s_kwcid=AL!4422!3!467723097970!e!!g!!aws%20ec2["https://aws.amazon.com/pm/ec2/?trk=36c6da98-7b20-48fa-8225-4784bced9843&sc_channel=ps&s_kwcid=AL!4422!3!467723097970!e!!g!!aws%20ec2&ef_id=Cj0KCQiA54KfBhCKARIsAJzSrdqwQrghn6I71jiWzSeaT9Uh1-vY-VfhJixF-xnv5rWwn2S7RqZOTQ0aAh7eEALw_wcB:G:s&s_kwcid=AL!4422!3!467723097970!e!!g!!aws%20ec2"^]
+
+
