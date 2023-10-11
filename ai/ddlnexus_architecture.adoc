@@ -1,0 +1,44 @@
+---
+sidebar: sidebar 
+permalink: ai/ddlnexus_architecture.html 
+keywords: NetApp AI, AI, Artificial Intelligence, ML, Machine Learning, NVIDIA, Hybrid, Hybrid Cloud, Hybrid Multicloud, Cloud, AWS, Amazon, Amazon Web Services, FSx for NetApp ONTAP, FSx, NetApp ONTAP, FlexCache, SnapMirror, BlueXP 
+summary: MLOps für die Hybrid-Multi-Cloud mit Domino Data Lab und NetApp – Architektur 
+---
+= Der Netapp Architektur Sind
+:hardbreaks:
+:allow-uri-read: 
+:nofooter: 
+:icons: font
+:linkattrs: 
+:imagesdir: ./../media/
+
+
+link:ddlnexus_technology_overview.html["Zurück: Technologischer Überblick."]
+
+[role="lead"]
+Diese Lösung kombiniert die Planungsfunktionen für Hybrid-Multi-Cloud-Workloads von Domino Nexus mit NetApp Datenservices in einer einheitlichen Hybrid-Cloud-MLOps-Plattform. Einzelheiten hierzu finden Sie in der folgenden Tabelle.
+
+|===
+| Komponente | Name | Umgebung 
+
+
+| MLOPS-Kontrollebene | link:https://domino.ai/platform/nexus["Domino Enterprise AI Platform mit Domino Nexus"] | AWS 
+
+
+| MLOps Platform Computing-Umgebungen beschrieben | link:https://docs.dominodatalab.com/en/latest/admin_guide/5781ea/data-planes/["Domino Nexus Datenebenen"] | AWS, lokales Datacenter 
+
+
+| On-Premises-Computing-Plattform | link:https://kubernetes.io["Kubernetes"] Mit link:https://docs.netapp.com/us-en/trident/index.html["NetApp Astra Trident"] | Lokalen Datacenter 
+
+
+| Cloud-Computing-Plattform | link:https://aws.amazon.com/eks/["Amazon Elastic Kubernetes Service (EKS)"] Mit link:https://docs.netapp.com/us-en/trident/index.html["NetApp Astra Trident"] | AWS 
+
+
+| On-Premises-Datenplattform | link:https://www.netapp.com/data-storage/["NetApp Storage Appliance"] Betrieben von link:https://www.netapp.com/data-management/ontap-data-management-software/["NetApp ONTAP"] | Lokalen Datacenter 
+
+
+| Cloud-Datenplattform | link:https://aws.amazon.com/fsx/netapp-ontap/["Amazon FSX für NetApp ONTAP"] | AWS 
+|===
+image:ddlnexus_image1.png["Fehler: Fehlendes Grafikbild"]
+
+link:ddlnexus_initial_setup.html["Weiter: Ersteinrichtung."]
