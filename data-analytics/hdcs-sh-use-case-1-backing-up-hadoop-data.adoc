@@ -1,6 +1,6 @@
 ---
 sidebar: sidebar 
-permalink: data-analytics/hdcs-sh-use-case-1--backing-up-hadoop-data.html 
+permalink: data-analytics/hdcs-sh-use-case-1-backing-up-hadoop-data.html 
 keywords: use case 2, Hadoop repository, dr, disaster recovery 
 summary: In diesem Szenario verfügt der Kunde über ein großes Hadoop Repository vor Ort, für Disaster-Recovery-Zwecke sollten die Daten gesichert werden. Die aktuelle Backup-Lösung des Kunden ist jedoch kostspielig und mit einem langen Backup-Fenster von mehr als 24 Stunden verbunden. 
 ---
@@ -40,7 +40,7 @@ Zu den wesentlichen Anforderungen und Herausforderungen dieses Anwendungsfalls g
 
 
 
-== Bestehende Backup-Lösung des Kunden
+== Vorhandene Backup-Lösung des Kundensx
 
 Die Abbildung unten zeigt die ursprüngliche native Hadoop Backup-Lösung.
 
@@ -76,7 +76,7 @@ Auf der Grundlage dieser Herausforderungen und Anforderungen und unter Berücksi
 
 === Lösung A
 
-Lösung A fügt das in-Place-Analysemodul zum Backup-Hadoop-Cluster hinzu. Damit können sekundäre Backups in NetApp NFS-Storage-Systemen erstellt werden, wodurch die Tape-Anforderungen entfallen werden, wie in der Abbildung unten dargestellt.
+In Lösung A sendet der Hadoop Backup-Cluster die sekundären Backups an NetApp NFS-Storage-Systeme, wodurch die Tape-Anforderungen, wie in der Abbildung unten dargestellt, eliminiert werden.
 
 image:hdcs-sh-image6.png["Fehler: Fehlendes Grafikbild"]
 
@@ -91,7 +91,7 @@ Zu den detaillierten Aufgaben für Solution A gehören:
 NOTE: Der Hadoop Snapshot schützt die Daten vor der Produktion auf das Hadoop Backup-Cluster.
 
 * Der NetApp ONTAP Storage Controller liefert ein NFS-exportiertes Volume, das dem Hadoop Backup-Cluster bereitgestellt wird.
-* Durch Ausführen des `Hadoop distcp` Befehl mittels MapReduce und multiplen Mappern werden die Analysedaten über das in-Place-Analysemodul vor dem Hadoop Backup-Cluster in NFS geschützt.
+* Durch Ausführen des `Hadoop distcp` Mit MapReduce und mehreren Mappern sind die Analysedaten vom Backup-Hadoop-Cluster zu NFS gesichert.
 +
 Nachdem die Daten im NFS auf dem NetApp Storage-System gespeichert wurden, werden mithilfe von NetApp Snapshot, SnapRestore und FlexClone Technologien die Hadoop Daten nach Bedarf gesichert, wiederhergestellt und dupliziert.
 
@@ -121,7 +121,7 @@ In dieser Lösung können SAN-Festplatten von ONTAP anstelle von JBOD verwendet 
 
 === Lösung B
 
-Lösung B fügt dem Hadoop Cluster in der Produktionsumgebung das in-Place-Analysemodul hinzu, wodurch der Bedarf an einem Backup-Hadoop-Cluster entfällt, wie in der Abbildung unten dargestellt.
+Lösung B fügt dem Hadoop Cluster in der Produktionsumgebung NFS Volume hinzu, wodurch der Hadoop Cluster für Backups nicht mehr benötigt wird, wie in der Abbildung unten dargestellt.
 
 image:hdcs-sh-image7.png["Fehler: Fehlendes Grafikbild"]
 
@@ -129,7 +129,7 @@ Zu den detaillierten Aufgaben für Lösung B gehören:
 
 * Der NetApp ONTAP Storage Controller stellt den NFS-Export in das produktive Hadoop Cluster bereit.
 +
-Hadoop als native Cloud `hadoop distcp` Befehl schützt die Hadoop Daten vom Produktions-Cluster HDFS durch NFS über das in-Place-Analysemodul.
+Hadoop als native Cloud `hadoop distcp` Mit dem Befehl werden Hadoop Daten aus dem Produktionscluster HDFS zu NFS gesichert.
 
 * Nachdem die Daten im NFS auf dem NetApp Storage-System gespeichert wurden, werden die Snapshot, SnapRestore und FlexClone Technologien verwendet, um die Hadoop Daten nach Bedarf zu sichern, wiederherzustellen und zu duplizieren.
 
@@ -168,4 +168,4 @@ Lösung C bietet u. a. folgende Vorteile:
 * Ermöglicht Enterprise Management-Funktionen über NetApp Tools.
 
 
-link:hdcs-sh-use-case-2--backup-and-disaster-recovery-from-the-cloud-to-on-premises.html["Als Nächstes: Anwendungsfall 2: Backup und Disaster Recovery von der Cloud in On-Premises-Systeme."]
+link:hdcs-sh-use-case-2-backup-and-disaster-recovery-from-the-cloud-to-on-premises.html["Als Nächstes: Anwendungsfall 2: Backup und Disaster Recovery von der Cloud in On-Premises-Systeme."]
