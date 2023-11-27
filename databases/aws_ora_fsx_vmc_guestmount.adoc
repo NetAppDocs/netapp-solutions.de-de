@@ -1,0 +1,1911 @@
+---
+sidebar: sidebar 
+permalink: databases/aws_ora_fsx_vmc_guestmount.html 
+keywords: Database, Oracle, AWS, FSx ONTAP, VMC, VMware 
+summary: Die Lösung bietet einen Überblick und Details zur Oracle-Implementierung und -Sicherung in VMware Cloud in AWS mit FSX ONTAP als primären Datenbank-Storage und Oracle-Datenbank, die im eigenständigen Neustart mit asm als Volume-Manager konfiguriert ist. 
+---
+= TR-4979: Vereinfachtes, selbstverwaltetes Oracle in VMware Cloud on AWS mit FSX ONTAP über Gast-Mounted
+:hardbreaks:
+:allow-uri-read: 
+:nofooter: 
+:icons: font
+:linkattrs: 
+:imagesdir: ./../media/
+
+
+Allen Cao, Niyaz Mohamed, NetApp
+
+
+
+== Zweck
+
+Unternehmen nutzen bereits seit Jahrzehnten Oracle auf VMware in privaten Datacentern. VMware Cloud (VMC) für AWS stellt eine Push-Button-Lösung bereit, um die softwaredefinierte Datacenter-Software (SDDC) der Enterprise-Klasse von VMware in die dedizierte, flexible Bare-Metal-Infrastruktur der AWS Cloud zu integrieren. AWS FSX ONTAP bietet Premium-Speicher für VMC SDDC und eine Data Fabric, mit der Kunden geschäftskritische Anwendungen wie Oracle in privaten, öffentlichen und hybriden Cloud-Umgebungen auf vSphere®-Basis mit optimiertem Zugriff auf AWS-Services ausführen können. Unabhängig davon, ob es sich um einen vorhandenen oder neuen Oracle-Workload handelt, bietet VMC on AWS eine vertraute, vereinfachte und selbst gemanagte Oracle-Umgebung auf VMware mit allen Vorteilen der AWS-Cloud und ermöglicht gleichzeitig das gesamte Plattformmanagement und die Optimierung auf VMware.
+
+In dieser Dokumentation wird die Bereitstellung und der Schutz einer Oracle-Datenbank in einer VMC-Umgebung mit Amazon FSX ONTAP als primärem Datenbank-Storage demonstriert. Die Oracle-Datenbank kann in VMC im FSX Storage als direkte LUNs mit Gastzugriff auf VM oder über NFS bereitgestellte VMware VMDK-Datenspeicher-Festplatten bereitgestellt werden. Der Schwerpunkt dieses technischen Berichts liegt auf der Implementierung der Oracle-Datenbank als direkter, über Gäste eingebauter FSX Storage auf VMs im VMC-Cluster mit dem iSCSI-Protokoll und Oracle ASM. Wir zeigen außerdem, wie das UI-Tool NetApp SnapCenter zum Sichern, Wiederherstellen und Klonen einer Oracle Datenbank für Entwicklungs- und Testzwecke oder andere Anwendungsfälle für den Storage-effizienten Datenbankbetrieb in der VMC auf AWS verwendet wird.
+
+Diese Lösung eignet sich für folgende Anwendungsfälle:
+
+* Oracle-Datenbankimplementierung in VMC auf AWS mit Amazon FSX ONTAP als primärem Datenbank-Storage
+* Backup und Wiederherstellung von Oracle-Datenbanken in VMC auf AWS mit dem Tool NetApp SnapCenter
+* Klon einer Oracle-Datenbank für Entwicklung/Test oder andere Anwendungsfälle in VMC auf AWS mit dem Tool NetApp SnapCenter
+
+
+
+
+== Zielgruppe
+
+Diese Lösung ist für folgende Personen gedacht:
+
+* Ein DBA, der Oracle in VMC auf AWS mit Amazon FSX ONTAP implementieren möchte
+* Ein Lösungsarchitekt für Datenbanken, der Oracle-Workloads in VMC in der AWS-Cloud testen möchte
+* Ein Storage-Administrator, der eine in VMC auf AWS mit Amazon FSX ONTAP implementierte Oracle-Datenbank implementieren und managen möchte
+* Ein Applikationseigentümer, der eine Oracle-Datenbank in VMC in der AWS-Cloud einrichten möchte
+
+
+
+
+== Test- und Validierungsumgebung der Lösung
+
+Das Testen und Validieren dieser Lösung wurde in einer Lab-Umgebung mit VMC auf AWS durchgeführt, die möglicherweise nicht mit der endgültigen Implementierungsumgebung übereinstimmt. Weitere Informationen finden Sie im Abschnitt <<Key Factors for Deployment Consideration>>.
+
+
+
+=== Der Netapp Architektur Sind
+
+image::aws_ora_fsx_vmc_architecture.png[Dieses Bild zeigt ein detailliertes Bild der Oracle-Implementierungskonfiguration in AWS Public Cloud mit iSCSI und ASM.]
+
+
+
+=== Hardware- und Softwarekomponenten
+
+[cols="33%, 33%, 33%"]
+|===
+
+
+3+| *Hardware* 
+
+
+| FSX ONTAP-Storage | Aktuelle Version von AWS angeboten | Ein FSX ONTAP HA-Cluster in der gleichen VPC und Verfügbarkeitszone wie VMC 
+
+
+| VMC SDDC-Cluster | Amazon EC2 i3.Metal Single Node/Intel Xeon E5-2686 CPU, 36 Cores/512 GB RAM | 10.37 TB vSAN Storage 
+
+
+3+| *Software* 
+
+
+| Redhat Linux | RHEL-8.6, 4.18.0-372.9.1.el8.x86_64-Kernel | Bereitstellung der RedHat Subscription für Tests 
+
+
+| Windows Server | 2022 Standard, 10.0.20348 Build 20348 | Hosting von SnapCenter-Servern 
+
+
+| Oracle Grid Infrastructure | Version 19.18 | RU-Patch p34762026_190000_Linux-x86-64.zip angewendet 
+
+
+| Oracle Datenbank | Version 19.18 | RU-Patch p34765931_190000_Linux-x86-64.zip angewendet 
+
+
+| Oracle OPatch | Version 12.2.0.1.36 | Neuestes Patch p6880880_190000_Linux-x86-64.zip 
+
+
+| SnapCenter Server | Version 4.9P1 | Workgroup-Bereitstellung 
+
+
+| BlueXP Backup und Recovery für VMs | Version 1.0 | Bereitgestellt als eine ova vSphere Plugin VM 
+
+
+| VMware vSphere | Version 8.0.1.00300 | VMware Tools, Version: 11365 - Linux, 12352 - Windows 
+
+
+| Öffnen Sie JDK | Version java-1.8.0-openjdk.x86_64 | Anforderungen für SnapCenter Plugin auf DB VMs 
+|===
+
+
+=== Konfiguration der Oracle-Datenbank in VMC auf AWS
+
+[cols="33%, 33%, 33%"]
+|===
+
+
+3+|  
+
+
+| *Server* | * Datenbank* | *DB-Speicher* 
+
+
+| ora_01 | Cdb1(cdb1_pdb1,cdb1_pdb2,cdb1_pdb3) | VMDK-Datenspeicher auf FSX ONTAP 
+
+
+| ora_01 | Cdb2(cdb2_pdb) | VMDK-Datenspeicher auf FSX ONTAP 
+
+
+| ora_02 | Cdb3(cdb3_pdb1,cdb3_pdb2,cdb3_pdb3) | Direkte über Gäste montierte FSX ONTAP 
+
+
+| ora_02 | Cdb4(cdb4_pdb) | Direkte über Gäste montierte FSX ONTAP 
+|===
+
+
+=== Wichtige Faktoren für die Implementierung
+
+* *FSX zu VMC-Konnektivität.* Wenn Sie Ihr SDDC auf VMware Cloud auf AWS bereitstellen, wird es innerhalb eines AWS-Kontos und einer VPC erstellt, die Ihrer Organisation zugewiesen ist und von VMware verwaltet wird. Sie müssen das SDDC auch mit einem AWS-Konto, dem AWS-Kundenkonto, verbinden. Über diese Verbindung kann Ihr SDDC auf die AWS-Services zugreifen, die zu Ihrem Kundenkonto gehören. FSX for ONTAP ist ein in Ihrem Kundenkonto bereitgestellter AWS-Service. Sobald das VMC SDDC mit Ihrem Kundenkonto verbunden ist, ist FSX Storage für die VMs im VMC SDDC für direkte Gastmontage verfügbar.
+* *FSX Storage HA Cluster Single- oder Multi-Zone-Implementierung.* bei diesen Tests und Validierungen haben wir einen FSX HA-Cluster in einer einzelnen AWS Verfügbarkeitszone implementiert. NetApp empfiehlt außerdem die Implementierung von FSX für NetApp ONTAP und VMware Cloud on AWS in derselben Verfügbarkeitszone, um eine bessere Performance zu erzielen und Datentransfergebühren zwischen Verfügbarkeitszonen zu vermeiden.
+* *FSX Storage-Cluster-Sizing.* ein Amazon FSX for ONTAP Storage-Dateisystem bietet bis zu 160,000 RAW SSD IOPS, einen Durchsatz von bis zu 4 Gbit/s und eine maximale Kapazität von 192 tib. Sie können das Cluster jedoch in Bezug auf die bereitgestellten IOPS, den Durchsatz und die Storage-Grenze (mindestens 1,024 gib) dimensionieren, basierend auf Ihren tatsächlichen Anforderungen zum Zeitpunkt der Implementierung. Die Kapazität lässt sich spontan dynamisch anpassen, ohne dass die Applikationsverfügbarkeit beeinträchtigt wird.
+* *Oracle Daten- und Protokolllayout.* in unseren Tests und Validierungen haben wir jeweils zwei ASM-Datenträgergruppen für Daten und Logs eingesetzt. Innerhalb der +DATA asm-Festplattengruppe haben wir vier LUNs in einem Daten-Volume bereitgestellt. Innerhalb der +LOGS asm-Datenträgergruppe haben wir zwei LUNs in einem Logvolumen bereitgestellt. Im Allgemeinen bieten mehrere in einem Amazon FSX für ONTAP Volume bereitgestellte LUNs eine bessere Performance.
+* *ISCSI-Konfiguration.* die Datenbank-VMs im VMC SDDC verbinden sich mit FSX Speicher mit dem iSCSI-Protokoll. Es ist wichtig, die höchste I/O-Durchsatzanforderung der Oracle-Datenbank zu ermitteln, indem der Oracle AWR-Bericht sorgfältig analysiert wird, um die Anforderungen an den Anwendungs- und iSCSI-Datenverkehr und den Durchsatz zu ermitteln. NetApp empfiehlt außerdem, beiden FSX iSCSI-Endpunkten vier iSCSI-Verbindungen mit einer ordnungsgemäß konfigurierten Multipath-Konfiguration zuzuweisen.
+* *Oracle ASM-Redundanzebene, die für jede von Ihnen erstellte Oracle ASM-Datenträgergruppe verwendet werden kann.* Da FSX ONTAP den Speicher bereits auf der FSX-Clusterebene spiegelt, sollten Sie externe Redundanz verwenden, was bedeutet, dass die Option Oracle ASM nicht erlaubt, den Inhalt der Datenträgergruppe zu spiegeln.
+* *Datenbanksicherung.* NetApp bietet eine SnapCenter Software Suite für Datenbank-Backup, -Wiederherstellung und -Klonen mit einer benutzerfreundlichen Benutzeroberfläche. NetApp empfiehlt die Implementierung eines solchen Management Tools, damit Snapshot Backups (unter einer Minute), schnelle Datenbank-Restores (in Minuten) und Datenbankklone möglich sind.
+
+
+
+
+== Lösungsimplementierung
+
+Die folgenden Abschnitte enthalten Schritt-für-Schritt-Verfahren für die Implementierung von Oracle 19c in VMC auf AWS mit direkt eingebautem FSX ONTAP-Storage auf DB-VM in einem einzelnen Knoten Neustarten der Konfiguration mit Oracle ASM als Datenbank-Volume-Manager.
+
+
+
+=== Voraussetzungen für die Bereitstellung
+
+[%collapsible]
+====
+Die Bereitstellung erfordert die folgenden Voraussetzungen.
+
+. Es wurde ein softwaredefiniertes Datacenter (SDDC) erstellt, das VMware Cloud auf AWS nutzt. Eine detaillierte Anleitung zum Erstellen eines SDDC in VMC finden Sie in der VMware-Dokumentation link:https://docs.vmware.com/en/VMware-Cloud-on-AWS/services/com.vmware.vmc-aws.getting-started/GUID-3D741363-F66A-4CF9-80EA-AA2866D1834E.html["Erste Schritte mit VMware Cloud on AWS"^]
+. Es wurde ein AWS Konto eingerichtet, und die erforderlichen VPC und Netzwerksegmente wurden in Ihrem AWS Konto erstellt. Das AWS Konto ist mit Ihrem VMC SDDC verknüpft.
+. Implementieren Sie über die AWS EC2 Konsole einen Amazon FSX for ONTAP Storage HA-Cluster, um die Oracle Database Volumes zu hosten. Wenn Sie mit der Bereitstellung von FSX-Speicher nicht vertraut sind, lesen Sie die Dokumentation link:https://docs.aws.amazon.com/fsx/latest/ONTAPGuide/creating-file-systems.html["Erstellen von FSX für ONTAP-Dateisysteme"^] Schritt-für-Schritt-Anleitungen.
+. Der oben genannte Schritt kann mit dem folgenden Terraform Automatisierungs-Toolkit durchgeführt werden, das eine EC2-Instanz als Jump-Host für SDDC beim VMC-Zugriff über SSH und ein FSX Filesystem erstellt. Lesen Sie die Anweisungen sorgfältig durch, und ändern Sie die Variablen vor der Ausführung entsprechend Ihrer Umgebung.
++
+....
+git clone https://github.com/NetApp-Automation/na_aws_fsx_ec2_deploy.git
+....
+. Erstellen Sie VMs im VMware SDDC auf AWS, um Ihre Oracle-Umgebung zu hosten und in VMC bereitzustellen. In unserer Demonstration haben wir zwei Linux VMs als Oracle DB Server, einen Windows Server für den SnapCenter Server und einen optionalen Linux-Server als Ansible Controller für die automatisierte Oracle-Installation oder -Konfiguration erstellt, falls gewünscht. Im Folgenden sehen Sie eine Momentaufnahme der Lab-Umgebung für die Lösungsvalidierung.
++
+image:aws_ora_fsx_vmc_vm_08.png["Screenshot mit VMC SDDC-Testumgebung"]
+
+. Optional bietet NetApp auch mehrere Automatisierungs-Toolkits zur Ausführung von Oracle-Bereitstellung und -Konfiguration, falls zutreffend. Siehe link:https://docs.netapp.com/us-en/netapp-solutions/databases/index.html["Toolkits für DB-Automatisierung"^] Finden Sie weitere Informationen.
+
+
+
+NOTE: Stellen Sie sicher, dass Sie mindestens 50G im Oracle VM Root-Volume zugewiesen haben, damit ausreichend Speicherplatz für das Stage von Oracle Installationsdateien zur Verfügung steht.
+
+====
+
+
+=== DB VM-Kernel-Konfiguration
+
+[%collapsible]
+====
+Melden Sie sich bei den bereitgestellten Voraussetzungen als Admin-Benutzer über SSH bei der Oracle VM an und sudo beim Root-Benutzer, um den Linux-Kernel für die Oracle-Installation zu konfigurieren. Oracle-Installationsdateien können in einem AWS S3-Bucket bereitgestellt und in die VM übertragen werden.
+
+. Erstellen Sie ein Staging-Verzeichnis `/tmp/archive` Und legen Sie die fest `777` Berechtigung.
++
+[source, cli]
+----
+mkdir /tmp/archive
+----
++
+[source, cli]
+----
+chmod 777 /tmp/archive
+----
+. Laden Sie die Oracle-Binärinstallationsdateien und andere erforderliche rpm-Dateien herunter, und stellen Sie sie auf den bereit `/tmp/archive` Verzeichnis.
++
+Siehe die folgende Liste der Installationsdateien, die in aufgeführt sind `/tmp/archive` Auf der DB VM.
+
++
+....
+
+[admin@ora_02 ~]$ ls -l /tmp/archive/
+total 10539364
+-rw-rw-r--. 1 admin  admin         19112 Oct  4 17:04 compat-libcap1-1.10-7.el7.x86_64.rpm
+-rw-rw-r--. 1 admin  admin    3059705302 Oct  4 17:10 LINUX.X64_193000_db_home.zip
+-rw-rw-r--. 1 admin  admin    2889184573 Oct  4 17:11 LINUX.X64_193000_grid_home.zip
+-rw-rw-r--. 1 admin  admin        589145 Oct  4 17:04 netapp_linux_unified_host_utilities-7-1.x86_64.rpm
+-rw-rw-r--. 1 admin  admin         31828 Oct  4 17:04 oracle-database-preinstall-19c-1.0-2.el8.x86_64.rpm
+-rw-rw-r--. 1 admin  admin    2872741741 Oct  4 17:12 p34762026_190000_Linux-x86-64.zip
+-rw-rw-r--. 1 admin  admin    1843577895 Oct  4 17:13 p34765931_190000_Linux-x86-64.zip
+-rw-rw-r--. 1 admin  admin     124347218 Oct  4 17:13 p6880880_190000_Linux-x86-64.zip
+-rw-rw-r--. 1 admin  admin        257136 Oct  4 17:04 policycoreutils-python-utils-2.9-9.el8.noarch.rpm
+[admin@ora_02 ~]$
+
+....
+. Installieren Sie Oracle 19c RPM, das die meisten Anforderungen an die Kernel-Konfiguration erfüllt.
++
+[source, cli]
+----
+yum install /tmp/archive/oracle-database-preinstall-19c-1.0-2.el8.x86_64.rpm
+----
+. Laden Sie die fehlenden Dateien herunter, und installieren Sie sie `compat-libcap1` Unter Linux 8.
++
+[source, cli]
+----
+yum install /tmp/archive/compat-libcap1-1.10-7.el7.x86_64.rpm
+----
+. Laden Sie von NetApp die NetApp Host Utilities herunter und installieren Sie sie.
++
+[source, cli]
+----
+yum install /tmp/archive/netapp_linux_unified_host_utilities-7-1.x86_64.rpm
+----
+. Installieren `policycoreutils-python-utils`.
++
+[source, cli]
+----
+yum install /tmp/archive/policycoreutils-python-utils-2.9-9.el8.noarch.rpm
+----
+. Installieren Sie Open JDK Version 1.8.
++
+[source, cli]
+----
+yum install java-1.8.0-openjdk.x86_64
+----
+. Installieren Sie iSCSI-Initiator-Utils.
++
+[source, cli]
+----
+yum install iscsi-initiator-utils
+----
+. Installieren Sie sg3_utils.
++
+[source, cli]
+----
+yum install sg3_utils
+----
+. Installieren Sie device-Mapper-Multipath.
++
+[source, cli]
+----
+yum install device-mapper-multipath
+----
+. Deaktivieren Sie transparente hugepages im aktuellen System.
++
+[source, cli]
+----
+echo never > /sys/kernel/mm/transparent_hugepage/enabled
+----
++
+[source, cli]
+----
+echo never > /sys/kernel/mm/transparent_hugepage/defrag
+----
+. Fügen Sie die folgenden Zeilen in hinzu `/etc/rc.local` Zu deaktivieren `transparent_hugepage` Nach dem Neustart.
++
+[source, cli]
+----
+vi /etc/rc.local
+----
++
+....
+  # Disable transparent hugepages
+          if test -f /sys/kernel/mm/transparent_hugepage/enabled; then
+            echo never > /sys/kernel/mm/transparent_hugepage/enabled
+          fi
+          if test -f /sys/kernel/mm/transparent_hugepage/defrag; then
+            echo never > /sys/kernel/mm/transparent_hugepage/defrag
+          fi
+....
+. Deaktivieren sie selinux, indem Sie ändern `SELINUX=enforcing` Bis `SELINUX=disabled`. Sie müssen den Host neu starten, damit die Änderung wirksam wird.
++
+[source, cli]
+----
+vi /etc/sysconfig/selinux
+----
+. Fügen Sie die folgenden Zeilen zu hinzu `limit.conf` Um die Dateibeschreibungsgrenze und die Stapelgröße festzulegen.
++
+[source, cli]
+----
+vi /etc/security/limits.conf
+----
++
+....
+
+*               hard    nofile          65536
+*               soft    stack           10240
+....
+. Fügen Sie Swap-Speicherplatz zur DB VM hinzu, wenn kein Swap-Speicherplatz mit diesem Befehl konfiguriert ist: link:https://aws.amazon.com/premiumsupport/knowledge-center/ec2-memory-swap-file/["Wie weisen ich Speicher zu, um durch Verwendung einer Auslagerungsdatei als Auslagerungsspeicher in einer Amazon EC2 Instanz zu arbeiten?"^] Die genaue Menge des zu addieren Speicherplatzes hängt von der Größe des RAM bis zu 16G ab.
+. Ändern `node.session.timeo.replacement_timeout` Im `iscsi.conf` Konfigurationsdatei von 120 bis 5 Sekunden.
++
+[source, cli]
+----
+vi /etc/iscsi/iscsid.conf
+----
+. Aktivieren und starten Sie den iSCSI-Service auf der EC2-Instanz.
++
+[source, cli]
+----
+systemctl enable iscsid
+----
++
+[source, cli]
+----
+systemctl start iscsid
+----
+. Rufen Sie die iSCSI-Initiatoradresse ab, die für die Datenbank-LUN-Zuordnung verwendet werden soll.
++
+[source, cli]
+----
+cat /etc/iscsi/initiatorname.iscsi
+----
+. Fügen Sie die asm-Gruppen für asm-Verwaltungsbenutzer (oracle) hinzu.
++
+[source, cli]
+----
+groupadd asmadmin
+----
++
+[source, cli]
+----
+groupadd asmdba
+----
++
+[source, cli]
+----
+groupadd asmoper
+----
+. Ändern Sie den oracle-Benutzer, um asm-Gruppen als sekundäre Gruppen hinzuzufügen (der oracle-Benutzer sollte nach der RPM-Installation von Oracle vor der Installation erstellt worden sein).
++
+[source, cli]
+----
+usermod -a -G asmadmin oracle
+----
++
+[source, cli]
+----
+usermod -a -G asmdba oracle
+----
++
+[source, cli]
+----
+usermod -a -G asmoper oracle
+----
+. Stoppen und deaktivieren Sie die Linux-Firewall, wenn sie aktiv ist.
++
+[source, cli]
+----
+systemctl stop firewalld
+----
++
+[source, cli]
+----
+systemctl disable firewalld
+----
+. Aktivieren Sie passwortloses Sudo für Admin-Benutzer durch Entkommentieren `# %wheel  ALL=(ALL)       NOPASSWD: ALL` Zeile in Datei /etc/sudoers. Ändern Sie die Dateiberechtigung, um die Bearbeitung vorzunehmen.
++
+[source, cli]
+----
+chmod 640 /etc/sudoers
+----
++
+[source, cli]
+----
+vi /etc/sudoers
+----
++
+[source, cli]
+----
+chmod 440 /etc/sudoers
+----
+. EC2-Instanz neu booten
+
+
+====
+
+
+=== Bereitstellung und Zuordnung von FSX ONTAP-LUNs zur DB-VM
+
+[%collapsible]
+====
+Stellen Sie drei Volumes über die Befehlszeile bereit, indem Sie sich beim FSX Cluster als fsxadmin-Benutzer über ssh und FSX Cluster-Management-IP anmelden. Erstellen Sie LUNs innerhalb der Volumes, um die Binärdateien, Daten und Protokolldateien der Oracle-Datenbank zu hosten.
+
+. Melden Sie sich über SSH als Benutzer von fsxadmin am FSX-Cluster an.
++
+[source, cli]
+----
+ssh fsxadmin@10.49.0.74
+----
+. Führen Sie den folgenden Befehl aus, um ein Volume für die Oracle-Binärdatei zu erstellen.
++
+[source, cli]
+----
+vol create -volume ora_02_biny -aggregate aggr1 -size 50G -state online  -type RW -snapshot-policy none -tiering-policy snapshot-only
+----
+. Führen Sie den folgenden Befehl aus, um ein Volume für Oracle-Daten zu erstellen.
++
+[source, cli]
+----
+vol create -volume ora_02_data -aggregate aggr1 -size 100G -state online  -type RW -snapshot-policy none -tiering-policy snapshot-only
+----
+. Führen Sie den folgenden Befehl aus, um ein Volume für Oracle-Protokolle zu erstellen.
++
+[source, cli]
+----
+vol create -volume ora_02_logs -aggregate aggr1 -size 100G -state online  -type RW -snapshot-policy none -tiering-policy snapshot-only
+----
+. Validieren der erstellten Volumes
++
+[source, cli]
+----
+vol show ora*
+----
++
+Ausgabe vom Befehl:
+
++
+....
+FsxId0c00cec8dad373fd1::> vol show ora*
+Vserver   Volume       Aggregate    State      Type       Size  Available Used%
+--------- ------------ ------------ ---------- ---- ---------- ---------- -----
+nim       ora_02_biny  aggr1        online     RW         50GB    22.98GB   51%
+nim       ora_02_data  aggr1        online     RW        100GB    18.53GB   80%
+nim       ora_02_logs  aggr1        online     RW         50GB     7.98GB   83%
+....
+. Erstellen Sie eine binäre LUN innerhalb des Datenbank-Binärvolumes.
++
+[source, cli]
+----
+lun create -path /vol/ora_02_biny/ora_02_biny_01 -size 40G -ostype linux
+----
+. Erstellen Sie Daten-LUNs im Datenbank-Daten-Volume.
++
+[source, cli]
+----
+lun create -path /vol/ora_02_data/ora_02_data_01 -size 20G -ostype linux
+----
++
+[source, cli]
+----
+lun create -path /vol/ora_02_data/ora_02_data_02 -size 20G -ostype linux
+----
++
+[source, cli]
+----
+lun create -path /vol/ora_02_data/ora_02_data_03 -size 20G -ostype linux
+----
++
+[source, cli]
+----
+lun create -path /vol/ora_02_data/ora_02_data_04 -size 20G -ostype linux
+----
+. Erstellen Sie Protokoll-LUNs im Datenbank-Protokoll-Volume.
++
+[source, cli]
+----
+lun create -path /vol/ora_02_logs/ora_02_logs_01 -size 40G -ostype linux
+----
++
+[source, cli]
+----
+lun create -path /vol/ora_02_logs/ora_02_logs_02 -size 40G -ostype linux
+----
+. Erstellen Sie eine Initiatorgruppe für die EC2-Instanz, wobei der Initiator aus Schritt 14 der obigen EC2-Kernel-Konfiguration abgerufen wird.
++
+[source, cli]
+----
+igroup create -igroup ora_02 -protocol iscsi -ostype linux -initiator iqn.1994-05.com.redhat:f65fed7641c2
+----
+. Ordnen Sie die LUNs der oben erstellten Initiatorgruppe zu. Erhöhen Sie die LUN-ID für jede zusätzliche LUN sequenziell.
++
+[source, cli]
+----
+lun map -path /vol/ora_02_biny/ora_02_biny_01 -igroup ora_02 -vserver svm_ora -lun-id 0
+lun map -path /vol/ora_02_data/ora_02_data_01 -igroup ora_02 -vserver svm_ora -lun-id 1
+lun map -path /vol/ora_02_data/ora_02_data_02 -igroup ora_02 -vserver svm_ora -lun-id 2
+lun map -path /vol/ora_02_data/ora_02_data_03 -igroup ora_02 -vserver svm_ora -lun-id 3
+lun map -path /vol/ora_02_data/ora_02_data_04 -igroup ora_02 -vserver svm_ora -lun-id 4
+lun map -path /vol/ora_02_logs/ora_02_logs_01 -igroup ora_02 -vserver svm_ora -lun-id 5
+lun map -path /vol/ora_02_logs/ora_02_logs_02 -igroup ora_02 -vserver svm_ora -lun-id 6
+----
+. Überprüfen Sie die LUN-Zuordnung.
++
+[source, cli]
+----
+mapping show
+----
++
+Es wird erwartet, dass dies wieder zutrifft:
+
++
+....
+FsxId0c00cec8dad373fd1::> mapping show
+  (lun mapping show)
+Vserver    Path                                      Igroup   LUN ID  Protocol
+---------- ----------------------------------------  -------  ------  --------
+nim        /vol/ora_02_biny/ora_02_u01_01            ora_02        0  iscsi
+nim        /vol/ora_02_data/ora_02_u02_01            ora_02        1  iscsi
+nim        /vol/ora_02_data/ora_02_u02_02            ora_02        2  iscsi
+nim        /vol/ora_02_data/ora_02_u02_03            ora_02        3  iscsi
+nim        /vol/ora_02_data/ora_02_u02_04            ora_02        4  iscsi
+nim        /vol/ora_02_logs/ora_02_u03_01            ora_02        5  iscsi
+nim        /vol/ora_02_logs/ora_02_u03_02            ora_02        6  iscsi
+....
+
+
+====
+
+
+=== DB-VM-Speicherkonfiguration
+
+[%collapsible]
+====
+Importieren und richten Sie nun den FSX ONTAP-Speicher für die Oracle Grid-Infrastruktur und Datenbankinstallation auf der VMC-Datenbank-VM ein.
+
+. Loggen Sie sich bei der DB VM über SSH als Admin-Benutzer mit Putty vom Windows Jump-Server ein.
+. FSX iSCSI-Endpunkte werden mithilfe einer der beiden SVM iSCSI-IP-Adressen ermittelt. Ändern Sie Ihre umgebungsspezifische Portaladresse.
++
+[source, cli]
+----
+sudo iscsiadm iscsiadm --mode discovery --op update --type sendtargets --portal 10.49.0.12
+----
+. Erstellen Sie iSCSI-Sitzungen, indem Sie sich bei jedem Ziel anmelden.
++
+[source, cli]
+----
+sudo iscsiadm --mode node -l all
+----
++
+Die erwartete Ausgabe des Befehls ist:
+
++
+....
+[ec2-user@ip-172-30-15-58 ~]$ sudo iscsiadm --mode node -l all
+Logging in to [iface: default, target: iqn.1992-08.com.netapp:sn.1f795e65c74911edb785affbf0a2b26e:vs.3, portal: 10.49.0.12,3260]
+Logging in to [iface: default, target: iqn.1992-08.com.netapp:sn.1f795e65c74911edb785affbf0a2b26e:vs.3, portal: 10.49.0.186,3260]
+Login to [iface: default, target: iqn.1992-08.com.netapp:sn.1f795e65c74911edb785affbf0a2b26e:vs.3, portal: 10.49.0.12,3260] successful.
+Login to [iface: default, target: iqn.1992-08.com.netapp:sn.1f795e65c74911edb785affbf0a2b26e:vs.3, portal: 10.49.0.186,3260] successful.
+....
+. Zeigen Sie eine Liste aktiver iSCSI-Sitzungen an und validieren Sie sie.
++
+[source, cli]
+----
+sudo iscsiadm --mode session
+----
++
+Geben Sie die iSCSI-Sitzungen wieder.
+
++
+....
+[ec2-user@ip-172-30-15-58 ~]$ sudo iscsiadm --mode session
+tcp: [1] 10.49.0.186:3260,1028 iqn.1992-08.com.netapp:sn.545a38bf06ac11ee8503e395ab90d704:vs.3 (non-flash)
+tcp: [2] 10.49.0.12:3260,1029 iqn.1992-08.com.netapp:sn.545a38bf06ac11ee8503e395ab90d704:vs.3 (non-flash)
+....
+. Vergewissern Sie sich, dass die LUNs in den Host importiert wurden.
++
+[source, cli]
+----
+sudo sanlun lun show
+----
++
+Dadurch wird eine Liste der Oracle LUNs aus FSX zurückgegeben.
+
++
+....
+
+[admin@ora_02 ~]$ sudo sanlun lun show
+controller(7mode/E-Series)/                                                  device          host                  lun
+vserver(cDOT/FlashRay)        lun-pathname                                   filename        adapter    protocol   size    product
+-------------------------------------------------------------------------------------------------------------------------------
+nim                           /vol/ora_02_logs/ora_02_u03_02                 /dev/sdo        host34     iSCSI      20g     cDOT
+nim                           /vol/ora_02_logs/ora_02_u03_01                 /dev/sdn        host34     iSCSI      20g     cDOT
+nim                           /vol/ora_02_data/ora_02_u02_04                 /dev/sdm        host34     iSCSI      20g     cDOT
+nim                           /vol/ora_02_data/ora_02_u02_03                 /dev/sdl        host34     iSCSI      20g     cDOT
+nim                           /vol/ora_02_data/ora_02_u02_02                 /dev/sdk        host34     iSCSI      20g     cDOT
+nim                           /vol/ora_02_data/ora_02_u02_01                 /dev/sdj        host34     iSCSI      20g     cDOT
+nim                           /vol/ora_02_biny/ora_02_u01_01                 /dev/sdi        host34     iSCSI      40g     cDOT
+nim                           /vol/ora_02_logs/ora_02_u03_02                 /dev/sdh        host33     iSCSI      20g     cDOT
+nim                           /vol/ora_02_logs/ora_02_u03_01                 /dev/sdg        host33     iSCSI      20g     cDOT
+nim                           /vol/ora_02_data/ora_02_u02_04                 /dev/sdf        host33     iSCSI      20g     cDOT
+nim                           /vol/ora_02_data/ora_02_u02_03                 /dev/sde        host33     iSCSI      20g     cDOT
+nim                           /vol/ora_02_data/ora_02_u02_02                 /dev/sdd        host33     iSCSI      20g     cDOT
+nim                           /vol/ora_02_data/ora_02_u02_01                 /dev/sdc        host33     iSCSI      20g     cDOT
+nim                           /vol/ora_02_biny/ora_02_u01_01                 /dev/sdb        host33     iSCSI      40g     cDOT
+
+....
+. Konfigurieren Sie die `multipath.conf` Datei mit folgenden Standard- und Blacklist-Einträgen.
++
+[source, cli]
+----
+sudo vi /etc/multipath.conf
+----
++
+Folgende Einträge hinzufügen:
+
++
+....
+defaults {
+    find_multipaths yes
+    user_friendly_names yes
+}
+
+blacklist {
+    devnode "^(ram|raw|loop|fd|md|dm-|sr|scd|st)[0-9]*"
+    devnode "^hd[a-z]"
+    devnode "^cciss.*"
+}
+....
+. Starten Sie den Multipath Service.
++
+[source, cli]
+----
+sudo systemctl start multipathd
+----
++
+Jetzt werden Multipath-Geräte in der angezeigt `/dev/mapper` Verzeichnis.
+
++
+....
+[ec2-user@ip-172-30-15-58 ~]$ ls -l /dev/mapper
+total 0
+lrwxrwxrwx 1 root root       7 Mar 21 20:13 3600a09806c574235472455534e68512d -> ../dm-0
+lrwxrwxrwx 1 root root       7 Mar 21 20:13 3600a09806c574235472455534e685141 -> ../dm-1
+lrwxrwxrwx 1 root root       7 Mar 21 20:13 3600a09806c574235472455534e685142 -> ../dm-2
+lrwxrwxrwx 1 root root       7 Mar 21 20:13 3600a09806c574235472455534e685143 -> ../dm-3
+lrwxrwxrwx 1 root root       7 Mar 21 20:13 3600a09806c574235472455534e685144 -> ../dm-4
+lrwxrwxrwx 1 root root       7 Mar 21 20:13 3600a09806c574235472455534e685145 -> ../dm-5
+lrwxrwxrwx 1 root root       7 Mar 21 20:13 3600a09806c574235472455534e685146 -> ../dm-6
+crw------- 1 root root 10, 236 Mar 21 18:19 control
+....
+. Melden Sie sich beim FSX ONTAP-Cluster als Benutzer von fsxadmin über SSH an, um die Seriennummer für jede LUN ab 6c574xxx abzurufen..., die HEX-Nummer beginnt mit 3600a0980, das ist die AWS-Anbieter-ID.
++
+[source, cli]
+----
+lun show -fields serial-hex
+----
++
+Und wie folgt zurückkehren:
+
++
+....
+FsxId02ad7bf3476b741df::> lun show -fields serial-hex
+vserver path                            serial-hex
+------- ------------------------------- ------------------------
+svm_ora /vol/ora_02_biny/ora_02_biny_01 6c574235472455534e68512d
+svm_ora /vol/ora_02_data/ora_02_data_01 6c574235472455534e685141
+svm_ora /vol/ora_02_data/ora_02_data_02 6c574235472455534e685142
+svm_ora /vol/ora_02_data/ora_02_data_03 6c574235472455534e685143
+svm_ora /vol/ora_02_data/ora_02_data_04 6c574235472455534e685144
+svm_ora /vol/ora_02_logs/ora_02_logs_01 6c574235472455534e685145
+svm_ora /vol/ora_02_logs/ora_02_logs_02 6c574235472455534e685146
+7 entries were displayed.
+....
+. Aktualisieren Sie die `/dev/multipath.conf` Datei, um einen benutzerfreundlichen Namen für das Multipath-Gerät hinzuzufügen.
++
+[source, cli]
+----
+sudo vi /etc/multipath.conf
+----
++
+Mit folgenden Einträgen:
+
++
+....
+multipaths {
+        multipath {
+                wwid            3600a09806c574235472455534e68512d
+                alias           ora_02_biny_01
+        }
+        multipath {
+                wwid            3600a09806c574235472455534e685141
+                alias           ora_02_data_01
+        }
+        multipath {
+                wwid            3600a09806c574235472455534e685142
+                alias           ora_02_data_02
+        }
+        multipath {
+                wwid            3600a09806c574235472455534e685143
+                alias           ora_02_data_03
+        }
+        multipath {
+                wwid            3600a09806c574235472455534e685144
+                alias           ora_02_data_04
+        }
+        multipath {
+                wwid            3600a09806c574235472455534e685145
+                alias           ora_02_logs_01
+        }
+        multipath {
+                wwid            3600a09806c574235472455534e685146
+                alias           ora_02_logs_02
+        }
+}
+....
+. Starten Sie den Multipath-Dienst neu, um zu überprüfen, ob die Geräte unter `/dev/mapper` Haben sich zu LUN-Namen und zu Serial-Hex-IDs geändert.
++
+[source, cli]
+----
+sudo systemctl restart multipathd
+----
++
+Prüfen `/dev/mapper` So kehren Sie wie folgt zurück:
+
++
+....
+[ec2-user@ip-172-30-15-58 ~]$ ls -l /dev/mapper
+total 0
+crw------- 1 root root 10, 236 Mar 21 18:19 control
+lrwxrwxrwx 1 root root       7 Mar 21 20:41 ora_02_biny_01 -> ../dm-0
+lrwxrwxrwx 1 root root       7 Mar 21 20:41 ora_02_data_01 -> ../dm-1
+lrwxrwxrwx 1 root root       7 Mar 21 20:41 ora_02_data_02 -> ../dm-2
+lrwxrwxrwx 1 root root       7 Mar 21 20:41 ora_02_data_03 -> ../dm-3
+lrwxrwxrwx 1 root root       7 Mar 21 20:41 ora_02_data_04 -> ../dm-4
+lrwxrwxrwx 1 root root       7 Mar 21 20:41 ora_02_logs_01 -> ../dm-5
+lrwxrwxrwx 1 root root       7 Mar 21 20:41 ora_02_logs_02 -> ../dm-6
+....
+. Partitionieren Sie die binäre LUN mit einer einzigen primären Partition.
++
+[source, cli]
+----
+sudo fdisk /dev/mapper/ora_02_biny_01
+----
+. Formatieren Sie die partitionierte binäre LUN mit einem XFS-Dateisystem.
++
+[source, cli]
+----
+sudo mkfs.xfs /dev/mapper/ora_02_biny_01p1
+----
+. Mounten Sie die binäre LUN in `/u01`.
++
+[source, cli]
+----
+sudo mkdir /u01
+----
++
+[source, cli]
+----
+sudo mount -t xfs /dev/mapper/ora_02_biny_01p1 /u01
+----
+. Ändern `/u01` Mount Point Ownership für den oracle-Benutzer und die zugehörige primäre Gruppe.
++
+[source, cli]
+----
+sudo chown oracle:oinstall /u01
+----
+. Suchen Sie die UUI der binären LUN.
++
+[source, cli]
+----
+sudo blkid /dev/mapper/ora_02_biny_01p1
+----
+. Hinzufügen eines Mount-Punkts zu `/etc/fstab`.
++
+[source, cli]
+----
+sudo vi /etc/fstab
+----
++
+Fügen Sie die folgende Zeile hinzu.
+
++
+....
+UUID=d89fb1c9-4f89-4de4-b4d9-17754036d11d       /u01    xfs     defaults,nofail 0       2
+....
+. Fügen Sie als Root-Benutzer die udev-Regel für Oracle-Geräte hinzu.
++
+[source, cli]
+----
+vi /etc/udev/rules.d/99-oracle-asmdevices.rules
+----
++
+Folgende Einträge einbeziehen:
+
++
+....
+ENV{DM_NAME}=="ora*", GROUP:="oinstall", OWNER:="oracle", MODE:="660"
+....
+. Laden Sie als root-Benutzer die udev-Regeln neu.
++
+[source, cli]
+----
+udevadm control --reload-rules
+----
+. Lösen Sie als Root-Benutzer die udev-Regeln aus.
++
+[source, cli]
+----
+udevadm trigger
+----
+. Laden Sie als root-Benutzer multipathd neu.
++
+[source, cli]
+----
+systemctl restart multipathd
+----
+. Booten Sie den EC2-Instanzhost neu.
+
+
+====
+
+
+=== Installation der Oracle Grid-Infrastruktur
+
+[%collapsible]
+====
+. Loggen Sie sich als Admin-Benutzer über SSH bei der DB VM ein und aktivieren Sie die Passwort-Authentifizierung durch Entkommentieren `PasswordAuthentication yes` Und dann kommentiert `PasswordAuthentication no`.
++
+[source, cli]
+----
+sudo vi /etc/ssh/sshd_config
+----
+. Starten Sie den sshd-Dienst neu.
++
+[source, cli]
+----
+sudo systemctl restart sshd
+----
+. Setzen Sie das Oracle-Benutzerpasswort zurück.
++
+[source, cli]
+----
+sudo passwd oracle
+----
+. Melden Sie sich als Oracle Restart Software Owner User (oracle) an. Erstellen Sie ein Oracle-Verzeichnis wie folgt:
++
+[source, cli]
+----
+mkdir -p /u01/app/oracle
+----
++
+[source, cli]
+----
+mkdir -p /u01/app/oraInventory
+----
+. Ändern Sie die Verzeichnisberechtigungseinstellung.
++
+[source, cli]
+----
+chmod -R 775 /u01/app
+----
+. Erstellen Sie ein Grid-Home-Verzeichnis, und ändern Sie es.
++
+[source, cli]
+----
+mkdir -p /u01/app/oracle/product/19.0.0/grid
+----
++
+[source, cli]
+----
+cd /u01/app/oracle/product/19.0.0/grid
+----
+. Entpacken Sie die Grid-Installationsdateien.
++
+[source, cli]
+----
+unzip -q /tmp/archive/LINUX.X64_193000_grid_home.zip
+----
+. Löschen Sie von der Startseite des Rasters aus die `OPatch` Verzeichnis.
++
+[source, cli]
+----
+rm -rf OPatch
+----
+. Entpacken Sie die Datei von Grid Home aus `p6880880_190000_Linux-x86-64.zip`.
++
+[source, cli]
+----
+unzip -q /tmp/archive/p6880880_190000_Linux-x86-64.zip
+----
+. Von der Startseite des Rasters aus, überarbeiten `cv/admin/cvu_config`, Entkommentieren und ersetzen `CV_ASSUME_DISTID=OEL5` Mit `CV_ASSUME_DISTID=OL7`.
++
+[source, cli]
+----
+vi cv/admin/cvu_config
+----
+. Bereiten Sie ein vor `gridsetup.rsp` Datei für die automatische Installation und legen Sie die rsp-Datei im ab `/tmp/archive` Verzeichnis. Die rsp-Datei sollte die Abschnitte A, B und G mit den folgenden Informationen abdecken:
++
+....
+INVENTORY_LOCATION=/u01/app/oraInventory
+oracle.install.option=HA_CONFIG
+ORACLE_BASE=/u01/app/oracle
+oracle.install.asm.OSDBA=asmdba
+oracle.install.asm.OSOPER=asmoper
+oracle.install.asm.OSASM=asmadmin
+oracle.install.asm.SYSASMPassword="SetPWD"
+oracle.install.asm.diskGroup.name=DATA
+oracle.install.asm.diskGroup.redundancy=EXTERNAL
+oracle.install.asm.diskGroup.AUSize=4
+oracle.install.asm.diskGroup.disks=/dev/mapper/ora_02_data_01,/dev/mapper/ora_02_data_02,/dev/mapper/ora_02_data_03,/dev/mapper/ora_02_data_04
+oracle.install.asm.diskGroup.diskDiscoveryString=/dev/mapper/*
+oracle.install.asm.monitorPassword="SetPWD"
+oracle.install.asm.configureAFD=true
+....
+. Melden Sie sich bei der EC2-Instanz als Root-Benutzer an und legen Sie fest `ORACLE_HOME` Und `ORACLE_BASE`.
++
+[source, cli]
+----
+export ORACLE_HOME=/u01/app/oracle/product/19.0.0/
+----
++
+[source, cli]
+----
+export ORACLE_BASE=/tmp
+----
++
+[source, cli]
+----
+cd /u01/app/oracle/product/19.0.0/grid/bin
+----
+. Initialisieren Sie die Festplattengeräte für die Verwendung mit dem Oracle ASM-Filtertreiber.
++
+[source, cli]
+----
+ ./asmcmd afd_label DATA01 /dev/mapper/ora_02_data_01 --init
+----
++
+[source, cli]
+----
+ ./asmcmd afd_label DATA02 /dev/mapper/ora_02_data_02 --init
+----
++
+[source, cli]
+----
+ ./asmcmd afd_label DATA03 /dev/mapper/ora_02_data_03 --init
+----
++
+[source, cli]
+----
+ ./asmcmd afd_label DATA04 /dev/mapper/ora_02_data_04 --init
+----
++
+[source, cli]
+----
+ ./asmcmd afd_label LOGS01 /dev/mapper/ora_02_logs_01 --init
+----
++
+[source, cli]
+----
+ ./asmcmd afd_label LOGS02 /dev/mapper/ora_02_logs_02 --init
+----
+. Installieren `cvuqdisk-1.0.10-1.rpm`.
++
+[source, cli]
+----
+rpm -ivh /u01/app/oracle/product/19.0.0/grid/cv/rpm/cvuqdisk-1.0.10-1.rpm
+----
+. Nicht Festgelegt `$ORACLE_BASE`.
++
+[source, cli]
+----
+unset ORACLE_BASE
+----
+. Melden Sie sich als Oracle-Benutzer bei der EC2-Instanz an und extrahieren Sie den Patch in `/tmp/archive` Ordner.
++
+[source, cli]
+----
+unzip -q /tmp/archive/p34762026_190000_Linux-x86-64.zip -d /tmp/archive
+----
+. Starten Sie von Grid Home /u01/App/oracle/Product/19.0.0/GRID aus und als oracle-Benutzer `gridSetup.sh` Für die Installation der Netzinfrastruktur.
++
+[source, cli]
+----
+ ./gridSetup.sh -applyRU /tmp/archive/34762026/ -silent -responseFile /tmp/archive/gridsetup.rsp
+----
+. Führen Sie als root-Benutzer folgende(n) Skript(e) aus:
++
+[source, cli]
+----
+/u01/app/oraInventory/orainstRoot.sh
+----
++
+[source, cli]
+----
+/u01/app/oracle/product/19.0.0/grid/root.sh
+----
+. Laden Sie als root-Benutzer den multipathd neu.
++
+[source, cli]
+----
+systemctl restart multipathd
+----
+. Führen Sie als Oracle-Benutzer den folgenden Befehl aus, um die Konfiguration abzuschließen:
++
+[source, cli]
+----
+/u01/app/oracle/product/19.0.0/grid/gridSetup.sh -executeConfigTools -responseFile /tmp/archive/gridsetup.rsp -silent
+----
+. Erstellen Sie als Oracle-Benutzer die PROTOKOLLDATENTRÄGER-Gruppe.
++
+[source, cli]
+----
+bin/asmca -silent -sysAsmPassword 'yourPWD' -asmsnmpPassword 'yourPWD' -createDiskGroup -diskGroupName LOGS -disk 'AFD:LOGS*' -redundancy EXTERNAL -au_size 4
+----
+. Validieren Sie als Oracle-Benutzer nach der Installation die Grid-Services.
++
+[source, cli]
+----
+bin/crsctl stat res -t
+----
++
+....
+[oracle@ora_02 grid]$ bin/crsctl stat res -t
+--------------------------------------------------------------------------------
+Name           Target  State        Server                   State details
+--------------------------------------------------------------------------------
+Local Resources
+--------------------------------------------------------------------------------
+ora.DATA.dg
+               ONLINE  ONLINE       ora_02                   STABLE
+ora.LISTENER.lsnr
+               ONLINE  INTERMEDIATE ora_02                   Not All Endpoints Re
+                                                             gistered,STABLE
+ora.LOGS.dg
+               ONLINE  ONLINE       ora_02                   STABLE
+ora.asm
+               ONLINE  ONLINE       ora_02                   Started,STABLE
+ora.ons
+               OFFLINE OFFLINE      ora_02                   STABLE
+--------------------------------------------------------------------------------
+Cluster Resources
+--------------------------------------------------------------------------------
+ora.cssd
+      1        ONLINE  ONLINE       ora_02                   STABLE
+ora.diskmon
+      1        OFFLINE OFFLINE                               STABLE
+ora.driver.afd
+      1        ONLINE  ONLINE       ora_02                   STABLE
+ora.evmd
+      1        ONLINE  ONLINE       ora_02                   STABLE
+--------------------------------------------------------------------------------
+....
+. Überprüfen Sie den Status des ASM-Filtertreibers.
++
+....
+
+[oracle@ora_02 grid]$ export ORACLE_HOME=/u01/app/oracle/product/19.0.0/grid
+[oracle@ora_02 grid]$ export ORACLE_SID=+ASM
+[oracle@ora_02 grid]$ export PATH=$PATH:$ORACLE_HOME/bin
+[oracle@ora_02 grid]$ asmcmd
+ASMCMD> lsdg
+State    Type    Rebal  Sector  Logical_Sector  Block       AU  Total_MB  Free_MB  Req_mir_free_MB  Usable_file_MB  Offline_disks  Voting_files  Name
+MOUNTED  EXTERN  N         512             512   4096  4194304     81920    81780                0           81780              0             N  DATA/
+MOUNTED  EXTERN  N         512             512   4096  4194304     40960    40852                0           40852              0             N  LOGS/
+ASMCMD> afd_state
+ASMCMD-9526: The AFD state is 'LOADED' and filtering is 'ENABLED' on host 'ora_02'
+ASMCMD> exit
+[oracle@ora_02 grid]$
+
+....
+. Überprüfen Sie den HA-Service-Status.
++
+....
+
+[oracle@ora_02 bin]$ ./crsctl check has
+CRS-4638: Oracle High Availability Services is online
+
+....
+
+
+====
+
+
+=== Installation der Oracle Database
+
+[%collapsible]
+====
+. Melden Sie sich als Oracle-Benutzer an, und heben Sie die Einstellung auf `$ORACLE_HOME` Und `$ORACLE_SID` Wenn es eingestellt ist.
++
+[source, cli]
+----
+unset ORACLE_HOME
+----
++
+[source, cli]
+----
+unset ORACLE_SID
+----
+. Erstellen Sie das Oracle DB Home-Verzeichnis, und ändern Sie es in das Verzeichnis.
++
+[source, cli]
+----
+mkdir /u01/app/oracle/product/19.0.0/cdb3
+----
++
+[source, cli]
+----
+cd /u01/app/oracle/product/19.0.0/cdb3
+----
+. Entpacken Sie die Oracle DB-Installationsdateien.
++
+[source, cli]
+----
+unzip -q /tmp/archive/LINUX.X64_193000_db_home.zip
+----
+. Löschen Sie von der DB-Startseite aus die `OPatch` Verzeichnis.
++
+[source, cli]
+----
+rm -rf OPatch
+----
+. Entzippen Sie die Datei von DB Home aus `p6880880_190000_Linux-x86-64.zip`.
++
+[source, cli]
+----
+unzip -q /tmp/archive/p6880880_190000_Linux-x86-64.zip
+----
+. Überarbeiten Sie von der DB-Startseite aus `cv/admin/cvu_config` Und entkommentieren und ersetzen `CV_ASSUME_DISTID=OEL5` Mit `CV_ASSUME_DISTID=OL7`.
++
+[source, cli]
+----
+vi cv/admin/cvu_config
+----
+. Von `/tmp/archive` Das DB 19.18 RU-Patch entpacken.
++
+[source, cli]
+----
+unzip -q /tmp/archive/p34765931_190000_Linux-x86-64.zip -d /tmp/archive
+----
+. Bereiten Sie die automatische DB-Installationsdatei in vor `/tmp/archive/dbinstall.rsp` Verzeichnis mit folgenden Werten:
++
+....
+oracle.install.option=INSTALL_DB_SWONLY
+UNIX_GROUP_NAME=oinstall
+INVENTORY_LOCATION=/u01/app/oraInventory
+ORACLE_HOME=/u01/app/oracle/product/19.0.0/cdb3
+ORACLE_BASE=/u01/app/oracle
+oracle.install.db.InstallEdition=EE
+oracle.install.db.OSDBA_GROUP=dba
+oracle.install.db.OSOPER_GROUP=oper
+oracle.install.db.OSBACKUPDBA_GROUP=oper
+oracle.install.db.OSDGDBA_GROUP=dba
+oracle.install.db.OSKMDBA_GROUP=dba
+oracle.install.db.OSRACDBA_GROUP=dba
+oracle.install.db.rootconfig.executeRootScript=false
+....
+. Führen Sie von cdb3 Home /u01/App/oracle/Product/19.0.0/cdb3 aus, und führen Sie die Installation der Datenbank ohne Software aus.
++
+[source, cli]
+----
+ ./runInstaller -applyRU /tmp/archive/34765931/ -silent -ignorePrereqFailure -responseFile /tmp/archive/dbinstall.rsp
+----
+. Führen Sie als Root-Benutzer den aus `root.sh` Skript nach der reinen Software-Installation.
++
+[source, cli]
+----
+/u01/app/oracle/product/19.0.0/db1/root.sh
+----
+. Erstellen Sie als oracle-Benutzer den `dbca.rsp` Datei mit folgenden Einträgen:
++
+....
+gdbName=cdb3.demo.netapp.com
+sid=cdb3
+createAsContainerDatabase=true
+numberOfPDBs=3
+pdbName=cdb3_pdb
+useLocalUndoForPDBs=true
+pdbAdminPassword="yourPWD"
+templateName=General_Purpose.dbc
+sysPassword="yourPWD"
+systemPassword="yourPWD"
+dbsnmpPassword="yourPWD"
+datafileDestination=+DATA
+recoveryAreaDestination=+LOGS
+storageType=ASM
+diskGroupName=DATA
+characterSet=AL32UTF8
+nationalCharacterSet=AL16UTF16
+listeners=LISTENER
+databaseType=MULTIPURPOSE
+automaticMemoryManagement=false
+totalMemory=8192
+....
+. Starten Sie als oracle-Benutzer die DB-Erstellung mit dbca.
++
+[source, cli]
+----
+bin/dbca -silent -createDatabase -responseFile /tmp/archive/dbca.rsp
+----
++
+Ausgabe:
+
+
+
+....
+
+Prepare for db operation
+7% complete
+Registering database with Oracle Restart
+11% complete
+Copying database files
+33% complete
+Creating and starting Oracle instance
+35% complete
+38% complete
+42% complete
+45% complete
+48% complete
+Completing Database Creation
+53% complete
+55% complete
+56% complete
+Creating Pluggable Databases
+60% complete
+64% complete
+69% complete
+78% complete
+Executing Post Configuration Actions
+100% complete
+Database creation complete. For details check the logfiles at:
+ /u01/app/oracle/cfgtoollogs/dbca/cdb3.
+Database Information:
+Global Database Name:cdb3.vmc.netapp.com
+System Identifier(SID):cdb3
+Look at the log file "/u01/app/oracle/cfgtoollogs/dbca/cdb3/cdb3.log" for further details.
+
+....
+. Wiederholen Sie die gleichen Schritte aus Schritt 2, um eine Container-Datenbank cdb4 in einem separaten ORACLE_HOME /u01/App/oracle/Product/19.0.0/cdb4 mit einer einzelnen PDB zu erstellen.
+. Validieren Sie als Oracle-Benutzer Oracle Restart HA-Services nach der DB-Erstellung, dass alle Datenbanken (cdb3, cdb4) mit HA-Diensten registriert sind.
++
+[source, cli]
+----
+/u01/app/oracle/product/19.0.0/grid/crsctl stat res -t
+----
++
+Ausgabe:
+
++
+....
+
+[oracle@ora_02 bin]$ ./crsctl stat res -t
+--------------------------------------------------------------------------------
+Name           Target  State        Server                   State details
+--------------------------------------------------------------------------------
+Local Resources
+--------------------------------------------------------------------------------
+ora.DATA.dg
+               ONLINE  ONLINE       ora_02                   STABLE
+ora.LISTENER.lsnr
+               ONLINE  INTERMEDIATE ora_02                   Not All Endpoints Re
+                                                             gistered,STABLE
+ora.LOGS.dg
+               ONLINE  ONLINE       ora_02                   STABLE
+ora.asm
+               ONLINE  ONLINE       ora_02                   Started,STABLE
+ora.ons
+               OFFLINE OFFLINE      ora_02                   STABLE
+--------------------------------------------------------------------------------
+Cluster Resources
+--------------------------------------------------------------------------------
+ora.cdb3.db
+      1        ONLINE  ONLINE       ora_02                   Open,HOME=/u01/app/o
+                                                             racle/product/19.0.0
+                                                             /cdb3,STABLE
+ora.cdb4.db
+      1        ONLINE  ONLINE       ora_02                   Open,HOME=/u01/app/o
+                                                             racle/product/19.0.0
+                                                             /cdb4,STABLE
+ora.cssd
+      1        ONLINE  ONLINE       ora_02                   STABLE
+ora.diskmon
+      1        OFFLINE OFFLINE                               STABLE
+ora.driver.afd
+      1        ONLINE  ONLINE       ora_02                   STABLE
+ora.evmd
+      1        ONLINE  ONLINE       ora_02                   STABLE
+--------------------------------------------------------------------------------
+....
+. Legen Sie den Oracle-Benutzer fest `.bash_profile`.
++
+[source, cli]
+----
+vi ~/.bash_profile
+----
++
+Folgende Einträge hinzufügen:
+
++
+....
+
+export ORACLE_HOME=/u01/app/oracle/product/19.0.0/db3
+export ORACLE_SID=db3
+export PATH=$PATH:$ORACLE_HOME/bin
+alias asm='export ORACLE_HOME=/u01/app/oracle/product/19.0.0/grid;export ORACLE_SID=+ASM;export PATH=$PATH:$ORACLE_HOME/bin'
+alias cdb3='export ORACLE_HOME=/u01/app/oracle/product/19.0.0/cdb3;export ORACLE_SID=cdb3;export PATH=$PATH:$ORACLE_HOME/bin'
+alias cdb4='export ORACLE_HOME=/u01/app/oracle/product/19.0.0/cdb4;export ORACLE_SID=cdb4;export PATH=$PATH:$ORACLE_HOME/bin'
+
+....
+. Validieren Sie die für cdb3 erstellte CDB/PDB.
++
+[source, cli]
+----
+cdb3
+----
++
+....
+
+[oracle@ora_02 ~]$ sqlplus / as sysdba
+
+SQL*Plus: Release 19.0.0.0.0 - Production on Mon Oct 9 08:19:20 2023
+Version 19.18.0.0.0
+
+Copyright (c) 1982, 2022, Oracle.  All rights reserved.
+
+
+Connected to:
+Oracle Database 19c Enterprise Edition Release 19.0.0.0.0 - Production
+Version 19.18.0.0.0
+
+SQL> select name, open_mode from v$database;
+
+NAME      OPEN_MODE
+--------- --------------------
+CDB3      READ WRITE
+
+SQL> show pdbs
+
+    CON_ID CON_NAME                       OPEN MODE  RESTRICTED
+---------- ------------------------------ ---------- ----------
+         2 PDB$SEED                       READ ONLY  NO
+         3 CDB3_PDB1                      READ WRITE NO
+         4 CDB3_PDB2                      READ WRITE NO
+         5 CDB3_PDB3                      READ WRITE NO
+SQL>
+
+SQL> select name from v$datafile;
+
+NAME
+--------------------------------------------------------------------------------
++DATA/CDB3/DATAFILE/system.257.1149420273
++DATA/CDB3/DATAFILE/sysaux.258.1149420317
++DATA/CDB3/DATAFILE/undotbs1.259.1149420343
++DATA/CDB3/86B637B62FE07A65E053F706E80A27CA/DATAFILE/system.266.1149421085
++DATA/CDB3/86B637B62FE07A65E053F706E80A27CA/DATAFILE/sysaux.267.1149421085
++DATA/CDB3/DATAFILE/users.260.1149420343
++DATA/CDB3/86B637B62FE07A65E053F706E80A27CA/DATAFILE/undotbs1.268.1149421085
++DATA/CDB3/06FB206DF15ADEE8E065025056B66295/DATAFILE/system.272.1149422017
++DATA/CDB3/06FB206DF15ADEE8E065025056B66295/DATAFILE/sysaux.273.1149422017
++DATA/CDB3/06FB206DF15ADEE8E065025056B66295/DATAFILE/undotbs1.271.1149422017
++DATA/CDB3/06FB206DF15ADEE8E065025056B66295/DATAFILE/users.275.1149422033
+
+NAME
+--------------------------------------------------------------------------------
++DATA/CDB3/06FB21766256DF9AE065025056B66295/DATAFILE/system.277.1149422033
++DATA/CDB3/06FB21766256DF9AE065025056B66295/DATAFILE/sysaux.278.1149422033
++DATA/CDB3/06FB21766256DF9AE065025056B66295/DATAFILE/undotbs1.276.1149422033
++DATA/CDB3/06FB21766256DF9AE065025056B66295/DATAFILE/users.280.1149422049
++DATA/CDB3/06FB22629AC1DFD7E065025056B66295/DATAFILE/system.282.1149422049
++DATA/CDB3/06FB22629AC1DFD7E065025056B66295/DATAFILE/sysaux.283.1149422049
++DATA/CDB3/06FB22629AC1DFD7E065025056B66295/DATAFILE/undotbs1.281.1149422049
++DATA/CDB3/06FB22629AC1DFD7E065025056B66295/DATAFILE/users.285.1149422063
+
+19 rows selected.
+
+SQL>
+
+....
+. Validieren Sie die für cdb4 erstellte CDB/PDB.
++
+[source, cli]
+----
+cdb4
+----
++
+....
+
+[oracle@ora_02 ~]$ sqlplus / as sysdba
+
+SQL*Plus: Release 19.0.0.0.0 - Production on Mon Oct 9 08:20:26 2023
+Version 19.18.0.0.0
+
+Copyright (c) 1982, 2022, Oracle.  All rights reserved.
+
+
+Connected to:
+Oracle Database 19c Enterprise Edition Release 19.0.0.0.0 - Production
+Version 19.18.0.0.0
+
+SQL> select name, open_mode from v$database;
+
+NAME      OPEN_MODE
+--------- --------------------
+CDB4      READ WRITE
+
+SQL> show pdbs
+
+    CON_ID CON_NAME                       OPEN MODE  RESTRICTED
+---------- ------------------------------ ---------- ----------
+         2 PDB$SEED                       READ ONLY  NO
+         3 CDB4_PDB                       READ WRITE NO
+SQL>
+
+SQL> select name from v$datafile;
+
+NAME
+--------------------------------------------------------------------------------
++DATA/CDB4/DATAFILE/system.286.1149424943
++DATA/CDB4/DATAFILE/sysaux.287.1149424989
++DATA/CDB4/DATAFILE/undotbs1.288.1149425015
++DATA/CDB4/86B637B62FE07A65E053F706E80A27CA/DATAFILE/system.295.1149425765
++DATA/CDB4/86B637B62FE07A65E053F706E80A27CA/DATAFILE/sysaux.296.1149425765
++DATA/CDB4/DATAFILE/users.289.1149425015
++DATA/CDB4/86B637B62FE07A65E053F706E80A27CA/DATAFILE/undotbs1.297.1149425765
++DATA/CDB4/06FC3070D5E12C23E065025056B66295/DATAFILE/system.301.1149426581
++DATA/CDB4/06FC3070D5E12C23E065025056B66295/DATAFILE/sysaux.302.1149426581
++DATA/CDB4/06FC3070D5E12C23E065025056B66295/DATAFILE/undotbs1.300.1149426581
++DATA/CDB4/06FC3070D5E12C23E065025056B66295/DATAFILE/users.304.1149426597
+
+11 rows selected.
+
+....
+. Melden Sie sich bei jeder cdb als sysdba mit sqlplus an und stellen Sie die Größe des DB-Wiederherstellungsziels auf die Größe der +LOGS-Datenträgergruppe für beide cdbs ein.
++
+[source, cli]
+----
+alter system set db_recovery_file_dest_size = 40G scope=both;
+----
+. Melden Sie sich bei jeder cdb als sysdba mit sqlplus an und aktivieren Sie den Archivprotokollmodus mit folgenden Befehlssätzen nacheinander.
++
+[source, cli]
+----
+sqlplus /as sysdba
+----
++
+[source, cli]
+----
+shutdown immediate;
+----
++
+[source, cli]
+----
+startup mount;
+----
++
+[source, cli]
+----
+alter database archivelog;
+----
++
+[source, cli]
+----
+alter database open;
+----
+
+
+Damit ist die Neustartbereitstellung auf einem Amazon FSX für ONTAP-Speicher und einer VMC DB-VM für Oracle 19c Version 19.18 abgeschlossen. Falls gewünscht, empfiehlt NetApp, die Oracle Steuerdatei und die Online-Protokolldateien in die +LOGS-Datenträgergruppe zu verschieben.
+
+====
+
+
+=== Backup, Wiederherstellung und Klonen von Oracle mit SnapCenter
+
+
+
+==== SnapCenter-Einrichtung
+
+[%collapsible]
+====
+SnapCenter setzt auf ein Host-seitiges Plug-in für Datenbank-VM, um applikationsorientierte Management-Aktivitäten für die Datensicherung durchzuführen. Detaillierte Informationen zu NetApp SnapCenter Plug-in für Oracle finden Sie in dieser Dokumentation link:https://docs.netapp.com/us-en/snapcenter/protect-sco/concept_what_you_can_do_with_the_snapcenter_plug_in_for_oracle_database.html["Welche Möglichkeiten bietet das Plug-in für Oracle Database"^]. Im Folgenden finden Sie allgemeine Schritte zur Einrichtung von SnapCenter für Oracle-Datenbank-Backup, -Recovery und -Klonen.
+
+. Laden Sie die aktuelle Version der SnapCenter Software von der NetApp Support-Website herunter: link:https://mysupport.netapp.com/site/downloads["NetApp Support-Downloads"^].
+. Installieren Sie als Administrator das neueste java JDK von link:https://www.java.com/en/["Holen Sie sich Java für Desktop-Anwendungen"^] Auf Windows-Host des SnapCenter-Servers.
++
+
+NOTE: Wenn Windows-Server in einer Domänenumgebung bereitgestellt wird, fügen Sie der lokalen Administratorgruppe des SnapCenter-Servers einen Domänenbenutzer hinzu, und führen Sie die SnapCenter-Installation mit dem Domänenbenutzer aus.
+
+. Melden Sie sich bei der SnapCenter-Benutzeroberfläche über HTTPS-Port 8846 als Installationsbenutzer an, um SnapCenter für Oracle zu konfigurieren.
+. Aktualisierung `Hypervisor Settings` In globalen Einstellungen.
++
+image:aws_ora_fsx_vmc_snapctr_01.png["Screenshot mit der SnapCenter-Konfiguration"]
+
+. Erstellen Sie Backup-Richtlinien für Oracle Datenbanken. Im Idealfall erstellen Sie eine separate Backup-Richtlinie für Archivprotokolle, um häufigere Backups zu ermöglichen, um Datenverlust bei einem Ausfall zu minimieren.
++
+image:aws_ora_fsx_vmc_snapctr_02.png["Screenshot mit der SnapCenter-Konfiguration"]
+
+. Hinzufügen eines Datenbankservers `Credential` Für SnapCenter-Zugriff auf DB VM. Die Anmeldeinformationen sollten über Sudo-Berechtigung auf einer Linux-VM oder Administratorberechtigung auf einer Windows-VM verfügen.
++
+image:aws_ora_fsx_vmc_snapctr_03.png["Screenshot mit der SnapCenter-Konfiguration"]
+
+. Fügen Sie FSX ONTAP Storage-Cluster zu hinzu `Storage Systems` Mit Cluster-Management-IP und Authentifizierung über fsxadmin Benutzer-ID.
++
+image:aws_ora_fsx_vmc_snapctr_04.png["Screenshot mit der SnapCenter-Konfiguration"]
+
+. Fügen Sie die Oracle-Datenbank-VM in VMC zu hinzu `Hosts` Mit Serveranmeldeinformationen, die im vorherigen Schritt 6 erstellt wurden.
++
+image:aws_ora_fsx_vmc_snapctr_05.png["Screenshot mit der SnapCenter-Konfiguration"]
+
+
+
+
+NOTE: Stellen Sie sicher, dass der Name des SnapCenter-Servers in die IP-Adresse der DB VM aufgelöst werden kann und der Name der DB VM auf die IP-Adresse des SnapCenter-Servers aufgelöst werden kann.
+
+====
+
+
+==== Datenbank-Backup
+
+[%collapsible]
+====
+SnapCenter nutzt FSX ONTAP-Volumen-Snapshot für viel schnelleres Datenbank-Backup, -Wiederherstellung oder -Klonen im Vergleich zu herkömmlichen RMAN-basierten Methoden. Die Snapshots sind anwendungskonsistent, da die Datenbank vor einem Snapshot in den Oracle-Backup-Modus versetzt wird.
+
+. Von `Resources` Registerkarte werden alle Datenbanken auf der VM automatisch erkannt, nachdem die VM zu SnapCenter hinzugefügt wurde. Zunächst wird der Datenbankstatus als angezeigt `Not protected`.
++
+image:aws_ora_fsx_vmc_snapctr_06.png["Screenshot mit der SnapCenter-Konfiguration"]
+
+. Erstellen einer Ressourcengruppe zur Sicherung der Datenbank in einer logischen Gruppierung, z. B. durch DB-VM usw. In diesem Beispiel haben wir eine ora_02_Data-Gruppe erstellt, um ein vollständiges Online-Datenbank-Backup für alle Datenbanken auf VM ora_02 durchzuführen. Die Ressourcengruppe ora_02_log führt die Sicherung archivierter Protokolle nur auf der VM durch. Das Erstellen einer Ressourcengruppe definiert außerdem einen Zeitplan für die Ausführung des Backups.
++
+image:aws_ora_fsx_vmc_snapctr_07.png["Screenshot mit der SnapCenter-Konfiguration"]
+
+. Das Backup von Ressourcengruppen kann auch manuell durch Klicken auf ausgelöst werden `Back up Now` Und das Backup mit der in der Ressourcengruppe definierten Richtlinie ausführen.
++
+image:aws_ora_fsx_vmc_snapctr_08.png["Screenshot mit der SnapCenter-Konfiguration"]
+
+. Der Backupjob kann am überwacht werden `Monitor` Klicken Sie auf den laufenden Job.
++
+image:aws_ora_fsx_vmc_snapctr_09.png["Screenshot mit der SnapCenter-Konfiguration"]
+
+. Nach einer erfolgreichen Sicherung zeigt der Datenbankstatus den Jobstatus und die letzte Sicherungszeit an.
++
+image:aws_ora_fsx_vmc_snapctr_10.png["Screenshot mit der SnapCenter-Konfiguration"]
+
+. Klicken Sie auf die Datenbank, um die Backup-Sätze für jede Datenbank anzuzeigen.
++
+image:aws_ora_fsx_vmc_snapctr_11.png["Screenshot mit der SnapCenter-Konfiguration"]
+
+
+
+====
+
+
+==== Datenbank-Recovery
+
+[%collapsible]
+====
+SnapCenter bietet verschiedene Wiederherstellungs- und Recovery-Optionen für Oracle Datenbanken aus dem Snapshot-Backup. In diesem Beispiel zeigen wir eine Point-in-Time-Wiederherstellung, um eine Tabelle versehentlich wiederherzustellen. Auf VM ora_02, zwei Datenbanken cdb3, cdb4 teilen sich die gleichen +DATEN und +LOGS-Plattengruppen. Die Datenbankwiederherstellung für eine Datenbank hat keine Auswirkung auf die Verfügbarkeit der anderen Datenbank.
+
+. Erstellen Sie zunächst eine Testtabelle, und fügen Sie eine Zeile in die Tabelle ein, um eine Point-in-Time-Wiederherstellung zu validieren.
++
+....
+
+[oracle@ora_02 ~]$ sqlplus / as sysdba
+
+SQL*Plus: Release 19.0.0.0.0 - Production on Fri Oct 6 14:15:21 2023
+Version 19.18.0.0.0
+
+Copyright (c) 1982, 2022, Oracle.  All rights reserved.
+
+
+Connected to:
+Oracle Database 19c Enterprise Edition Release 19.0.0.0.0 - Production
+Version 19.18.0.0.0
+
+SQL> select name, open_mode from v$database;
+
+NAME      OPEN_MODE
+--------- --------------------
+CDB3      READ WRITE
+
+SQL> show pdbs
+
+    CON_ID CON_NAME                       OPEN MODE  RESTRICTED
+---------- ------------------------------ ---------- ----------
+         2 PDB$SEED                       READ ONLY  NO
+         3 CDB3_PDB1                      READ WRITE NO
+         4 CDB3_PDB2                      READ WRITE NO
+         5 CDB3_PDB3                      READ WRITE NO
+SQL>
+
+
+SQL> alter session set container=cdb3_pdb1;
+
+Session altered.
+
+SQL> create table test (id integer, dt timestamp, event varchar(100));
+
+Table created.
+
+SQL> insert into test values(1, sysdate, 'test oracle recovery on guest mounted fsx storage to VMC guest vm ora_02');
+
+1 row created.
+
+SQL> commit;
+
+Commit complete.
+
+SQL> select * from test;
+
+        ID
+----------
+DT
+---------------------------------------------------------------------------
+EVENT
+--------------------------------------------------------------------------------
+         1
+06-OCT-23 03.18.24.000000 PM
+test oracle recovery on guest mounted fsx storage to VMC guest vm ora_02
+
+
+SQL> select current_timestamp from dual;
+
+CURRENT_TIMESTAMP
+---------------------------------------------------------------------------
+06-OCT-23 03.18.53.996678 PM -07:00
+
+....
+. Wir führen ein manuelles Snapshot Backup aus dem SnapCenter. Legen Sie dann die Tabelle ab.
++
+....
+
+SQL> drop table test;
+
+Table dropped.
+
+SQL> commit;
+
+Commit complete.
+
+SQL> select current_timestamp from dual;
+
+CURRENT_TIMESTAMP
+---------------------------------------------------------------------------
+06-OCT-23 03.26.30.169456 PM -07:00
+
+SQL> select * from test;
+select * from test
+              *
+ERROR at line 1:
+ORA-00942: table or view does not exist
+
+....
+. Notieren Sie sich die SCN-Nummer des Protokollbackups, wenn Sie den Backup-Satz aus dem letzten Schritt erstellt haben. Klicken Sie auf `Restore` Um den Wiederherstellungs-Workflow zu starten.
++
+image:aws_ora_fsx_vmc_snapctr_12.png["Screenshot mit der SnapCenter-Konfiguration"]
+
+. Wählen Sie den Wiederherstellungsbereich aus.
++
+image:aws_ora_fsx_vmc_snapctr_13.png["Screenshot mit der SnapCenter-Konfiguration"]
+
+. Wählen Sie den Wiederherstellungsumfang bis zum Protokoll-SCN aus dem letzten vollständigen Datenbankbackup aus.
++
+image:aws_ora_fsx_vmc_snapctr_14.png["Screenshot mit der SnapCenter-Konfiguration"]
+
+. Geben Sie alle optionalen Pre-Skripte an, die ausgeführt werden sollen.
++
+image:aws_ora_fsx_vmc_snapctr_15.png["Screenshot mit der SnapCenter-Konfiguration"]
+
+. Geben Sie ein beliebiges optionales After-Script an, das ausgeführt werden soll.
++
+image:aws_ora_fsx_vmc_snapctr_16.png["Screenshot mit der SnapCenter-Konfiguration"]
+
+. Senden Sie bei Bedarf einen Jobbericht.
++
+image:aws_ora_fsx_vmc_snapctr_17.png["Screenshot mit der SnapCenter-Konfiguration"]
+
+. Überprüfen Sie die Zusammenfassung, und klicken Sie auf `Finish` Um die Wiederherstellung und Wiederherstellung zu starten.
++
+image:aws_ora_fsx_vmc_snapctr_18.png["Screenshot mit der SnapCenter-Konfiguration"]
+
+. Von Oracle Restart Grid control, beobachten wir, dass cdb3 ist in der Wiederherstellung und Recovery cdb4 ist online und verfügbar.
++
+image:aws_ora_fsx_vmc_snapctr_19.png["Screenshot mit der SnapCenter-Konfiguration"]
+
+. Von `Monitor` Öffnen Sie den Job, um die Details zu überprüfen.
++
+image:aws_ora_fsx_vmc_snapctr_20.png["Screenshot mit der SnapCenter-Konfiguration"]
+
+. Überprüfen Sie in DB VM ora_02, ob die verlorene Tabelle nach einer erfolgreichen Recovery wiederhergestellt wurde.
++
+....
+
+[oracle@ora_02 bin]$ sqlplus / as sysdba
+
+SQL*Plus: Release 19.0.0.0.0 - Production on Fri Oct 6 17:01:28 2023
+Version 19.18.0.0.0
+
+Copyright (c) 1982, 2022, Oracle.  All rights reserved.
+
+
+Connected to:
+Oracle Database 19c Enterprise Edition Release 19.0.0.0.0 - Production
+Version 19.18.0.0.0
+
+SQL> select name, open_mode from v$database;
+
+NAME      OPEN_MODE
+--------- --------------------
+CDB3      READ WRITE
+
+SQL> show pdbs
+
+    CON_ID CON_NAME                       OPEN MODE  RESTRICTED
+---------- ------------------------------ ---------- ----------
+         2 PDB$SEED                       READ ONLY  NO
+         3 CDB3_PDB1                      READ WRITE NO
+         4 CDB3_PDB2                      READ WRITE NO
+         5 CDB3_PDB3                      READ WRITE NO
+SQL> alter session set container=CDB3_PDB1;
+
+Session altered.
+
+SQL> select * from test;
+
+        ID
+----------
+DT
+---------------------------------------------------------------------------
+EVENT
+--------------------------------------------------------------------------------
+         1
+06-OCT-23 03.18.24.000000 PM
+test oracle recovery on guest mounted fsx storage to VMC guest vm ora_02
+
+
+SQL> select current_timestamp from dual;
+
+CURRENT_TIMESTAMP
+---------------------------------------------------------------------------
+06-OCT-23 05.02.20.382702 PM -07:00
+
+SQL>
+
+....
+
+
+====
+
+
+==== Datenbankklone
+
+[%collapsible]
+====
+In diesem Beispiel wird mit denselben Backup-Sets eine Datenbank auf derselben VM in einem anderen ORACLE_HOME geklont. Die Verfahren gelten auch für das Klonen einer Datenbank aus dem Backup auf separate VM in VMC, falls erforderlich.
+
+. Öffnen Sie die Datenbank cdb3-Backup-Liste. Klicken Sie bei einem beliebigen Daten-Backup auf `Clone` Um den Workflow für Datenbankklone zu starten.
++
+image:aws_ora_fsx_vmc_snapctr_21.png["Screenshot mit der SnapCenter-Konfiguration"]
+
+. Benennen Sie die SID der Klondatenbank.
++
+image:aws_ora_fsx_vmc_snapctr_22.png["Screenshot mit der SnapCenter-Konfiguration"]
+
+. Wählen Sie eine VM in VMC als Ziel-Datenbank-Host aus. Auf dem Host sollte eine identische Oracle-Version installiert und konfiguriert worden sein.
++
+image:aws_ora_fsx_vmc_snapctr_23.png["Screenshot mit der SnapCenter-Konfiguration"]
+
+. Wählen Sie ORACLE_HOME, Benutzer und Gruppe auf dem Zielhost aus. Standardmäßig Anmeldedaten beibehalten.
++
+image:aws_ora_fsx_vmc_snapctr_24.png["Screenshot mit der SnapCenter-Konfiguration"]
+
+. Ändern Sie die Parameter der Klondatenbank, um die Konfigurations- oder Ressourcenanforderungen für die Klondatenbank zu erfüllen.
++
+image:aws_ora_fsx_vmc_snapctr_25.png["Screenshot mit der SnapCenter-Konfiguration"]
+
+. Wählen Sie den Wiederherstellungsumfang aus. `Until Cancel` Stellt den Klon bis zur letzten verfügbaren Protokolldatei im Backup-Set wieder her.
++
+image:aws_ora_fsx_vmc_snapctr_26.png["Screenshot mit der SnapCenter-Konfiguration"]
+
+. Überprüfen Sie die Zusammenfassung, und starten Sie den Klonjob.
++
+image:aws_ora_fsx_vmc_snapctr_27.png["Screenshot mit der SnapCenter-Konfiguration"]
+
+. Überwachen Sie die Ausführung des Klonjobs von `Monitor` Registerkarte.
++
+image:aws_ora_fsx_vmc_snapctr_28.png["Screenshot mit der SnapCenter-Konfiguration"]
+
+. Geklonte Datenbank wird sofort in SnapCenter registriert.
++
+image:aws_ora_fsx_vmc_snapctr_29.png["Screenshot mit der SnapCenter-Konfiguration"]
+
+. Ab DB VM ora_02 wird die geklonte Datenbank auch in der Oracle Restart Grid Control registriert, und die verlorene Testtabelle wird wie unten gezeigt in der geklonten Datenbank cdb3tst wiederhergestellt.
++
+....
+
+[oracle@ora_02 ~]$ /u01/app/oracle/product/19.0.0/grid/bin/crsctl stat res -t
+--------------------------------------------------------------------------------
+Name           Target  State        Server                   State details
+--------------------------------------------------------------------------------
+Local Resources
+--------------------------------------------------------------------------------
+ora.DATA.dg
+               ONLINE  ONLINE       ora_02                   STABLE
+ora.LISTENER.lsnr
+               ONLINE  INTERMEDIATE ora_02                   Not All Endpoints Re
+                                                             gistered,STABLE
+ora.LOGS.dg
+               ONLINE  ONLINE       ora_02                   STABLE
+ora.SC_2090922_CDB3TST.dg
+               ONLINE  ONLINE       ora_02                   STABLE
+ora.asm
+               ONLINE  ONLINE       ora_02                   Started,STABLE
+ora.ons
+               OFFLINE OFFLINE      ora_02                   STABLE
+--------------------------------------------------------------------------------
+Cluster Resources
+--------------------------------------------------------------------------------
+ora.cdb3.db
+      1        ONLINE  ONLINE       ora_02                   Open,HOME=/u01/app/o
+                                                             racle/product/19.0.0
+                                                             /cdb3,STABLE
+ora.cdb3tst.db
+      1        ONLINE  ONLINE       ora_02                   Open,HOME=/u01/app/o
+                                                             racle/product/19.0.0
+                                                             /cdb4,STABLE
+ora.cdb4.db
+      1        ONLINE  ONLINE       ora_02                   Open,HOME=/u01/app/o
+                                                             racle/product/19.0.0
+                                                             /cdb4,STABLE
+ora.cssd
+      1        ONLINE  ONLINE       ora_02                   STABLE
+ora.diskmon
+      1        OFFLINE OFFLINE                               STABLE
+ora.driver.afd
+      1        ONLINE  ONLINE       ora_02                   STABLE
+ora.evmd
+      1        ONLINE  ONLINE       ora_02                   STABLE
+--------------------------------------------------------------------------------
+
+[oracle@ora_02 ~]$ export ORACLE_HOME=/u01/app/oracle/product/19.0.0/cdb4
+[oracle@ora_02 ~]$ export ORACLE_SID=cdb3tst
+[oracle@ora_02 ~]$ sqlplus / as sysdba
+
+SQL*Plus: Release 19.0.0.0.0 - Production on Sat Oct 7 08:04:51 2023
+Version 19.18.0.0.0
+
+Copyright (c) 1982, 2022, Oracle.  All rights reserved.
+
+
+Connected to:
+Oracle Database 19c Enterprise Edition Release 19.0.0.0.0 - Production
+Version 19.18.0.0.0
+
+SQL> select name, open_mode from v$database;
+
+NAME      OPEN_MODE
+--------- --------------------
+CDB3TST   READ WRITE
+
+SQL> show pdbs
+
+    CON_ID CON_NAME                       OPEN MODE  RESTRICTED
+---------- ------------------------------ ---------- ----------
+         2 PDB$SEED                       READ ONLY  NO
+         3 CDB3_PDB1                      READ WRITE NO
+         4 CDB3_PDB2                      READ WRITE NO
+         5 CDB3_PDB3                      READ WRITE NO
+SQL> alter session set container=CDB3_PDB1;
+
+Session altered.
+
+SQL> select * from test;
+
+        ID
+----------
+DT
+---------------------------------------------------------------------------
+EVENT
+--------------------------------------------------------------------------------
+         1
+06-OCT-23 03.18.24.000000 PM
+test oracle recovery on guest mounted fsx storage to VMC guest vm ora_02
+
+
+SQL>
+
+....
+
+
+Hiermit sind die Backups, Wiederherstellungen und Klonvorgänge von SnapCenter der Oracle-Datenbank im VMC SDDC auf AWS abgeschlossen.
+
+====
+
+
+== Wo Sie weitere Informationen finden
+
+Weitere Informationen zu den in diesem Dokument beschriebenen Daten finden Sie in den folgenden Dokumenten bzw. auf den folgenden Websites:
+
+* VMware Cloud on AWS Dokumentation
++
+link:https://docs.vmware.com/en/VMware-Cloud-on-AWS/index.html["https://docs.vmware.com/en/VMware-Cloud-on-AWS/index.html"^]
+
+* Installieren der Oracle Grid-Infrastruktur für einen eigenständigen Server mit einer neuen Datenbankinstallation
++
+link:https://docs.oracle.com/en/database/oracle/oracle-database/19/ladbi/installing-oracle-grid-infrastructure-for-a-standalone-server-with-a-new-database-installation.html#GUID-0B1CEE8C-C893-46AA-8A6A-7B5FAAEC72B3["https://docs.oracle.com/en/database/oracle/oracle-database/19/ladbi/installing-oracle-grid-infrastructure-for-a-standalone-server-with-a-new-database-installation.html#GUID-0B1CEE8C-C893-46AA-8A6A-7B5FAAEC72B3"^]
+
+* Installieren und Konfigurieren von Oracle Database mithilfe von Antwortdateien
++
+link:https://docs.oracle.com/en/database/oracle/oracle-database/19/ladbi/installing-and-configuring-oracle-database-using-response-files.html#GUID-D53355E9-E901-4224-9A2A-B882070EDDF7["https://docs.oracle.com/en/database/oracle/oracle-database/19/ladbi/installing-and-configuring-oracle-database-using-response-files.html#GUID-D53355E9-E901-4224-9A2A-B882070EDDF7"^]
+
+* Amazon FSX für NetApp ONTAP
++
+link:https://aws.amazon.com/fsx/netapp-ontap/["https://aws.amazon.com/fsx/netapp-ontap/"^]
+
+

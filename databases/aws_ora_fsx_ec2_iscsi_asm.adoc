@@ -19,7 +19,7 @@ Allen Cao, Niyaz Mohamed, NetApp
 
 == Zweck
 
-ASM (Automatic Storage Management) ist ein beliebter Oracle Storage Volume Manager, der in vielen Oracle-Installationen eingesetzt wird. Es ist außerdem die von Oracle empfohlene Storage-Managementlösung. Sie stellt eine Alternative zu herkömmlichen Volume Managern und Filesystemen dar. Seit Oracle Version 11g wurde ASM mit Grid-Infrastruktur anstatt mit einer Datenbank verpackt. Um Oracle ASM für das Storage-Management ohne RAC zu nutzen, müssen Sie daher die Oracle Grid-Infrastruktur auf einem eigenständigen Server installieren, der auch als Oracle Restart bezeichnet wird. Dies führt zweifellos zu einer größeren Komplexität in einer ansonsten einfacheren Oracle-Datenbankimplementierung. Wie der Name jedoch andeutet, werden bei der Bereitstellung von Oracle im Restart-Modus ausgefallene Oracle-Dienste nach einem Host-Neustart ohne Benutzereingriff neu gestartet, was ein gewisses Maß an Hochverfügbarkeit oder HA-Funktionalität bietet.
+ASM (Automatic Storage Management) ist ein beliebter Oracle Storage Volume Manager, der in vielen Oracle-Installationen eingesetzt wird. Es ist außerdem die von Oracle empfohlene Storage-Managementlösung. Sie stellt eine Alternative zu herkömmlichen Volume Managern und Filesystemen dar. Seit Oracle Version 11g ist ASM nicht mehr eine Datenbank, sondern eine Grid-Infrastruktur. Um Oracle ASM für das Storage-Management ohne RAC zu nutzen, müssen Sie daher die Oracle Grid-Infrastruktur auf einem eigenständigen Server installieren, der auch als Oracle Restart bezeichnet wird. Dies führt zweifellos zu einer größeren Komplexität bei der Implementierung von Oracle-Datenbanken. Wie der Name jedoch andeutet, werden ausgefallene Oracle-Dienste, wenn Oracle im Neustart-Modus bereitgestellt wird, automatisch von der Grid-Infrastruktur oder nach einem Host-Neustart ohne Benutzereingriff neu gestartet, was ein gewisses Maß an Hochverfügbarkeit oder HA-Funktionalität bietet.
 
 In dieser Dokumentation zeigen wir, wie eine Oracle Datenbank mit dem iSCSI-Protokoll und Oracle ASM in einer Amazon FSX für ONTAP Storage-Umgebung mit EC2 Computing-Instanzen implementiert wird. Wir zeigen Ihnen auch, wie Sie den NetApp SnapCenter-Service über die NetApp BlueXP Konsole nutzen können, um Ihre Oracle Datenbank für Entwicklung/Tests zu sichern, wiederherzustellen und zu klonen. Andere Anwendungsfälle für den Storage-effizienten Datenbankbetrieb in der AWS Public Cloud zeigen wir Ihnen auch, wie.
 
@@ -96,7 +96,7 @@ image::aws_ora_fsx_ec2_iscsi_asm_architecture.png[Dieses Bild zeigt ein detailli
 * *FSX Storage HA Cluster Single- oder Multi-Zone-Implementierung.* bei diesen Tests und Validierungen haben wir einen FSX HA-Cluster in einer einzelnen AWS Verfügbarkeitszone implementiert. Für die Implementierung in der Produktion empfiehlt NetApp die Implementierung eines FSX HA-Paars in zwei verschiedenen Verfügbarkeitszonen. Ein FSX HA-Cluster wird in einem HA-Paar bereitgestellt, das in einem Paar aktiv/Passiv-Filesysteme gespiegelt wird, um Redundanz auf Storage-Ebene bereitzustellen. Die Implementierung mit mehreren Zonen verbessert die Hochverfügbarkeit bei einem Ausfall in einer einzelnen AWS Zone noch weiter.
 * *FSX Storage-Cluster-Sizing.* ein Amazon FSX for ONTAP Storage-Dateisystem bietet bis zu 160,000 RAW SSD IOPS, einen Durchsatz von bis zu 4 Gbit/s und eine maximale Kapazität von 192 tib. Sie können das Cluster jedoch in Bezug auf die bereitgestellten IOPS, den Durchsatz und die Storage-Grenze (mindestens 1,024 gib) anpassen, basierend auf Ihren tatsächlichen Anforderungen zum Zeitpunkt der Implementierung. Die Kapazität lässt sich spontan dynamisch anpassen, ohne dass die Applikationsverfügbarkeit beeinträchtigt wird.
 * *Oracle Daten- und Protokolllayout.* in unseren Tests und Validierungen haben wir jeweils zwei ASM-Datenträgergruppen für Daten und Logs eingesetzt. Innerhalb der +DATA asm-Festplattengruppe haben wir vier LUNs in einem Daten-Volume bereitgestellt. Innerhalb der +LOGS asm-Datenträgergruppe haben wir zwei LUNs in einem logs Volumen bereitgestellt. Im Allgemeinen bieten mehrere in einem Amazon FSX für ONTAP Volume bereitgestellte LUNs eine bessere Performance.
-* *ISCSI Konfiguration.* der EC2 Instance Datenbank Server verbindet sich mit FSX Speicher mit dem iSCSI Protokoll. EC2-Instanzen werden normalerweise mit einer einzelnen Netzwerkschnittstelle oder ENI implementiert. Die einzelne NIC-Schnittstelle überträgt sowohl den iSCSI- als auch den Anwendungsdatenverkehr. Es ist wichtig, die Anforderung an den I/O-Durchsatz der Oracle-Datenbank genau zu prüfen, indem der Oracle AWR-Bericht sorgfältig analysiert wird, um eine geeignete EC2-Recheninstanz auszuwählen, die sowohl die Anforderungen an den Anwendungs- als auch den iSCSI-Datendurchsatz erfüllt. NetApp empfiehlt außerdem, beiden FSX iSCSI-Endpunkten vier iSCSI-Verbindungen mit einer ordnungsgemäß konfigurierten Multipath-Konfiguration zuzuweisen.
+* *ISCSI Konfiguration.* der EC2 Instance Datenbank Server verbindet sich mit FSX Speicher mit dem iSCSI Protokoll. EC2-Instanzen werden normalerweise mit einer einzelnen Netzwerkschnittstelle oder ENI implementiert. Die einzelne NIC-Schnittstelle überträgt sowohl den iSCSI- als auch den Anwendungsdatenverkehr. Es ist wichtig, die Spitzenanforderungen für den I/O-Durchsatz der Oracle-Datenbank abzuschätzen, indem der Oracle AWR-Bericht sorgfältig analysiert wird, um eine geeignete EC2-Compute-Instanz zu wählen, die sowohl die Anforderungen an den Anwendungs- als auch den iSCSI-Datendurchsatz erfüllt. NetApp empfiehlt außerdem, beiden FSX iSCSI-Endpunkten vier iSCSI-Verbindungen mit einer ordnungsgemäß konfigurierten Multipath-Konfiguration zuzuweisen.
 * *Oracle ASM-Redundanzebene, die für jede von Ihnen erstellte Oracle ASM-Laufwerksgruppe verwendet wird.* Da FSX den Speicher bereits auf der FSX-Clusterebene spiegelt, sollten Sie External Redundancy verwenden, was bedeutet, dass die Option Oracle ASM nicht erlaubt, den Inhalt der Laufwerksgruppe zu spiegeln.
 * *Datenbank-Backup.* NetApp bietet eine SaaS-Version des SnapCenter Softwareservice zum Sichern, Wiederherstellen und Klonen von Datenbanken in der Cloud, die über die NetApp BlueXP Konsolen-UI verfügbar ist. NetApp empfiehlt die Implementierung eines solchen Service, um schnelle Snapshot Backups (unter einer Minute), schnelle Datenbank-Restores (wenige Minuten) und Datenbankklone zu erreichen.
 
@@ -250,7 +250,7 @@ systemctl start iscsid
 ....
 cat /etc/iscsi/initiatorname.iscsi
 ....
-. Fügen Sie die ASM-Gruppe hinzu, die für die asm-Sysasm-Gruppe verwendet werden soll
+. Fügen Sie die ASM-Gruppe hinzu, die für die asm-Sysasm-Gruppe verwendet werden soll.
 +
 ....
 groupadd asm
@@ -259,6 +259,12 @@ groupadd asm
 +
 ....
 usermod -a -G asm oracle
+....
+. Stoppen und deaktivieren Sie die Linux-Firewall, wenn sie aktiv ist.
++
+....
+systemctl stop firewalld
+systemctl disable firewalld
 ....
 . EC2-Instanz neu booten
 
@@ -738,7 +744,7 @@ unset ORACLE_BASE
 . Melden Sie sich als Oracle-Benutzer bei der EC2-Instanz an und extrahieren Sie den Patch in `/tmp/archive` Ordner.
 +
 ....
-unzip p34762026_190000_Linux-x86-64.zip
+unzip /tmp/archive/p34762026_190000_Linux-x86-64.zip -d /tmp/archive
 ....
 . Starten Sie von Grid Home /u01/App/oracle/Product/19.0.0/GRID aus und als oracle-Benutzer `gridSetup.sh` Für die Installation der Netzinfrastruktur.
 +
@@ -889,6 +895,8 @@ templateName=General_Purpose.dbc
 sysPassword="yourPWD"
 systemPassword="yourPWD"
 dbsnmpPassword="yourPWD"
+datafileDestination=+DATA
+recoveryAreaDestination=+LOGS
 storageType=ASM
 diskGroupName=DATA
 characterSet=AL32UTF8
@@ -1022,12 +1030,12 @@ SQL> show pdbs
          5 DB1_PDB3                       READ WRITE NO
 SQL>
 ....
-. Legen Sie den Speicherort für die DB-Wiederherstellung auf die Datenträgergruppe +LOGS fest.
+. Stellen Sie die Größe des DB-Wiederherstellungsziels auf die Größe der +LOGS-Datenträgergruppe ein.
 +
 ....
+
 alter system set db_recovery_file_dest_size = 80G scope=both;
 
-alter system set db_recovery_file_dest = '+LOGS' scope=both;
 ....
 . Melden Sie sich mit sqlplus bei der Datenbank an und aktivieren Sie den Archivprotokollmodus.
 +

@@ -4,7 +4,7 @@ permalink: databases/aws_ora_fsx_ec2_data_guard.html
 keywords: Oracle, AWS, FSx ONTAP, FSx, Database, Oracle 19c, Data Guard 
 summary: Die Lösung bietet Überblick und Details zur Konfiguration von Oracle Data Guard mit AWS FSX ONTAP als Standby-Standort Oracle Datenbank-Storage, um die Lizenz- und Betriebskosten der Oracle Data Guard HA/DR-Lösung in AWS zu reduzieren. 
 ---
-= TR-4981: Aktive Kostenreduktion zur Datensicherheit mit AWS FSX ONTAP
+= TR-4981: Kostenreduzierung mit Oracle Active Data Guard und Amazon FSX ONTAP
 :hardbreaks:
 :allow-uri-read: 
 :nofooter: 
@@ -21,11 +21,11 @@ Allen Cao, Niyaz Mohamed, NetApp
 
 Oracle Data Guard gewährleistet Hochverfügbarkeit, Datensicherung und Disaster Recovery für Unternehmensdaten in einer primären Datenbank und einer Standby-Datenbankreplizierungskonfiguration. Oracle Active Data Guard ermöglicht Benutzern den Zugriff auf Standby-Datenbanken, während die Datenreplikation von der primären Datenbank auf Standby-Datenbanken aktiv ist. Data Guard ist ein Bestandteil der Oracle Database Enterprise Edition. Eine separate Lizenzierung ist nicht erforderlich. Active Data Guard hingegen ist eine Oracle Database Enterprise Edition-Option, die daher eine separate Lizenzierung erfordert. Mehrere Standby-Datenbanken können in der Active Data Guard-Einrichtung eine Datenreplikation von einer primären Datenbank empfangen. Für jede zusätzliche Standby-Datenbank ist jedoch eine Active Data Guard Lizenz und zusätzlicher Storage als Größe der primären Datenbank erforderlich. Die Betriebskosten summieren sich schnell.
 
-Wenn Sie die Kosten für den Betrieb Ihrer Oracle-Datenbank senken möchten und einen Active Data Guard in AWS einrichten möchten, sollten Sie eine Alternative in Betracht ziehen. Anstelle von Active Data Guard replizieren Sie mit Data Guard von der primären Datenbank auf eine einzige physische Standby-Datenbank auf AWS FSX ONTAP Storage. Anschließend können mehrere Kopien dieser Standby-Datenbank geklont und für Lese-/Schreibzugriff für viele andere Anwendungsfälle wie Berichte, Entwicklung, Tests usw. geöffnet werden Die Nettoergebnisse stellen Funktionen von Active Data Guard effektiv bereit, wobei die Active Data Guard Lizenz sowie zusätzliche Storage-Kosten für jede zusätzliche Standby-Datenbank entfallen. In dieser Dokumentation zeigen wir, wie Sie einen Oracle Data Guard mit Ihrer vorhandenen primären Datenbank in AWS einrichten und die physische Standby-Datenbank auf dem AWS FSX ONTAP-Storage platzieren. Die Standby-Datenbank wird nach Bedarf über Snapshot gesichert und für Lese-/Schreibzugriff geklont.
+Wenn Sie die Kosten für den Betrieb Ihrer Oracle-Datenbank senken möchten und einen Active Data Guard in AWS einrichten möchten, sollten Sie eine Alternative in Betracht ziehen. Verwenden Sie anstelle von Active Data Guard Data Guard zur Replizierung von der primären Datenbank auf eine einzige physische Standby-Datenbank auf Amazon FSX ONTAP Storage. Anschließend können mehrere Kopien dieser Standby-Datenbank geklont und für Lese-/Schreibzugriff für viele andere Anwendungsfälle wie Berichte, Entwicklung, Tests usw. geöffnet werden Die Nettoergebnisse stellen Funktionen von Active Data Guard effektiv bereit, wobei die Active Data Guard Lizenz sowie zusätzliche Storage-Kosten für jede zusätzliche Standby-Datenbank entfallen. In dieser Dokumentation zeigen wir, wie Sie einen Oracle Data Guard mit Ihrer vorhandenen primären Datenbank in AWS einrichten und die physische Standby-Datenbank auf dem Amazon FSX ONTAP-Storage platzieren. Die Standby-Datenbank wird nach Bedarf über Snapshot gesichert und für Lese-/Schreibzugriff geklont.
 
 Diese Lösung eignet sich für folgende Anwendungsfälle:
 
-* Oracle Data Guard zwischen einer primären Datenbank auf jedem Storage in AWS bis Standby-Datenbank auf AWS FSX ONTAP Storage
+* Oracle Data Guard zwischen einer primären Datenbank auf jedem Storage in AWS bis Standby-Datenbank auf Amazon FSX ONTAP Storage
 * Klonen der Standby-Datenbank während der Schließung zur Datenreplizierung für Anwendungsfälle wie Berichterstellung, Entwicklung, Test usw.
 
 
