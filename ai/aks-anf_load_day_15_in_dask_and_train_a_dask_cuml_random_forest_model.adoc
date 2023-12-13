@@ -13,8 +13,6 @@ summary: Dieser Abschnitt beschreibt die Beladung von Criteo Click Logs Tag 15 i
 :imagesdir: ./../media/
 
 
-link:aks-anf_load_criteo_click_logs_day_15_in_pandas_and_train_a_scikit-learn_random_forest_model.html["Früher: Laden Criteo Click Logs Tag 15 in Pandas und trainieren ein scikit-lernen zufälligen Wald Modell."]
-
 [role="lead"]
 Ähnlich wie im vorherigen Abschnitt, laden Criteo Click Logs Tag 15 in Pandas und trainieren ein scikit-Learn Zufallswaldmodell. In diesem Beispiel haben wir DataFrame-Beladung mit Dask cuDF durchgeführt und ein zufälliges Waldmodell in Dask cuML trainiert. Im Abschnitt wurden die Unterschiede in Trainingszeit und Umfang verglichen link:aks-anf_training_time_comparison.html["„Zeitvergleich Training“."]
 
@@ -75,4 +73,3 @@ pred_df = cuml_model.predict(gdf_test)
 # calculate accuracy
 cu_score = cuml.metrics.accuracy_score( test_y, pred_df )
 ....
-link:aks-anf_monitor_dask_using_native_task_streams_dashboard.html["Nächster: Überwachung des DASK mit dem Dashboard für native Task Streams."]

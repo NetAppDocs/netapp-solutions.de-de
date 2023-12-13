@@ -13,8 +13,6 @@ summary: Der Befehl in diesem Abschnitt lädt die Daten im CSV-Format ab. Sie k�
 :imagesdir: ./../media/
 
 
-link:xcp-bp-specific-date-based-scan-and-copy-of-data.html["Zurück: Spezifische datumbasierte Scan und Kopie von Daten."]
-
 [role="lead"]
 Mit dem folgenden Befehl werden Daten im CSV-Format ablädt. Sie können die Spalte „Größe“ zusammenfassen, um die Gesamtgröße der Daten zu erhalten.
 
@@ -38,5 +36,3 @@ Zum Sortieren geben Sie die Informationen in eine CSV-Datei ein und sortieren di
 xcp scan -match “type == d” -depth 3 -fmt "'{}, {}, {}, {}'.format(name, relpath, size)" NFS_Server_IP:/share > directory_report.csv
 ....
 Dieser benutzerdefinierte Bericht verwendet den `-fmt` Befehl. Er scannt alle Verzeichnisse und lädt den Namen des Verzeichnisses, Pfads und der Größe des Verzeichnisses in eine CSV-Datei ein. Sie können die Spalte Größe aus der Tabellenkalkulationsanwendung sortieren.
-
-link:xcp-bp-data-migration-from-7-mode-to-ontap.html["Weiter: Datenmigration von 7-Mode zu ONTAP."]

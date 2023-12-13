@@ -13,8 +13,6 @@ summary: In diesem Abschnitt werden das Problem der unsinnigen Umbenennung und d
 :imagesdir: ./../media/
 
 
-link:kafka-nfs-introduction.html["Zurück: Einführung."]
-
 [role="lead"]
 Kafka wird mit der Annahme erstellt, dass das zugrunde liegende Dateisystem POSIX-kompatibel ist: Zum Beispiel XFS oder Ext4. Beim Ausbalancieren von Ressourcen in Kafka werden Dateien entfernt, während die Anwendung sie weiterhin verwendet. Ein POSIX-konformes Dateisystem ermöglicht das Aufheben der Verknüpfung zum Fortfahren. Allerdings wird die Datei erst entfernt, nachdem alle Verweise auf die Datei verschwunden sind. Wenn das zugrunde liegende Dateisystem mit einem Netzwerk verbunden ist, fängt der NFS-Client die Aufheben der Verknüpfung ab und verwaltet den Workflow. Da für die nicht verknüpfte Datei noch offene Öffnungen vorhanden sind, sendet der NFS-Client eine Umbenennungsanforderung an den NFS-Server und führt beim letzten Schließen der nicht verknüpften Datei einen Entnahmierungsvorgang für die umbenannte Datei aus. Dieses Verhalten wird allgemein als „dummer über NFS“ bezeichnet und wird vom NFS-Client orchestriert.
 
@@ -27,5 +25,3 @@ Die folgenden Änderungen sind für den NFS-Server und den NFS-Client erforderli
 
 
 Durch die oben genannten Änderungen am NFS-Client und -Server kann Kafka sicher von allen Vorteilen von Network-Attached NFS-Storage profitieren.
-
-link:kafka-nfs-functional-validation-silly-rename-fix.html["Weiter: Funktionale Validierung - Silly umbenennen fix."]

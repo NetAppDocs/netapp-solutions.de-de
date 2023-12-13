@@ -13,9 +13,9 @@ summary: In diesem Abschnitt werden die Erfahrungen aus dieser Zertifizierung vo
 :imagesdir: ./../media/
 
 
-link:confluent-kafka-confluent-kafka-rebalance.html["Früher: Confluent Self-Rebalancing Cluster."]
-
 [role="lead"]
+In diesem Abschnitt werden die Erfahrungen aus dieser Zertifizierung vorgestellt.
+
 * Basierend auf unserer Validierung ist S3 Objekt-Storage ideal für Conflient, um Daten zu speichern.
 * Wir können SAN mit hohem Durchsatz (speziell FC) verwenden, um den Broker häufig verwendete Daten oder lokale Festplatten zu erhalten, da wir in der Conflient Tiered Storage-Konfiguration, Die Größe der im Datenvermittler-Verzeichnis enthaltenen Daten richtet sich nach der Segmentgröße und der Aufbewahrungszeit, wenn die Daten in den Objekt-Storage verschoben werden.
 * Objektspeicher bieten eine bessere Performance, wenn Segment.Bytes höher ist. Wir haben 512 MB getestet.
@@ -40,5 +40,3 @@ kafka-acls --bootstrap-server localhost:9092 --command-config adminclient-config
 NOTE: Ersetzen Sie den Benutzer `<kafka>` Mit dem eigentlichen Brokerchef in Ihrer Implementierung
 
 Beispiel: Der Befehl `confluent-tier-state` Legt ACLs zum internen Thema für Tiered Storage fest. Derzeit gibt es nur ein einziges internes Thema im Zusammenhang mit Tiered Storage. Das Beispiel erstellt eine ACL, die die Hauptberechtigung von Kafka für alle Vorgänge im internen Thema erhält.
-
-link:confluent-kafka-sizing.html["Als Nächstes: Dimensionierung."]
