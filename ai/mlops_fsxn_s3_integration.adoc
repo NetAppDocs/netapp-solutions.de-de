@@ -1,7 +1,7 @@
 ---
 sidebar: sidebar 
 permalink: ai/mlops_fsxn_s3_integration.html 
-keywords: FSxN, AWS S3, SageMaker, MLOps, NetApp ONTAP 
+keywords: FSxN, MLOps, NetApp ONTAP, SageMaker, AWS S3 
 summary: Dieser Beitrag enthält einen Leitfaden zur Konfiguration von FSxN als privaten S3-Bucket mit AWS SageMaker. 
 ---
 = Teil 1 – Integration von AWS FSX for NetApp ONTAP (FSxN) als privater S3-Bucket in AWS SageMaker
@@ -16,7 +16,7 @@ summary: Dieser Beitrag enthält einen Leitfaden zur Konfiguration von FSxN als 
 
 [role="lead"]
 *Autor(en):*
-Ken Jian, Senior Data & Applied Scientist, NetApp
+Jian Jian (Ken), Senior Data & Applied Scientist, NetApp
 
 
 
@@ -50,7 +50,7 @@ image:mlops_fsxn_s3_integration_1.png["Fehler: AWS SageMaker Notebook-Instanzkon
 Geben Sie den Namen der *Notebook-Instanz* ein
 Erweitern Sie das Fenster *Netzwerk*
 Lassen Sie andere Einträge standardmäßig und wählen Sie eine *VPC*, *Subnetz* und *Sicherheitsgruppe(n)* aus. (Diese *VPC* und *Subnetz* werden später zum Erstellen des FSxN-Dateisystems verwendet)
-Klicken Sie unten links auf den orangefarbenen Button *Notizbuchinstanz erstellen*.
+Klicken Sie unten rechts auf den orangefarbenen Button *Notizbuchinstanz erstellen*.
 +
 image:mlops_fsxn_s3_integration_2.png["Fehler: Erstellen der Notizbuchinstanz"]
 
@@ -90,11 +90,11 @@ image:mlops_fsxn_s3_integration_8.png["Fehler: Netzwerk  Sicherheitskonfiguratio
 +
 image:mlops_fsxn_s3_integration_9.png["Fehler: Standardmäßige Konfiguration der virtuellen Speichermaschine"]
 
-.. Lassen Sie andere Einträge standardmäßig und klicken Sie auf die orangefarbene Schaltfläche *Weiter* unten links.
+.. Lassen Sie andere Einträge standardmäßig und klicken Sie auf die orangefarbene Schaltfläche *Weiter* unten rechts.
 +
 image:mlops_fsxn_s3_integration_10.png["Fehler: Konfiguration bestätigen"]
 
-.. Klicken Sie auf die orangefarbene Schaltfläche *Dateisystem erstellen* unten links auf der Review-Seite.
+.. Klicken Sie auf die orangefarbene Schaltfläche *Dateisystem erstellen* unten rechts auf der Überprüfungsseite.
 +
 image:mlops_fsxn_s3_integration_11.png["Fehler: Überprüfen Sie die Konfiguration und bestätigen Sie die Erstellung"]
 
@@ -184,11 +184,11 @@ link:./../media/mlops_fsxn_s3_integration_0.ipynb["Fsxn_Demo.ipynb"]
 ----
 # Setup configurations
 # -------- Manual configurations --------
-seed: int = 77                                                          # Random seed
-bucket_name: str = 'fsxn-ontap'                                         # The bucket name in ONTAP
-aws_access_key_id: str = 'PB7XA31OKDPKTEXMK0S2'                         # Please get this credential from ONTAP
-aws_secret_access_key: str = 'N06DwX7OgBnb5X569dr10JicACYuHfDy3_hmsn7M' # Please get this credential from ONTAP
-fsx_endpoint_ip: str = '172.31.255.251'                                 # Please get this IP address from FSXN
+seed: int = 77                                              # Random seed
+bucket_name: str = 'fsxn-ontap'                             # The bucket name in ONTAP
+aws_access_key_id = '<Your ONTAP bucket key id>'            # Please get this credential from ONTAP
+aws_secret_access_key = '<Your ONTAP bucket access key>'    # Please get this credential from ONTAP
+fsx_endpoint_ip: str = '<Your FSxN IP address>'             # Please get this IP address from FSXN
 # -------- Manual configurations --------
 
 # Workaround
