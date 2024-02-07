@@ -21,6 +21,9 @@ NetApp Solutions Engineering Team
 
 Dieses Toolkit automatisiert die Migration von Oracle Datenbanken von lokalen Systemen in die AWS Cloud mit FSX ONTAP Storage und EC2 Computing-Instanz als Zielinfrastruktur. Er geht davon aus, dass der Kunde bereits über eine Oracle-Datenbank vor Ort im CDB/PDB-Modell verfügt. Mit dem Toolkit kann der Kunde eine benannte PDB aus einer Container-Datenbank auf einem Oracle-Host verschieben. Dabei wird das Verfahren für die Oracle-PDB-Verschiebung mit einer Option für maximale Verfügbarkeit verwendet. Das bedeutet, dass die Quell-PDB auf jedem lokalen Storage-Array mit minimaler Serviceunterbrechung in eine neue Container-Datenbank verlagert wird. Bei der Oracle-Verlagerung werden die Oracle-Datendateien verschoben, während die Datenbank online ist. Er leitet Benutzer-Sessions zum Zeitpunkt des Umschaltens von lokalen Systemen in die umgelagerten Datenbank-Services um, wenn alle Datendateien in die AWS-Cloud verschoben werden. Die unterstrichene Technologie ist die bewährte Oracle PDB Hot Clone-Methodik.
 
+
+NOTE: Obwohl das Migrations-Toolkit für die AWS Cloud-Infrastruktur entwickelt und validiert wurde, basiert es auf Lösungen auf Applikationsebene von Oracle. Daher ist das Toolkit auch für andere Public-Cloud-Plattformen wie Azure, GCP usw. anwendbar
+
 Diese Lösung eignet sich für folgende Anwendungsfälle:
 
 * Erstellen Sie einen Migrationsbenutzer und gewähren Sie die erforderlichen Berechtigungen auf dem lokalen Quell-DB-Server.
