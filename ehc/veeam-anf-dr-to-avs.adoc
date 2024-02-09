@@ -1,0 +1,237 @@
+---
+sidebar: sidebar 
+permalink: ehc/veeam-anf-dr-to-avs.html 
+keywords: disaster recovery, avs, azure vmware solution, anf, azure netapp files, disaster recovery, dr, veeam, replication 
+summary:  
+---
+= Verwenden von Veeam Replizierung und Azure NetApp Files-Datastore für die Disaster Recovery zu Azure VMware-Lösung
+:hardbreaks:
+:allow-uri-read: 
+:nofooter: 
+:icons: font
+:linkattrs: 
+:imagesdir: ../../media/
+
+
+[role="lead"]
+Autor: Niyaz Mohamed - NetApp Solutions Engineering
+
+
+
+== Überblick
+
+Azure NetApp Files Datastores (ANF) entkoppeln Storage von Computing und ermöglichen jedem Unternehmen die erforderliche Flexibilität, um Workloads in die Cloud zu verlagern. Sie bietet eine flexible, hochperformante Storage-Infrastruktur, die unabhängig von den Compute-Ressourcen skaliert werden kann. Azure NetApp Files Datastore vereinfacht und optimiert die Implementierung zusammen mit der Azure VMware Lösung (AVS) als Disaster-Recovery-Standort für lokale VMware Umgebungen.
+
+Mit Volume-basierten Azure NetApp Files (ANF) NFS-Datastores können Daten mit jeder validierten Drittanbieterlösung, die VM-Replizierungsfunktionen bietet, aus On-Premises-Systemen repliziert werden. Durch das Hinzufügen von Azure NetApp Files-Datenspeichern kann eine kostenoptimierte Implementierung durchgeführt werden, anstatt eine SDDC-Lösung für Azure VMware mit einer enormen Anzahl an ESXi-Hosts für den Storage einzurichten. Dieser Ansatz wird als „Pilot Light Cluster“ bezeichnet. Ein Pilot-Light-Cluster ist eine minimale AVS-Hostkonfiguration (3 AVS-Knoten) zusammen mit der Kapazität des Azure NetApp Files-Datenspeichers.
+
+Ziel ist es, eine kostengünstige Infrastruktur mit allen Kernkomponenten für ein Failover zu erhalten. Ein Pilot-Light-Cluster kann horizontal skalieren und im Falle eines Failovers weitere AVS-Hosts bereitstellen. Sobald der Failover abgeschlossen und der normale Betrieb wiederhergestellt ist, kann das Pilot Light-Cluster wieder auf den kostengünstigen Betriebsmodus zurückskaliert werden.
+
+
+
+== Zweck dieses Dokuments
+
+In diesem Artikel wird beschrieben, wie Sie Azure NetApp Files mit Veeam Backup and Replication die Disaster Recovery für lokale VMware-VMs auf (AVS) mithilfe der Veeam VM-Replizierungssoftware einrichten.
+
+Veeam Backup & Replication ist eine Backup- und Replizierungsapplikation für virtuelle Umgebungen. Wenn virtuelle Maschinen repliziert werden, wird Veeam Backup & Replication von auf AVS repliziert, erstellt die Software eine exakte Kopie der VMs im nativen VMware vSphere-Format auf dem Ziel-AVS SDDC-Cluster.  Veeam Backup & Replication hält die Kopie mit der ursprünglichen VM synchron. Die Replizierung bietet die beste Recovery Time Objective (RTO), da am DR-Standort eine gemountete Kopie einer VM in einem startfähigen Zustand ist.
+
+Dieser Replizierungsmechanismus sorgt dafür, dass die Workloads bei einem Notfall schnell in einem AVS SDDC gestartet werden können. Die Veeam Backup & Replication Software optimiert darüber hinaus die Datenübertragung zur Replizierung über WAN und für langsame Verbindungen. Außerdem werden doppelte Datenblöcke, keine Datenblöcke, Swap-Dateien und „ausgeschlossene VM Gast-OS-Dateien“ herausgefiltert. Die Software komprimiert auch den Replikatverkehr. Um zu verhindern, dass Replikationsjobs die gesamte Netzwerkbandbreite verbrauchen, können WAN-Beschleuniger und Regeln zur Netzwerkdrosselung verwendet werden.
+
+Der Replizierungsprozess in Veeam Backup & Replication ist auftraggesteuert, d. h. die Replizierung wird durch Konfiguration von Replizierungsjobs durchgeführt. Bei einem Ausfall kann ein Failover zur Wiederherstellung der VMs durch einen Failover auf die Replikatkopie ausgelöst werden. Wenn ein Failover durchgeführt wird, übernimmt eine replizierte VM die Rolle der ursprünglichen VM. Ein Failover kann auf den neuesten Status eines Replikats oder auf einen der bekannten Wiederherstellungspunkte erfolgen. Dies ermöglicht bei Bedarf eine Wiederherstellung nach Ransomware-Angriffen oder isolierte Tests. Veeam Backup & Replication bietet mehrere Optionen für unterschiedliche Disaster-Recovery-Szenarien.
+
+image:dr-veeam-anf-image1.png[""]
+
+
+
+== Lösungsimplementierung
+
+
+
+=== Übergeordnete Schritte
+
+. Die Veeam Backup & Replication-Software wird in einer On-Premises-Umgebung mit entsprechender Netzwerkverbindung ausgeführt.
+. link:https://learn.microsoft.com/en-us/azure/azure-vmware/deploy-azure-vmware-solution?tabs=azure-portal["Implementieren der Azure-VMware-Lösung (AVS)"] Private Cloud und link:https://learn.microsoft.com/en-us/azure/azure-vmware/attach-azure-netapp-files-to-azure-vmware-solution-hosts?tabs=azure-portal["Verbinden Sie Azure NetApp Files-Datastores"] Auf Hosts der Azure-VMware-Lösung.
++
+Für DR-Zwecke kann eine Pilot-Light-Umgebung mit minimaler Konfiguration verwendet werden. Bei einem Vorfall erfolgt ein Failover von VMs auf dieses Cluster, und es können weitere Nodes hinzugefügt werden).
+
+. Richten Sie den Replikationsjob ein, um VM-Replikate mit Veeam Backup and Replication zu erstellen.
+. Erstellen eines Failover-Plans und Durchführen eines Failover
+. Wechseln Sie zurück zu den Produktions-VMs, sobald der Notfall abgeschlossen und der primäre Standort eingerichtet ist.
+
+
+
+
+=== Voraussetzungen für die Veeam VM Replication to AVS- und ANF-Datastores
+
+. Stellen Sie sicher, dass die Backup-VM von Veeam Backup & Replication sowohl mit den Quell- als auch den Ziel-AVS SDDC-Clustern verbunden ist.
+. Der Backup-Server muss in der Lage sein, Kurznamen aufzulösen und eine Verbindung zu Quell- und Ziel-vCenter herzustellen.
+. Der Ziel-Azure NetApp Files-Datastore muss über genügend freien Speicherplatz für die VMDKs replizierter VMs verfügen.
+
+
+Weitere Informationen finden Sie unter „Überlegungen und Einschränkungen“ link:https://helpcenter.veeam.com/docs/backup/vsphere/replica_limitations.html?ver=120["Hier"].
+
+
+
+=== Einzelheiten Zur Bereitstellung
+
+.Schritt: Replizierung von VMs
+[%collapsible]
+====
+Veeam Backup & Replication nutzt VMware vSphere Snapshot-Funktionen/während der Replizierung fordert Veeam Backup & Replication VMware vSphere zur Erstellung eines VM-Snapshots an. Der VM-Snapshot ist die Point-in-Time-Kopie einer VM, die virtuelle Laufwerke, den Systemstatus, die Konfiguration und Metadaten umfasst. Veeam Backup & Replication verwendet den Snapshot als Datenquelle für die Replizierung.
+
+Gehen Sie wie folgt vor, um VMs zu replizieren:
+
+. Öffnen Sie die Veeam Backup & Replication Console.
+. In der Home-Ansicht. Klicken Sie mit der rechten Maustaste auf den Knoten Jobs, und wählen Sie Replikationsjob > Virtuelle Maschine aus.
+. Geben Sie einen Jobnamen an, und aktivieren Sie das entsprechende Kontrollkästchen für die erweiterte Steuerung. Klicken Sie Auf Weiter.
++
+** Aktivieren Sie das Kontrollkästchen Replikat-Seeding, wenn die Bandbreite zwischen On-Premises und Azure eingeschränkt ist.
+*Aktivieren Sie das Kontrollkästchen Network Remapping (für AVS SDDC-Standorte mit unterschiedlichen Netzwerken), wenn Segmente auf der Azure VMware-Lösung SDDC nicht mit denen auf lokalen Netzwerken übereinstimmen.
+** Wenn sich das IP-Adressierungsschema am Produktionsstandort vor Ort vom Schema am Ziel-AVS-Standort unterscheidet, aktivieren Sie das Kontrollkästchen Replica RE-IP (für DR-Standorte mit unterschiedlichem IP-Adressierungsschema).
++
+image:dr-veeam-anf-image2.png[""]
+
+
+
+. Wählen Sie im Schritt *Virtuelle* Maschinen* die VMs aus, die auf einen Azure NetApp Files-Datastore repliziert werden sollen, der mit einem Azure VMware-Lösung SDDC verbunden ist. Die Virtual Machines können auf vSAN platziert werden, um die verfügbare vSAN Datastore-Kapazität zu füllen. In einem Pilotcluster wird die nutzbare Kapazität eines 3-Knoten-Clusters begrenzt. Die restlichen Daten lassen sich problemlos auf Azure NetApp Files Datenspeichern platzieren, um die VMs wiederherzustellen und das Cluster zu erweitern, um die CPU-/mem-Anforderungen zu erfüllen. Klicken Sie auf *Hinzufügen*, wählen Sie dann im Fenster *Objekt hinzufügen* die erforderlichen VMs oder VM-Container aus und klicken Sie auf *Hinzufügen*. Klicken Sie Auf *Weiter*.
++
+image:dr-veeam-anf-image3.png[""]
+
+. Wählen Sie anschließend das Ziel als Azure VMware Solution SDDC Cluster/Host und den entsprechenden Ressourcen-Pool, VM-Ordner und FSX for ONTAP Datastore für VM-Replikate aus. Klicken Sie anschließend auf *Weiter*.
++
+image:dr-veeam-anf-image4.png[""]
+
+. Erstellen Sie im nächsten Schritt die Zuordnung zwischen dem virtuellen Quell- und Zielnetzwerk nach Bedarf.
++
+image:dr-veeam-anf-image5.png[""]
+
+. Geben Sie im Schritt *Job-Einstellungen* das Backup-Repository an, in dem Metadaten für VM-Replikate, Aufbewahrungsrichtlinien usw. gespeichert werden.
+. Aktualisieren Sie die Proxy-Server *Source* und *Target* im Schritt *Data Transfer* und lassen Sie die Option *Automatic* (Standard) und halten Sie die Option *Direct* ausgewählt und klicken Sie auf *Next*.
+. Wählen Sie im Schritt *Gastverarbeitung* die Option *anwendungsorientierte Verarbeitung aktivieren* nach Bedarf aus. Klicken Sie Auf *Weiter*.
++
+image:dr-veeam-anf-image6.png[""]
+
+. Wählen Sie den Replikationszeitplan aus, um den Replikationsjob regelmäßig auszuführen.
++
+image:dr-veeam-anf-image7.png[""]
+
+. Überprüfen Sie im Schritt *Zusammenfassung* des Assistenten die Details des Replikationsjobs. Um den Job direkt nach dem Schließen des Assistenten zu starten, aktivieren Sie das Kontrollkästchen *Job ausführen, wenn ich auf Fertig stellen klicke*, andernfalls lassen Sie das Kontrollkästchen deaktiviert. Klicken Sie dann auf *Fertig stellen*, um den Assistenten zu schließen.
++
+image:dr-veeam-anf-image8.png[""]
+
+
+
+Sobald der Replikationsjob gestartet wurde, werden die VMs mit dem angegebenen Suffix auf dem Ziel-AVS SDDC-Cluster/Host aufgefüllt.
+
+image:dr-veeam-anf-image9.png[""]
+
+Weitere Informationen zur Veeam-Replizierung finden Sie unter link:https://helpcenter.veeam.com/docs/backup/vsphere/replication_process.html?ver=120["Funktionsweise Der Replikation"]
+
+====
+.Schritt 2: Erstellen eines Failover-Plans
+[%collapsible]
+====
+Erstellen Sie nach Abschluss der ersten Replikation oder des Seeding den Failover-Plan. Mithilfe des Failover-Plans können Sie ein Failover für abhängige VMs einzeln oder als Gruppe automatisch durchführen. Der Failover-Plan ist das Modell für die Reihenfolge, in der die VMs verarbeitet werden, einschließlich der Boot-Verzögerungen. Der Failover-Plan trägt außerdem dazu bei, sicherzustellen, dass kritische abhängige VMs bereits laufen.
+
+Um den Plan zu erstellen, navigieren Sie zum neuen Unterabschnitt *Replikate* und wählen Sie *Failover-Plan*. Wählen Sie die entsprechenden VMs aus. Veeam Backup & Replication sucht nach den nächstgelegenen Wiederherstellungspunkten zu diesem Zeitpunkt und verwendet diese, um VM-Replikate zu starten.
+
+
+NOTE: Der Failover-Plan kann nur hinzugefügt werden, wenn die erste Replikation abgeschlossen ist und sich die VM-Replikate im Bereitschaftszustand befinden.
+
+
+NOTE: Es können maximal 10 VMs gleichzeitig gestartet werden, wenn ein Failover-Plan ausgeführt wird
+
+
+NOTE: Während des Failover-Prozesses werden die Quell-VMs nicht ausgeschaltet
+
+Um den *Failover Plan* zu erstellen, gehen Sie wie folgt vor:
+
+. In der Home-Ansicht. Klicken Sie mit der rechten Maustaste auf den Knoten Replikate, und wählen Sie Failover Plans > Failover Plan > VMware vSphere.
++
+image:dr-veeam-anf-image10.png[""]
+
+. Geben Sie als nächstes einen Namen und eine Beschreibung für den Plan an. Pre- und Post-Failover-Skript können bei Bedarf hinzugefügt werden. Führen Sie beispielsweise ein Skript aus, um die VMs vor dem Starten der replizierten VMs herunterzufahren.
++
+image:dr-veeam-anf-image11.png[""]
+
+. Fügen Sie die VMs zum Plan hinzu und ändern Sie die VM-Startreihenfolge und die Boot-Verzögerungen, um die Applikationsabhängigkeiten zu erfüllen.
++
+image:dr-veeam-anf-image12.png[""]
+
+
+
+Weitere Informationen zum Erstellen von Replikationsjobs finden Sie unter link:https://helpcenter.veeam.com/docs/backup/vsphere/replica_job.html?ver=120["Erstellen Von Replikationsjobs"].
+
+====
+.Schritt 3: Führen Sie den Failover-Plan aus
+[%collapsible]
+====
+Bei einem Failover wird die Quell-VM am Produktionsstandort auf ihr Replikat am Disaster-Recovery-Standort umgeschaltet. Im Rahmen des Failover-Prozesses stellt Veeam Backup & Replication das VM-Replikat zum erforderlichen Wiederherstellungspunkt wieder her und verschiebt alle I/O-Aktivitäten von der Quell-VM auf das Replikat. Replikate können nicht nur im Notfall verwendet werden, sondern auch DR-Übungen simulieren. Während der Failover-Simulation bleibt die Quell-VM aktiv. Sobald alle erforderlichen Tests durchgeführt wurden, können Sie das Failover rückgängig machen und zum normalen Betrieb zurückkehren.
+
+
+NOTE: Stellen Sie sicher, dass die Netzwerksegmentierung vorhanden ist, um IP-Konflikte während des Failovers zu vermeiden.
+
+Um den Failover-Plan zu starten, klicken Sie einfach auf die Registerkarte *Failover Plans* und klicken Sie mit der rechten Maustaste auf Ihren Failover-Plan. Wählen Sie **Start*. Dabei wird ein Failover mit den neuesten Wiederherstellungspunkten der VM-Replikate durchgeführt. Um ein Failover zu bestimmten Wiederherstellungspunkten von VM-Replikaten durchzuführen, wählen Sie *Start to* aus.
+
+image:dr-veeam-anf-image13.png[""]
+
+image:dr-veeam-anf-image14.png[""]
+
+Der Status des VM-Replikats ändert sich von „bereit“ zu „Failover“, und die VMs werden auf dem Ziel-Cluster/Host des SDDC der Azure VMware-Lösung (AVS) gestartet.
+
+image:dr-veeam-anf-image15.png[""]
+
+Sobald der Failover abgeschlossen ist, ändert sich der Status der VMs in „Failover“.
+
+image:dr-veeam-anf-image16.png[""]
+
+
+NOTE: Veeam Backup & Replication hält alle Replikationsaktivitäten für die Quell-VM an, bis das Replikat in den Bereitschaftszustand zurückkehrt.
+
+Ausführliche Informationen zu Failover-Plänen finden Sie unter link:https://helpcenter.veeam.com/docs/backup/vsphere/failover_plan.html?ver=120["Failover-Pläne"].
+
+====
+.Schritt 4: Failback zum Produktionsstandort
+[%collapsible]
+====
+Wenn der Failover-Plan ausgeführt wird, gilt er als Zwischenschritt und muss basierend auf den Anforderungen abgeschlossen werden. Folgende Optionen stehen zur Verfügung:
+
+* *Failback zur Produktion* - Wechseln Sie zurück zur ursprünglichen VM und übertragen Sie alle Änderungen, die während des VM-Replikats auf die ursprüngliche VM ausgeführt wurden.
+
+
+
+NOTE: Wenn Sie ein Failback durchführen, werden die Änderungen nur übertragen, aber nicht veröffentlicht. Wählen Sie *commit Failback* (sobald die ursprüngliche VM wie erwartet funktioniert) oder Undo Failback, um zum VM-Replikat zurückzukehren, wenn die ursprüngliche VM nicht wie erwartet funktioniert.
+
+* *Rückgängigmachen des Failover* - Wechseln Sie zurück zur ursprünglichen VM und verwerfen Sie alle Änderungen, die während der Ausführung am VM-Replikat vorgenommen wurden.
+* *Permanent Failover* - Wechseln Sie dauerhaft von der ursprünglichen VM auf ein VM-Replikat und verwenden Sie dieses Replikat als ursprüngliche VM.
+
+
+In dieser Demo wurde „Failback zur Produktion“ gewählt. Failback auf die ursprüngliche VM wurde während des Zielschritts des Assistenten ausgewählt und das Kontrollkästchen „VM nach der Wiederherstellung einschalten“ war aktiviert.
+
+image:dr-veeam-anf-image17.png[""]
+
+image:dr-veeam-anf-image18.png[""]
+
+image:dr-veeam-anf-image19.png[""]
+
+image:dr-veeam-anf-image20.png[""]
+
+Failback-Commit ist eine der Möglichkeiten, den Failback-Vorgang abzuschließen. Wenn Failback durchgeführt wird, wird bestätigt, dass die an die zurückgeschickte VM (die Produktions-VM) gesendeten Änderungen wie erwartet funktionieren. Nach dem Commit-Vorgang setzt Veeam Backup & Replication die Replizierungsaktivitäten für die Produktions-VM fort.
+
+Detaillierte Informationen zum Failback-Prozess finden Sie in der Veeam-Dokumentation für link:https://helpcenter.veeam.com/docs/backup/vsphere/failover_failback.html?ver=120["Failover und Failback für die Replikation"].
+
+image:dr-veeam-anf-image21.png[""]
+
+Nach einem erfolgreichen Failback zur Produktion werden die VMs alle auf den ursprünglichen Produktionsstandort zurückgestellt.
+
+image:dr-veeam-anf-image22.png[""]
+
+====
+
+
+== Schlussfolgerung
+
+Mit der Datastore-Funktion von Azure NetApp Files können Veeam oder jedes beliebige validierte Drittanbieter-Tool eine kostengünstige DR-Lösung anbieten, indem Pilot-Light-Cluster eingesetzt werden, anstatt nur ein großes Cluster einzurichten, um VM-Replikate aufzunehmen. So wird ein maßgeschneiderter und individuell angepasster Disaster-Recovery-Plan effizient umgesetzt und vorhandene Backup-Produkte intern für DR wiederverwendet. So wird Cloud-basierte Disaster Recovery durch das Beenden von DR-Datacentern vor Ort möglich. Bei einem Ausfall kann ein Failover durch Klicken auf eine Schaltfläche oder bei einem Ausfall automatisch durchgeführt werden.
+
+Wenn Sie mehr über diesen Prozess erfahren möchten, folgen Sie bitte dem detaillierten Video zum Rundgang.
+
+video::2855e0d5-97e7-430f-944a-b061015e9278[panopto,width=Video walkthrough of the solution]

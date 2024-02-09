@@ -1,0 +1,33 @@
+---
+sidebar: sidebar 
+permalink: ehc/ncvs-gc-architecture_overview.html 
+keywords: architecture overview, control plane, data plane 
+summary: Als Teil des Vertrauens einer Cloud-Lösung müssen Sie die Architektur und die Art und Weise der Sicherheit kennen. In diesem Abschnitt werden verschiedene Aspekte der Cloud Volumes Service-Architektur in Google erläutert, um mögliche Bedenken hinsichtlich der Datensicherheit zu zerstreuen und Bereiche herauszurufen, in denen zusätzliche Konfigurationsschritte erforderlich sind, um die sichere Implementierung zu erhalten. 
+---
+= Überblick
+:hardbreaks:
+:allow-uri-read: 
+:nofooter: 
+:icons: font
+:linkattrs: 
+:imagesdir: ./../media/
+
+
+[role="lead"]
+Als Teil des Vertrauens einer Cloud-Lösung müssen Sie die Architektur und die Art und Weise der Sicherheit kennen. In diesem Abschnitt werden verschiedene Aspekte der Cloud Volumes Service-Architektur in Google erläutert, um mögliche Bedenken hinsichtlich der Datensicherheit zu zerstreuen und Bereiche herauszurufen, in denen zusätzliche Konfigurationsschritte erforderlich sind, um die sichere Implementierung zu erhalten.
+
+Die allgemeine Architektur von Cloud Volumes Service kann in zwei Hauptkomponenten aufgeteilt werden: Die Kontrollebene und die Datenebene.
+
+
+
+== Kontrollebene
+
+Die Kontrollebene in Cloud Volumes Service ist die von Cloud Volumes Service-Administratoren und der nativen Automatisierungssoftware von NetApp gemanagte Back-End-Infrastruktur. Diese Ebene ist für Endbenutzer vollständig transparent und beinhaltet Netzwerk, Storage-Hardware, Software-Updates usw., um einen Mehrwert für eine Cloud-residente Lösung wie Cloud Volumes Service bereitzustellen.
+
+
+
+== Datenebene
+
+Die Datenebene in Cloud Volumes Service umfasst die tatsächlichen Daten-Volumes und die gesamte Cloud Volumes Service-Konfiguration (wie Zugriffssteuerung, Kerberos Authentifizierung usw.). Die Datenebene unterliegt vollständig der Kontrolle von Endbenutzern und Nutzern der Cloud Volumes Service Plattform.
+
+Es gibt unterschiedliche Arten, wie jede Ebene gesichert und verwaltet wird. In den folgenden Abschnitten werden diese Unterschiede näher beschrieben. Zunächst wird die Cloud Volumes Service Architektur im Überblick angezeigt.

@@ -1,0 +1,118 @@
+---
+sidebar: sidebar 
+permalink: ehc/azure-setup.html 
+keywords: NetApp Solutions, microsoft azure, avs, azure, vmware managed cloud, enterprise, hybrid, cloud, cloud volumes ontap, cvo 
+summary:  
+---
+= Implementieren und Konfigurieren der Virtualisierungsumgebung auf Azure
+:hardbreaks:
+:allow-uri-read: 
+:nofooter: 
+:icons: font
+:linkattrs: 
+:imagesdir: ./../media/
+
+
+[role="lead"]
+Wie bei On-Premises-Systemen ist die Planung von Azure VMware Lösungen für eine erfolgreiche produktionsbereite Umgebung für das Erstellen von VMs und die Migration von großer Bedeutung.
+
+In diesem Abschnitt wird beschrieben, wie Sie Azure VMware Lösung einrichten und managen und in Kombination mit den verfügbaren Optionen für die Verbindung von NetApp Storage verwenden.
+
+Der Einrichtungsvorgang kann in die folgenden Schritte unterteilt werden:
+
+.Registrieren Sie den Ressourcenanbieter und erstellen Sie eine Private Cloud
+[%collapsible]
+====
+Für die Nutzung der Azure VMware Lösung müssen Sie zunächst den Ressourcenanbieter im angegebenen Abonnement registrieren:
+
+. Melden Sie sich im Azure Portal an.
+. Wählen Sie im Menü Azure-Portal die Option Alle Services aus.
+. Geben Sie im Dialogfeld „Alle Services“ das Abonnement ein, und wählen Sie anschließend Abonnements aus.
+. Wählen Sie das Abonnement aus der Abonnementliste aus, um es anzuzeigen.
+. Wählen Sie Ressourcenanbieter aus, und geben Sie Microsoft.AVS in die Suche ein.
+. Wenn der Ressourcenanbieter nicht registriert ist, wählen Sie Registrieren.
++
+image:avs-register-create-pc-1.png[""]
+
++
+image:avs-register-create-pc-2.png[""]
+
+. Nachdem der Ressourcenanbieter registriert ist, erstellen Sie über das Azure-Portal eine Private Cloud für eine Azure VMware-Lösung.
+. Melden Sie sich im Azure Portal an.
+. Wählen Sie Neue Ressource erstellen.
+. Geben Sie im Textfeld „Search the Marketplace“ die Azure VMware Lösung ein und wählen Sie sie aus den Ergebnissen aus.
+. Wählen Sie auf der Seite Azure VMware Lösung die Option Erstellen.
+. Geben Sie auf der Registerkarte Grundlagen die Werte in die Felder ein, und wählen Sie Überprüfen + Erstellen.
+
+
+Hinweise:
+
+* Für einen schnellen Start müssen Sie die erforderlichen Informationen während der Planungsphase erfassen.
+* Wählen Sie eine vorhandene Ressourcengruppe aus oder erstellen Sie eine neue Ressourcengruppe für die private Cloud. Eine Ressourcengruppe ist ein logischer Container, in dem die Azure Ressourcen implementiert und gemanagt werden.
+* Stellen Sie sicher, dass die CIDR-Adresse einzigartig ist und nicht mit anderen virtuellen Azure Netzwerken oder On-Premises-Netzwerken überlappt. Das CIDR stellt das private Cloud-Managementnetzwerk dar und wird für Cluster-Managementservices wie vCenter Server und NSX-T Manager verwendet. NetApp empfiehlt die Verwendung eines Adressspeichers unter /22. In diesem Beispiel wird 10.21.0.0/22 verwendet.
+
+
+image:avs-register-create-pc-3.png[""]
+
+Die Bereitstellung dauert ungefähr 4 bis 5 Stunden. Nach Abschluss des Prozesses muss überprüft werden, ob die Implementierung erfolgreich war. Greifen Sie über das Azure-Portal auf die Private Cloud zu. Nach Abschluss der Bereitstellung wird ein Status von erfolgreich angezeigt.
+
+Eine Private Cloud für eine Azure VMware Lösung erfordert ein virtuelles Azure Netzwerk. Da die Azure VMware Lösung vCenter vor Ort nicht unterstützt, sind für die Integration in eine vorhandene lokale Umgebung zusätzliche Schritte erforderlich. Zudem ist die Einrichtung einer ExpressRoute-Verbindung und eines virtuellen Netzwerk-Gateways erforderlich. Während Sie warten, bis die Cluster-Bereitstellung abgeschlossen ist, erstellen Sie ein neues virtuelles Netzwerk oder verwenden Sie ein vorhandenes für die Verbindung mit Azure VMware Lösung.
+
+image:avs-register-create-pc-4.png[""]
+
+====
+.Stellen Sie eine Verbindung zu einem neuen oder vorhandenen virtuellen ExpressRoute Netzwerk-Gateway her
+[%collapsible]
+====
+Um ein neues Azure Virtual Network (vnet) zu erstellen, wählen Sie die Registerkarte Azure vnet Connect aus. Alternativ können Sie aus dem Azure-Portal eine manuell erstellen mit dem Assistenten zum Erstellen von virtuellen Netzwerken:
+
+. Gehen Sie zur Azure VMware Solution Private Cloud und greifen Sie unter Manage auf Konnektivität zu.
+. Wählen Sie Azure vnet Connect aus.
+. Um ein neues vnet zu erstellen, wählen Sie die Option Neue erstellen.
++
+Mit dieser Funktion kann ein vnet mit der Azure VMware-Lösung Private Cloud verbunden werden. Vnet ermöglicht die Kommunikation zwischen Workloads in diesem virtuellen Netzwerk, indem die erforderlichen Komponenten automatisch erstellt werden (z. B. Sprungbox, Shared Services wie Azure NetApp Files und Cloud Volume ONTAP) in der in Azure VMware Lösung erstellten Private Cloud über ExpressRoute.
+
++
+*Hinweis:* der vnet-Adressraum sollte sich nicht mit der privaten Cloud CIDR überschneiden.
+
++
+image:azure-connect-gateway-1.png[""]
+
+. Geben Sie die Informationen für die neue vnet ein, oder aktualisieren Sie sie, und wählen Sie OK.
+
+
+image:azure-connect-gateway-2.png[""]
+
+Das vnet mit dem angegebenen Adressbereich und Gateway Subnetz wird in der designierten Abonnement- und Ressourcengruppe erstellt.
+
+
+NOTE: Wenn Sie ein vnet manuell erstellen, erstellen Sie ein virtuelles Netzwerk-Gateway mit der entsprechenden SKU und ExpressRoute als Gateway-Typ. Nach Abschluss der Implementierung verbinden Sie die ExpressRoute Verbindung mit dem virtuellen Netzwerk-Gateway mit der Private Cloud der Azure VMware Lösung über den Autorisierungsschlüssel. Weitere Informationen finden Sie unter link:https://docs.microsoft.com/en-us/azure/azure-vmware/tutorial-configure-networking#create-a-vnet-manually["Konfigurieren Sie das Networking für Ihre VMware Private Cloud in Azure"].
+
+====
+.Netzwerkverbindung und Zugriff auf Azure VMware Solution Private Cloud validieren
+[%collapsible]
+====
+Mit der Azure VMware Lösung können Sie eine Private Cloud nicht über VMware vCenter vor Ort managen. Stattdessen ist zum Herstellen der Verbindung mit der vCenter Instanz der Azure VMware Lösung ein Sprunglink auf den Host erforderlich. Erstellen Sie einen Sprunghost in der angegebenen Ressourcengruppe und melden Sie sich bei Azure VMware Solution vCenter an. Dieser Jump-Host sollte eine Windows VM in demselben virtuellen Netzwerk sein, das für die Konnektivität erstellt wurde und sowohl vCenter als auch den NSX Manager nutzen sollte.
+
+image:azure-validate-network-1.png[""]
+
+Nachdem die virtuelle Maschine bereitgestellt wurde, verwenden Sie die Option Verbinden, um auf RDP zuzugreifen.
+
+image:azure-validate-network-2.png[""]
+
+Melden Sie sich von dieser neu erstellten Jump-Host-virtuellen Maschine mit dem Cloud-Admin-Benutzer in vCenter an. Rufen Sie zum Zugreifen auf die Anmeldedaten im Azure-Portal auf und navigieren Sie zu „Identity“ (Identitäts-Management (über die Option „Manage“ in der Private Cloud). Die URLs und Benutzeranmeldeinformationen für die private Cloud vCenter und NSX-T Manager können hier kopiert werden.
+
+image:azure-validate-network-3.png[""]
+
+Öffnen Sie in der virtuellen Windows-Maschine einen Browser, und navigieren Sie zur vCenter Web-Client-URL  Und verwenden Sie den Admin-Benutzernamen als *cloudadmin@vsphere.local* und fügen Sie das kopierte Passwort ein. Auf ähnliche Weise kann auch NSX-T-Manager über die Web-Client-URL zugegriffen werden  Und verwenden Sie den Admin-Benutzernamen und fügen Sie das kopierte Passwort ein, um neue Segmente zu erstellen oder die vorhandenen Tier-Gateways zu ändern.
+
+
+NOTE: Die Web-Client-URLs sind für jede bereitgestellte SDDC unterschiedlich.
+
+image:azure-validate-network-4.png[""]
+
+image:azure-validate-network-5.png[""]
+
+Die Azure VMware Lösung SDDC ist jetzt implementiert und konfiguriert. Nutzung von ExpressRoute Global REACH zur Verbindung der lokalen Umgebung mit der Private Cloud der Azure VMware Lösung Weitere Informationen finden Sie unter link:https://docs.microsoft.com/en-us/azure/azure-vmware/tutorial-expressroute-global-reach-private-cloud["Erstellen Sie Peer-on-Premises-Umgebungen mit der Azure VMware Lösung"].
+
+====

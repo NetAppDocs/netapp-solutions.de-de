@@ -1,0 +1,72 @@
+---
+sidebar: sidebar 
+permalink: ehc/ncvs-gc-control-plane-architecture.html 
+keywords: identity, access, management, authorization, permission, service accounts, cloud volumes service api, jwt tokens 
+summary: Alle Management-Aktionen an Cloud Volumes Service werden über die API ausgeführt. Das in die GCP Cloud Console integrierte Cloud Volumes Service-Management verwendet auch die Cloud Volumes Service-API. 
+---
+= Kontrollebene Architektur
+:hardbreaks:
+:allow-uri-read: 
+:nofooter: 
+:icons: font
+:linkattrs: 
+:imagesdir: ./../media/
+
+
+[role="lead"]
+Alle Management-Aktionen an Cloud Volumes Service werden über die API ausgeführt. Das in die GCP Cloud Console integrierte Cloud Volumes Service-Management verwendet auch die Cloud Volumes Service-API.
+
+
+
+== Identitäts- und Zugriffsmanagement
+
+Identitäts- und Zugriffsmanagement (https://cloud.google.com/iam/docs/overview["IAM"^]) Ist ein Standardservice, mit dem Sie Authentifizierung (Logins) und Berechtigungen (Berechtigungen) für Google Cloud-Projektinstanzen steuern können. Google IAM bietet ein vollständiges Audit-Protokoll über Berechtigungen zum Berechtigungs- und Entfernen. Derzeit bietet Cloud Volumes Service keine Prüfung auf Kontrollebenen.
+
+
+
+=== Autorisierungs-/Berechtigungs-Übersicht
+
+IAM bietet integrierte, granulare Berechtigungen für Cloud Volumes Service. Hier finden Sie ein https://cloud.google.com/architecture/partners/netapp-cloud-volumes/security-considerations?hl=en_US["Vollständige Liste mit granularen Berechtigungen hier"^].
+
+IAM bietet außerdem zwei vordefinierte Rollen, die als Namen bezeichnet werden `netappcloudvolumes.admin` Und `netappcloudvolumes.viewer`. Diese Rollen können bestimmten Benutzern oder Servicekonten zugewiesen werden.
+
+Weisen Sie geeignete Rollen und Berechtigungen zu, um IAM-Benutzern das Management von Cloud Volumes Service zu ermöglichen.
+
+Beispiele für die Verwendung granularer Berechtigungen sind:
+
+* Erstellen Sie eine benutzerdefinierte Rolle nur mit Berechtigungen zum Abrufen/Auflisten/Erstellen/Aktualisieren, damit Benutzer Volumes nicht löschen können.
+* Verwenden Sie eine benutzerdefinierte Rolle nur mit `snapshot.*` Berechtigungen zum Erstellen eines Servicekontos, das zum Aufbau einer applikationskonsistenten Snapshot Integration verwendet wird.
+* Erstellen Sie eine benutzerdefinierte Rolle zum Delegieren `volumereplication.*` An bestimmte Benutzer.
+
+
+
+
+=== Servicekonten
+
+Um Cloud Volumes Service-API-Aufrufe über Skripte oder durchzuführen https://registry.terraform.io/providers/NetApp/netapp-gcp/latest/docs["Terraform"^], Sie müssen ein Dienstkonto mit dem erstellen `roles/netappcloudvolumes.admin` Rolle: Sie können dieses Dienstkonto verwenden, um die JWT-Token zu generieren, die zur Authentifizierung von Cloud Volumes Service-API-Anforderungen erforderlich sind:
+
+* Generieren Sie einen JSON-Schlüssel und verwenden Sie Google APIs, um daraus ein JWT-Token abzuleiten. Dies ist der einfachste Ansatz, aber es beinhaltet manuelle Geheimnisse (den JSON-Schlüssel) Management.
+* Nutzung https://cloud.google.com/iam/docs/impersonating-service-accounts["Imitation von Servicekonten"^] Mit `roles/iam.serviceAccountTokenCreator`. Der Code (Skript, Terraform usw.) läuft mit https://google.aip.dev/auth/4110["Standardanmeldedaten Für Anwendungen"^] Und personifiziert das Servicekonto, um seine Berechtigungen zu erhalten. Dieser Ansatz spiegelt die Best Practices für die Sicherheit von Google wider.
+
+
+Siehe https://cloud.google.com/architecture/partners/netapp-cloud-volumes/api?hl=en_US["Erstellen Ihres Servicekontos und privaten Schlüssels"^] In der Google Cloud Dokumentation finden Sie weitere Informationen.
+
+
+
+== Cloud Volumes Service API
+
+Die Cloud Volumes Service API verwendet eine REST-basierte API mithilfe von HTTPS (TLSv1.2) als zugrunde liegenden Netzwerktransport. Hier finden Sie die neueste API-Definition https://cloudvolumesgcp-api.netapp.com/swagger.json["Hier"^] Und Informationen zur Verwendung der API unter https://cloud.google.com/architecture/partners/netapp-cloud-volumes/api?hl=en_US["Cloud Volumes APIs in der Google Cloud-Dokumentation"^].
+
+Der API-Endpunkt wird durch NetApp mit Standard-HTTPS-Funktionalität (TLSv1.2) betrieben und gesichert.
+
+
+
+=== JWT-Token
+
+Die Authentifizierung an der API erfolgt mit JWT-Inhabertoken (https://datatracker.ietf.org/doc/html/rfc7519["RFC-7519"^]). Gültige JWT-Token müssen über die Google Cloud IAM-Authentifizierung abgerufen werden. Dazu muss ein Token vom IAM abgerufen werden, indem ein JSON-Schlüssel für ein Servicekonto bereitgestellt wird.
+
+
+
+== Audit-Protokollierung
+
+Derzeit sind keine vom Benutzer zugänglichen Prüfprotokolle für Kontrollebenen verfügbar.
