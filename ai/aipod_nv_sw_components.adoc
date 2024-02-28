@@ -2,9 +2,9 @@
 sidebar: sidebar 
 permalink: ai/aipod_nv_sw_components.html 
 keywords: NetApp AI, AI, Artificial Intelligence, ML, Machine Learning, NVIDIA, NVIDIA AI Enterprise, NVIDIA BasePOD, NVIDIA DGX 
-summary: NetApp AI Pod mit NVIDIA DGX Systemen – Softwarekomponenten 
+summary: NetApp AIPod mit NVIDIA DGX Systemen – Softwarekomponenten 
 ---
-= NetApp AI Pod mit NVIDIA DGX Systemen – Softwarekomponenten
+= NetApp AIPod mit NVIDIA DGX Systemen – Softwarekomponenten
 :hardbreaks:
 :allow-uri-read: 
 :nofooter: 
@@ -13,7 +13,7 @@ summary: NetApp AI Pod mit NVIDIA DGX Systemen – Softwarekomponenten
 :imagesdir: ./../media/
 
 
-link:aipod_nv_hw_components.html["Früher: ONTAP AI - Hardware-Komponenten."]
+link:aipod_nv_hw_components.html["Früher: NetApp AIPod mit NVIDIA DGX Systemen - Hardware-Komponenten"]
 
 
 
@@ -25,7 +25,7 @@ link:aipod_nv_hw_components.html["Früher: ONTAP AI - Hardware-Komponenten."]
 
 NVIDIA Base Command&#8482; (Abbildung 2) unterstützt jeden DGX BasePOD, sodass Unternehmen das Beste aus der innovativen NVIDIA-Software profitieren können. Unternehmen schöpfen das volle Potenzial ihrer Investitionen aus: Mit einer bewährten Plattform, die Orchestrierung und Cluster-Management der Enterprise-Klasse umfasst, Bibliotheken zur Beschleunigung von Computing-, Storage- und Netzwerkinfrastruktur sowie ein für KI-Workloads optimiertes Betriebssystem.
 
-image:oai_BaseCommand.png["Fehler: Fehlendes Grafikbild"]
+image:aipod_nv_BaseCommand.png["Fehler: Fehlendes Grafikbild"]
 
 
 
@@ -33,7 +33,7 @@ image:oai_BaseCommand.png["Fehler: Fehlendes Grafikbild"]
 
 NVIDIA NGC™ (Abbildung 3) bietet Software, die die Anforderungen von Data Scientists, Entwicklern und Forschern mit unterschiedlichem KI-Know-how erfüllt. Software, die auf NGC gehostet wird, wird anhand einer aggregierten Reihe von gängigen Schwachstellen und Expositionen (CVEs), Crypto und privaten Schlüsseln untersucht. Die Lösung wurde getestet und zur Skalierung auf mehrere GPUs und in vielen Fällen auf Multi-Node-Systeme konzipiert, damit Benutzer ihre Investitionen in DGX-Systeme maximal ausschöpfen können.
 
-image:oai_ngc.png["Fehler: Fehlendes Grafikbild"]
+image:aipod_nv_ngc.png["Fehler: Fehlendes Grafikbild"]
 
 
 
@@ -53,28 +53,30 @@ ONTAP 9, die jüngste Generation der Storage-Managementsoftware von NetApp, erm�
 
 
 
+==== Beschleunigung und Sicherung von Daten
+
+ONTAP bietet überdurchschnittliche Performance und Datensicherung, erweitert diese Funktionen auf folgende Weise:
+
+* Performance und niedrige Latenz: ONTAP bietet höchstmöglichen Durchsatz bei geringstmöglicher Latenz, einschließlich Unterstützung für NVIDIA GPUDirect Storage (GDS) mit NFS over RDMA, Parallel NFS (pNFS) und NFS Session Trunking.
+* Datensicherung ONTAP bietet integrierte Funktionen für die Datensicherung und die branchenweit stärkste Garantie für Ransomware-Schutz mit einem einheitlichen Management über alle Plattformen hinweg.
+* NetApp Volume Encryption (NVE) ONTAP bietet native Verschlüsselung auf Volume-Ebene und unterstützt sowohl Onboard- als auch externes Verschlüsselungsmanagement.
+* Multi-Faktor- und Multi-Faktor-Authentifizierung – ONTAP ermöglicht die gemeinsame Nutzung von Infrastrukturressourcen mit höchstmöglicher Sicherheit.
+
+
+
+
 ==== Vereinfachtes Datenmanagement
 
 Für den Enterprise IT-Betrieb und die Data Scientists spielt Datenmanagement eine zentrale Rolle, damit für KI-Applikationen die entsprechenden Ressourcen zum Training von KI/ML-Datensätzen verwendet werden. Die folgenden zusätzlichen Informationen über NetApp Technologien sind bei dieser Validierung nicht im Umfang enthalten, können jedoch je nach Ihrer Implementierung relevant sein.
 
 Die ONTAP Datenmanagement-Software umfasst die folgenden Funktionen, um den Betrieb zu optimieren und zu vereinfachen und damit Ihre Gesamtbetriebskosten zu senken:
 
+* Snapshots und Klone ermöglichen Zusammenarbeit, parallele Experimente und erweiterte Daten-Governance für ML/DL-Workflows.
+* SnapMirror ermöglicht die nahtlose Datenverschiebung in Hybrid-Cloud- und Multi-Site-Umgebungen, sodass Daten jederzeit und überall zur Verfügung stehen.
 * Inline-Data-Compaction und erweiterte Deduplizierung: Data-Compaction reduziert den ungenutzten Speicherplatz in Storage-Blöcken, während Deduplizierung die effektive Kapazität deutlich steigert. Dies gilt für lokal gespeicherte Daten und für Daten-Tiering in die Cloud.
 * Minimale, maximale und adaptive Quality of Service (AQoS): Durch granulare QoS-Einstellungen (Quality of Service) können Unternehmen ihre Performance-Level für kritische Applikationen auch in Umgebungen mit vielen unterschiedlichen Workloads garantieren.
 * NetApp FabricPool: Bietet automatisches Tiering von „kalten“ Daten in Private- und Public-Cloud-Storage-Optionen, einschließlich Amazon Web Services (AWS), Azure und NetApp StorageGRID Storage-Lösung. Weitere Informationen zu FabricPool finden Sie unter https://www.netapp.com/pdf.html?item=/media/17239-tr4598pdf.pdf["TR-4598: FabricPool Best Practices"^].
 * NetApp FlexCache: Bietet Remote-Caching-Funktionen für Volumes, die die Dateiverteilung vereinfachen, die WAN-Latenz verringern und die Kosten für die WAN-Bandbreite senken. FlexCache ermöglicht eine über mehrere Standorte verteilte Produktentwicklung sowie einen schnelleren Zugriff auf Unternehmensdatensätze von Remote-Standorten aus.
-
-
-
-
-==== Beschleunigung und Sicherung von Daten
-
-ONTAP bietet überdurchschnittliche Performance und Datensicherung, erweitert diese Funktionen auf folgende Weise:
-
-* Performance und niedrige Latenz: ONTAP bietet höchstmöglichen Durchsatz bei geringstmöglicher Latenz, einschließlich Unterstützung für NVIDIA GPUDirect Storage (GDS) mithilfe von NFS over RDMA.
-* Datensicherung ONTAP verfügt über integrierte Funktionen für die Datensicherung mit zentralem Management über alle Plattformen hinweg.
-* NetApp Volume Encryption (NVE) ONTAP bietet native Verschlüsselung auf Volume-Ebene und unterstützt sowohl Onboard- als auch externes Verschlüsselungsmanagement.
-* Multi-Faktor- und Multi-Faktor-Authentifizierung – ONTAP ermöglicht die gemeinsame Nutzung von Infrastrukturressourcen mit höchstmöglicher Sicherheit.
 
 
 
@@ -107,4 +109,4 @@ Das NetApp DataOps Toolkit ist ein Python-basiertes Tool zur Vereinfachung des M
 
 Astra Trident ist ein vollständig unterstützter Open-Source-Storage-Orchestrator für Container und Kubernetes-Distributionen, einschließlich Anthos. Trident kann mit dem gesamten NetApp Storage-Portfolio, einschließlich NetApp ONTAP, eingesetzt werden. Darüber hinaus werden NFS- und iSCSI-Verbindungen unterstützt. Trident beschleunigt den DevOps-Workflow, da Endbenutzer Storage über ihre NetApp Storage-Systeme bereitstellen und managen können, ohne dass ein Storage-Administrator eingreifen muss.
 
-link:aipod_nv_architecture.html["Der nächste Schritt: NetApp AI Pod mit NVIDIA DGX Systemen – Architektur."]
+link:aipod_nv_architecture.html["Der nächste Schritt: NetApp AIPod mit NVIDIA DGX Systemen – Lösungsarchitektur"]
