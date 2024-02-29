@@ -173,7 +173,7 @@ image:sql-awsec2-image3.png["Fehler: Fehlendes Grafikbild"]
 
 
 ....
-Vol create -vserver svm001 -volume vol_awssqlprod01_data -aggregate aggr1 -size 800GB -state online -tiering-policy snapshot-only -percent-snapshot-space 0 -autosize-mode grow -snapshot-policy none -security-style ntfs -aggregate aggr1
+vol create -vserver svm001 -volume vol_awssqlprod01_data -aggregate aggr1 -size 800GB -state online -tiering-policy snapshot-only -percent-snapshot-space 0 -autosize-mode grow -snapshot-policy none -security-style ntfs
 volume modify -vserver svm001 -volume vol_awssqlprod01_data -fractional-reserve 0
 volume modify -vserver svm001 -volume vol_awssqlprod01_data -space-mgmt-try-first vol_grow
 volume snapshot autodelete modify -vserver svm001 -volume vol_awssqlprod01_data -delete-order oldest_first
@@ -209,7 +209,7 @@ igroup create -igroup igrp_ws2019sql1 -protocol iscsi -ostype windows -initiator
 
 
 ....
-lun create -path /vol/vol_awssqlprod01_data/lun_awssqlprod01_data -size 700GB -ostype windows_2008 -space-reserve enabled -space-allocation enabled lun create -path /vol/vol_awssqlprod01_log/lun_awssqlprod01_log -size 100GB -ostype windows_2008 -space-reserve enabled -space-allocation enabled
+lun create -path /vol/vol_awssqlprod01_data/lun_awssqlprod01_data -size 700GB -ostype windows_2008 -space-allocation enabled lun create -path /vol/vol_awssqlprod01_log/lun_awssqlprod01_log -size 100GB -ostype windows_2008 -space-allocation enabled
 ....
 image:sql-awsec2-image5.png["Fehler: Fehlendes Grafikbild"]
 
@@ -249,15 +249,15 @@ foreach ($TargetPortal in $TargetPortals) {New-IscsiTargetPortal -TargetPortalAd
 ....
 image:sql-awsec2-image10.png["Fehler: Fehlendes Grafikbild"]
 
-+
 *Best Practices*
 
+* Konfigurieren Sie fünf iSCSI-Sitzungen pro Zielschnittstelle, um eine optimale Performance zu erzielen.
+* Konfiguration einer Round Robin-Richtlinie zur besten iSCSI-Performance insgesamt
+* Stellen Sie beim Formatieren der LUNs sicher, dass die Zuordnungseinheit für Partitionen auf 64K eingestellt ist
 +
-* Konfigurieren Sie fünf iSCSI-Sitzungen pro Zielschnittstelle für eine optimale Leistung.
-* Konfigurieren Sie eine Round-Robin-Policy für die beste iSCSI-Gesamtleistung.
-* Stellen Sie sicher, dass die Größe der Zuordnungseinheit auf 64K für Partitionen beim Formatieren der LUNs gesetzt ist
+.. Führen Sie den folgenden PowerShell-Befehl aus, um sicherzustellen, dass die iSCSI-Sitzung beibehalten wird.
 
-. Führen Sie den folgenden PowerShell-Befehl aus, um sicherzustellen, dass die iSCSI-Sitzung beibehalten wird.
+
 
 
 ....
@@ -414,13 +414,16 @@ Die Größenformel für das Host-Protokoll-Verzeichnis setzt folgende voraus:
 
 * Eine Systemdatenbank-Sicherung, die die tempdb-Datenbank nicht enthält
 * Eine 10% LUN Overheadfläche somit ist das Host-Log-Verzeichnis auf einem dedizierten Volume oder einer LUN vorhanden. Die Datenmenge im Host-Log-Verzeichnis hängt von der Größe der Backups und der Anzahl der Tage ab, die Backups aufbewahrt werden.
-
-
++
 image:sql-awsec2-image17.png["Fehler: Fehlendes Grafikbild"]
 
++
 Wenn die LUNs bereits bereitgestellt wurden, können Sie den Bereitstellungspunkt auswählen, der das Host-Protokollverzeichnis darstellt.
 
++
 image:sql-awsec2-image18.png["Fehler: Fehlendes Grafikbild"]
+
+
 
 ====
 Sie können nun Backup-, Restore- und Klonvorgänge für SQL Server ausführen.
@@ -437,31 +440,28 @@ Nachdem Sie die Datenbank und die Protokolldateien auf den FSX ONTAP LUNs platzi
 * Verwenden Sie eine Ressourcengruppe für eine Backup-Konfiguration zur Snapshot-Optimierung und zur Anzahl der zu verwaltenden Jobs.
 +
 .. Wählen Sie *Ressourcen*, und wählen Sie dann *Microsoft SQL Server *im Dropdown-Menü oben links. Wählen Sie *Ressourcen Aktualisieren*.
-
-
-
-
++
 image:sql-awsec2-image19.png["Fehler: Fehlendes Grafikbild"]
 
-. Wählen Sie die zu sichernde Datenbank aus, und wählen Sie dann *Weiter* und (**), um die Policy hinzuzufügen, falls noch keine Policy erstellt wurde. Befolgen Sie die * Neue SQL Server Backup Policy*, um eine neue Richtlinie zu erstellen.
-
-
+.. Wählen Sie die zu sichernde Datenbank aus, und wählen Sie dann *Weiter* und (**), um die Policy hinzuzufügen, falls noch keine Policy erstellt wurde. Befolgen Sie die * Neue SQL Server Backup Policy*, um eine neue Richtlinie zu erstellen.
++
 image:sql-awsec2-image20.png["Fehler: Fehlendes Grafikbild"]
 
-. Wählen Sie ggf. den Überprüfungsserver aus. Dieser Server ist der Server, auf dem SnapCenter DBCC CHECKDB ausgeführt wird, nachdem eine vollständige Sicherung erstellt wurde. Klicken Sie auf *Weiter*, um eine Benachrichtigung zu erhalten, und wählen Sie zur Überprüfung *Zusammenfassung*. Klicken Sie nach der Überprüfung auf *Fertig stellen*.
-
-
+.. Wählen Sie ggf. den Überprüfungsserver aus. Dieser Server ist der Server, auf dem SnapCenter DBCC CHECKDB ausgeführt wird, nachdem eine vollständige Sicherung erstellt wurde. Klicken Sie auf *Weiter*, um eine Benachrichtigung zu erhalten, und wählen Sie zur Überprüfung *Zusammenfassung*. Klicken Sie nach der Überprüfung auf *Fertig stellen*.
++
 image:sql-awsec2-image21.png["Fehler: Fehlendes Grafikbild"]
 
-. Klicken Sie auf *Jetzt sichern*, um das Backup zu testen. Wählen Sie in den Popup-Fenstern die Option *Backup* aus.
-
-
+.. Klicken Sie auf *Jetzt sichern*, um das Backup zu testen. Wählen Sie in den Popup-Fenstern die Option *Backup* aus.
++
 image:sql-awsec2-image22.png["Fehler: Fehlendes Grafikbild"]
 
-. Wählen Sie *Monitor*, um zu überprüfen, ob die Sicherung abgeschlossen wurde.
-
-
+.. Wählen Sie *Monitor*, um zu überprüfen, ob die Sicherung abgeschlossen wurde.
++
 image:sql-awsec2-image23.png["Fehler: Fehlendes Grafikbild"]
+
+
+
+
 
 *Best Practices*
 
