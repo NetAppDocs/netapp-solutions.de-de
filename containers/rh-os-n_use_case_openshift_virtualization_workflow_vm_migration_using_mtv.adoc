@@ -1,0 +1,232 @@
+---
+sidebar: sidebar 
+permalink: containers/rh-os-n_use_case_openshift_virtualization_workflow_vm_migration_using_mtv.html 
+keywords: OpenShift, OCP, Astra Trident, NetApp ONTAP, Red Hat OpenShift, OpenShift Virtualization, CNV, Container Native Virtualization, Red Hat OpenShift Virtualization 
+summary: Red hat OpenShift Virtualisierung mit NetApp ONTAP 
+---
+= Workflows: Red hat OpenShift Virtualisierung mit NetApp ONTAP
+:hardbreaks:
+:allow-uri-read: 
+:nofooter: 
+:icons: font
+:linkattrs: 
+:imagesdir: ./../media/
+
+
+
+
+== Migration der VM von VMware zu OpenShift-Virtualisierung mithilfe des Migration Toolkit für Virtualisierung
+
+In diesem Abschnitt erfahren Sie, wie Sie mithilfe des Migration Toolkit for Virtualization (MTV) Virtual Machines von VMware auf OpenShift-Virtualisierung migrieren, die auf der OpenShift-Container-Plattform ausgeführt und mithilfe von Astra Trident in NetApp ONTAP-Storage integriert wird.
+
+Das folgende Video zeigt eine Demonstration der Migration einer RHEL VM von VMware zur OpenShift-Virtualisierung mit ontap-san für persistenten Storage.
+
+.Mit Red hat MTV VMs zu OpenShift-Virtualisierung mit NetApp ONTAP-Speicher migrieren
+video::bac58645-dd75-4e92-b5fe-b12b015dc199[panopto,width=360]
+Das folgende Diagramm zeigt eine allgemeine Ansicht der Migration einer VM von VMware zu Red hat OpenShift Virtualization.
+
+image:rh-os-n_use_case_vm_migration_using_mtv.png[""]
+
+
+
+=== Voraussetzungen für die Beispielmigration
+
+
+
+=== **Auf VMware**
+
+* Eine RHEL 9-VM mit RHEL 9.3 mit den folgenden Konfigurationen wurde installiert:
++
+** CPU: 2, Arbeitsspeicher: 20 GB, Festplatte: 20 GB
+** Benutzeranmeldeinformationen: Root-Benutzer und Anmeldedaten des Admin-Benutzers
+
+
+* Nachdem die VM bereit war, wurde der postgresql-Server installiert.
++
+** postgresql-Server wurde gestartet und aktiviert, um beim Booten zu starten
++
+[source, console]
+----
+systemctl start postgresql.service`
+systemctl enable postgresql.service
+The above command ensures that the server can start in the VM in OpenShift Virtualization after migration
+----
+** Es wurden 2 Datenbanken, 1 Tabelle und 1 Zeile in der Tabelle hinzugefügt. Siehe link:https://access.redhat.com/documentation/fr-fr/red_hat_enterprise_linux/9/html/configuring_and_using_database_servers/installing-postgresql_using-postgresql["Hier"] Anweisungen zum Installieren von postgresql-Servern auf RHEL und zum Erstellen von Datenbank- und Tabelleneinträgen.
+
+
+
+
+
+NOTE: Stellen Sie sicher, dass Sie den postgresql-Server starten und den Dienst beim Booten starten.
+
+
+
+=== **Auf OpenShift Cluster**
+
+Die folgenden Installationen wurden vor der Installation von MTV abgeschlossen:
+
+* OpenShift Cluster 4.13.34
+* link:https://docs.netapp.com/us-en/trident/trident-get-started/kubernetes-deploy.html["Astra Trident 23.10"]
+* Multipath auf den Cluster-Knoten mit aktivierter iSCSI-Funktion (für ontap-san Storage-Klasse). Informationen zum Erstellen eines Daemon-Satzes, der iSCSI auf jedem Knoten im Cluster aktiviert, finden Sie im bereitgestellten yaml.
+* Trident Back-End- und Storage-Klasse für ONTAP SAN mit iSCSI Siehe die bereitgestellten yaml-Dateien für das dreigesichtige Backend und die Speicherklasse.
+* link:https://docs.openshift.com/container-platform/4.13/virt/install/installing-virt-web.html["OpenShift Virtualisierung"]
+
+
+Um iscsi und Multipath auf den OpenShift-Cluster-Knoten zu installieren, verwenden Sie die unten angegebene yaml-Datei
+**Cluster-Knoten für iSCSI vorbereiten**
+
+[source, yaml]
+----
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  namespace: trident
+  name: trident-iscsi-init
+  labels:
+    name: trident-iscsi-init
+spec:
+  selector:
+    matchLabels:
+      name: trident-iscsi-init
+  template:
+    metadata:
+      labels:
+        name: trident-iscsi-init
+    spec:
+      hostNetwork: true
+      serviceAccount: trident-node-linux
+      initContainers:
+      - name: init-node
+        command:
+          - nsenter
+          - --mount=/proc/1/ns/mnt
+          - --
+          - sh
+          - -c
+        args: ["$(STARTUP_SCRIPT)"]
+        image: alpine:3.7
+        env:
+        - name: STARTUP_SCRIPT
+          value: |
+            #! /bin/bash
+            sudo yum install -y lsscsi iscsi-initiator-utils sg3_utils device-mapper-multipath
+            rpm -q iscsi-initiator-utils
+            sudo sed -i 's/^\(node.session.scan\).*/\1 = manual/' /etc/iscsi/iscsid.conf
+            cat /etc/iscsi/initiatorname.iscsi
+            sudo mpathconf --enable --with_multipathd y --find_multipaths n
+            sudo systemctl enable --now iscsid multipathd
+            sudo systemctl enable --now iscsi
+        securityContext:
+          privileged: true
+      hostPID: true
+      containers:
+      - name: wait
+        image: k8s.gcr.io/pause:3.1
+      hostPID: true
+      hostNetwork: true
+      tolerations:
+      - effect: NoSchedule
+        key: node-role.kubernetes.io/master
+  updateStrategy:
+    type: RollingUpdate
+----
+Verwenden Sie die folgende yaml-Datei, um die dreigesichte Backend-Konfiguration für die Verwendung von ONTAP-san-Speicher zu erstellen
+**Trident Backend für iSCSI**
+
+[source, yaml]
+----
+apiVersion: v1
+kind: Secret
+metadata:
+  name: backend-tbc-ontap-san-secret
+type: Opaque
+stringData:
+  username: <username>
+  password: <password>
+---
+apiVersion: trident.netapp.io/v1
+kind: TridentBackendConfig
+metadata:
+  name: ontap-san
+spec:
+  version: 1
+  storageDriverName: ontap-san
+  managementLIF: <management LIF>
+  backendName: ontap-san
+  svm: <SVM name>
+  credentials:
+    name: backend-tbc-ontap-san-secret
+----
+Verwenden Sie die folgende yaml-Datei, um eine dreilagige Konfiguration für die Verwendung von ONTAP-san-Speicher zu erstellen
+**Trident Storage-Klasse für iSCSI**
+
+[source, yaml]
+----
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: ontap-san
+provisioner: csi.trident.netapp.io
+parameters:
+  backendType: "ontap-san"
+  media: "ssd"
+  provisioningType: "thin"
+  snapshots: "true"
+allowVolumeExpansion: true
+----
+
+
+=== *Installieren Sie MTV*
+
+Jetzt können Sie das Migration Toolkit for Virtualization (MTV) installieren. Beachten Sie die mitgelieferten Anweisungen link:https://access.redhat.com/documentation/en-us/migration_toolkit_for_virtualization/2.5/html/installing_and_using_the_migration_toolkit_for_virtualization/installing-the-operator["Hier"] Für Hilfe bei der Installation.
+
+Die Benutzeroberfläche des Migration Toolkit for Virtualization (MTV) ist in die OpenShift-Webkonsole integriert.
+Sie können sich darauf beziehen link:https://access.redhat.com/documentation/en-us/migration_toolkit_for_virtualization/2.5/html/installing_and_using_the_migration_toolkit_for_virtualization/migrating-vms-web-console#mtv-ui_mtv["Hier"] So verwenden Sie die Benutzeroberfläche für verschiedene Aufgaben.
+
+**Quellanbieter Erstellen**
+
+Um die RHEL VM von VMware auf OpenShift Virtualization zu migrieren, müssen Sie zunächst den Quellanbieter für VMware erstellen. Beachten Sie die Anweisungen link:https://access.redhat.com/documentation/en-us/migration_toolkit_for_virtualization/2.5/html/installing_and_using_the_migration_toolkit_for_virtualization/migrating-vms-web-console#adding-providers["Hier"] Um den Quellanbieter zu erstellen.
+
+Um Ihren VMware-Quellanbieter zu erstellen, benötigen Sie Folgendes:
+
+* VCenter-url
+* VCenter-Anmeldedaten
+* Fingerabdruck des vCenter-Servers
+* VDDK-Bild in einem Repository
+
+
+Beispiel für die Erstellung eines Quellanbieters:
+
+image:rh-os-n_use_case_vm_migration_source_provider.png[""]
+
+
+NOTE: Das Migration Toolkit for Virtualization (MTV) verwendet das VMware Virtual Disk Development Kit (VDDK) SDK zur Beschleunigung der Übertragung virtueller Laufwerke von VMware vSphere. Daher wird dringend empfohlen, ein VDDK-Bild zu erstellen, obwohl dies optional ist.
+Um diese Funktion zu nutzen, laden Sie das VMware Virtual Disk Development Kit (VDDK) herunter, erstellen ein VDDK-Image und schieben das VDDK-Image in Ihre Bildregistrierung.
+
+Befolgen Sie die Anweisungen link:https://access.redhat.com/documentation/en-us/migration_toolkit_for_virtualization/2.5/html/installing_and_using_the_migration_toolkit_for_virtualization/prerequisites#creating-vddk-image_mtv["Hier"] So erstellen und verschieben Sie das VDDK-Image in eine Registrierung, auf die über den OpenShift-Cluster zugegriffen werden kann.
+
+**Zielanbieter erstellen**
+
+Der Host-Cluster wird automatisch hinzugefügt, da der OpenShift-Virtualisierungsanbieter der Quellanbieter ist.
+
+**Migrationsplan Erstellen**
+
+Befolgen Sie die Anweisungen link:https://access.redhat.com/documentation/en-us/migration_toolkit_for_virtualization/2.5/html/installing_and_using_the_migration_toolkit_for_virtualization/migrating-vms-web-console#creating-migration-plan_mtv["Hier"] Um einen Migrationsplan zu erstellen.
+
+Wenn Sie einen Plan erstellen, müssen Sie Folgendes erstellen, falls noch nicht erstellt:
+
+* Eine Netzwerkzuordnung, um das Quellnetzwerk dem Zielnetzwerk zuzuordnen.
+* Eine Speicherzuordnung, um den Quell-Datastore der Ziel-Storage-Klasse zuzuordnen. Hierfür können Sie sich für eine ontap-san-Storage-Klasse entscheiden.
+Sobald der Migrationsplan erstellt ist, sollte der Status des Plans *Ready* anzeigen und Sie sollten nun *Start* des Plans haben.
+
+
+image:rh-os-n_use_case_vm_migration_using_mtv_plan_ready.png[""]
+
+Durch Klicken auf *Start* wird eine Reihe von Schritten durchlaufen, um die Migration der VM abzuschließen.
+
+image:rh-os-n_use_case_vm_migration_using_mtv_plan_complete.png[""]
+
+Wenn alle Schritte abgeschlossen sind, können Sie die migrierten VMs sehen, indem Sie im Navigationsmenü auf der linken Seite unter *Virtualisierung* auf *virtuelle Maschinen* klicken.
+Anweisungen für den Zugriff auf die virtuellen Maschinen werden bereitgestellt link:https://docs.openshift.com/container-platform/4.13/virt/virtual_machines/virt-accessing-vm-consoles.html["Hier"].
+
+Sie können sich bei der virtuellen Maschine anmelden und den Inhalt der posgresql-Datenbanken überprüfen. Die Datenbanken, Tabellen und die Einträge in der Tabelle sollten identisch sein mit denen, die auf der Quell-VM erstellt wurden.
