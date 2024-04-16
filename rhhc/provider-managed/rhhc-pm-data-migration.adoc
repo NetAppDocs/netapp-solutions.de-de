@@ -1,0 +1,49 @@
+---
+sidebar: sidebar 
+permalink: rhhc/provider-managed/rhhc-pm-data-migration.html 
+keywords: NetApp Solutions, redhat OpenShift, red hat OpenShift, redhat openshift container platform, ocp, openshift container platform, Advanced Cluster Management, ACM, Hub Cluster, containers, container workloads, VMware, customer managed storage, ONTAP, Ansible Automation Platform, BlueXP 
+summary:  
+---
+= Datenmigration
+:hardbreaks:
+:allow-uri-read: 
+:nofooter: 
+:icons: font
+:linkattrs: 
+:imagesdir: ./../../media/
+
+
+[role="lead"]
+Auf dieser Seite werden die Datenmigrationsoptionen für Container-Workloads auf verwalteten Red hat OpenShift-Clustern unter Verwendung von FSX for NetApp ONTAP für persistenten Storage angezeigt.
+
+
+
+== Datenmigration
+
+Red hat OpenShift-Service auf AWS sowie FSX for NetApp ONTAP (FSxN) sind Teil ihres Service-Portfolios von AWS. FSxN ist mit Single AZ- oder Multi-AZ-Optionen verfügbar. Die Multi-Az-Option bietet Datenschutz bei Ausfall einer Verfügbarkeitszone. FSxN kann in Astra Trident integriert werden, um persistenten Storage für Applikationen auf ROSA Clustern bereitzustellen.
+
+
+
+=== Integration von FSxN mit Trident mit Helm Chart
+
+.ROSA Cluster Integration mit Amazon FSX for ONTAP
+video::621ae20d-7567-4bbf-809d-b01200fa7a68[panopto]
+Die Migration von Container-Applikationen umfasst Folgendes:
+
+* Persistente Volumes: Dies ist mit BlueXP möglich. Eine weitere Option ist der Einsatz von Astra Control Center für die Migration von Container-Applikationen von On-Premises- in die Cloud-Umgebung. Automatisierung kann für den gleichen Zweck eingesetzt werden.
+* Applikations-Metadaten: Dies kann mithilfe von OpenShift GitOps (Argo CD) erreicht werden.
+
+
+
+
+=== Failover und Failback von Anwendungen auf ROSA-Cluster mit FSxN für persistenten Speicher
+
+Das folgende Video zeigt eine Demonstration von Failover- und Failback-Szenarien mit BlueXP und der Argo CD.
+
+.Failover und Failback von Anwendungen auf ROSA Cluster
+video::e9a07d79-42a1-4480-86be-b01200fa62f5[panopto]
+
+
+=== Datensicherungs- und Migrationslösung für OpenShift-Container-Workloads
+
+image:rhhc-rosa-with-fsxn.png[""]

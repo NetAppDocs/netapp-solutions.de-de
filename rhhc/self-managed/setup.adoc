@@ -1,0 +1,75 @@
+---
+sidebar: sidebar 
+permalink: rhhc/self-managed/setup.html 
+keywords: NetApp Solutions, redhat OpenShift, red hat OpenShift, redhat openshift container platform, ocp, openshift container platform, Advanced Cluster Management, ACM, Hub Cluster, containers, container workloads, VMware, customer managed storage, ONTAP 
+summary:  
+---
+= Implementierung und Konfiguration der Container-Plattform Red hat OpenShift auf AWS
+:hardbreaks:
+:allow-uri-read: 
+:nofooter: 
+:icons: font
+:linkattrs: 
+:imagesdir: ./../../media/
+
+
+[role="lead"]
+In diesem Abschnitt wird ein High-Level-Workflow beschrieben, in dem Sie OpenShift-Cluster in AWS einrichten und managen und zustandsbehaftete Anwendungen darauf implementieren. Es zeigt die Nutzung von NetApp Cloud Volumes ONTAP Storage mit Hilfe von Astra Trident zur Bereitstellung persistenter Volumes. Einzelheiten zur Nutzung von Astra Control Center für die Durchführung von Datensicherungs- und Migrationsaktivitäten für die zustandsbehafteten Applikationen werden bereitgestellt.
+
+
+NOTE: Es gibt verschiedene Möglichkeiten zur Implementierung von Red hat OpenShift Container-Plattform-Clustern auf AWS. Diese allgemeine Beschreibung des Setups enthält Dokumentations-Links für die spezifische verwendete Methode. Weitere Methoden finden Sie in den entsprechenden Links im link:../rhhc-resources.html["Ressourcen"].
+
+Das folgende Diagramm zeigt die Cluster, die auf AWS implementiert und über ein VPN mit dem Datacenter verbunden sind.
+
+image:rhhc-self-managed-aws.png[""]
+
+Der Einrichtungsvorgang kann in die folgenden Schritte unterteilt werden:
+
+.Installieren Sie über Advanced Cluster Management einen OCP-Cluster in AWS.
+[%collapsible]
+====
+* Erstellen Sie eine VPC mit einer Site-to-Site-VPN-Verbindung (mit pfsense), um eine Verbindung zum On-Premises-Netzwerk herzustellen.
+* Das Netzwerk vor Ort verfügt über eine Internetverbindung.
+* 3 private Subnetze in 3 verschiedenen AZS erstellen.
+* Erstellen Sie eine Route 53 private gehostete Zone und einen DNS-Resolver für die VPC.
+
+
+Erstellen Sie mithilfe des ACM-Assistenten (Advanced Cluster Management) OpenShift-Cluster auf AWS. Siehe Anweisungen link:https://docs.openshift.com/dedicated/osd_install_access_delete_cluster/creating-an-aws-cluster.html["Hier"].
+
+
+NOTE: Sie können das Cluster auch in AWS über die OpenShift Hybrid Cloud-Konsole erstellen. Siehe link:https://docs.openshift.com/container-platform/4.10/installing/installing_aws/installing-aws-default.html["Hier"] Weitere Anweisungen.
+
+
+TIP: Wenn Sie den Cluster mit ACM erstellen, können Sie die Installation anpassen, indem Sie die yaml-Datei nach dem Ausfüllen der Details in der Formularansicht bearbeiten. Nach dem Erstellen des Clusters können Sie sich über ssh bei den Nodes des Clusters zur Fehlerbehebung oder zur manuellen Konfiguration anmelden. Verwenden Sie den SSH-Schlüssel, den Sie während der Installation angegeben haben, und den Benutzernamen-Kern, um sich anzumelden.
+
+====
+.Implementieren Sie Cloud Volumes ONTAP in AWS mit BlueXP.
+[%collapsible]
+====
+* Installieren Sie den Connector in einer lokalen VMware-Umgebung. Siehe Anweisungen link:https://docs.netapp.com/us-en/cloud-manager-setup-admin/task-install-connector-on-prem.html#install-the-connector["Hier"].
+* Stellen Sie über den Connector eine CVO-Instanz in AWS bereit. Siehe Anweisungen link:https://docs.netapp.com/us-en/cloud-manager-cloud-volumes-ontap/task-getting-started-aws.html["Hier"].
+
+
+
+NOTE: Der Connector kann auch in der Cloud-Umgebung installiert werden. Siehe link:https://docs.netapp.com/us-en/cloud-manager-setup-admin/concept-connectors.html["Hier"] Finden Sie weitere Informationen.
+
+====
+.Installation von Astra Trident im OCP Cluster
+[%collapsible]
+====
+* Implementieren Sie Trident Operator mit Helm. Siehe Anweisungen link:https://docs.netapp.com/us-en/trident/trident-get-started/kubernetes-deploy-helm.html["Hier"]
+* Back-End und Storage-Klasse erstellen Siehe Anweisungen link:https://docs.netapp.com/us-en/trident/trident-get-started/kubernetes-postdeployment.html["Hier"].
+
+
+====
+.Fügen Sie das OCP-Cluster in AWS zum Astra Control Center hinzu.
+[%collapsible]
+====
+Fügen Sie das OCP-Cluster in AWS zum Astra Control Center hinzu.
+
+====
+.Verwendung der CSI-Topology-Funktion von Trident für Multi-Zone-Architekturen
+Heute können Cloud-Provider Kubernetes/OpenShift-Cluster-Administratoren Nodes der zonbasierten Cluster erstellen. Die Nodes können sich in verschiedenen Verfügbarkeitszonen innerhalb einer Region oder über verschiedene Regionen hinweg befinden. Astra Trident verwendet CSI Topology, um die Provisionierung von Volumes für Workloads in einer Multi-Zone-Architektur zu vereinfachen. Mithilfe der CSI Topology-Funktion kann der Zugriff auf Volumes auf einen Teil von Nodes basierend auf Regionen und Verfügbarkeitszonen begrenzt werden. Siehe link:https://docs.netapp.com/us-en/trident/trident-use/csi-topology.html["Hier"] Entnehmen.
+
+
+NOTE: Kubernetes unterstützt zwei Volume-Bindungsmodi: - Wenn **_VolumeBindingMode_ auf _Immediate_** (Standard) eingestellt ist, erstellt Astra Trident das Volume ohne Topologieorientierung. Persistente Volumes werden erstellt, ohne dass sie von den Planungsanforderungen des anfragenden Pods abhängig sind. - Wenn **_VolumeBindingMode_ auf _WaitForFirstConsumer_** gesetzt wird, wird die Erstellung und Bindung eines Persistent Volume für eine PVC verzögert, bis ein Pod, der die PVC verwendet, geplant und erstellt wird. Auf diese Weise werden Volumes erstellt, um Planungseinschränkungen zu erfüllen, die durch Topologieanforderungen durchgesetzt werden. Astra Trident Storage-Back-Ends können für die selektive Bereitstellung von Volumes basierend auf Verfügbarkeitszonen entwickelt werden (Topologieorientiertes Back-End). Bei StorageClasses, die ein solches Backend nutzen, wird ein Volume nur erstellt, wenn es von einer Applikation angefordert wird, die in einer unterstützten Region/Zone geplant ist. (Topologieorientierte StorageClass) link:https://docs.netapp.com/us-en/trident/trident-use/csi-topology.html["Hier"] Entnehmen.

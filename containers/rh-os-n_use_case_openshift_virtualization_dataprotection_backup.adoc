@@ -1,0 +1,77 @@
+---
+sidebar: sidebar 
+permalink: containers/rh-os-n_use_case_openshift_virtualization_dataprotection_backup.html 
+keywords: OpenShift, OCP, Astra Trident, NetApp ONTAP, Red Hat OpenShift, OpenShift Virtualization, CNV, Container Native Virtualization, Red Hat OpenShift Virtualization, OADP operator, Openshift Data Protection Application operator, velero 
+summary: Red hat OpenShift Virtualisierung mit NetApp ONTAP 
+---
+= Erstellen von On-Demand-Backups für VMs in OpenShift-Virtualisierung
+:hardbreaks:
+:allow-uri-read: 
+:nofooter: 
+:icons: font
+:linkattrs: 
+:imagesdir: ./../media/
+
+
+
+
+== Schritte zum Erstellen einer Sicherung einer VM
+
+Um eine On-Demand-Sicherung der gesamten VM (VM-Metadaten und VM-Festplatten) zu erstellen, klicken Sie auf die Registerkarte **Backup**. Dadurch wird eine benutzerdefinierte Backup-Ressource (CR) erstellt. Ein Beispiel für yaml wird zur Erstellung des Backup CR bereitgestellt. Mit diesem yaml werden die VM und ihre Laufwerke im angegebenen Namespace gesichert. Weitere Parameter können wie in dargestellt eingestellt werden link:https://docs.openshift.com/container-platform/4.14/backup_and_restore/application_backup_and_restore/backing_up_and_restoring/oadp-creating-backup-cr.html["Dokumentation"].
+
+Ein Snapshot der persistenten Volumes, auf denen die Festplatten gesichert werden, wird vom CSI erstellt und an den im yaml bereitgestellten Objektspeicherort verschoben. Das Backup bleibt gemäß ttl 30 Tage im System.
+
+....
+apiVersion: velero.io/v1
+kind: Backup
+metadata:
+  name: backup1
+  namespace: openshift-adp
+spec:
+  includedNamespaces:
+  - virtual-machines-demo
+  snapshotVolumes: true
+  storageLocation: velero-demo-1
+  ttl: 720h0m0s
+....
+Sobald das Backup abgeschlossen ist, sollte seine Phase als abgeschlossen angezeigt werden.
+
+image::redhat_openshift_OADP_backup_image1.jpg[Sicherung abgeschlossen]
+
+Sie können das Backup im Objektspeicher mit Hilfe einer S3-Browser-Anwendung überprüfen. Der Pfad des Backups wird im konfigurierten Bucket mit dem Präfixnamen (velero/demobackup) angezeigt. Sie können den Inhalt des Backups sehen, der die Volume-Snapshots, Protokolle und andere Metadaten der virtuellen Maschine umfasst.
+
+image::redhat_openshift_OADP_backup_image2.jpg[Backup von Objekten in S3]
+
+
+
+== Erstellen geplanter Backups für VMs in OpenShift-Virtualisierung
+
+Um Backups nach einem Zeitplan zu erstellen, müssen Sie eine benutzerdefinierte Ressource für den Zeitplan erstellen.
+Der Zeitplan ist einfach ein Cron-Ausdruck, mit dem Sie den Zeitpunkt angeben können, zu dem Sie das Backup erstellen möchten. Ein Beispiel für yaml zum Erstellen eines Schedule CR.
+
+....
+apiVersion: velero.io/v1
+kind: Schedule
+metadata:
+  name: <schedule>
+  namespace: openshift-adp
+spec:
+  schedule: 0 7 * * *
+  template:
+    hooks: {}
+    includedNamespaces:
+    - <namespace>
+    storageLocation: velero-demo-1
+    defaultVolumesToFsBackup: true
+    ttl: 720h0m0s
+....
+Der Cron-Ausdruck 0 7 * * * bedeutet, dass täglich um 7:00 Uhr ein Backup erstellt wird.
+Die Namespaces, die in das Backup aufgenommen werden sollen, und der Speicherort für das Backup werden ebenfalls angegeben. Anstelle eines Backup CR wird Schedule CR verwendet, um ein Backup mit der angegebenen Zeit und Häufigkeit zu erstellen.
+
+Sobald der Zeitplan erstellt wurde, wird er aktiviert.
+
+image::redhat_openshift_OADP_backup_image3.jpg[Zeitplan erstellt]
+
+Backups werden gemäß diesem Zeitplan erstellt und können auf der Registerkarte Backup angezeigt werden.
+
+image::redhat_openshift_OADP_backup_image4.jpg[Zeitplan erstellt]
