@@ -36,8 +36,7 @@ spec:
   ttl: 720h0m0s
 ....
 Sobald das Backup abgeschlossen ist, wird seine Phase als abgeschlossen angezeigt.
-
-image::redhat_openshift_OADP_backup_image1.jpg[Sicherung abgeschlossen]
+Bild::redhat_openshift_OADP_backup_image1.jpg[Backup abgeschlossen]
 
 Sie können das Backup im Objektspeicher mit Hilfe einer S3-Browser-Anwendung überprüfen. Der Pfad des Backups wird im konfigurierten Bucket mit dem Präfixnamen (velero/demobackup) angezeigt. Sie können den Inhalt des Backups sehen, der die Volume-Snapshots, Protokolle und andere Metadaten der virtuellen Maschine umfasst.
 
@@ -51,7 +50,6 @@ image::redhat_openshift_OADP_backup_image2.jpg[Backup von Objekten in S3]
 == Erstellen geplanter Backups für VMs in OpenShift Virtualization
 
 Um Backups nach einem Zeitplan zu erstellen, müssen Sie einen CR-Zeitplan erstellen.
-
 Der Zeitplan ist einfach ein Cron-Ausdruck, mit dem Sie den Zeitpunkt angeben können, zu dem Sie das Backup erstellen möchten. Ein Beispiel für yaml zum Erstellen eines Schedule CR.
 
 ....

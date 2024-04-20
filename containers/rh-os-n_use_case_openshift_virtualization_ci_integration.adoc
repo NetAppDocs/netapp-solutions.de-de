@@ -1,0 +1,26 @@
+---
+sidebar: sidebar 
+permalink: containers/rh-os-n_use_case_openshift_virtualization_ci_integration.html 
+keywords: OpenShift, OCP, Astra Trident, NetApp ONTAP, Red Hat OpenShift, OpenShift Virtualization, CNV, Container Native Virtualization, Red Hat OpenShift Virtualization, cloud Insights 
+summary: Überwachung mit Cloud Insights für VMs in Red hat OpenShift Virtualization 
+---
+= Integration mit Cloud Insights für VMs in Red hat OpenShift Virtualization
+:hardbreaks:
+:allow-uri-read: 
+:nofooter: 
+:icons: font
+:linkattrs: 
+:imagesdir: ./../media/
+
+
+Um Daten für VMs in OpenShift Virtualization zu sammeln, müssen Sie Folgendes installieren:
+
+. Ein Kubernetes Monitoring Operator und Datensammler zum Erfassen von Kubernetes-Daten
+Vollständige Anweisungen finden Sie im link:https://docs.netapp.com/us-en/cloudinsights/task_config_telegraf_agent_k8s.html["Dokumentation"].
+. Eine Einheit zur Erfassung von Daten aus ONTAP Storage, die persistenten Storage für VM-Festplatten bereitstellt
+Vollständige Anweisungen finden Sie im link:https://docs.netapp.com/us-en/cloudinsights/task_getting_started_with_cloud_insights.html["Dokumentation"].
+. Ein Datensammler für ONTAP
+Vollständige Anweisungen finden Sie im link:https://docs.netapp.com/us-en/cloudinsights/task_getting_started_with_cloud_insights.html#configure-the-data-collector-infrastructure["Dokumentation"]
+
+
+Wenn Sie StorageGRID außerdem für VM-Backups verwenden, benötigen Sie auch einen Datensammler für die StorageGRID.
