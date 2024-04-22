@@ -36,7 +36,8 @@ spec:
   ttl: 720h0m0s
 ....
 Sobald das Backup abgeschlossen ist, wird seine Phase als abgeschlossen angezeigt.
-Bild::redhat_openshift_OADP_backup_image1.jpg[Backup abgeschlossen]
+
+image::redhat_openshift_OADP_backup_image1.jpg[Sicherung abgeschlossen]
 
 Sie können das Backup im Objektspeicher mit Hilfe einer S3-Browser-Anwendung überprüfen. Der Pfad des Backups wird im konfigurierten Bucket mit dem Präfixnamen (velero/demobackup) angezeigt. Sie können den Inhalt des Backups sehen, der die Volume-Snapshots, Protokolle und andere Metadaten der virtuellen Maschine umfasst.
 
@@ -72,7 +73,9 @@ Der Cron-Ausdruck 0 7 * * * bedeutet, dass täglich um 7:00 Uhr ein Backup erste
 Die Namespaces, die in das Backup aufgenommen werden sollen, und der Speicherort für das Backup werden ebenfalls angegeben. Anstelle eines Backup CR wird Schedule CR verwendet, um ein Backup zu der angegebenen Zeit und Häufigkeit zu erstellen.
 
 Sobald der Zeitplan erstellt wurde, wird er aktiviert.
-Bild::redhat_openshift_OADP_backup_image3.jpg[Schedule erstellt]
+
+image::redhat_openshift_OADP_backup_image3.jpg[Zeitplan erstellt]
 
 Backups werden gemäß diesem Zeitplan erstellt und können auf der Registerkarte Backup angezeigt werden.
-Bild::redhat_openshift_OADP_backup_image4.jpg[Schedule erstellt]
+
+image::redhat_openshift_OADP_backup_image4.jpg[Zeitplan erstellt]
