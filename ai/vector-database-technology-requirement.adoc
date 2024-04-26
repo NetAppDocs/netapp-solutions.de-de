@@ -1,0 +1,69 @@
+---
+sidebar: sidebar 
+permalink: ai/vector-database-technology-requirement.html 
+keywords: vector database 
+summary: Technologieanforderung – Vektordatenbanklösung für NetApp 
+---
+= Technologieanforderungen
+:hardbreaks:
+:allow-uri-read: 
+:nofooter: 
+:icons: font
+:linkattrs: 
+:imagesdir: ./../media/
+
+
+
+
+== Technologieanforderungen
+
+Die unten aufgeführten Hardware- und Softwarekonfigurationen wurden mit Ausnahme der Performance für die meisten in diesem Dokument durchgeführten Validierungen verwendet. Diese Konfigurationen dienen als Richtlinie zur Einrichtung Ihrer Umgebung. Bitte beachten Sie jedoch, dass die einzelnen Komponenten je nach Kundenanforderungen variieren können.
+
+
+
+== Hardwareanforderungen
+
+|===
+| Trennt | Details 
+
+
+| NetApp AFF Storage-Array HA-Paar | * A800
+* ONTAP 9.14.1
+* 48 X 3,49 TB SSD-NVM
+* Zwei flexible Gruppen-Volumes: Metadaten und Daten.
+* Metadaten NFS Volume hat 12 x persistente Volumes mit 250 GB.
+* Daten sind ein ONTAP NAS S3 Volume 
+
+
+| 6 X FUJITSU PRIMERGY RX2540 M4 | * 64 CPUs
+* Intel(R) Xeon(R) Gold 6142 CPU @ 2,60 GHz
+* 256 GM physikalischer Speicher
+* 1 x 100-GbE-Netzwerk-Port 
+
+
+| Netzwerkbetrieb | 100 GbE 
+
+
+| StorageGRID | * 1 x SG100, 3 x SGF6024
+* 3 x 24 x 7,68 TB 
+|===
+
+
+== Softwareanforderungen
+
+|===
+| Software | Details 
+
+
+| Milvus-Cluster | * DIAGRAMM - milvus-4.1.11.
+* APP-Version – 2.3.4
+* Abhängige Bündel wie Buchhalter, Zookeeper, Pulsar, etc., Proxy, querynode, worker 
+
+
+| Kubernetes | * K8s Cluster mit 5 Nodes
+* 1 Master-Knoten und 4 Worker-Knoten
+* Version – 1.7.2 
+
+
+| Python | *3.10.12. 
+|===

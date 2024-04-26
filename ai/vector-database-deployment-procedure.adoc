@@ -1,0 +1,61 @@
+---
+sidebar: sidebar 
+permalink: ai/vector-database-deployment-procedure.html 
+keywords: vector database, vector-database-deployment-procedure 
+summary: vector-Database-Deployment-procedure - Vektor-Datenbanklösung für NetApp 
+---
+= Bereitstellungsverfahren
+:hardbreaks:
+:allow-uri-read: 
+:nofooter: 
+:icons: font
+:linkattrs: 
+:imagesdir: ./../media/
+
+
+
+
+== Bereitstellungsverfahren
+
+In diesem Abschnitt zur Implementierung haben wir wie unten gezeigt die milvus Vektor-Datenbank mit Kubernetes für die Lab-Einrichtung verwendet.
+
+image:Deployment_architecture.png["Fehler: Fehlendes Grafikbild"]
+
+Der NetApp-Speicher stellt den Speicher für das Cluster zur Verfügung, um Kundendaten und milvus-Clusterdaten zu behalten.
+
+
+
+=== Einrichtung von NetApp Storage – ONTAP
+
+* Initialisierung des Speichersystems
+* Erstellung von Storage Virtual Machines (SVM)
+* Zuweisung logischer Netzwerkschnittstellen
+* NFS-, S3-Konfiguration und -Lizenzierung
+
+
+Folgen Sie den Schritten unten für NFS (Network File System):
+
+. Erstellen Sie ein FlexGroup-Volume für NFSv4. In unserer Einrichtung für diese Validierung haben wir 48 SSDs verwendet, 1 SSD dediziert für das Root-Volume des Controllers und 47 SSDs verteilt für NFSv4]]. Überprüfen Sie, ob die NFS-Exportrichtlinie für das FlexGroup-Volume Lese-/Schreibberechtigungen für das Kubernetes (K8s) Node-Netzwerk besitzt. Wenn diese Berechtigungen nicht vorhanden sind, erteilen Sie Lese-/Schreibberechtigungen (rw) für das K8s-Knoten-Netzwerk.
+. Erstellen Sie auf allen K8s-Nodes einen Ordner und mounten Sie das FlexGroup-Volume über eine logische Schnittstelle (Logical Interface, LIF) auf jedem K8s-Node in diesem Ordner.
+
+
+Folgen Sie den Schritten unten für NAS S3 (Network Attached Storage Simple Storage Service):
+
+. Erstellen Sie ein FlexGroup Volume für NFS.
+. Richten Sie einen Object-Store-Server mit aktiviertem HTTP ein, und der Admin-Status wird mit dem Befehl „vserver Object-Store-Server create“ auf „up“ gesetzt. Sie haben die Möglichkeit, HTTPS zu aktivieren und einen benutzerdefinierten Listener-Port festzulegen.
+. Erstellen Sie mit dem Befehl „vserver object-Store-Server user create -user <username>“ einen Object-Store-Server-Benutzer.
+. Um den Zugriffsschlüssel und den geheimen Schlüssel zu erhalten, können Sie den folgenden Befehl ausführen: "Set diag; vserver object-Store-Server user show -user <username>". Diese Schlüssel werden jedoch während der Benutzererstellung bereitgestellt oder können über REST-API-Aufrufe abgerufen werden.
+. Erstellen Sie eine Object-Store-Server-Gruppe mit dem in Schritt 2 erstellten Benutzer und gewähren Sie Zugriff. In diesem Beispiel haben wir „FullAccess“ bereitgestellt.
+. Erstellen Sie einen NAS-Bucket, indem Sie seinen Typ auf „nas“ setzen und den Pfad zum NFSv3 Volume bereitstellen. Es ist auch möglich, einen S3-Bucket zu diesem Zweck zu verwenden.
+
+
+
+
+=== Einrichtung von NetApp Storage – StorageGRID
+
+. Installieren Sie die StorageGRID-Software.
+. Erstellen von Mandanten und Buckets
+. Benutzer mit der erforderlichen Berechtigung erstellen.
+
+
+Bitte überprüfen Sie mehr Details in https://docs.netapp.com/us-en/storagegrid-116/primer/index.html[]
