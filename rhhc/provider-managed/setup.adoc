@@ -1,0 +1,79 @@
+---
+sidebar: sidebar 
+permalink: rhhc/provider-managed/setup.html 
+keywords: NetApp Solutions, redhat OpenShift, red hat OpenShift, redhat openshift container platform, ocp, openshift container platform, Advanced Cluster Management, ACM, Hub Cluster, containers, container workloads, VMware, customer managed storage, ONTAP, ROSA, ROSA clusters 
+summary:  
+---
+= Implementierung und Konfiguration der gemanagten Container-Plattform Red hat OpenShift auf AWS
+:hardbreaks:
+:allow-uri-read: 
+:nofooter: 
+:icons: font
+:linkattrs: 
+:imagesdir: ./../../media/
+
+
+[role="lead"]
+In diesem Abschnitt wird ein High-Level-Workflow zur Einrichtung der verwalteten Red hat OpenShift-Cluster auf AWS(ROSA) beschrieben. Es zeigt die Nutzung von Managed FSX for NetApp ONTAP (FSxN) als Storage-Backend von Astra Trident zur Bereitstellung persistenter Volumes. Es werden Details zur Implementierung von FSxN auf AWS mithilfe von BlueXP bereitgestellt. Außerdem werden Einzelheiten zur Verwendung von BlueXP und OpenShift GitOps (Argo CD) bereitgestellt, um Datensicherungs- und Migrationsaktivitäten für die zustandsbehafteten Applikationen auf ROSA Clustern durchzuführen.
+
+Das folgende Diagramm zeigt die AUF AWS implementierten ROSA-Cluster, die FSxN als Back-End-Storage verwenden.
+
+image:rhhc-rosa-with-fsxn.png[""]
+
+
+NOTE: Diese Lösung wurde mit zwei ROSA-Clustern in zwei VPCs in AWS verifiziert. Jeder ROSA Cluster wurde mithilfe von Astra Trident in FSxN integriert. ES gibt mehrere Möglichkeiten, ROSA-Cluster und FSxN in AWS bereitzustellen. Diese allgemeine Beschreibung des Setups enthält Dokumentations-Links für die spezifische verwendete Methode. Weitere Methoden finden Sie in den entsprechenden Links im link:../rhhc-resources.html["Ressourcen"].
+
+Der Einrichtungsvorgang kann in die folgenden Schritte unterteilt werden:
+
+.INSTALLIEREN SIE ROSA Cluster
+[%collapsible]
+====
+* Erstellung von zwei VPCs und Einrichtung der VPC-Peering-Konnektivität zwischen den VPCs.
+* Siehe link:https://docs.openshift.com/rosa/welcome/index.html["Hier"] Für Anweisungen zur Installation VON ROSA Clustern.
+
+
+====
+.Installieren Sie FSxN
+[%collapsible]
+====
+* Installieren Sie FSxN auf den VPCs von BlueXP. Siehe link:https://docs.netapp.com/us-en/cloud-manager-setup-admin/index.html["Hier"] Für die Erstellung von BlueXP Konten und weitere Schritte. Siehe link:https://docs.netapp.com/us-en/cloud-manager-fsx-ontap/index.html["Hier"] Zur Installation von FSxN. Siehe link:https://docs.netapp.com/us-en/cloud-manager-setup-admin/index.html["Hier"] Zum Erstellen eines Connectors in AWS zum Verwalten des FSxN.
+* Implementieren Sie FSxN mithilfe von AWS. Siehe link:https://docs.aws.amazon.com/fsx/latest/ONTAPGuide/getting-started-step1.html["Hier"] Für die Implementierung über die AWS-Konsole.
+
+
+====
+.Trident auf ROSA Clustern installieren (mit Helm-Diagramm)
+[%collapsible]
+====
+* Verwenden Sie Helm-Diagramm, um Trident auf ROSA Clustern zu installieren. url für das Helm-Diagramm: https://netapp.github.io/trident-helm-chart[]
+
+
+.Integration von FSxN mit Astra Trident für ROSA Cluster
+video::621ae20d-7567-4bbf-809d-b01200fa7a68[panopto]
+
+NOTE: OpenShift GitOps kann zur Implementierung von Astra Trident CSI für alle gemanagten Cluster verwendet werden, wenn sie über ApplicationSet auf ArgoCD registriert werden.
+
+image:rhhc-trident-helm.png[""]
+
+====
+.Back-End- und Storage-Klassen mit Trident (für FSxN) erstellen
+[%collapsible]
+====
+* Siehe link:https://docs.netapp.com/us-en/trident/trident-get-started/kubernetes-postdeployment.html["Hier"] Für Details zum Erstellen von Back-End und Storage-Klasse.
+* Erstellen Sie die für FsxN erstellte Storage-Klasse mit Trident CSI standardmäßig aus der OpenShift-Konsole. Siehe Abbildung unten:
+
+
+image:rhhc-default-storage-class.png[""]
+
+====
+.Anwendung mit OpenShift GitOps (Argo CD) bereitstellen
+[%collapsible]
+====
+* Installieren Sie den OpenShift GitOps Operator auf dem Cluster. Siehe Anweisungen link:https://docs.openshift.com/container-platform/4.10/cicd/gitops/installing-openshift-gitops.html["Hier"].
+* Richten Sie eine neue Argo-CD-Instanz für den Cluster ein. Siehe Anweisungen link:https://docs.openshift.com/container-platform/4.10/cicd/gitops/setting-up-argocd-instance.html["Hier"].
+
+
+Öffnen Sie die Konsole von Argo CD und stellen Sie eine App bereit. Als Beispiel können Sie eine Jenkins-App mithilfe einer Argo-CD mit einem Helm-Diagramm bereitstellen. Beim Erstellen der Anwendung wurden folgende Details angegeben: Projekt: Standardcluster: https://kubernetes.default.svc[]Namensraum: Jenkins die url für das Helm-Diagramm: https://charts.bitnami.com/bitnami[]
+
+Helm-Parameter: Global.storageClass: Fsxn-nas
+
+====
