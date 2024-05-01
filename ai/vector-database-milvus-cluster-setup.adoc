@@ -22,6 +22,10 @@ Kubernetes- und Vektordatenbanken bilden zusammen eine leistungsstarke, skalierb
 
 . In diesem Abschnitt wird der Prozess der Installation eines Milvus Clusters auf Kubernetes beschrieben, der einen NetApp Storage Controller für Cluster- und Kundendaten verwendet.
 . Für die Installation eines Milvus-Clusters sind Persistent Volumes (PVs) erforderlich, um Daten aus verschiedenen Milvus-Clusterkomponenten zu speichern. Zu diesen Komponenten gehören etcd (drei Instanzen), Pulsar-bookie-Journal (drei Instanzen), Pulsar-bookie-Ledgers (drei Instanzen) und Pulsar-Zookeeper-Daten (drei Instanzen).
++
+
+NOTE: Im milvus-Cluster können wir entweder Pulsar oder kafka für die zugrunde liegende Engine verwenden, die die zuverlässige Speicherung und Veröffentlichung/Abonnement von Nachrichtenströmen des Milvus-Clusters unterstützt. Im Falle von Kafka mit NFS hat NetApp Verbesserungen in ONTAP 9.12.1 und höher vorgenommen. Diese Verbesserungen sowie Änderungen an NFSv4.1 und Linux, die in RHEL 8.7 oder 9.1 und höher enthalten sind, lösen das Problem des „dummen Umbenennungen“, das beim Ausführen von Kafka über NFS auftreten kann. Wenn Sie ausführlichere Informationen zum Thema kafka mit NetApp-NFS laufen wünschen, lesen Sie bitte - https://docs.netapp.com/us-en/netapp-solutions/data-analytics/kafka-nfs-introduction.html[].
+
 . Wir haben aus NetApp ONTAP ein einzelnes NFS Volume erstellt und 12 persistente Volumes eingerichtet, jedes mit 250 GB Storage. Die Storage-Größe kann je nach Cluster-Größe variieren; wir haben z. B. einen weiteren Cluster, in dem jeder PV 50 GB hat. Bitte beachten Sie unten eine der PV YAML-Dateien für weitere Details; wir hatten insgesamt 12 solche Dateien. In jeder Datei wird der storageClassName auf 'default' gesetzt, und der Speicher und der Pfad sind für jedes PV eindeutig.
 +
 [source, yaml]
