@@ -2,7 +2,7 @@
 sidebar: sidebar 
 permalink: ai/aicp_apache_airflow_deployment.html 
 keywords: AI, control plane, apache, airflow 
-summary: In diesem Abschnitt werden die Aufgaben beschrieben, die Sie zur Implementierung von Airflow in Ihrem Kubernetes-Cluster ausführen müssen. 
+summary: Open Source MLOPS with NetApp – Apache Airflow Deployment 
 ---
 = Apache Airflow Deployment
 :hardbreaks:
@@ -14,7 +14,7 @@ summary: In diesem Abschnitt werden die Aufgaben beschrieben, die Sie zur Implem
 
 
 [role="lead"]
-NetApp empfiehlt, Apache Airflow zusätzlich zu Kubernetes auszuführen. In diesem Abschnitt werden die Aufgaben beschrieben, die Sie zur Implementierung von Airflow in Ihrem Kubernetes-Cluster ausführen müssen.
+In diesem Abschnitt werden die Aufgaben beschrieben, die Sie zur Implementierung von Airflow in Ihrem Kubernetes-Cluster ausführen müssen.
 
 
 NOTE: Es ist möglich, Airflow auf anderen Plattformen als Kubernetes bereitzustellen. Die Implementierung von Airflow auf anderen Plattformen als Kubernetes ist nicht im Umfang dieser Lösung enthalten.
@@ -26,7 +26,7 @@ NOTE: Es ist möglich, Airflow auf anderen Plattformen als Kubernetes bereitzust
 Bevor Sie die in diesem Abschnitt beschriebenen Bereitstellungsaufgaben ausführen, gehen wir davon aus, dass Sie bereits die folgenden Aufgaben ausgeführt haben:
 
 . Sie verfügen bereits über einen funktionierenden Kubernetes-Cluster.
-. Sie haben NetApp Trident bereits in Ihrem Kubernetes Cluster installiert und konfiguriert, wie im Abschnitt „NetApp Trident Deployment and Configuration“ beschrieben.
+. Sie haben NetApp Astra Trident bereits in Ihrem Kubernetes-Cluster installiert und konfiguriert. Weitere Informationen zu Astra Trident finden Sie im link:https://docs.netapp.com/us-en/trident/index.html["Astra Trident-Dokumentation"].
 
 
 
@@ -39,7 +39,7 @@ Der Luftstrom wird über Helm, einen beliebten Paketmanager für Kubernetes, imp
 
 == Standard-Kubernetes StorageClass festlegen
 
-Bevor Sie Airflow bereitstellen, müssen Sie eine Standard-StorageClass in Ihrem Kubernetes-Cluster zuweisen. Der Airflow-Implementierungsprozess versucht, mithilfe der Standard-StorageClass neue persistente Volumes bereitzustellen. Wenn keine StorageClass als Standard-StorageClass festgelegt ist, schlägt die Bereitstellung fehl. Befolgen Sie die Anweisungen im Abschnitt, um eine Standard-StorageClass in Ihrem Cluster festzulegen link:aicp_kubeflow_deployment_overview.html["Kubeflow Deployment"]. Wenn Sie bereits eine Standard-StorageClass innerhalb Ihres Clusters festgelegt haben, können Sie diesen Schritt überspringen.
+Bevor Sie Airflow bereitstellen, müssen Sie eine Standard-StorageClass in Ihrem Kubernetes-Cluster zuweisen. Der Airflow-Implementierungsprozess versucht, mithilfe der Standard-StorageClass neue persistente Volumes bereitzustellen. Wenn keine StorageClass als Standard-StorageClass festgelegt ist, schlägt die Bereitstellung fehl. Befolgen Sie die Anweisungen in, um eine Standard-StorageClass innerhalb Ihres Clusters festzulegen link:aicp_kubeflow_deployment_overview.html["Kubeflow Deployment"] Abschnitt. Wenn Sie bereits eine Standard-StorageClass innerhalb Ihres Clusters festgelegt haben, können Sie diesen Schritt überspringen.
 
 
 

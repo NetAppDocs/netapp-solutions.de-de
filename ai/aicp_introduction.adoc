@@ -2,9 +2,9 @@
 sidebar: sidebar 
 permalink: ai/aicp_introduction.html 
 keywords: tr-4798, tr4798, 4798, NetApp AI, Machine, Deep learning, introduction 
-summary: Dieser Bericht zeigt Ihnen, wie Sie einen Daten-Namespace schnell klonen können. Es zeigt, wie KI-Trainings-Workflows definiert und implementiert werden, die eine nahezu sofortige Erstellung von Daten und Modellbasiden für Rückverfolgbarkeit und Versionierung enthalten. Es zeigt außerdem, wie Daten nahtlos über Standorte und Regionen hinweg repliziert werden können und wie schnell Jupyter Notebook-Workspaces mit Zugriff auf riesige Datensätze bereitgestellt werden. 
+summary: Diese Lösung soll mehrere verschiedene Open-Source-Tools und -Frameworks demonstrieren, die in einen MLOPS-Workflow integriert werden können. Diese unterschiedlichen Tools und Frameworks können je nach Anforderungen und Anwendungsfall gemeinsam oder alleine verwendet werden. 
 ---
-= TR-4798: NetApp AI Control Plane
+= Open-Source-MLOps mit NetApp
 :hardbreaks:
 :allow-uri-read: 
 :nofooter: 
@@ -14,14 +14,17 @@ summary: Dieser Bericht zeigt Ihnen, wie Sie einen Daten-Namespace schnell klone
 
 
 Mike Oglesby, NetApp
+Mohan Acharya, NetApp
 
 [role="lead"]
-Unternehmen aller Größen und Branchen setzen zunehmend auf künstliche Intelligenz (KI), maschinelles Lernen (ML) und Deep Learning (DL), um Probleme aus der Praxis zu lösen, innovative Produkte und Services bereitzustellen und sich in einem immer härter umkämpften Markt einen Schritt voraus zu sein. Beim verstärkten Einsatz von KI, ML und DL müssen Unternehmen mit vielen Herausforderungen konfrontiert werden, darunter Workload-Skalierbarkeit und Datenverfügbarkeit. In diesem Dokument wird veranschaulicht, wie Sie diese Herausforderungen mit der NetApp AI Control Plane bewältigen können. Diese Lösung vereint die Datenmanagement-Funktionen von NetApp mit gängigen Open-Source-Tools und -Frameworks.
+Unternehmen aller Größen und Branchen setzen zunehmend auf künstliche Intelligenz (KI), maschinelles Lernen (ML) und Deep Learning (DL), um Probleme aus der Praxis zu lösen, innovative Produkte und Services bereitzustellen und sich in einem immer härter umkämpften Markt einen Schritt voraus zu sein. Beim verstärkten Einsatz von KI, ML und DL müssen Unternehmen mit vielen Herausforderungen konfrontiert werden, darunter Workload-Skalierbarkeit und Datenverfügbarkeit. In dieser Lösung wird deutlich, wie Sie diese Herausforderungen bewältigen können, indem Sie NetApp Datenmanagementfunktionen mit gängigen Open-Source-Tools und -Frameworks kombinieren.
 
-Dieser Bericht zeigt Ihnen, wie Sie einen Daten-Namespace schnell klonen können. Außerdem zeigt sie, wie Daten nahtlos über Standorte und Regionen hinweg repliziert werden, um eine zusammenhängende und einheitliche KI/ML/DL-Datenpipeline zu erstellen. Darüber hinaus werden die Trainings-Workflows für AI, ML und DL definiert und implementiert, die die nahezu sofortige Erstellung von Daten und Modellbasiden für Rückverfolgbarkeit und Versionierung enthalten. Mit dieser Lösung können Sie verfolgen, welches Modell-Training zurück zu dem genauen Datensatz führt, der zum Training und/oder zur Validierung des Modells verwendet wurde. Abschließend erfahren Sie in diesem Dokument, wie Sie Jupyter Notebook-Workspaces mit Zugriff auf riesige Datensätze schnell bereitstellen können.
+Diese Lösung soll mehrere verschiedene Open-Source-Tools und -Frameworks demonstrieren, die in einen MLOPS-Workflow integriert werden können. Diese unterschiedlichen Tools und Frameworks können je nach Anforderungen und Anwendungsfall gemeinsam oder alleine verwendet werden.
 
-Hinweis: Für verteilte Schulungen im HPC-Stil mit einer großen Anzahl von GPU-Servern, die einen gemeinsamen Zugriff auf denselben Datensatz benötigen oder wenn Sie ein paralleles Dateisystem benötigen/bevorzugen, schauen Sie sich das hier an link:https://www.netapp.com/pdf.html?item=/media/31317-tr-4890.pdf["TR-4890"^]. In diesem technischen Bericht wird die Vorgehensweise erläutert link:https://blog.netapp.com/solution-support-for-beegfs-and-e-series/["Die vollständig unterstützte parallele NetApp Lösung BeeGFS von NetApp"^] Teil der NetApp KI-Kontrollebene. Diese Lösung wurde entwickelt, um von einer Handvoll NVIDIA DGX A100-Systemen bis zu einem voll aufgeblasen SuperPOD mit 140 Nodes skalieren zu können.
+Die folgenden Tools/Frameworks werden in dieser Lösung behandelt:
 
-Die NetApp AI Control Plane ist auf Data Scientists und Data Engineers ausgerichtet und benötigt daher nur eine minimale NetApp oder NetApp ONTAP® Expertise. Bei dieser Lösung lassen sich Datenmanagementfunktionen mit einfachen und vertrauten Tools und Schnittstellen ausführen. Wenn Sie bereits NetApp Storage in Ihrer Umgebung haben, können Sie noch heute die NetApp AI Control Plane testen. Wenn Sie die Lösung testen möchten, aber noch nicht bereits über NetApp Storage verfügen, besuchen Sie http://cloud.netapp.com/["cloud.netapp.com"^], Und Sie sind innerhalb von Minuten mit einer Cloud-basierten NetApp Storage-Lösung einsatzbereit. Die folgende Abbildung bietet eine Visualisierung der Lösung.
+* link:https://airflow.apache.org["Apache Airflow"]
+* link:https://www.kubeflow.org["Kubeflow"]
+
 
 image:aicp_image1.png["Fehler: Fehlendes Grafikbild"]
