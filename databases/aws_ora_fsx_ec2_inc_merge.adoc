@@ -107,9 +107,9 @@ image::aws_ora_fsx_ec2_vldb_architecture.png[Dieses Bild zeigt ein detailliertes
 
 Es wird vorausgesetzt, dass Sie bereits Ihre Oracle VLDB in der AWS EC2-Umgebung innerhalb einer VPC implementiert haben. Wenn Sie Hilfe zur Oracle-Implementierung in AWS benötigen, lesen Sie bitte die folgenden technischen Berichte, um Hilfe zu erhalten.
 
-* link:https://docs.netapp.com/us-en/netapp-solutions/databases/aws_ora_fsx_ec2_deploy_intro.html["Oracle Database Deployment on EC2 und FSX Best Practices"^]
-* link:https://docs.netapp.com/us-en/netapp-solutions/databases/aws_ora_fsx_ec2_iscsi_asm.html["Implementierung und Schutz von Oracle Database in AWS FSX/EC2 mit iSCSI/ASM"^]
-* link:https://docs.netapp.com/us-en/netapp-solutions/databases/aws_ora_fsx_ec2_nfs_asm.html["Oracle 19c im Standalone-Neustart auf AWS FSX/EC2 mit NFS/ASM"^]
+* link:aws_ora_fsx_ec2_deploy_intro.html["Oracle Database Deployment on EC2 und FSX Best Practices"^]
+* link:aws_ora_fsx_ec2_iscsi_asm.html["Implementierung und Schutz von Oracle Database in AWS FSX/EC2 mit iSCSI/ASM"^]
+* link:aws_ora_fsx_ec2_nfs_asm.html["Oracle 19c im Standalone-Neustart auf AWS FSX/EC2 mit NFS/ASM"^]
 
 
 Ihre Oracle VLDB kann entweder auf einem FSX ONTAP oder einem anderen Speicher der Wahl innerhalb des AWS EC2 Ökosystems ausgeführt werden. Der folgende Abschnitt enthält schrittweise Bereitstellungsverfahren zum Einrichten der inkrementellen Zusammenführung von RMAN mit einer Image-Kopie einer Oracle VLDB, die in einem NFS-Mount vom AWS FSX ONTAP-Speicher bereitgestellt wird.
@@ -999,7 +999,7 @@ RMAN> @rman_bkup_merge.cmd
 . Einführung einer neuen EC2 DB-Instanz Host ora_02 mit gleichem Betriebssystem und derselben Version über die AWS EC2-Konsole Konfigurieren Sie das Kernal des Betriebssystems mit denselben Patches wie den Host des primären EC2-DB-Servers, Oracle Preinstall RPM und fügen Sie dem Host auch Swap-Speicherplatz hinzu. Installieren Sie die gleiche Version und Patches von Oracle wie auf dem primären EC2 DB-Server-Host mit rein softwarebasierter Option. Diese Aufgaben können mit dem NetApp Automatisierungs-Toolkit automatisiert werden, das unter den unten stehenden Links verfügbar ist.
 +
 Toolkit: link:https://github.com/NetApp-Automation/na_oracle19c_deploy["na_oracle19c_Deploy"^]
-Dokumentation: link:https://docs.netapp.com/us-en/netapp-solutions/databases/marketing_overview.html#awxtower-deployments["Automated Deployment of Oracle19c for ONTAP on NFS"^]
+Dokumentation: link:marketing_overview.html#awxtower-deployments["Automated Deployment of Oracle19c for ONTAP on NFS"^]
 
 . Konfigurieren sie die oracle-Umgebung ähnlich wie die primäre EC2-Datenbankinstanz Host ora_01, z. B. oratab, oraInst.loc und oracle User .bash_profile. Es empfiehlt sich, diese Dateien auf dem FSxN NFS-Mount-Punkt zu sichern.
 . Die Backup-Image-Kopie der Oracle Datenbank im FSxN NFS-Mount wird auf einem FSX-Cluster gespeichert, das AWS Verfügbarkeitszonen umfasst, um Redundanz, hohe Verfügbarkeit und hohe Performance zu ermöglichen. Das NFS-Dateisystem kann einfach auf einem neuen Server montiert werden, soweit das Netzwerk erreichbar ist. Mit den folgenden Verfahren wird die Image-Kopie eines Oracle VLDB-Backups für die Recovery auf den neu zur Verfügung gestellten EC2 DB-Instanz-Host gemountet.

@@ -1,0 +1,58 @@
+---
+sidebar: sidebar 
+permalink: vmware/vmware-vsphere8-intro.html 
+keywords: vSphere, vSphere 8, vSphere 8u1, ONTAP 9.12, interoperability, VMware compatibility 
+summary:  
+---
+= Neuerungen bei VMware vSphere 8
+:hardbreaks:
+:allow-uri-read: 
+:nofooter: 
+:icons: font
+:linkattrs: 
+:imagesdir: ./../media/
+
+
+[role="lead"]
+Autor: Chris Reno, NetApp Solutions Engineering
+
+Die Integration der Technologien von NetApp und VMware blickt auf 20 Jahre Erfahrung und Tausende Entwicklungsstunden zurück. Mit der Einführung von vSphere 8 und ONTAP 9.12 liefern beide Unternehmen Produkte für anspruchsvollste Workloads von Kunden. Wenn diese Produkte in Lösungen kombiniert werden, sind echte Herausforderungen für Kunden, die gelöst werden – vor Ort oder in der Public Cloud. Wenn diese Produkte in einer Lösung kombiniert werden, sind echte Kundenherausforderungen gelöst, sei es vor Ort oder in der Public Cloud.
+
+Um Sie bei der Bestimmung der Supportfähigkeit von Produkten, Protokollen, Betriebssystemen usw. zu unterstützen, lesen Sie bitte die folgenden Ressourcen:
+
+* Der https://mysupport.netapp.com/matrix/#welcome["NetApp Interoperabilitäts-Matrix-Tool"] (IMT). Der IMT definiert die qualifizierten Komponenten und Versionen, die Sie zur Erstellung von FC/FCoE-, iSCSI-, NFS- und CIFS-Konfigurationen sowie zur Integration mit zusätzlichen Plug-ins und Softwareangeboten verwenden können.
+* Der https://www.vmware.com/resources/compatibility/search.php?deviceCategory=san&details=1&partner=64&isSVA=0&page=1&display_interval=10&sortColumn=Partner&sortOrder=Asc["VMware Compatibility Guide"]. Der VMware Compatibility Guide listet die Kompatibilität von System, I/O, Storage/SAN, Backup und vieles mehr mit VMware Infrastruktur- und Software-Produkten auf.
+* https://www.netapp.com/support-and-training/documentation/ontap-tools-for-vmware-vsphere-documentation/"["NetApp ONTAP Tools für VMware"]. Die ONTAP Tools für VMware vSphere sind ein einzelnes vCenter Server Plug-in, das die Erweiterungen Virtual Storage Console (VSC), VASA Provider und Storage Replication Adapter (SRA) umfasst. OTV 9.12 wird vollständig mit VMware vSphere 8 unterstützt und bietet Kunden täglich echten Mehrwert.
+
+
+
+
+== Von NetApp ONTAP und VMware unterstützte Versionen
+
+
+NOTE: Lassen Sie die Seite(n) bei der Auswahl eines Links in den folgenden Tabellen aufbauen.
+
+[cols="20%, 20%, 20%, 20%, 20%"]
+|===
+
+
+| *VMware vSphere-Version* | *SAN* | *NFS* | *OTV* | *SnapCenter* 
+
+
+| *VSphere 8* | https://imt.netapp.com/matrix/imt.jsp?components=105985;&solution=1&isHWU&src=IMT["Verlinken"] | https://imt.netapp.com/matrix/imt.jsp?components=105985;&solution=976&isHWU&src=IMT["Verlinken"] | https://imt.netapp.com/matrix/imt.jsp?components=105986;&solution=1777&isHWU&src=IMT["Verlinken"] | https://imt.netapp.com/matrix/imt.jsp?components=105985;&solution=1517&isHWU&src=IMT["Verlinken"] 
+
+
+| *VSphere 8u1* | https://imt.netapp.com/matrix/imt.jsp?components=110521;&solution=1&isHWU&src=IMT["Verlinken"] | https://imt.netapp.com/matrix/imt.jsp?components=110521;&solution=976&isHWU&src=IMT["Verlinken"] | https://imt.netapp.com/matrix/imt.jsp?components=110521;&solution=1777&isHWU&src=IMT["Verlinken"] | https://imt.netapp.com/matrix/imt.jsp?components=110521;&solution=1517&isHWU&src=IMT["Verlinken"] 
+|===
+[cols="20%, 20%, 20%, 20%, 20%"]
+|===
+
+
+| *VMware vSphere-Version* | *Speichersystem / Protokolle* | *OTV - SRA* | *OTV – VASA Provider* | *SnapCenter Plug-in für VMware vSphere* 
+
+
+| *VSphere 8* | https://www.vmware.com/resources/compatibility/search.php?deviceCategory=san&details=1&partner=64&releases=589&FirmwareVersion=ONTAP%209.0,ONTAP%209.1,ONTAP%209.10.1,ONTAP%209.11.1,ONTAP%209.12.1,ONTAP%209.2,ONTAP%209.3,ONTAP%209.4,ONTAP%209.5,ONTAP%209.6,ONTAP%209.7,ONTAP%209.8,ONTAP%209.9,ONTAP%209.9.1%20P3,ONTAP%209.%6012.1&isSVA=0&page=1&display_interval=10&sortColumn=Partner&sortOrder=Asc["Verlinken"] | https://www.vmware.com/resources/compatibility/search.php?deviceCategory=sra&details=1&partner=64&sraName=587&page=1&display_interval=10&sortColumn=Partner&sortOrder=Asc["Verlinken"] | https://www.vmware.com/resources/compatibility/detail.php?deviceCategory=wcp&productid=55380&vcl=true["Verlinken"] | https://www.vmware.com/resources/compatibility/search.php?deviceCategory=vvols&details=1&partner=64&releases=589&page=1&display_interval=10&sortColumn=Partner&sortOrder=Asc["Verlinken"] 
+
+
+| *VSphere 8u1* | https://www.vmware.com/resources/compatibility/search.php?deviceCategory=san&details=1&partner=64&releases=652&FirmwareVersion=ONTAP%209.0,ONTAP%209.1,ONTAP%209.10.1,ONTAP%209.11.1,ONTAP%209.12.1,ONTAP%209.2,ONTAP%209.3,ONTAP%209.4,ONTAP%209.5,ONTAP%209.6,ONTAP%209.7,ONTAP%209.8,ONTAP%209.9,ONTAP%209.9.1%20P3,ONTAP%209.%6012.1&isSVA=0&page=1&display_interval=10&sortColumn=Partner&sortOrder=Asc["Verlinken"] | https://www.vmware.com/resources/compatibility/search.php?deviceCategory=sra&details=1&partner=64&sraName=587&page=1&display_interval=10&sortColumn=Partner&sortOrder=Asc["Verlinken"] | https://www.vmware.com/resources/compatibility/detail.php?deviceCategory=wcp&productid=55380&vcl=true["Verlinken"] | https://www.vmware.com/resources/compatibility/detail.php?deviceCategory=wcp&productid=55380&vcl=true["Verlinken"] 
+|===

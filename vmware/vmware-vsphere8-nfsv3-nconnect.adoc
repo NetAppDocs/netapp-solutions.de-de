@@ -1,0 +1,130 @@
+---
+sidebar: sidebar 
+permalink: vmware/vmware-vsphere8-nfsv3-nconnect.html 
+keywords: netapp, vmware, nfsv3, nconnect, performance 
+summary:  
+---
+= NFSv3 nConnect Funktion mit NetApp und VMware
+:hardbreaks:
+:allow-uri-read: 
+:nofooter: 
+:icons: font
+:linkattrs: 
+:imagesdir: ../media/
+
+
+
+
+== Überblick
+
+[role="lead"]
+Ab VMware vSphere 8.0 U1 (als Tech-Preview) ermöglicht die nconnect Funktion mehrere TCP-Verbindungen für NFS v3 Datastore Volumes für einen höheren Durchsatz.  Kunden, die NFS Version 3 Datastore verwenden, können nun die Anzahl der Verbindungen zum NFS-Server erhöhen und so die Auslastung von Hochgeschwindigkeits-Netzwerkkarten maximieren.
+
+
+NOTE: Die Funktion ist in der Regel mit 8.0 U2 verfügbar, siehe Abschnitt „Speicher“ auf link:https://docs.vmware.com/en/VMware-vSphere/8.0/rn/vsphere-esxi-802-release-notes/index.html["Versionshinweise zu VMware vSphere 8.0 Update 2"]
+
+
+
+== Anwendungsfälle
+
+* Hosten Sie mehr virtuelle Maschinen pro NFS-Datastore auf demselben Host.
+* Steigern Sie die Performance des NFS-Datastore.
+* Sie können Services auf einem höheren Tier für VM- und Container-basierte Applikationen anbieten.
+
+
+
+
+== Technische Details
+
+Der Zweck von nconnect besteht darin, mehrere TCP-Verbindungen pro NFS-Datastore auf einem vSphere-Host zur Verfügung zu stellen. Dadurch werden Parallelität und Performance von NFS-Datastores verbessert.  Wenn in ONTAP ein NFS-Mount eingerichtet wird, wird eine Verbindungs-ID (CID) erstellt. Diese CID ermöglicht bis zu 128 gleichzeitige Operationen während des Fluges. Wenn diese Zahl vom Client überschritten wird, führt ONTAP eine Form der Flusskontrolle durch, bis sie einige verfügbare Ressourcen freisetzen kann, wenn andere Vorgänge abgeschlossen sind. Diese Pausen liegen in der Regel nur wenige Mikrosekunden, aber im Verlauf von Millionen von Operationen können sich diese summieren und Performance-Probleme verursachen. Nconnect kann die 128-Grenze nehmen und sie mit der Anzahl der nconnect-Sitzungen auf dem Client multiplizieren, was mehr gleichzeitige Vorgänge pro CID ermöglicht und möglicherweise Leistungsvorteile bietet. Weitere Details finden Sie unter link:https://www.netapp.com/media/10720-tr-4067.pdf["NFS Best Practice und Implementierungsleitfaden"]
+
+
+
+=== Standard-NFSv3-Datastore
+
+Um die Performance-Einschränkungen einer einzelnen Verbindung mit einem NFS-Datastore zu beheben, werden zusätzliche Datastores gemountet oder weitere Hosts hinzugefügt, um die Verbindung zu erhöhen.
+
+image::vmware-vsphere8-nfsv3-wo-nconnect.png[NFSv3 Datastore ohne Nconnect-Funktion]
+
+
+
+=== Mit nConnect NFSv3 Datastore
+
+Sobald der NFS-Datastore mit ONTAP Tools oder mit anderen Optionen erstellt wurde, kann die Anzahl der Verbindungen pro NFSv3-Datastore mithilfe von vSphere CLI, PowerCLI, govc Tool oder anderen API-Optionen geändert werden. Um Performance-Probleme zusammen mit vMotion zu vermeiden, halten Sie die Anzahl der Verbindungen für den NFS-Datastore auf allen vSphere-Hosts, die Teil des vSphere-Clusters sind, unverändert.
+
+image::vmware-vsphere8-nfsv3-nconnect.png[NFSv3-Datastore mit aktivierter nconnect-Funktion]
+
+
+
+== Voraussetzung
+
+Um die nconnect-Funktion zu nutzen, sollten die folgenden Abhängigkeiten erfüllt sein.
+
+[cols="25%, 25%, 50%"]
+|===
+
+
+| ONTAP-Version | VSphere Version | Kommentare 
+
+
+| 9.8 oder höher | 8 Update 1 | Tech Preview mit Option zur Erhöhung der Anzahl der Verbindungen. 
+
+
+| 9.8 oder höher | 8 Update 2 | Allgemein verfügbar mit der Option, die Anzahl der Verbindungen zu erhöhen und zu verringern. 
+|===
+
+
+== Aktualisieren Sie die Nummer der Verbindung zum NFS-Datenspeicher
+
+Wenn ein NFS-Datastore mit ONTAP Tools oder mit vCenter erstellt wird, wird eine einzelne TCP-Verbindung verwendet. Um die Anzahl der Verbindungen zu erhöhen, kann vSphere CLI verwendet werden. Der Referenzbefehl ist unten dargestellt.
+
+[source, bash]
+----
+# Increase the number of connections while creating the datastore.
+esxcli storage nfs add -H <NFS_Server_FQDN_or_IP> -v <datastore_name> -s <remote_share> -c <number_of_connections>
+# To increase or decrease the number of connections for existing datastore.
+esxcli storage nfs param set -v <datastore_name> -c <number_of_connections>
+----
+Oder verwenden Sie PowerCLI ähnlich wie unten gezeigt
+
+[source, powershell]
+----
+$datastoreSys = Get-View (Get-VMHost host01.vsphere.local).ExtensionData.ConfigManager.DatastoreSystem
+$nfsSpec = New-Object VMware.Vim.HostNasVolumeSpec
+$nfsSpec.RemoteHost = "nfs_server.ontap.local"
+$nfsSpec.RemotePath = "/DS01"
+$nfsSpec.LocalPath = "DS01"
+$nfsSpec.AccessMode = "readWrite"
+$nfsSpec.Type = "NFS"
+$nfsSpec.Connections = 4
+$datastoreSys.CreateNasDatastore($nfsSpec)
+----
+Hier ist das Beispiel für die Erhöhung der Anzahl der Verbindung mit govc Tool.
+
+[source, powershell]
+----
+$env.GOVC_URL = 'vcenter.vsphere.local'
+$env.GOVC_USERNAME = 'administrator@vsphere.local'
+$env.GOVC_PASSWORD = 'XXXXXXXXX'
+$env.GOVC_Datastore = 'DS01'
+# $env.GOVC_INSECURE = 1
+$env.GOVC_HOST = 'host01.vsphere.local'
+# Increase number of connections while creating the datastore.
+govc host.esxcli storage nfs add -H nfs_server.ontap.local -v DS01 -s /DS01 -c 2
+# To increase or decrease the connections for existing datastore.
+govc host.esxcli storage nfs param set -v DS01 -c 4
+# View the connection info
+govc host.esxcli storage nfs list
+----
+Siehe link:https://kb.vmware.com/s/article/91497["VMware KB-Artikel 91497"] Finden Sie weitere Informationen.
+
+
+
+== Designüberlegungen
+
+Die maximale Anzahl von auf ONTAP unterstützten Verbindungen hängt vom Storage-Plattformmodell ab. Suchen Sie auf exec_ctx link:https://www.netapp.com/media/10720-tr-4067.pdf["NFS Best Practice und Implementierungsleitfaden"] Finden Sie weitere Informationen.
+
+Wenn die Anzahl der Verbindungen pro NFSv3-Datastore erhöht wird, nimmt die Anzahl der NFS-Datastores, die auf diesem vSphere Host gemountet werden können, ab. Insgesamt werden pro vSphere-Host 256 Verbindungen unterstützt. Prüfen link:https://kb.vmware.com/s/article/91481["VMware KB-Artikel 91481"] Für Datastore-Begrenzungen pro vSphere-Host.
+
+
+NOTE: VVol Datastore unterstützt keine nConnect-Funktion. Protokollendpunkte werden jedoch auf die Verbindungsgrenze angerechnet. Bei der Erstellung von vVol Datastores wird für jeden Daten-LIF der SVM ein Protokollendpunkt erstellt.

@@ -144,7 +144,7 @@ In den folgenden Abschnitten werden Schritt-für-Schritt-Verfahren für die auto
 Die Bereitstellung erfordert die folgenden Voraussetzungen.
 
 . Ein Azure-Konto wurde eingerichtet und die erforderlichen vnet- und Netzwerksegmente wurden in Ihrem Azure-Konto erstellt.
-. Implementieren Sie im Azure-Cloud-Portal Azure Linux-VMs als Oracle DB-Server. Erstellen Sie einen Azure NetApp Files-Kapazitätspool und Datenbank-Volumes für die Oracle-Datenbank. VM-SSH-Authentifizierung für privaten/öffentlichen Schlüssel für Azure-Benutzer für DB-Server aktivieren Details zur Umgebungs-Einrichtung finden Sie im Architekturdiagramm im vorherigen Abschnitt. Auch genannt link:https://docs.netapp.com/us-en/netapp-solutions/databases/azure_ora_nfile_procedures.html["Schritt-für-Schritt-Anweisungen zur Oracle-Implementierung auf Azure VM und Azure NetApp Files"^] Ausführliche Informationen finden Sie unter.
+. Implementieren Sie im Azure-Cloud-Portal Azure Linux-VMs als Oracle DB-Server. Erstellen Sie einen Azure NetApp Files-Kapazitätspool und Datenbank-Volumes für die Oracle-Datenbank. VM-SSH-Authentifizierung für privaten/öffentlichen Schlüssel für Azure-Benutzer für DB-Server aktivieren Details zur Umgebungs-Einrichtung finden Sie im Architekturdiagramm im vorherigen Abschnitt. Auch genannt link:azure_ora_nfile_procedures.html["Schritt-für-Schritt-Anweisungen zur Oracle-Implementierung auf Azure VM und Azure NetApp Files"^] Ausführliche Informationen finden Sie unter.
 +
 
 NOTE: Stellen Sie bei Azure-VMs, die mit lokaler Festplattenredundanz implementiert werden, sicher, dass Sie mindestens 128 G auf der VM-Root-Festplatte zugewiesen haben, damit ausreichend Speicherplatz für die Bereitstellung von Oracle-Installationsdateien und die Hinzufügen der OS-Swap-Datei zur Verfügung steht. Erweitern Sie die Partition /tmplv und /rootlv OS entsprechend. Stellen Sie sicher, dass die Benennung des Datenbank-Volumes der Konvention VMname-u01, VMname-u02 und VMname-u03 entspricht.
@@ -160,7 +160,7 @@ sudo lvresize -r -L +20G /dev/mapper/rootvg-rootlv
 sudo lvresize -r -L +10G /dev/mapper/rootvg-tmplv
 ----
 . Stellen Sie im Azure-Cloud-Portal einen Windows-Server bereit, damit das UI-Tool NetApp SnapCenter mit der neuesten Version ausgeführt wird. Details finden Sie unter folgendem Link: link:https://docs.netapp.com/us-en/snapcenter/install/task_install_the_snapcenter_server_using_the_install_wizard.html["Installieren Sie den SnapCenter-Server"^]
-. Stellen Sie eine Linux VM als Ansible-Controller-Node mit der neuesten Version von Ansible und Git bereit. Details finden Sie unter folgendem Link: link:https://docs.netapp.com/us-en/netapp-solutions/automation/getting-started.html["Erste Schritte mit der Automatisierung von NetApp Lösungen"^] In Abschnitt -
+. Stellen Sie eine Linux VM als Ansible-Controller-Node mit der neuesten Version von Ansible und Git bereit. Details finden Sie unter folgendem Link: link:../automation/getting-started.html["Erste Schritte mit der Automatisierung von NetApp Lösungen"^] In Abschnitt -
 `Setup the Ansible Control Node for CLI deployments on RHEL / CentOS` Oder
 `Setup the Ansible Control Node for CLI deployments on Ubuntu / Debian`.
 +
@@ -587,7 +587,7 @@ image::automation_ora_anf_nfs_em_02.png[Dieses Bild bietet eine Ansicht der Cont
 
 [%collapsible]
 ====
-Die Oracle-Datenbankmigration aus lokalen Umgebungen in die Cloud nimmt die Arbeit stark in sich auf. Die richtige Strategie und Automatisierung sorgt für einen reibungslosen Prozess und eine Minimierung von Serviceunterbrechungen und Ausfallzeiten. Befolgen Sie diese detaillierten Anweisungen link:https://docs.netapp.com/us-en/netapp-solutions/databases/azure_ora_nfile_migration.html#converting-a-single-instance-non-cdb-to-a-pdb-in-a-multitenant-cdb["Datenbankmigration von On-Premises-Systemen in die Azure Cloud"^] Als Leitfaden für Ihre Datenbankmigration.
+Die Oracle-Datenbankmigration aus lokalen Umgebungen in die Cloud nimmt die Arbeit stark in sich auf. Die richtige Strategie und Automatisierung sorgt für einen reibungslosen Prozess und eine Minimierung von Serviceunterbrechungen und Ausfallzeiten. Befolgen Sie diese detaillierten Anweisungen link:azure_ora_nfile_migration.html#converting-a-single-instance-non-cdb-to-a-pdb-in-a-multitenant-cdb["Datenbankmigration von On-Premises-Systemen in die Azure Cloud"^] Als Leitfaden für Ihre Datenbankmigration.
 
 ====
 
@@ -596,7 +596,7 @@ Die Oracle-Datenbankmigration aus lokalen Umgebungen in die Cloud nimmt die Arbe
 
 [%collapsible]
 ====
-NetApp empfiehlt das SnapCenter UI-Tool für das Management der in der Azure-Cloud implementierten Oracle-Datenbank. Informationen finden Sie im Bericht TR-4988: link:https://docs.netapp.com/us-en/netapp-solutions/databases/snapctr_ora_azure_anf.html["Oracle Database Backup, Recovery und Klonen auf ANF mit SnapCenter"^] Entsprechende Details.
+NetApp empfiehlt das SnapCenter UI-Tool für das Management der in der Azure-Cloud implementierten Oracle-Datenbank. Informationen finden Sie im Bericht TR-4988: link:snapctr_ora_azure_anf.html["Oracle Database Backup, Recovery und Klonen auf ANF mit SnapCenter"^] Entsprechende Details.
 
 ====
 
@@ -607,7 +607,7 @@ Weitere Informationen zu den in diesem Dokument beschriebenen Daten finden Sie i
 
 * Oracle Database Backup, Recovery und Klonen auf ANF mit SnapCenter
 +
-link:https://docs.netapp.com/us-en/netapp-solutions/databases/snapctr_ora_azure_anf.html["Oracle Database Backup, Recovery und Klonen auf ANF mit SnapCenter"^]
+link:snapctr_ora_azure_anf.html["Oracle Database Backup, Recovery und Klonen auf ANF mit SnapCenter"^]
 
 * Azure NetApp Dateien
 +

@@ -123,9 +123,9 @@ image::aws_ora_fsx_data_guard_architecture.png[Dieses Bild zeigt ein detailliert
 
 Es wird angenommen, dass Sie bereits Ihre primäre Oracle-Datenbank in einer VPC in der AWS EC2-Umgebung als Ausgangspunkt für die Einrichtung von Data Guard implementiert haben. Die primäre Datenbank wird mithilfe von Oracle ASM für das Storage-Management bereitgestellt.  Zwei ASM-Datenträgergruppen - +DATEN und +PROTOKOLLE werden für Oracle-Datendateien, Log-Dateien und Steuerdatei usw. erstellt Weitere Informationen zur Oracle-Implementierung in AWS mit ASM erhalten Sie in den folgenden technischen Berichten.
 
-* link:https://docs.netapp.com/us-en/netapp-solutions/databases/aws_ora_fsx_ec2_deploy_intro.html["Oracle Database Deployment on EC2 und FSX Best Practices"^]
-* link:https://docs.netapp.com/us-en/netapp-solutions/databases/aws_ora_fsx_ec2_iscsi_asm.html["Implementierung und Schutz von Oracle Database in AWS FSX/EC2 mit iSCSI/ASM"^]
-* link:https://docs.netapp.com/us-en/netapp-solutions/databases/aws_ora_fsx_ec2_nfs_asm.html["Oracle 19c im Standalone-Neustart auf AWS FSX/EC2 mit NFS/ASM"^]
+* link:aws_ora_fsx_ec2_deploy_intro.html["Oracle Database Deployment on EC2 und FSX Best Practices"^]
+* link:aws_ora_fsx_ec2_iscsi_asm.html["Implementierung und Schutz von Oracle Database in AWS FSX/EC2 mit iSCSI/ASM"^]
+* link:aws_ora_fsx_ec2_nfs_asm.html["Oracle 19c im Standalone-Neustart auf AWS FSX/EC2 mit NFS/ASM"^]
 
 
 Ihre primäre Oracle-Datenbank kann entweder auf einem FSX ONTAP oder einem beliebigen Storage innerhalb des AWS EC2 Ecosystems ausgeführt werden. Der folgende Abschnitt enthält schrittweise Bereitstellungsverfahren für das Einrichten von Oracle Data Guard zwischen einer primären EC2 DB-Instanz mit ASM-Speicher auf einer Standby-EC2-DB-Instanz mit ASM-Speicher.
@@ -406,7 +406,7 @@ Damit ist die Einrichtung der primären Datenbank für Data Guard abgeschlossen.
 Für Oracle Data Guard sind eine Betriebssystemkernelkonfiguration und Oracle Software-Stacks einschließlich Patch-Sets auf der EC2-Standby-DB-Instanz erforderlich, die mit der primären EC2-DB-Instanz übereinstimmen. Um das Management und die Einfachheit zu vereinfachen, sollte die Konfiguration des Datenbank-Storage der EC2-Instanz im Standby-Modus auch mit der primären EC2 DB-Instanz übereinstimmen, z. B. Name, Anzahl und Größe der ASM-Festplattengruppen. Im Folgenden finden Sie detaillierte Verfahren zum Einrichten der Standby-EC2-DB-Instanz für Data Guard. Alle Befehle sollten als oracle-Benutzer-ID ausgeführt werden.
 
 . Prüfen Sie zunächst die Konfiguration der primären Datenbank auf der primären EC2 Instanz. In dieser Demonstration haben wir eine primäre Oracle-Datenbank namens db1 auf der primären EC2 DB-Instanz mit zwei ASM-Datenträgergruppen +DATA und +LOGS in Standalone-Restart-Konfiguration eingerichtet. Die primären ASM-Festplattengruppen können sich auf jedem beliebigen Storage innerhalb des EC2-Ecosystems befinden.
-. Befolgen Sie die Anweisungen in der Dokumentation link:https://docs.netapp.com/us-en/netapp-solutions/databases/aws_ora_fsx_ec2_iscsi_asm.html["TR-4965: Oracle Database Deployment and Protection in AWS FSX/EC2 with iSCSI/ASM"^] Grid und Oracle auf EC2 Standby-DB-Instanz installieren und konfigurieren, um mit der primären Datenbank abzugleichen Der Datenbank-Storage sollte bereitgestellt und der Standby-EC2-DB-Instanz von FSX ONTAP mit derselben Speicherkapazität wie die primäre EC2-DB-Instanz zugewiesen werden.
+. Befolgen Sie die Anweisungen in der Dokumentation link:aws_ora_fsx_ec2_iscsi_asm.html["TR-4965: Oracle Database Deployment and Protection in AWS FSX/EC2 with iSCSI/ASM"^] Grid und Oracle auf EC2 Standby-DB-Instanz installieren und konfigurieren, um mit der primären Datenbank abzugleichen Der Datenbank-Storage sollte bereitgestellt und der Standby-EC2-DB-Instanz von FSX ONTAP mit derselben Speicherkapazität wie die primäre EC2-DB-Instanz zugewiesen werden.
 +
 
 NOTE: Stoppen Sie bei Schritt 10 in `Oracle database installation` Abschnitt. Die Standby-Datenbank wird mit der DBCA-Datenbankduplizierungsfunktion aus der primären Datenbank instanziiert.
@@ -800,7 +800,7 @@ Im Falle eines Ausfalls kann Data Guard Broker verwendet werden, um umgehend ein
 ====
 Der Hauptvorteil des Staging von Standby-Datenbank auf AWS FSX ONTAP in Data Guard besteht darin, dass mit FlexCloned viele andere Anwendungsfälle mit minimaler zusätzlicher Storage-Investition bedient werden können. Im folgenden Abschnitt zeigen wir, wie man für andere Zwecke wie ENTWICKLUNG, TEST, BERICHT usw. ein Snapshot von den gemounteten und unter Recovery-Standby-Datenbank-Volumes auf FSX ONTAP erstellt und klont. mit dem Tool NetApp SnapCenter.
 
-Im Folgenden werden allgemeine Verfahren zum Klonen einer LESE-/SCHREIBDATENBANK aus der verwalteten physischen Standby-Datenbank in Data Guard unter Verwendung von SnapCenter beschrieben. Detaillierte Anweisungen zum Einrichten und Konfigurieren von SnapCenter finden Sie unter link:https://docs.netapp.com/us-en/netapp-solutions/databases/hybrid_dbops_snapcenter_usecases.html["Hybrid-Cloud-Datenbanklösungen mit SnapCenter"^] Relavant Oracle Sektionen.
+Im Folgenden werden allgemeine Verfahren zum Klonen einer LESE-/SCHREIBDATENBANK aus der verwalteten physischen Standby-Datenbank in Data Guard unter Verwendung von SnapCenter beschrieben. Detaillierte Anweisungen zum Einrichten und Konfigurieren von SnapCenter finden Sie unter link:hybrid_dbops_snapcenter_usecases.html["Hybrid-Cloud-Datenbanklösungen mit SnapCenter"^] Relavant Oracle Sektionen.
 
 . Wir beginnen damit, eine Testtabelle zu erstellen und eine Zeile in die Testtabelle der primären Datenbank einzufügen. Wir werden dann validieren, wenn die Transaktion in den Standby-Modus und schließlich den Klon durchlaufen wird.
 +
@@ -993,7 +993,7 @@ link:https://docs.oracle.com/en/database/oracle/oracle-database/19/sbydb/index.h
 
 * WP-7357: Oracle Database Deployment on EC2 und FSX Best Practices
 +
-link:https://docs.netapp.com/us-en/netapp-solutions/databases/aws_ora_fsx_ec2_deploy_intro.html["https://docs.netapp.com/us-en/netapp-solutions/databases/aws_ora_fsx_ec2_deploy_intro.html"^]
+link:aws_ora_fsx_ec2_deploy_intro.html["Einführung"]
 
 * Amazon FSX für NetApp ONTAP
 +

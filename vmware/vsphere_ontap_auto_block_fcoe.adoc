@@ -1,0 +1,107 @@
+---
+sidebar: sidebar 
+permalink: vmware/vsphere_ontap_auto_block_fcoe.html 
+keywords: vSphere, datastore, VMFS, FCoE, ONTAP tools, zone, network interface 
+summary: Auf dieser Seite finden Sie Schritte zur Bereitstellung eines NetApp ONTAP Storage FCoE VMFS-Datenspeichers in einer VMware vSphere Umgebung. 
+---
+= VSphere VMFS Datenspeicher – Fibre Channel over Ethernet Storage-Protokoll mit ONTAP
+:hardbreaks:
+:allow-uri-read: 
+:nofooter: 
+:icons: font
+:linkattrs: 
+:imagesdir: ./../media/
+:scriptsdir: ./../scripts/
+:author: Suresh Thoppay, TME - Hybrid Cloud Solutions
+:ontap_version: ONTAP 9.8 or later
+:vsphere_version: vSphere 7.0 or later
+:firstname: Suresh
+:authorinitials: STT
+:middlename: Thoppay,
+:lastname: TME - Hybrid Cloud Solutions
+:authors: Suresh Thoppay, TME - Hybrid Cloud Solutions
+
+
+
+
+== Über diese Aufgabe
+
+In diesem Abschnitt wird die Erstellung eines VMFS-Datenspeichers mit dem FCoE-Transportprotokoll (Fibre Channel over Ethernet) zu ONTAP Storage behandelt.
+
+Verwenden Sie eines der folgenden Skripte für die automatisierte Bereitstellung: <<PowerShell>>, <<Ansible>>, Oder <<Terraform>>.
+
+
+
+== Was Sie brauchen
+
+* Grundkenntnisse für das Management einer vSphere Umgebung und einer ONTAP
+* Ein ONTAP Storage-System (FAS/AFF/CVO/ONTAP Select) mit ONTAP 9.8 oder höher
+* ONTAP-Anmeldedaten (SVM-Name, Benutzer-ID und Passwort)
+* link:++https://docs.netapp.com/ontap-9/topic/com.netapp.doc.dot-cm-sanconf/GUID-CE5218C0-2572-4E12-9C72-BF04D5CE222A.html++["Eine unterstützte FCoE-Kombination"]
+* link:++https://docs.netapp.com/ontap-9/topic/com.netapp.doc.exp-fc-esx-cpg/GUID-429C4DDD-5EC0-4DBD-8EA8-76082AB7ADEC.html++["Ein ausgefülltes Konfigurationsarbeitsblatt"]
+* Anmeldedaten für vCenter Server
+* Informationen zu vSphere Hosts
++
+** VSphere 7.0 oder höher
+
+
+* Fabric Switch(e)
++
+** Mit ONTAP FC-Daten-Ports oder vSphere-Hosts verbunden
+** Bei aktivierter N_Port ID Virtualization (NPIV)
+** Erstellen Sie einen einzelnen Initiator-Zielbereich.
+** link:++https://docs.netapp.com/ontap-9/topic/com.netapp.doc.dot-cm-sanconf/GUID-374F3D38-43B3-423E-A710-2E2ABAC90D1A.html++["FC/FCoE-Zoning konfiguriert"]
+
+
+* Netzwerk-Switch(e)
++
+** FCoE-Support
+** DCB-Support
+** link:++https://docs.netapp.com/ontap-9/topic/com.netapp.doc.dot-cm-sanag/GUID-16DEF659-E9C8-42B0-9B94-E5C5E2FEFF9C.html++["Jumbo Frames für FCoE"]
+
+
+* ONTAP Tool für VMware vSphere – implementiert, konfiguriert und betriebsbereit
+
+
+
+
+== Bereitstellung eines VMFS-Datenspeichers
+
+* Prüfen Sie die Kompatibilität mit dem https://mysupport.netapp.com/matrix["Interoperabilitäts-Matrix-Tool (IMT)"].
+* link:++https://docs.netapp.com/ontap-9/topic/com.netapp.doc.exp-fc-esx-cpg/GUID-7D444A0D-02CE-4A21-8017-CB1DC99EFD9A.html++["Vergewissern Sie sich, dass die FCoE-Konfiguration unterstützt wird"].
+
+
+
+
+== ONTAP Aufgaben
+
+. link:++https://docs.netapp.com/ontap-9/topic/com.netapp.doc.dot-cm-cmpr-980/system__license__show.html++["Überprüfen Sie die ONTAP Lizenz für FCP."]
++
+.. Verwenden Sie die `system license show` Befehl zum Überprüfen, ob das FCP aufgeführt ist.
+.. Nutzung `license add -license-code <license code>` Um eine Lizenz hinzuzufügen.
+
+
+. Vergewissern Sie sich, dass das FCP-Protokoll auf der SVM aktiviert ist.
++
+.. link:++https://docs.netapp.com/ontap-9/topic/com.netapp.doc.exp-fc-esx-cpg/GUID-1C31DF2B-8453-4ED0-952A-DF68C3D8B76F.html++["Überprüfen Sie das FCP auf einer vorhandenen SVM."]
+.. link:++https://docs.netapp.com/ontap-9/topic/com.netapp.doc.exp-fc-esx-cpg/GUID-D322649F-0334-4AD7-9700-2A4494544CB9.html++["Konfigurieren Sie das FCP für eine vorhandene SVM."]
+.. link:++https://docs.netapp.com/ontap-9/topic/com.netapp.doc.exp-fc-esx-cpg/GUID-0FCB46AA-DA18-417B-A9EF-B6A665DB77FC.html++["Erstellen Sie eine neue SVM mit dem FCP."]
+
+
+. Vergewissern Sie sich, dass auf der SVM logische FCP-Schnittstellen verfügbar sind.
++
+.. Nutzung `Network Interface show` Um den FCP-Adapter zu überprüfen.
+.. Wird mit der GUI eine SVM erstellt, sind logische Schnittstellen Teil dieses Prozesses.
+.. Verwenden Sie zum Umbenennen der Netzwerkschnittstelle `Network Interface modify`.
+
+
+. link:++https://docs.netapp.com/ontap-9/topic/com.netapp.doc.dot-cm-sanag/GUID-D4DAC7DB-A6B0-4696-B972-7327EE99FD72.html++["Erstellen und Zuordnen einer LUN"]; überspringen Sie diesen Schritt, wenn Sie ONTAP-Tools für VMware vSphere nutzen.
+
+
+
+
+== Aufgaben für VMware vSphere
+
+. Vergewissern Sie sich, dass die HBA-Treiber installiert sind. Bei den von VMware unterstützten HBAs sind die Treiber Out-of-the-Box implementiert und sollten im sichtbar sein link:++https://docs.vmware.com/en/VMware-vSphere/7.0/com.vmware.vsphere.storage.doc/GUID-ED20B7BE-0D1C-4BF7-85C9-631D45D96FEC.html++["Informationen zu Storage-Adaptern"].
+. link:++https://docs.netapp.com/vapp-98/topic/com.netapp.doc.vsc-iag/GUID-D7CAD8AF-E722-40C2-A4CB-5B4089A14B00.html++["Stellen Sie einen VMFS-Datenspeicher mit ONTAP Tools bereit"].
+
