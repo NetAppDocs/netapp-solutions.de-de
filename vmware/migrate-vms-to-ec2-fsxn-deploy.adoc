@@ -1,0 +1,249 @@
+---
+sidebar: sidebar 
+permalink: vmware/migrate-vms-to-ec2-fsxn-deploy.html 
+keywords: netapp, vmware, amazon, ec2, fsxn, migration, iscsi, deploy 
+summary: 'Dieser technische Bericht erläutert, wie lokale VMware vSphere VMs zu einer Amazon EC2 Instanz mit Datendisks migriert werden, die auf FSX für ONTAP iSCSI LUNs platziert werden. Dazu wird die MigrateOps „Data-Mobility-as-Code“-Funktion von Cirrus Migrate Cloud (CMC) verwendet.' 
+---
+= Migrieren Sie VMs mithilfe des FSxN – Implementierungsleitfaden zu Amazon EC2
+:allow-uri-read: 
+
+
+
+
+== Migrieren Sie VMs mithilfe des FSxN – Implementierungsleitfaden zu Amazon EC2
+
+[role="lead"]
+In diesem Artikel wird das Bereitstellungsverfahren für diese Migrationslösungen beschrieben.
+
+
+
+== FSX für ONTAP- und Cirrus-Daten für Migrationsvorgänge konfigurieren
+
+Das https://docs.aws.amazon.com/fsx/latest/ONTAPGuide/getting-started-step1.html["Schrittweiser Implementierungsleitfaden"] Zeigt, wie FSX für ONTAP-Volume zu einer VPC hinzugefügt wird Da diese Schritte sequentiell sind, stellen Sie sicher, dass sie in der Reihenfolge abgedeckt sind.
+
+Für die Zwecke dieser Demonstration ist „DRaaSDemo“ der Name des erstellten Dateisystems.
+
+image:migrate-ec2-fsxn-image02.png["Abbildung der Benutzeroberfläche des Demo-Dateisystems"]
+
+Sobald die AWS VPC konfiguriert und FSX for ONTAP bereitgestellt wurde, basierend auf Ihren Performance-Anforderungen, loggen Sie sich bei ein link:http://cloud.cirrusdata.com/["cloud.cirrusdata.com"] Und link:https://customer.cirrusdata.com/cdc/kb/articles/get-started-with-cirrus-data-cloud-4eDqjIxQpg["Erstellen Sie ein neues Projekt"] Oder auf ein vorhandenes Projekt zugreifen.
+
+image:migrate-ec2-fsxn-image03.png["Bild der Benutzeroberfläche von Cirrus Data Projects"]
+
+Bevor Sie das Rezept für MigrationOps entwickeln, sollte AWS Cloud als Integration hinzugefügt werden. CMC bietet integrierte Integration mit FSX für ONTAP und AWS. Die Integration von FSX for ONTAP bietet folgende automatisierte Funktionen:
+
+* Vorbereiten Sie Ihr FSX für ONTAP Dateisystem:*
+
+* Erstellen Sie neue Volumes und LUNs, die den Quell-Volumes entsprechen
+
+
+*Hinweis*: Eine Zielfestplatte im FSX für ONTAP FS-Modell ist eine „LUN“, die auf einem „Volumen“ erstellt wird, das genug Kapazität hat, um die LUN zu enthalten plus eine angemessene Menge an Overhead für die Erleichterung von Snapshots und Metadaten. Die CMC-Automatisierung kümmert sich um all diese Details, um das entsprechende Volume und die LUN mit optionalen benutzerdefinierten Parametern zu erstellen.
+
+* Erstellen Sie mit dem Host-Initiator-IQN Host-Entity (iGroups in FSX genannt)
+* Ordnen Sie neu erstellte Volumes über Zuordnungen den entsprechenden Host-Einheiten zu
+* Erstellen Sie alle anderen erforderlichen Konfigurationen
+
+
+* Produktionshost für iSCSI-Verbindung vorbereiten:*
+
+* Installieren und konfigurieren Sie ggf. die iSCSI-Funktion und richten Sie den Initiator ein.
+* Falls erforderlich, installieren und konfigurieren Sie Multipath (MPIO für Windows) mit den richtigen Anbieterkennungen.
+* Passen Sie ggf. Systemeinstellungen entsprechend den Best Practices des Herstellers an, z. B. mit udev-Einstellungen unter Linux.
+* Erstellen und verwalten Sie iSCSI-Verbindungen, z. B. persistente/bevorzugte iSCSI-Ziele unter Windows.
+
+
+So konfigurieren Sie die CMC-Integration für FSX für ONTAP und AWS:
+
+. Melden Sie sich beim Cirrus Daten-Cloud-Portal an.
+. Öffnen Sie das Projekt, für das Sie die Integration aktivieren möchten.
+. Navigieren Sie zu Integrationen -> Goodies.
+. Blättern Sie zu FSX für NetApp ONTAP, und klicken Sie auf INTEGRATION HINZUFÜGEN.
++
+image:migrate-ec2-fsxn-image04.png["Abbildung der Benutzeroberfläche von Cirrus Data „Integration hinzufügen“"]
+
+. Geben Sie einen beschreibenden Namen (ausschließlich zu Anzeigezwecken) an, und fügen Sie die entsprechenden Anmeldeinformationen hinzu.
++
+image:migrate-ec2-fsxn-image05.png["Abbildung der Benutzeroberfläche von Cirrus Data „Integration hinzufügen“"]
+
+. Sobald die Integration erstellt wurde, wählen Sie während der Erstellung einer neuen Migrationssitzung die Option Zielvolumen automatisch zuweisen aus, um automatisch neue Volumes auf FSX für ONTAP zuzuweisen.
++
+*Hinweis*: Neue LUNs werden mit der Größe des Quell-Volumes erstellt, es sei denn, für die Migration ist „in kleinere Volumes migrieren“ aktiviert.
+
++
+*Hinweis*: Wenn eine Host-Entity (iGroup) nicht bereits existiert, wird eine neue erstellt. Alle Host-iSCSI-Initiator-IQNs werden dieser neuen Hosteinheit hinzugefügt.
+
++
+*Hinweis*: Wenn eine vorhandene Hosteinheit mit einem der iSCSI-Initiatoren bereits existiert, wird sie erneut verwendet.
+
+. Sobald Sie fertig sind, fügen Sie die Integration für AWS, folgen Sie den Schritten auf dem Bildschirm.
++
+image:migrate-ec2-fsxn-image06.png["Abbildung der Benutzeroberfläche von Cirrus Data „Integration hinzufügen“"]
+
++
+*Hinweis*: Diese Integration wird bei der Migration von Virtual Machines vom lokalen Storage zu AWS zusammen mit der Integration von FSX for ONTAP verwendet.
+
++
+*Hinweis*: Verwenden Sie Managementrelais, um mit Cirrus Data Cloud zu kommunizieren, wenn keine direkte ausgehende Verbindung für die zu migrierenden Produktionsinstanzen besteht.
+
+
+
+Mit zusätzlichen Integrationen ist es an der Zeit, Hosts beim Projekt zu registrieren. Sehen wir uns dazu ein Beispielszenario an.
+
+
+
+== Szenario für die Hostregistrierung
+
+VMware Gast-VMs in vCenter im lokalen Datacenter:
+
+* Windows 2016 mit SQL Server mit drei VMDKs einschließlich Betriebssystem und Datenfestplatten. Er führt eine aktive Datenbank aus. Die Datenbank befindet sich auf einem Daten-Volume mit zwei VMDKs.
+
+
+*Hinweis*: Da die Quelle eine VMware-Umgebung ist und VMDKs verwendet werden, ist die Windows iSCSI Initiator-Software derzeit nicht auf dieser Gast-VM konfiguriert. Um eine Verbindung zu unserem Ziel-Storage über iSCSI herzustellen, müssen sowohl iSCSI als auch MPIO installiert und konfiguriert werden. Die Integration von Cirrus Data Cloud führt diese Installation während des Vorgangs automatisch durch.
+
+*Hinweis*: Die im vorherigen Abschnitt konfigurierte Integration automatisiert die Konfiguration des neuen Zielspeichers bei der Erstellung der neuen Laufwerke, bei der Einrichtung der Hosteinheiten und ihrer IQNs und sogar bei der Wiederherstellung der Anwendungs-VM (Host) für iSCSI- und Multipath-Konfigurationen.
+
+image:migrate-ec2-fsxn-image07.png["Image der virtuellen VMware-Maschinen, die migriert werden"]
+
+Bei dieser Demonstration werden die Applikations-VMDKs von jeder VM auf ein automatisch bereitgestelltes und zugeordnetes iSCSI-Volume von FSX für ONTAP migriert. Die OS VMDK wird in diesem Fall zu einem Amazon EBS Volume migriert, da Amazon EC2 Instanzen diesen Amazon EBS nur als Boot-Disk unterstützen.
+
+*Hinweis*: Der Skalierungsfaktor bei diesem Migrationsansatz ist die Netzwerkbandbreite und die Leitung, die On-Premises mit der AWS VPC verbindet. Da jede VM 1:1 Hostsitzungen konfiguriert hat, hängt die Gesamtmigrations-Performance von zwei Faktoren ab:
+
+* Netzwerkbandbreite
+* Typ der Zielinstanz und ENI-Bandbreite
+
+
+Die Migrationsschritte sind wie folgt:
+
+. Installieren Sie den CMC-Agent auf jedem Host (Windows und Linux), der für die Migrationswelle bestimmt ist. Dies kann durch Ausführen eines einzeilige Installationsbefehls erfolgen.
++
+Hierzu klicken Sie auf Data Migration > Migration Hosts > Klicken Sie auf „Deploy Cirrus Migrate Cloud“ und wählen Sie „Windows“ aus.
+
++
+Kopieren Sie anschließend die `iex` Befehl an den Host und führen Sie es mit PowerShell aus. Sobald die Bereitstellung des Agenten erfolgreich war, wird der Host unter „Migrationshosts“ zum Projekt hinzugefügt.
+
++
+image:migrate-ec2-fsxn-image08.png["Abbildung der Installationsschnittstelle von Cirrus Data"]
+
++
+image:migrate-ec2-fsxn-image09.png["Abbildung des Windows-Installationsfortschritts"]
+
+. Bereiten Sie die YAML für jede virtuelle Maschine vor.
++
+*Hinweis*: Es ist ein wichtiger Schritt, eine YAML für jede VM zu haben, die das notwendige Rezept oder Blaupause für die Migrationsaufgabe angibt.
+
++
+Die YAML liefert den Operationsnamen, Notizen (Beschreibung) zusammen mit dem Rezeptnamen als `MIGRATEOPS_AWS_COMPUTE`Der Hostname (`system_name`) Und Name der Integration (`integration_name`) Und der Quell- und Zielkonfiguration. Benutzerdefinierte Skripte können vor und nach der Umstellung als aktiv angegeben werden.
+
++
+[source, yaml]
+----
+operations:
+    -   name: Win2016 SQL server to AWS
+        notes: Migrate OS to AWS with EBS and Data to FSx for ONTAP
+        recipe: MIGRATEOPS_AWS_COMPUTE
+        config:
+            system_name: Win2016-123
+            integration_name: NimAWShybrid
+            migrateops_aws_compute:
+                region: us-west-2
+                compute:
+                    instance_type: t3.medium
+                    availability_zone: us-west-2b
+                network:
+                    vpc_id: vpc-05596abe79cb653b7
+                    subnet_id: subnet-070aeb9d6b1b804dd
+                    security_group_names:
+                        - default
+                destination:
+                    default_volume_params:
+                        volume_type: GP2
+                    iscsi_data_storage:
+                        integration_name: DemoDRaaS
+                        default_volume_params:
+                            netapp:
+                                qos_policy_name: ""
+                migration:
+                    session_description: Migrate OS to AWS with EBS and Data to FSx for ONTAP
+                    qos_level: MODERATE
+                cutover:
+                    stop_applications:
+                        - os_shell:
+                              script:
+                                  - stop-service -name 'MSSQLSERVER' -Force
+                                  - Start-Sleep -Seconds 5
+                                  - Set-Service -Name 'MSSQLSERVER' -StartupType Disabled
+                                  - write-output "SQL service stopped and disabled"
+
+                        - storage_unmount:
+                              mountpoint: e
+                        - storage_unmount:
+                              mountpoint: f
+                    after_cutover:
+                        - os_shell:
+                              script:
+                                  - stop-service -name 'MSSQLSERVER' -Force
+                                  - write-output "Waiting 90 seconds to mount disks..." > log.txt
+                                  - Start-Sleep -Seconds 90
+                                  - write-output "Now re-mounting disks E and F for SQL..." >>log.txt
+                        - storage_unmount:
+                              mountpoint: e
+                        - storage_unmount:
+                              mountpoint: f
+                        - storage_mount_all: {}
+                        - os_shell:
+                              script:
+                                  - write-output "Waiting 60 seconds to restart SQL Services..." >>log.txt
+                                  - Start-Sleep -Seconds 60
+                                  - stop-service -name 'MSSQLSERVER' -Force
+                                  - Start-Sleep -Seconds 3
+                                  - write-output "Start SQL Services..." >>log.txt
+                                  - Set-Service -Name 'MSSQLSERVER' -StartupType Automatic
+                                  - start-service -name 'MSSQLSERVER'
+                                  - write-output "SQL started" >>log.txt
+----
+. Sobald die YAMLs eingerichtet sind, erstellen Sie die MigrateOps-Konfiguration. Gehen Sie dazu zu Data Migration > MigrateOps, klicken Sie auf „Start New Operation“ und geben Sie die Konfiguration im gültigen YAML-Format ein.
+. Klicken Sie auf „Create Operation“.
++
+*Hinweis*: Um Parallelität zu erreichen, muss jeder Host eine YAML-Datei angeben und konfigurieren.
+
+. Sofern nicht `scheduled_start_time` Feld wird in der Konfiguration angegeben, der Vorgang wird sofort gestartet.
+. Der Vorgang wird jetzt ausgeführt und fortgesetzt. Über die Benutzeroberfläche von Cirrus Data Cloud können Sie den Fortschritt mit detaillierten Meldungen überwachen. Diese Schritte umfassen automatisch Aufgaben, die normalerweise manuell ausgeführt werden, z. B. die automatische Zuweisung und das Erstellen von Migrationssitzungen.
++
+image:migrate-ec2-fsxn-image10.png["Bild des Fortschritts der Datenmigration bei Cirrus"]
+
++
+*Hinweis*: Während der Host-zu-Host-Migration wird eine zusätzliche Sicherheitsgruppe mit einer Regel erstellt, die Inbound 4996-Port zulässt, die den erforderlichen Port für die Kommunikation ermöglicht und nach Abschluss der Synchronisierung automatisch gelöscht wird.
+
++
+image:migrate-ec2-fsxn-image11.png["Bild der für die Cirrus-Datenmigration erforderlichen Inbound-Regel"]
+
+. Während diese Migrationssitzung synchronisiert wird, gibt es in Phase 3 (Umstellung) einen zukünftigen Schritt mit dem Label „Genehmigung erforderlich“. Nach einem MigrateOps-Rezept müssen kritische Aufgaben (wie beispielsweise Migration-Umstellungen) vor der Ausführung erst genehmigt werden. Projektoperatoren oder Administratoren können diese Aufgaben über die Benutzeroberfläche genehmigen. Es kann auch ein zukünftiges Genehmigungsfenster erstellt werden.
++
+image:migrate-ec2-fsxn-image12.png["Bild der Cirrus Datenmigrationssynchronisierung"]
+
+. Nach der Genehmigung wird der MigrateOps-Vorgang mit der Umstellung fortgesetzt.
+. Nach einem kurzen Moment wird der Vorgang abgeschlossen.
++
+image:migrate-ec2-fsxn-image13.png["Bild des Abschlusses der Datenmigration bei Cirrus"]
+
++
+*Hinweis*: Mit Hilfe der Cirrus Data cmotion™ Technologie wurde der Zielspeicher mit allen aktuellen Änderungen auf dem neuesten Stand gehalten. Daher dauert es nach Genehmigung nur eine Minute, bis der gesamte endgültige Umstellungsprozess abgeschlossen ist.
+
+
+
+
+
+== Verifizierung nach der Migration
+
+Sehen wir uns die migrierte Amazon EC2 Instanz an, auf der das Windows Server-Betriebssystem ausgeführt wird, und die folgenden Schritte, die abgeschlossen sind:
+
+. Windows SQL Services werden jetzt gestartet.
+. Die Datenbank ist wieder online und verwendet Speicher vom iSCSI-Multipath-Gerät.
+. Alle neuen Datenbankeinträge, die während der Migration hinzugefügt wurden, sind in der neu migrierten Datenbank zu finden.
+. Der alte Speicher ist jetzt offline.
+
+
+*Hinweis*: Mit nur einem Klick, um den Datenmobilitätsvorgang als Code zu übermitteln, und einem Klick, um die Umstellung zu genehmigen, wurde die VM erfolgreich von lokalen VMware-Systemen auf eine Amazon EC2-Instanz mithilfe von FSX for ONTAP und seinen iSCSI-Funktionen migriert.
+
+*Hinweis*: Aufgrund der AWS API Beschränkung würden die konvertierten VMs als „Ubuntu“ angezeigt. Dies ist streng ein Anzeigeproblem und hat keinen Einfluss auf die Funktionalität der migrierten Instanz. In einer kommenden Version wird dieses Problem behoben.
+
+*Hinweis*: Der Zugriff auf die migrierten Amazon EC2-Instanzen erfolgt über die Zugangsdaten, die auf der On-Premises-Seite verwendet wurden.

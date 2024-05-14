@@ -1,0 +1,208 @@
+---
+sidebar: sidebar 
+permalink: hyperv/hyperv-deploy-considerations.html 
+keywords: hyperv, hyper-v, deploy, netapp, virtualization, consideration 
+summary: Die Lösung enthält die Schritte, die für die Bereitstellung von Hyper-V auf NetApp-Speicher erforderlich sind 
+---
+= Überlegungen zur Bereitstellung von Microsoft Hyper-V auf NetApp-Speicher
+:hardbreaks:
+:allow-uri-read: 
+:nofooter: 
+:icons: font
+:linkattrs: 
+:imagesdir: ./../media/
+
+
+[role="lead"]
+Dieser Schritt ist entscheidend, um sicherzustellen, dass die Applikationen, Services und Workloads in der Hyper-V Umgebung effizient arbeiten können. Die Kompatibilitätsprüfungen müssen Betriebssystemversionen, Windows-Serverversionen, Anwendungsabhängigkeiten, Datenbanksysteme sowie alle spezifischen Konfigurationen oder Anpassungen umfassen, die in der vorhandenen Umgebung vorhanden sind.
+
+
+
+== Richtige Dimensionierung des Storage
+
+Stellen Sie vor der Implementierung oder Migration von einem vorhandenen Hypervisor sicher, dass der Workload entsprechend der erforderlichen Performance dimensioniert ist. Dies lässt sich problemlos erreichen, indem Performance-Daten für jede einzelne VM erfasst werden, die Statistiken für CPU (verwendet/bereitgestellt), Arbeitsspeicher (verwendet/bereitgestellt), Storage (bereitgestellt/genutzt), Netzwerkdurchsatz und Latenz sowie die Aggregation der Lese-/Schreib-IOPS, des Durchsatzes und der Blockgröße erfasst. Diese Parameter müssen für eine erfolgreiche Implementierung und die korrekte Größe des Storage-Arrays und der Workload-Hosts zwingend angegeben werden.
+
+*Hinweis*: Planen Sie IOPS und Kapazität bei der Dimensionierung von Speicher für Hyper-V und damit verbundene Workloads.
+
+*Hinweis*: Bei VMs mit höheren I/O-Anforderungen oder VMs, die viel Ressourcen und Kapazität benötigen, trennen Sie das Betriebssystem und die Datenfestplatten. Die Binärdateien von Betriebssystemen und Applikationen ändern sich selten, und die Konsistenz beim Absturz eines Volumes ist akzeptabel.
+
+*Hinweis*: Verwenden Sie Guest Connected Storage (auch als in-Guest bezeichnet) für Hochleistungsdatenfestplatten als VHDs. Auch der Klonprozess wird vereinfacht.
+
+
+
+== Verbessern Sie die Performance von Virtual Machines
+
+Wählen Sie die richtige Menge an RAM und vCPUs für optimale Leistung und schließen Sie mehrere Festplatten an einen einzigen virtuellen SCSI-Controller an. Die Verwendung von VHDX Fixed wird weiterhin als primäre Wahl für virtuelle Festplatten bei Implementierungen empfohlen, und es gibt keine Einschränkungen für die Verwendung von virtuellen VHDX-Laufwerken.
+
+*Hinweis*: Vermeiden Sie die Installation unnötiger Rollen auf Windows Server, die nicht verwendet werden.
+
+*Hinweis*: Wählen Sie Gen2 als Generation für virtuelle Maschinen, die VMs vom SCSI-Controller laden können und basieren auf der VMBUS- und VSP/VSC-Architektur für den Boot-Level, was die Gesamtleistung der VM deutlich erhöht.
+
+*Hinweis*: Vermeiden Sie häufige Checkpoints, da dies negative Auswirkungen auf die Performance der VM hat.
+
+
+
+== SMB3.0 Design und Überlegungen
+
+SMB 3.0-Dateifreigaben können als Shared Storage für Hyper-V verwendet werden ONTAP unterstützt den unterbrechungsfreien Betrieb über SMB-Freigaben für Hyper-V. Hyper-V kann SMB-Dateifreigaben verwenden, um Dateien von Virtual Machines zu speichern, wie z. B. Konfigurationsdateien, Snapshots und VHD-Dateien (Virtual Hard Disk). Verwenden Sie dedizierte ONTAP CIFS SVM für SMB3.0-basierte Freigaben für Hyper-V. Die Volumes, die zum Speichern von VM-Dateien verwendet werden, müssen mit NTFS-Volumes im Sicherheitstil erstellt werden. Die Konnektivität zwischen Hyper-V Hosts und dem NetApp-Array wird in einem 10-GB-Netzwerk empfohlen, sofern einer verfügbar ist. Bei 1-GB-Netzwerkverbindung empfiehlt NetApp die Erstellung einer Schnittstellengruppe, die aus mehreren 1-GB-Ports besteht. Verbinden Sie jeden NIC, der SMB-Multichannel bereitstellt, mit seinem dedizierten IP-Subnetz, so dass jedes Subnetz einen einzigen Pfad zwischen Client und Server bereitstellt.
+
+*Wichtige Punkte*
+
+* Aktivieren Sie SMB Multi-Channel auf ONTAP SVM
+* ONTAP CIFS SVMs sollten über mindestens eine Daten-LIF auf jedem Node in einem Cluster verfügen.
+* Verwendete Freigaben müssen mit dem kontinuierlich verfügbaren Eigenschaftssatz konfiguriert werden.
+* ONTAP One ist jetzt auf jedem AFF (A-Serie und C-Serie), All-SAN Array (ASA) und FAS System enthalten. Daher sind keine separaten Lizenzen erforderlich.
+* Verwenden Sie für Shared VHDX eine mit dem Gast verbundene iSCSI-LUN
+
+
+*Hinweis*: ODX wird unterstützt und funktioniert protokollübergreifend. Beim Kopieren von Daten zwischen einer Dateifreigabe und iSCSI oder einer FCP-Attached LUN wird auch ODX verwendet.
+
+*Hinweis*: Die Zeiteinstellungen auf Knoten im Cluster sollten entsprechend eingerichtet werden. Wenn der NetApp-CIFS-Server an der AD-Domäne (Windows Active Directory) teilnehmen muss, sollte das Network Time Protocol (NTP) verwendet werden.
+
+*Hinweis*: Große MTU-Werte müssen über den CIFS-Server aktiviert werden. Kleine Paketgrößen können zu Leistungseinbußen führen.
+
+
+
+== Provisionierung von SMB-Volumes
+
+. Vergewissern Sie sich, dass die erforderlichen CIFS-Serveroptionen auf der SVM (Storage Virtual Machine) aktiviert sind.
+. Die folgenden Optionen sollten auf true gesetzt werden: smb2-fähige smb3-fähige Copy-Offload-aktivierte shadowcopy-enabled is-Multichannel-enabled is-large-mtu-enabled
++
+image:hyperv-deploy-image03.png["Abbildung der SMB-Kolumneneinstellungen"]
+
+. Erstellen Sie NTFS-Datenvolumes auf der Storage Virtual Machine (SVM) und konfigurieren Sie dann kontinuierlich verfügbare Freigaben für die Verwendung mit Hyper-V
++
+image:hyperv-deploy-image04.png["Abbildung der NTFS-Daten-Volume-Einstellungen"]
+
++
+*Hinweis*: Der unterbrechungsfreie Betrieb für Hyper-V über SMB funktioniert nur dann korrekt, wenn die in der Konfiguration verwendeten Volumes als NTFS-Sicherheitsdatenträger erstellt werden.
+
+. Aktivieren Sie kontinuierlich verfügbar und konfigurieren Sie NTFS-Berechtigungen für die Freigabe, um Hyper-V-Knoten mit vollständiger Kontrolle einzubeziehen.
++
+image:hyperv-deploy-image05.png["Abbildung der NTFS-Berechtigungseinstellungen"]
+
+
+
+Eine detaillierte Anleitung zu Best Practices finden Sie unter link:https://docs.netapp.com/us-en/ontap-apps-dbs/microsoft/win_overview.html["Implementierungsrichtlinien und Best Practices für Hyper-V"].
+
+Weitere Informationen finden Sie unter link:https://docs.netapp.com/us-en/ontap/smb-hyper-v-sql/server-volume-requirements-hyper-v-concept.html["SMB-Server- und Volume-Anforderungen für Hyper-V über SMB
+"].
+
+
+
+== Design und Überlegungen zu Blockprotokollen
+
+*Wichtige Punkte*
+
+* Verwenden Sie Multipathing (MPIO) auf Hosts, um mehrere Pfade zu verwalten. Erstellen Sie je nach Bedarf weitere Pfade, entweder um die Datenmobilität zu vereinfachen oder zusätzliche I/O-Ressourcen nutzen zu können. Überschreiten Sie jedoch nicht die maximale Anzahl an Pfaden, die ein Host-Betriebssystem unterstützen kann.
+* Installieren Sie das Host Utilities Kit auf Hosts, die auf die LUNs zugreifen.
+* Erstellen Sie mindestens 8 Volumes.
+
+
+*Hinweis*: Verwenden Sie eine LUN pro Volume, also 1:1 Mapping für LUN zu CSV Verhältnis.
+
+* Eine SVM sollte über eine LIF pro Ethernet-Netzwerk oder Fibre Channel Fabric auf jedem Storage Controller verfügen, der Daten über iSCSI oder Fibre Channel bereitstellen soll.
+* SVMs, die Daten mit FCP oder iSCSI bereitstellen, benötigen eine SVM-Managementoberfläche.
+
+
+
+
+== Bereitstellen von ISCSI-Volumes
+
+Stellen Sie sicher, dass die folgenden Voraussetzungen erfüllt sind, um ein ISCSI-Volume bereitzustellen.
+
+* Auf der Storage Virtual Machine (SVM) sollte das iSCSI-Protokoll aktiviert sein und die entsprechenden logischen Schnittstellen (LIFs) erstellt werden.
+* Das angegebene Aggregat muss über genügend freien Speicherplatz für die LUN verfügen.
+
+
+*Hinweis*: Standardmäßig verwendet ONTAP die selektive LUN-Zuordnung (SLM), um den Zugriff auf die LUN nur über Pfade auf dem Knoten zu ermöglichen, der die LUN und ihren Hochverfügbarkeits-Partner besitzt.
+
+* Konfigurieren Sie alle iSCSI LIFs auf jedem Node für die LUN-Mobilität, falls die LUN auf einen anderen Node im Cluster verschoben wird.
+
+
+*Schritte*
+
+. Navigieren Sie mit System Manager zum Fenster LUNs (ONTAP CLI kann für denselben Vorgang verwendet werden).
+. Klicken Sie auf Erstellen .
+. Durchsuchen Sie die festgelegte SVM, in der die zu erstellenden LUNs erstellt werden, und wählen Sie sie aus. Der Assistent zum Erstellen von LUNs wird angezeigt.
+. Wählen Sie auf der Seite Allgemeine Eigenschaften Hyper-V für LUNs aus, die virtuelle Festplatten (VHDs) für virtuelle Hyper-V-Maschinen enthalten.
++
+image:hyperv-deploy-image06.png["Image der Seite Allgemeine Eigenschaften für die Hyper-V-LUN-Erstellung"]
+
+. <Klicken Sie auf Weitere Optionen> Wählen Sie auf der Seite LUN Container ein vorhandenes FlexVol-Volume aus, da sonst ein neues Volume erstellt wird.
+. <Klicken Sie auf Mehr Optionen> auf der Seite Initiatoren-Zuordnung auf Initiatorgruppe hinzufügen, geben Sie die erforderlichen Informationen auf der Registerkarte Allgemein ein, und geben Sie dann auf der Registerkarte Initiatoren den iSCSI-Initiator-Node-Namen der Hosts ein.
+. Bestätigen Sie die Details, und klicken Sie dann auf Fertig stellen, um den Assistenten abzuschließen.
+
+
+Sobald die LUN erstellt wurde, wechseln Sie zum Failover Cluster Manager. Um eine Festplatte zu CSV hinzuzufügen, muss sie der Gruppe „verfügbarer Speicher“ des Clusters hinzugefügt werden (falls sie noch nicht hinzugefügt wurde), und anschließend muss sie dem CSV-Laufwerk des Clusters hinzugefügt werden.
+
+*Hinweis*: Die CSV-Funktion ist standardmäßig in Failover Clustering aktiviert.
+
+*Hinzufügen einer Festplatte zu verfügbarem Speicher:*
+
+. Erweitern Sie in Failover Cluster Manager in der Konsolenstruktur den Namen des Clusters, und erweitern Sie dann Speicher.
+. Klicken Sie mit der rechten Maustaste auf Festplatten, und wählen Sie dann Add Disk aus. Es wird eine Liste mit den Festplatten angezeigt, die zur Verwendung in einem Failover-Cluster hinzugefügt werden können.
+. Wählen Sie die Festplatte oder die Festplatten aus, die Sie hinzufügen möchten, und wählen Sie dann OK.
+. Die Festplatten sind jetzt der Gruppe „verfügbarer Speicher“ zugewiesen.
+. Wählen Sie anschließend das Laufwerk aus, das gerade dem verfügbaren Speicher zugewiesen wurde, klicken Sie mit der rechten Maustaste auf die Auswahl, und wählen Sie dann zu gemeinsam genutzten Cluster-Volumes hinzufügen aus.
++
+image:hyperv-deploy-image07.png["Abbildung der Schnittstelle zu gemeinsam genutzten Cluster-Volumes hinzufügen"]
+
+. Die Laufwerke sind jetzt der Cluster Shared Volume-Gruppe im Cluster zugewiesen. Die Laufwerke werden jedem Clusterknoten als nummerierte Volumes (Bereitstellungspunkte) im Ordner %SystemDrive%ClusterStorage angezeigt. Die Volumes werden im CSVFS-Dateisystem angezeigt.
+
+
+Weitere Informationen finden Sie unter link:https://learn.microsoft.com/en-us/windows-server/failover-clustering/failover-cluster-csvs#add-a-disk-to-csv-on-a-failover-cluster["Verwenden Sie Cluster Shared Volumes in einem Failover-Cluster"].
+
+*Erstellen Sie hochverfügbare virtuelle Maschinen:*
+
+Führen Sie die folgenden Schritte aus, um eine hochverfügbare virtuelle Maschine zu erstellen:
+
+. Wählen Sie in Failover Cluster Manager den gewünschten Cluster aus oder geben Sie ihn an. Stellen Sie sicher, dass die Konsolenstruktur unter dem Cluster erweitert ist.
+. Klicken Sie Auf Rollen.
+. Klicken Sie im Bereich Aktionen auf Virtuelle Maschinen und anschließend auf Neue virtuelle Maschine. Der Assistent für neue virtuelle Maschinen wird angezeigt. Klicken Sie Auf Weiter.
+. Geben Sie auf der Seite Name und Speicherort angeben einen Namen für die virtuelle Maschine an, z. B. nimdemo. Klicken Sie auf die virtuelle Maschine an einem anderen Speicherort speichern, geben Sie dann den vollständigen Pfad ein, oder klicken Sie auf Durchsuchen, und navigieren Sie zum freigegebenen Speicher.
+. Weisen Sie dem virtuellen Switch, der dem physischen Netzwerkadapter zugeordnet ist, Speicher zu und konfigurieren Sie den Netzwerkadapter.
+. Klicken Sie auf der Seite Virtuelle Festplatte verbinden auf Virtuelle Festplatte erstellen.
+. Klicken Sie auf der Seite Installationsoptionen auf Betriebssystem von einer Boot-CD/DVD-ROM installieren. Geben Sie unter Medien den Speicherort des Mediums an, und klicken Sie dann auf Fertig stellen.
+. Die virtuelle Maschine wird erstellt. Der Hochverfügbarkeitsassistent in Failover Cluster Manager konfiguriert dann die virtuelle Maschine automatisch für hohe Verfügbarkeit.
+
+
+
+
+== Schnelle Bereitstellung virtueller Laufwerke mit ODX-Funktion
+
+Mit der ODX Funktion von ONTAP können Kopien der Master VHDX Dateien erstellt werden, indem einfach eine Master VHDX Datei kopiert wird, die vom ONTAP Storage-System gehostet wird. Da bei einer ODX-fähigen Kopie keine Daten über das Netzwerk übertragen werden, erfolgt der Kopiervorgang auf der NetApp Storage-Seite und kann daher bis zu sechs- bis achtmal schneller. Allgemeine Überlegungen für eine schnelle Bereitstellung umfassen Master-Images, die auf File Shares gespeichert sind, und regelmäßige Kopierprozesse, die von den Hyper-V Hostcomputern initiiert werden.
+
+*Hinweis*: ONTAP unterstützt ODX für die SMB- und SAN-Protokolle.
+
+*Hinweis*: Um die Anwendungsbeispiele für den ODX Copy Offload Pass-Through mit Hyper-V nutzen zu können, muss das Gastbetriebssystem ODX unterstützen und die Festplatten des Gastbetriebssystems müssen SCSI-Festplatten sein, die durch Storage (entweder SMB oder SAN) gesichert werden, der ODX unterstützt. IDE-Festplatten auf dem Gastbetriebssystem unterstützen keine ODX-Pass-Through-Unterstützung.
+
+
+
+== Performance-Optimierung
+
+Obwohl die empfohlene Anzahl von VMs pro CSV subjektiv ist, bestimmen zahlreiche Faktoren die optimale Anzahl von VMs, die auf jedem CSV- oder SMB-Volume platziert werden können. Obwohl die meisten Administratoren nur die Kapazität in Betracht ziehen, ist der Umfang der gleichzeitigen I/O-Vorgänge, die an das VHDX gesendet werden, einer der wichtigsten Faktoren für die Gesamtleistung. Die einfachste Möglichkeit zur Steuerung der Leistung besteht darin, die Anzahl der virtuellen Maschinen zu regulieren, die auf jedem CSV oder Share platziert werden. Wenn die I/O-Muster der gleichzeitigen virtuellen Maschine zu viel Datenverkehr an die CSV- oder Freigabe senden, füllen sich die Festplattenwarteschlangen, und es wird eine höhere Latenz generiert.
+
+
+
+== Größenbestimmung für SMB Volumes und CSV
+
+Stellen Sie sicher, dass die Lösung vollständig ausreichend dimensioniert ist, um Engpässe zu vermeiden. Und wenn ein Volume für die Speicherung von Hyper-V VMs erstellt wird, empfiehlt es sich, ein Volume zu erstellen, das nicht größer als erforderlich ist. Volumes mit richtiger Dimensionierung verhindern, dass versehentlich zu viele virtuelle Maschinen in den CSV platziert werden, und verringern die Wahrscheinlichkeit von Ressourcenkonflikten. Jedes Cluster Shared Volume (CSV) unterstützt eine oder mehrere VMs. Die Anzahl der VMs, die auf einem CSV platziert werden sollen, wird durch den Workload und die geschäftlichen Präferenzen bestimmt und wie ONTAP-Storage-Funktionen wie Snapshots und Replizierung verwendet werden. Das Platzieren mehrerer VMs auf einem CSV ist ein guter Ausgangspunkt in den meisten Bereitstellungsszenarien. Passen Sie diesen Ansatz für bestimmte Anwendungsfälle an, um Anforderungen an Performance und Datensicherung zu erfüllen.
+
+Da Volumes und VHDX-Größen leicht vergrößert werden können, muss die Größe von CSVs, die größer als erforderlich sind, nicht erhöht werden, wenn eine VM zusätzliche Kapazität benötigt. DiskPart kann zur Erweiterung der CSV-Größe verwendet werden, oder ein einfacher Ansatz besteht darin, eine neue CSV-Datei zu erstellen und die erforderlichen VMs auf die neue CSV-Datei zu migrieren. Für eine optimale Leistung empfiehlt es sich, die Anzahl der CSVs zu erhöhen, anstatt ihre Größe als Zwischenmaßnahme zu erhöhen.
+
+
+
+== Migration
+
+Einer der häufigsten Anwendungsfälle in der aktuellen Marktlage ist die Migration. Kunden können zur Migration von VMs VMM Fabric oder andere Migrationstools von Drittanbietern verwenden. Diese Tools verwenden Kopien auf Hostebene, um Daten von der Quellplattform zur Zielplattform zu verschieben. Dies kann in Abhängigkeit von der Anzahl der Virtual Machines, die im Rahmen der Migration erfasst werden, sehr zeitaufwendig sein.
+
+Die Verwendung von ONTAP in einem solchen Szenario ermöglicht eine schnellere Migration als die Nutzung eines hostbasierten Migrationsprozesses. ONTAP ermöglicht auch eine schnelle Migration der VMs von einem Hypervisor zum anderen (in diesem Fall ESXi zu Hyper-V). VMDK beliebiger Größe lässt sich in Sekunden bei NetApp Storage zu VHDX konvertieren. Das ist unsere PowerShell-Methode - sie nutzt NetApp FlexClone® Technologie für die schnelle Konvertierung von VM-Festplatten. Zudem übernimmt es die Erstellung und Konfiguration von Ziel- und Ziel-VMs.
+
+Durch diesen Prozess werden Ausfallzeiten minimiert und die Produktivität des Unternehmens gesteigert. Außerdem bietet es Wahlmöglichkeiten und Flexibilität, indem Lizenzkosten, Anbieterbindung und Verpflichtungen gegenüber einem einzigen Anbieter reduziert werden. Dies ist auch für Unternehmen von Vorteil, die die VM-Lizenzierungskosten optimieren und das IT-Budget erweitern möchten.
+
+Im folgenden Video wird der Prozess zur Migration virtueller Maschinen von VMware ESX auf Hyper-V demonstriert
+
+.Komplett automatisierte Migration von ESX zu Hyper-V
+video::f4bd0e96-9517-465a-be53-b16d00e305fe[panopto]
+Weitere Informationen zur Migration mit FlexClone und PowerShell finden Sie im link:hyperv-deploy-script.html["PowerShell Skript für die Migration"].
