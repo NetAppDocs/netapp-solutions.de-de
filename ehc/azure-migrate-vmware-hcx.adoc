@@ -83,20 +83,22 @@ Gehen Sie wie folgt vor, um die Installation durchzuführen:
 . Melden Sie sich im Azure-Portal an und greifen Sie auf die Private Cloud der Azure VMware Lösung zu.
 . Wählen Sie die entsprechende private Cloud aus, und greifen Sie auf Add-ons zu. Dazu navigieren Sie zu *Verwalten > Add-ons*.
 . Klicken Sie im Bereich HCX Workload Mobility auf *Get Started*.
-
-
++
 image:anfd-hcx-image2.png["Screenshot des Abschnitts HCX Workload Mobility."]
 
 . Wählen Sie die Option *Ich stimme den Allgemeinen Geschäftsbedingungen* zu und klicken Sie auf *Aktivieren und Bereitstellen*.
-
-
++
 
 NOTE: Die Standardbereitstellung ist HCX Advanced. Öffnen Sie eine Support-Anfrage, um die Enterprise Edition zu aktivieren.
 
++
 
 NOTE: Die Implementierung dauert etwa 25 bis 30 Minuten.
 
++
 image:anfd-hcx-image3.png["Screenshot der Fertigstellung des Abschnitts HCX Workload Mobility."]
+
+
 
 ====
 .Schritt 2: Stellen Sie das Installationsprogramm OVA im lokalen vCenter Server bereit
@@ -107,31 +109,31 @@ Damit der On-Premises Connector eine Verbindung zum HCX Manager in Azure VMware 
 So laden Sie den HCX Connector auf dem lokalen vCenter Server herunter und installieren ihn:
 
 . Wählen Sie im Azure-Portal die Azure-VMware-Lösung aus, wählen Sie die Private Cloud aus, und wählen Sie *Verwalten > Add-ons > Migration* mit HCX aus. Kopieren Sie das HCX-Cloud-Manager-Portal, um die OVA-Datei herunterzuladen.
-
-
++
 
 NOTE: Verwenden Sie die standardmäßigen CloudAdmin-Benutzeranmeldeinformationen für den Zugriff auf das HCX-Portal.
 
++
 image:anfd-hcx-image4.png["Screenshot des Azure-Portals zum Herunterladen der HCX OVA-Datei."]
 
 . Nachdem Sie über den Jumphost auf das HCX-Portal mit mailto:cloudadmin@vsphere.local[cloudadmin@vsphere.local^] zugegriffen haben, navigieren Sie zu *Administration > Systemaktualisierungen* und klicken Sie auf *Download anfordern Link*.
-
-
++
 
 NOTE: Laden Sie entweder den Link zur OVA herunter oder kopieren Sie ihn in einen Browser, um den Download-Prozess der OVA-Datei von VMware HCX Connector zu starten, um sie auf dem lokalen vCenter Server bereitzustellen.
 
++
 image:anfd-hcx-image5.png["Fehler: Screenshot des OVA Download-Links."]
 
 . Nachdem die OVA heruntergeladen wurde, stellen Sie sie in der lokalen VMware vSphere Umgebung mithilfe der Option *Deploy OVF Template* bereit.
-
-
++
 image:anfd-hcx-image6.png["Fehler: Screenshot zur Auswahl der richtigen OVA-Vorlage."]
 
 . Geben Sie alle erforderlichen Informationen für die OVA-Bereitstellung ein, klicken Sie auf *Weiter* und klicken Sie dann auf *Fertig stellen*, um die OVA des VMware HCX-Connectors bereitzustellen.
-
-
++
 
 NOTE: Schalten Sie die virtuelle Appliance manuell ein.
+
+
 
 Eine Schritt-für-Schritt-Anleitung finden Sie im https://docs.vmware.com/en/VMware-HCX/services/user-guide/GUID-BFD7E194-CFE5-4259-B74B-991B26A51758.html["VMware HCX-Benutzerhandbuch"^].
 
@@ -143,22 +145,20 @@ Nachdem Sie den VMware HCX Connector OVA vor Ort bereitgestellt und das Gerät g
 
 . Wählen Sie im Azure-Portal die Azure VMware-Lösung, wählen Sie die Private Cloud aus und wählen Sie *Verwalten > Add-ons > Migration Using HCX* aus.
 . Klicken Sie unter *Verbindung mit On-Premise mit HCX-Tasten* auf *Hinzufügen* und kopieren Sie den Aktivierungsschlüssel.
-
-
++
 image:anfd-hcx-image7.png["Screenshot zum Hinzufügen von HCX-Tasten."]
 
++
 
 NOTE: Für jeden bereitgestellten HCX-Connector vor Ort ist ein separater Schlüssel erforderlich.
 
-. Melden Sie sich beim lokalen VMware HCX Manager unter an https://hcxmanagerIP:9443["https://hcxmanagerIP:9443"^] Administratordaten werden verwendet.
-
-
+. Melden Sie sich beim lokalen VMware HCX Manager unter an `"https://hcxmanagerIP:9443"` Administratordaten werden verwendet.
++
 
 NOTE: Verwenden Sie das während der OVA-Bereitstellung definierte Passwort.
 
 . Geben Sie in der Lizenzierung den aus Schritt 3 kopierten Schlüssel ein und klicken Sie auf *Aktivieren*.
-
-
++
 
 NOTE: Der HCX-Connector sollte über einen Internetzugang verfügen.
 
@@ -166,25 +166,25 @@ NOTE: Der HCX-Connector sollte über einen Internetzugang verfügen.
 . Aktualisieren Sie unter *Systemname* den Namen und klicken Sie auf *Weiter*.
 . Klicken Sie Auf *Ja, Weiter*.
 . Geben Sie unter *Connect Your vCenter* den vollständig qualifizierten Domänennamen (FQDN) oder die IP-Adresse des vCenter Servers und die entsprechenden Anmeldeinformationen an und klicken Sie auf *Continue*.
-
-
++
 
 NOTE: Verwenden Sie den FQDN, um Verbindungsprobleme später zu vermeiden.
 
 . Geben Sie unter * SSO/PSC konfigurieren* den FQDN oder die IP-Adresse des Plattform-Services-Controllers an und klicken Sie auf *Weiter*.
-
-
++
 
 NOTE: Geben Sie den VMware vCenter Server FQDN oder die IP-Adresse ein.
 
 . Überprüfen Sie, ob die eingegebenen Informationen korrekt sind, und klicken Sie auf *Neustart*.
 . Nach dem Neustart der Dienste wird vCenter Server auf der angezeigten Seite grün angezeigt. Sowohl vCenter Server als auch SSO müssen über die entsprechenden Konfigurationsparameter verfügen, die mit der vorherigen Seite übereinstimmen sollten.
-
-
++
 
 NOTE: Dieser Vorgang dauert etwa 10 bis 20 Minuten, und das Plug-in wird dem vCenter Server hinzugefügt.
 
++
 image:anfd-hcx-image8.png["Screenshot mit dem abgeschlossenen Prozess"]
+
+
 
 ====
 .Schritt 4: Verbinden Sie den lokalen VMware HCX Connector mit der Azure VMware-Lösung HCX Cloud Manager
