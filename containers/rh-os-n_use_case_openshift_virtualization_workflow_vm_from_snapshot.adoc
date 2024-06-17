@@ -29,7 +29,7 @@ Für Snapshot-Vorgänge in OpenShift müssen die Ressourcen VolumeSnapshotClass,
 * Mit VolumeSnapshotClass kann der Administrator verschiedene Attribute für einen VolumeSnapshot festlegen. Damit können Sie unterschiedliche Attribute für verschiedene Snapshots haben, die vom selben Volume erstellt wurden.
 
 
-image::redhat_openshift_image60.jpg[VM aus der Snapshot Architektur]
+image::redhat_openshift_image60.png[VM aus der Snapshot Architektur]
 
 Um einen Snapshot einer VM zu erstellen, führen Sie die folgenden Schritte aus:
 
@@ -55,7 +55,7 @@ image::redhat_openshift_image62.JPG[Erstellen Sie Snapshot]
 +
 image::redhat_openshift_image63.JPG[Wiederherstellung des Snapshots in einer neuen PVC]
 
-. Erstellen Sie dann eine neue VM aus diesem PVC. Navigieren Sie zu Workloads > Virtualisierung > Virtuelle Maschinen, und klicken Sie auf Erstellen > mit YAML.
+. Erstellen Sie dann eine neue VM aus diesem PVC. Navigieren Sie zu Virtualisierung > Virtuelle Maschinen, und klicken Sie auf Erstellen > mit YAML.
 . Geben Sie im Abschnitt Spec > Template > spec > Volumes das neue PVC an, das aus Snapshot erstellt wurde, anstatt von der Container-Festplatte aus. Geben Sie alle anderen Details für die neue VM nach Ihren Anforderungen an.
 +
 [source, cli]

@@ -22,23 +22,44 @@ In diesem Abschnitt wird die Erstellung einer virtuellen Maschine mit Red hat Op
 
 VMs sind statusorientierte Implementierungen, bei denen Volumes das Betriebssystem und die Daten hosten müssen. Da die VMs als Pods ausgeführt werden, werden die VMs mit PVS unterstützt, die über Trident auf NetApp ONTAP gehostet werden. Diese Volumes sind als Festplatten verbunden und speichern das gesamte Dateisystem einschließlich der Boot-Quelle der VM.
 
-image::redhat_openshift_image52.jpg[Erstellung einer VM-Architektur]
+image::redhat_openshift_image52.png[Erstellung einer VM-Architektur]
 
-Gehen Sie wie folgt vor, um eine virtuelle Maschine im OpenShift-Cluster zu erstellen:
+Führen Sie die folgenden Schritte aus, um schnell eine virtuelle Maschine auf dem OpenShift-Cluster zu erstellen:
 
-. Navigieren Sie zu Workloads > Virtualisierung > Virtuelle Maschinen, und klicken Sie auf Erstellen > mit Assistenten.
-. Wählen Sie das gewünschte Betriebssystem aus, und klicken Sie auf Weiter.
-. Wenn für das ausgewählte Betriebssystem keine Startquelle konfiguriert ist, müssen Sie es konfigurieren. Wählen Sie unter „Startquelle“ aus, ob Sie das BS-Image aus einer URL oder aus einer Registrierung importieren möchten, und geben Sie die entsprechenden Details an. Erweitern Sie Advanced und wählen Sie die Trident-gestützte StorageClass aus. Klicken Sie anschließend auf Weiter.
-+
-image::redhat_openshift_image53.JPG[Boot-Quelle für VM erstellen]
+. Navigieren Sie zu Virtualisierung > Virtuelle Maschinen, und klicken Sie auf Erstellen.
+. Aus Vorlage auswählen.
+. Wählen Sie das gewünschte Betriebssystem aus, für das die Startquelle verfügbar ist.
+. Aktivieren Sie das Kontrollkästchen VirtualMachine nach der Erstellung starten.
+. Klicken Sie auf Quick Create VirtualMachine.
 
-. Wenn für das ausgewählte Betriebssystem bereits eine Startquelle konfiguriert ist, kann der vorherige Schritt übersprungen werden.
-. Wählen Sie im Bereich „Prüfen und Erstellen“ das Projekt aus, in dem Sie die VM erstellen möchten, und geben Sie die VM-Details an. Vergewissern Sie sich, dass die Startquelle für den Klon- und Bootvorgang von CD-ROM ausgewählt ist, wobei die entsprechende PVC für das ausgewählte Betriebssystem zugewiesen ist.
-+
-image::redhat_openshift_image54.JPG[Erstellen Sie eine VM]
 
-. Wenn Sie die virtuelle Maschine anpassen möchten, klicken Sie auf Virtuelle Maschine anpassen und ändern Sie die erforderlichen Parameter.
+Die virtuelle Maschine wird erstellt und gestartet und kommt in den Status *running*. Es erstellt automatisch eine PVC und ein entsprechendes PV für die Boot-Disk unter Verwendung der Standard-Storage-Klasse. Um die VM in Zukunft live migrieren zu können, müssen Sie sicherstellen, dass die für die Festplatten verwendete Speicherklasse RWX-Volumes unterstützen kann. Dies ist eine Voraussetzung für die Live-Migration. ontap-nas und ontap-san (Volume-Mode Block für iSCSI- und NVMe/TCP-Protokolle) unterstützen RWX Zugriffsmodi für die Volumes, die mithilfe der entsprechenden Storage-Klassen erstellt wurden.
+
+Informationen zum Konfigurieren der ontap-san-Storage-Klasse auf dem Cluster finden Sie unter link:https://docs.netapp.com/us-en/netapp-solutions/containers/rh-os-n_use_case_openshift_virtualization_workflow_vm_migration_using_mtv.html["Abschnitt zur Migration einer VM von VMware auf OpenShift Virtualization"].
+
+
+NOTE: Sie können ONTAP NAS oder iSCSI als Standardspeicherklasse für das Cluster einrichten. Wenn Sie auf Quick Create VirtualMachine klicken, wird die Standard-Speicherklasse verwendet, um die PVC und das PV für die bootfähige Root-Festplatte für die VM zu erstellen. Wenn Ihre Standard-Storage-Klasse nicht ontap-nas oder ontap-san ist, können Sie die Storage-Klasse für die Festplatte auswählen, indem Sie VirtualMachine anpassen > VirtualMachine Parameter anpassen > Disks auswählen und dann die Festplatte bearbeiten, um die erforderliche Storage-Klasse zu verwenden.
+
+Normalerweise ist der Block-Zugriffsmodus im Vergleich zu Dateisystemen bei der Bereitstellung der VM-Festplatten vorzuziehen.
+
+Um die Erstellung der virtuellen Maschine anzupassen, nachdem Sie die Betriebssystemvorlage ausgewählt haben, klicken Sie auf VirtualMachine anpassen anstatt auf schnelles Erstellen.
+
+. Wenn das ausgewählte Betriebssystem eine Bootquelle konfiguriert hat, können Sie auf *VirtualMachine Parameter anpassen* klicken.
+. Wenn für das ausgewählte Betriebssystem keine Startquelle konfiguriert ist, müssen Sie es konfigurieren. Details zu den Verfahren finden Sie im link:https://docs.openshift.com/container-platform/4.14/virt/virtual_machines/creating_vms_custom/virt-creating-vms-from-custom-images-overview.html["Dokumentation"].
+. Nach der Konfiguration der Startdiskette können Sie auf *VirtualMachine Parameter anpassen* klicken.
+. Sie können die VM über die Registerkarten auf dieser Seite individuell anpassen. Für z. B. Klicken Sie auf die Registerkarte *Disks* und dann auf *Add Disk*, um der VM einen weiteren Datenträger hinzuzufügen.
 . Klicken Sie auf Virtual Machine erstellen, um die virtuelle Maschine zu erstellen. Dadurch wird ein entsprechender Pod im Hintergrund bereitgestellt.
 
 
-Wenn eine Startquelle für eine Vorlage oder ein Betriebssystem aus einer URL oder aus einer Registrierung konfiguriert ist, wird in der ein PVC erstellt `openshift-virtualization-os-images` Projizieren und Herunterladen des KVM-Gastabbilds auf das PVC. Sie müssen sicherstellen, dass Vorlagen-PVCs über genügend bereitgestellten Speicherplatz verfügen, um das KVM-Gast-Image für das entsprechende Betriebssystem unterzubringen. Diese VES werden dann geklont und als RootDisks an virtuelle Maschinen angehängt, wenn sie mit den entsprechenden Vorlagen in einem Projekt erstellt werden.
+
+NOTE: Wenn eine Startquelle für eine Vorlage oder ein Betriebssystem aus einer URL oder aus einer Registrierung konfiguriert ist, wird in der ein PVC erstellt `openshift-virtualization-os-images` Projizieren und Herunterladen des KVM-Gastabbilds auf das PVC. Sie müssen sicherstellen, dass Vorlagen-PVCs über genügend bereitgestellten Speicherplatz verfügen, um das KVM-Gast-Image für das entsprechende Betriebssystem unterzubringen. Diese PVCs werden dann geklont und als Rootdisk an virtuelle Maschinen angehängt, wenn sie mithilfe der entsprechenden Vorlagen in einem Projekt erstellt werden.
+
+image:rh-os-n_use_case_vm_create_1.png[""]
+
+image:rh-os-n_use_case_vm_create_2.png[""]
+
+image:rh-os-n_use_case_vm_create_3.png[""]
+
+image:rh-os-n_use_case_vm_create_4.png[""]
+
+image:rh-os-n_use_case_vm_create_5.png[""]
