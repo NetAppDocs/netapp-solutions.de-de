@@ -24,12 +24,12 @@ Um die Ressourcen zu erstellen, die für die Implementierung der Jenkins-Applika
 
 . Erstellen Sie ein neues Projekt namens Jenkins.
 +
-image:redhat_openshift_image15.jpeg["Fehler: Fehlendes Grafikbild"]
+image:redhat_openshift_image15.jpeg[""]
 
 . In diesem Beispiel haben wir Jenkins mit persistentem Storage implementiert. Um den Jenkins-Build zu unterstützen, erstellen Sie das PVC. Navigieren Sie zu Storage > Persistent Volume Claims und klicken Sie auf Create Persistent Volume Claim. Wählen Sie die Speicherklasse aus, die erstellt wurde, stellen Sie sicher, dass der Name des Persistent Volume Claim jenkins ist, wählen Sie die entsprechende Größe und den entsprechenden Zugriffsmodus aus, und klicken Sie dann auf Erstellen.
 
 
-image:redhat_openshift_image16.png["Fehler: Fehlendes Grafikbild"]
+image:redhat_openshift_image16.png[""]
 
 
 
@@ -39,54 +39,54 @@ Um Jenkins mit persistentem Storage zu implementieren, gehen Sie wie folgt vor:
 
 . Ändern Sie in der oberen linken Ecke die Rolle von Administrator zu Entwickler. Klicken Sie auf + Hinzufügen und wählen Sie aus Katalog. Suchen Sie in der Suchleiste nach jenkins. Wählen Sie Jenkins Service mit persistentem Storage.
 +
-image:redhat_openshift_image17.png["Fehler: Fehlendes Grafikbild"]
+image:redhat_openshift_image17.png[""]
 
 . Klicken Sie Auf `Instantiate Template`.
 +
-image:redhat_openshift_image18.png["Fehler: Fehlendes Grafikbild"]
+image:redhat_openshift_image18.png[""]
 
 . Standardmäßig werden die Details für die Jenkins-Anwendung ausgefüllt. Ändern Sie die Parameter entsprechend Ihren Anforderungen, und klicken Sie auf Erstellen. Bei diesem Prozess werden alle erforderlichen Ressourcen zur Unterstützung von Jenkins auf OpenShift erstellt.
 +
-image:redhat_openshift_image19.jpeg["Fehler: Fehlendes Grafikbild"]
+image:redhat_openshift_image19.jpeg[""]
 
 . Die Jenkins-Pods dauern etwa 10 bis 12 Minuten, bis Sie in den Status „bereit“ versetzt wurden.
 +
-image:redhat_openshift_image20.png["Fehler: Fehlendes Grafikbild"]
+image:redhat_openshift_image20.png[""]
 
 . Navigieren Sie, nachdem die Pods instanziiert sind, zu Netzwerk > Routen. Um die Jenkins Webseite zu öffnen, klicken Sie auf die URL für die jenkins Route.
 +
-image:redhat_openshift_image21.png["Fehler: Fehlendes Grafikbild"]
+image:redhat_openshift_image21.png[""]
 
 . Da OpenShift OAuth beim Erstellen der Jenkins-App verwendet wurde, klicken Sie auf Anmelden mit OpenShift.
 +
-image:redhat_openshift_image22.jpeg["Fehler: Fehlendes Grafikbild"]
+image:redhat_openshift_image22.jpeg[""]
 
 . Autorisieren Sie das Jenkins Service-Konto, um auf die OpenShift-Benutzer zuzugreifen.
 +
-image:redhat_openshift_image23.jpeg["Fehler: Fehlendes Grafikbild"]
+image:redhat_openshift_image23.jpeg[""]
 
 . Die Jenkins Willkommensseite wird angezeigt. Da wir einen Maven-Build verwenden, füllen Sie zuerst die Maven-Installation aus. Navigieren Sie zu Manage Jenkins > Global Tool Configuration, und klicken Sie dann im Maven-Unterkopf auf Add Maven. Geben Sie den Namen Ihrer Wahl ein, und stellen Sie sicher, dass die Option automatisch installieren ausgewählt ist. Klicken Sie auf Speichern .
 +
-image:redhat_openshift_image24.png["Fehler: Fehlendes Grafikbild"]
+image:redhat_openshift_image24.png[""]
 
 . Sie können jetzt eine Pipeline erstellen, um den CI/CD-Workflow zu demonstrieren. Klicken Sie auf der Startseite im linken Menü auf Neue Jobs oder Neues Element erstellen.
 +
-image:redhat_openshift_image25.jpeg["Fehler: Fehlendes Grafikbild"]
+image:redhat_openshift_image25.jpeg[""]
 
 . Geben Sie auf der Seite Artikel erstellen den Namen Ihrer Wahl ein, wählen Sie Pipeline aus, und klicken Sie auf OK.
 +
-image:redhat_openshift_image26.png["Fehler: Fehlendes Grafikbild"]
+image:redhat_openshift_image26.png[""]
 
 . Wählen Sie die Registerkarte Pipeline aus. Wählen Sie im Dropdown-Menü Testprobe-Pipeline Github + Maven aus. Der Code wird automatisch ausgefüllt. Klicken Sie auf Speichern .
 +
-image:redhat_openshift_image27.png["Fehler: Fehlendes Grafikbild"]
+image:redhat_openshift_image27.png[""]
 
 . Klicken Sie auf Jetzt erstellen, um die Entwicklung durch die Vorbereitungs-, Build- und Testphase auszulösen. Es kann einige Minuten dauern, bis der gesamte Build-Prozess abgeschlossen ist und die Ergebnisse des Builds angezeigt werden.
 +
-image:redhat_openshift_image28.png["Fehler: Fehlendes Grafikbild"]
+image:redhat_openshift_image28.png[""]
 
 . Bei Codeänderungen kann die Pipeline so neu aufgebaut werden, dass sie die neue Version der Software patcht, die kontinuierliche Integration und kontinuierliche Bereitstellung ermöglicht. Klicken Sie auf Letzte Änderungen, um die Änderungen von der vorherigen Version zu verfolgen.
 +
-image:redhat_openshift_image29.png["Fehler: Fehlendes Grafikbild"]
+image:redhat_openshift_image29.png[""]
 
 

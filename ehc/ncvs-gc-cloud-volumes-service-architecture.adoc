@@ -18,7 +18,7 @@ Cloud Volumes Service verwendet in ähnlicher Weise wie andere Cloud-native Dien
 
 Die folgende Abbildung, auf die im Bezug genommen wird https://cloud.google.com/architecture/partners/netapp-cloud-volumes/architecture?hl=en_US["Abschnitt zur Architektur"^] In der Cloud Volumes Service-Dokumentation wird eine allgemeine Ansicht angezeigt.
 
-image:ncvs-gc-image1.png["Fehler: Fehlendes Grafikbild"]
+image:ncvs-gc-image1.png[""]
 
 Der Teil über der gepunkteten Linie zeigt die Kontrollebene des Services an, der den Volumenlebenszyklus steuert. Der Teil unterhalb der gepunkteten Linie zeigt die Datenebene. Das linke blaue Feld zeigt die Benutzer-VPC (Service-Verbraucher), das rechte blaue Feld ist der von NetApp bereitgestellte Service-Hersteller. Beide sind über VPC-Peering verbunden.
 
@@ -58,16 +58,16 @@ Paketerfassungen können für die Behebung von Netzwerkproblemen oder anderen Pr
 
 Bei gemeinsamen VPCs wird die Verschlüsselung auf der Übertragungsstrecke mit NFS Kerberos und/oder genutzt link:ncvs-gc-data-encryption-in-transit.html#smb-encryption["SMB-Verschlüsselung"] Kann einen Großteil der Informationen aus Spuren verbergen. Allerdings wird noch etwas Verkehr in Klartext gesendet, wie link:ncvs-gc-other-nas-infrastructure-service-dependencies.html#dns["DNS"] Und link:ncvs-gc-other-nas-infrastructure-service-dependencies.html#ldap-queries["LDAP-Abfragen"]. Die folgende Abbildung zeigt eine Paketerfassung aus einer Klartext-LDAP-Abfrage, die aus Cloud Volumes Service stammt, und die potenziellen identifizierenden Informationen, die freigelegt wurden. LDAP-Abfragen in Cloud Volumes Service unterstützen derzeit keine Verschlüsselung oder LDAP über SSL. CVS-Performance unterstützt LDAP-Signatur, falls durch Active Directory angefordert. CVS-SW unterstützt LDAP-Signatur nicht.
 
-image:ncvs-gc-image2.png["Fehler: Fehlendes Grafikbild"]
+image:ncvs-gc-image2.png[""]
 
 
 NOTE: UnixUserPassword wird von LDAP abgefragt und nicht im Klartext, sondern in einem gesalzenem Hash gesendet. Standardmäßig füllt Windows LDAP die Felder unixUserPassword nicht aus. Dieses Feld ist nur erforderlich, wenn Sie Windows LDAP für interaktive Anmeldungen über LDAP für Clients verwenden müssen. Cloud Volumes Service unterstützt keine interaktiven LDAP-Anmeldungen bei den Instanzen.
 
 Die folgende Abbildung zeigt eine Paketerfassung aus einem NFS-Kerberos-Gespräch neben einer NFS-Erfassung über AUTH_SYS. Beachten Sie, wie sich die Informationen in einer Kurve zwischen den beiden unterscheiden und wie die Aktivierung der Verschlüsselung während der Übertragung eine größere Gesamtsicherheit für den NAS-Datenverkehr bietet.
 
-image:ncvs-gc-image3.png["Fehler: Fehlendes Grafikbild"]
+image:ncvs-gc-image3.png[""]
 
-image:ncvs-gc-image4.png["Fehler: Fehlendes Grafikbild"]
+image:ncvs-gc-image4.png[""]
 
 
 

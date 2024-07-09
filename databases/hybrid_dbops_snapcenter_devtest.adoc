@@ -23,22 +23,22 @@ Die Agilität der Public Cloud, die Amortisierung und die Kosteneinsparungen sin
 
 . Melden Sie sich mit einer Datenbank-Management-Benutzer-ID für Oracle bei SnapCenter an. Öffnen Sie die Registerkarte Ressourcen, auf der die von SnapCenter geschützten Oracle-Datenbanken angezeigt werden.
 +
-image:snapctr_ora_clone_01.PNG["Fehler: Fehlendes Grafikbild"]
+image:snapctr_ora_clone_01.PNG[""]
 
 . Klicken Sie auf den gewünschten Namen der lokalen Datenbank für die Backup-Topologie und die detaillierte Ansicht. Wenn ein sekundärer replizierter Standort aktiviert ist, werden verknüpfte Spiegelsicherungen angezeigt.
 +
-image:snapctr_ora_clone_02.PNG["Fehler: Fehlendes Grafikbild"]
+image:snapctr_ora_clone_02.PNG[""]
 
 . Klicken Sie auf „gespiegelte Backups“, um zur Ansicht „gespiegelte Backups“ zu gelangen. Anschließend werden die Backup(s) der sekundären Spiegelung angezeigt.
 +
-image:snapctr_ora_clone_03.PNG["Fehler: Fehlendes Grafikbild"]
+image:snapctr_ora_clone_03.PNG[""]
 
 . Wählen Sie eine gespiegelte sekundäre Datenbank-Backup-Kopie, die geklont werden soll, und legen Sie einen Recovery-Zeitpunkt entweder nach Zeit- und Systemänderungsnummer oder nach SCN fest. Im Allgemeinen sollte der Recovery-Zeitpunkt hinter der vollständigen Datenbank-Backup-Zeit zurückliegen oder SCN zum Klonen stehen. Nach der Entscheidung für einen Wiederherstellungspunkt muss die erforderliche Protokolldatei-Sicherung für die Wiederherstellung eingebunden werden. Die Sicherung der Protokolldatei sollte auf dem Ziel-DB-Server gemountet werden, auf dem die Klondatenbank gehostet werden soll.
 +
-image:snapctr_ora_clone_04.PNG["Fehler: Fehlendes Grafikbild"]
+image:snapctr_ora_clone_04.PNG[""]
 
 +
-image:snapctr_ora_clone_05.PNG["Fehler: Fehlendes Grafikbild"]
+image:snapctr_ora_clone_05.PNG[""]
 
 +
 
@@ -46,42 +46,42 @@ NOTE: Wenn die Protokollbeschneidung aktiviert ist und der Wiederherstellungspun
 
 . Markieren Sie die vollständige Datenbank-Backup-Kopie, die geklont werden soll, und klicken Sie dann auf die Schaltfläche Klonen, um den DB-Klon-Workflow zu starten.
 +
-image:snapctr_ora_clone_06.PNG["Fehler: Fehlendes Grafikbild"]
+image:snapctr_ora_clone_06.PNG[""]
 
 . Wählen Sie eine geeignete Klon-DB-SID für eine vollständige Container-Datenbank oder einen CDB-Klon.
 +
-image:snapctr_ora_clone_07.PNG["Fehler: Fehlendes Grafikbild"]
+image:snapctr_ora_clone_07.PNG[""]
 
 . Wählen Sie den Zielklonhost in der Cloud aus, und Datendatei, Kontrolldatei und Wiederherstellungsprotokolle werden vom Klon-Workflow erstellt.
 +
-image:snapctr_ora_clone_08.PNG["Fehler: Fehlendes Grafikbild"]
+image:snapctr_ora_clone_08.PNG[""]
 
 . Der Name für keine Anmeldeinformationen wird für die BS-basierte Authentifizierung verwendet, wodurch der Datenbankport irrelevant wird. Geben Sie die korrekte Oracle Home, Oracle OS User und Oracle OS Group ein, wie im Klon-DB-Server konfiguriert.
 +
-image:snapctr_ora_clone_09.PNG["Fehler: Fehlendes Grafikbild"]
+image:snapctr_ora_clone_09.PNG[""]
 
 . Geben Sie die vor dem Klonvorgang zu ausführenden Skripte an. Vor allem kann hier der Parameter der Datenbankinstanz angepasst oder definiert werden.
 +
-image:snapctr_ora_clone_10.PNG["Fehler: Fehlendes Grafikbild"]
+image:snapctr_ora_clone_10.PNG[""]
 
 . Geben Sie den Wiederherstellungspunkt entweder mit Datum und Uhrzeit oder mit SCN an. Bis Abbrechen die Datenbank bis zu den verfügbaren Archivprotokollen wiederherstellt. Geben Sie den externen Speicherort für das Archivprotokoll vom Zielhost an, auf dem das Archiv-Protokoll-Volume angehängt ist. Wenn sich der Oracle-Eigentümer des Zielservers von dem lokalen Produktionsserver unterscheidet, überprüfen Sie, ob das Archivprotokollverzeichnis vom Oracle Eigentümer des Zielservers lesbar ist.
 +
-image:snapctr_ora_clone_11.PNG["Fehler: Fehlendes Grafikbild"]
+image:snapctr_ora_clone_11.PNG[""]
 
 +
-image:snapctr_ora_clone_12.PNG["Fehler: Fehlendes Grafikbild"]
+image:snapctr_ora_clone_12.PNG[""]
 
 . Konfigurieren Sie bei Bedarf den SMTP-Server für E-Mail-Benachrichtigungen.
 +
-image:snapctr_ora_clone_13.PNG["Fehler: Fehlendes Grafikbild"]
+image:snapctr_ora_clone_13.PNG[""]
 
 . Zusammenfassung des Klons:
 +
-image:snapctr_ora_clone_14.PNG["Fehler: Fehlendes Grafikbild"]
+image:snapctr_ora_clone_14.PNG[""]
 
 . Sie sollten nach dem Klonen validieren, um sicherzustellen, dass die geklonte Datenbank funktionsfähig ist. Einige zusätzliche Aufgaben, wie z. B. das Starten des Listeners oder das Deaktivieren des DB-Log-Archivmodus, können an der Entwicklungs-/Testdatenbank ausgeführt werden.
 +
-image:snapctr_ora_clone_15.PNG["Fehler: Fehlendes Grafikbild"]
+image:snapctr_ora_clone_15.PNG[""]
 
 
 
@@ -91,46 +91,46 @@ image:snapctr_ora_clone_15.PNG["Fehler: Fehlendes Grafikbild"]
 
 . Melden Sie sich mit einer Datenbank-Management-Benutzer-ID für SQL Server bei SnapCenter an. Navigieren Sie zur Registerkarte Ressourcen, die die SQL Server-Benutzerdatenbanken anzeigt, die durch SnapCenter geschützt sind, und eine Ziel-Standby-SQL-Instanz in der Public Cloud.
 +
-image:snapctr_sql_clone_01.PNG["Fehler: Fehlendes Grafikbild"]
+image:snapctr_sql_clone_01.PNG[""]
 
 . Klicken Sie auf den gewünschten lokalen Namen der SQL Server-Benutzerdatenbank für die Backup-Topologie und die detaillierte Ansicht. Wenn ein sekundärer replizierter Standort aktiviert ist, werden verknüpfte Spiegelsicherungen angezeigt.
 +
-image:snapctr_sql_clone_02.PNG["Fehler: Fehlendes Grafikbild"]
+image:snapctr_sql_clone_02.PNG[""]
 
 . Wechseln Sie zur Ansicht gespiegelte Backups, indem Sie auf gespiegelte Backups klicken. Sekundäre Spiegelsicherung(en) werden angezeigt. Da SnapCenter das Transaktions-Log von SQL Server auf einem dedizierten Laufwerk für die Wiederherstellung sichert, werden hier nur vollständige Datenbank-Backups angezeigt.
 +
-image:snapctr_sql_clone_03.PNG["Fehler: Fehlendes Grafikbild"]
+image:snapctr_sql_clone_03.PNG[""]
 
 . Wählen Sie eine Backup-Kopie aus, und klicken Sie dann auf die Schaltfläche Klonen, um den Klon aus dem Backup-Workflow zu starten.
 +
-image:snapctr_sql_clone_04_1.PNG["Fehler: Fehlendes Grafikbild"]
+image:snapctr_sql_clone_04_1.PNG[""]
 
 +
-image:snapctr_sql_clone_04.PNG["Fehler: Fehlendes Grafikbild"]
+image:snapctr_sql_clone_04.PNG[""]
 
 . Wählen Sie einen Cloud-Server als Ziel-Klonserver, als Kloninstanz und als Name der Klondatenbank aus. Wählen Sie entweder einen Mount-Punkt für die automatische Zuweisung oder einen benutzerdefinierten Mount-Point-Pfad.
 +
-image:snapctr_sql_clone_05.PNG["Fehler: Fehlendes Grafikbild"]
+image:snapctr_sql_clone_05.PNG[""]
 
 . Legen Sie einen Recovery-Zeitpunkt entweder um eine Backup-Zeit für das Protokoll oder um ein bestimmtes Datum und eine bestimmte Uhrzeit fest.
 +
-image:snapctr_sql_clone_06.PNG["Fehler: Fehlendes Grafikbild"]
+image:snapctr_sql_clone_06.PNG[""]
 
 . Legen Sie optionale Skripte fest, die vor und nach dem Klonvorgang ausgeführt werden sollen.
 +
-image:snapctr_sql_clone_07.PNG["Fehler: Fehlendes Grafikbild"]
+image:snapctr_sql_clone_07.PNG[""]
 
 . Konfigurieren Sie einen SMTP-Server, wenn eine E-Mail-Benachrichtigung gewünscht wird.
 +
-image:snapctr_sql_clone_08.PNG["Fehler: Fehlendes Grafikbild"]
+image:snapctr_sql_clone_08.PNG[""]
 
 . Zusammenfassung Klonen.
 +
-image:snapctr_sql_clone_09.PNG["Fehler: Fehlendes Grafikbild"]
+image:snapctr_sql_clone_09.PNG[""]
 
 . Überwachen Sie den Job-Status und überprüfen Sie, ob die vorgesehene Benutzerdatenbank mit einer Ziel-SQL-Instanz im Cloud-Klon-Server verbunden wurde.
 +
-image:snapctr_sql_clone_10.PNG["Fehler: Fehlendes Grafikbild"]
+image:snapctr_sql_clone_10.PNG[""]
 
 
 

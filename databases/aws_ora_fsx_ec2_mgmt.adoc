@@ -44,21 +44,21 @@ Ein vollständiger Datenbank-Snapshot umfasst alle Oracle Dateien, einschließli
 
 . Melden Sie sich in der Benutzeroberfläche von SnapCenter an und klicken Sie im Menü auf der linken Seite auf „Ressourcen“. Wechseln Sie im Dropdown-Menü Ansicht in die Ansicht Ressourcengruppe.
 +
-image:aws_rds_custom_deploy_snp_10.PNG["Fehler: Fehlendes Grafikbild"]
+image:aws_rds_custom_deploy_snp_10.PNG[""]
 
 . Klicken Sie auf den Namen der vollständigen Backup-Ressource, und klicken Sie dann auf das Symbol Jetzt sichern, um ein Add-hoc-Backup zu starten.
 +
-image:aws_rds_custom_deploy_snp_11.PNG["Fehler: Fehlendes Grafikbild"]
+image:aws_rds_custom_deploy_snp_11.PNG[""]
 
 . Klicken Sie auf Backup und bestätigen Sie dann das Backup, um eine vollständige Datenbank-Sicherung zu starten.
 +
-image:aws_rds_custom_deploy_snp_12.PNG["Fehler: Fehlendes Grafikbild"]
+image:aws_rds_custom_deploy_snp_12.PNG[""]
 
 +
 Öffnen Sie in der Ansicht „Ressource“ für die Datenbank die Seite „verwaltete Backupkopien für die Datenbank“, um zu überprüfen, ob die einmalige Sicherung erfolgreich abgeschlossen wurde. Ein vollständiges Datenbank-Backup erstellt zwei Snapshots: Einen für das Daten-Volume und einen für das Log-Volume.
 
 +
-image:aws_rds_custom_deploy_snp_13.PNG["Fehler: Fehlendes Grafikbild"]
+image:aws_rds_custom_deploy_snp_13.PNG[""]
 
 
 
@@ -70,21 +70,21 @@ Ein Snapshot für das Archivprotokoll wird nur für das Oracle Archiv-Log-Volume
 
 . Melden Sie sich in der Benutzeroberfläche von SnapCenter an und klicken Sie in der Menüleiste links auf die Registerkarte „Ressourcen“. Wechseln Sie im Dropdown-Menü Ansicht in die Ansicht Ressourcengruppe.
 +
-image:aws_rds_custom_deploy_snp_10.PNG["Fehler: Fehlendes Grafikbild"]
+image:aws_rds_custom_deploy_snp_10.PNG[""]
 
 . Klicken Sie auf den Namen der Backup-Ressource protokollieren und klicken Sie dann auf das Symbol Jetzt sichern, um eine zusätzliche Sicherung für Archivprotokolle zu starten.
 +
-image:aws_rds_custom_deploy_snp_14.PNG["Fehler: Fehlendes Grafikbild"]
+image:aws_rds_custom_deploy_snp_14.PNG[""]
 
 . Klicken Sie auf Backup und bestätigen Sie dann das Backup, um eine Archiv-Log-Sicherung zu starten.
 +
-image:aws_rds_custom_deploy_snp_15.PNG["Fehler: Fehlendes Grafikbild"]
+image:aws_rds_custom_deploy_snp_15.PNG[""]
 
 +
 Öffnen Sie in der Ansicht „Ressource“ für die Datenbank die Seite „verwaltete Backupkopien für die Datenbank“, um zu überprüfen, ob die Sicherungskopie für das einmalige Archivprotokoll erfolgreich abgeschlossen wurde. Ein Backup des Archivprotokolls erstellt einen Snapshot für das Protokollvolumen.
 
 +
-image:aws_rds_custom_deploy_snp_16.PNG["Fehler: Fehlendes Grafikbild"]
+image:aws_rds_custom_deploy_snp_16.PNG[""]
 
 
 
@@ -96,24 +96,23 @@ Eine zeitpunktgenaue SnapCenter Wiederherstellung wird auf demselben EC2 Instanz
 
 . Klicken Sie auf der Registerkarte SnapCenter-Ressourcen > Datenbank auf den Datenbanknamen, um das Datenbank-Backup zu öffnen.
 +
-image:aws_rds_custom_deploy_snp_17.PNG["Fehler: Fehlendes Grafikbild"]
+image:aws_rds_custom_deploy_snp_17.PNG[""]
 
 . Wählen Sie die Datenbank-Backup-Kopie und den gewünschten Zeitpunkt für die Wiederherstellung aus. Markieren Sie auch die entsprechende SCN-Nummer für den Point-in-Time. Die Point-in-Time-Wiederherstellung kann entweder mit der Zeit oder mit dem SCN durchgeführt werden.
 +
-image:aws_rds_custom_deploy_snp_18.PNG["Fehler: Fehlendes Grafikbild"]
+image:aws_rds_custom_deploy_snp_18.PNG[""]
 
 . Markieren Sie den Snapshot des Protokollvolumens, und klicken Sie auf die Schaltfläche Mount, um das Volume zu mounten.
 +
-image:aws_rds_custom_deploy_snp_19.PNG["Fehler: Fehlendes Grafikbild"]
+image:aws_rds_custom_deploy_snp_19.PNG[""]
 
 . Wählen Sie die primäre EC2-Instanz, um das Protokoll-Volume zu mounten.
 +
-image:aws_rds_custom_deploy_snp_20.PNG["Fehler: Fehlendes Grafikbild"]
+image:aws_rds_custom_deploy_snp_20.PNG[""]
 
 . Vergewissern Sie sich, dass der Mount-Job erfolgreich abgeschlossen wurde. Überprüfen Sie auch auf dem EC2 Instance-Host, um das gemountete Protokoll-Volume und auch den Mount Point-Pfad zu sehen.
 +
-image:aws_rds_custom_deploy_snp_21_1.PNG["Fehler: Fehlendes Grafikbild"]
-image:aws_rds_custom_deploy_snp_21_2.PNG["Fehler: Fehlendes Grafikbild"]
+image:aws_rds_custom_deploy_snp_21_1.PNG[""] image:aws_rds_custom_deploy_snp_21_2.PNG[""]
 
 . Kopieren Sie die Archivprotokolle vom gemounteten Protokollvolume in das aktuelle Archivprotokollverzeichnis.
 +
@@ -123,39 +122,39 @@ image:aws_rds_custom_deploy_snp_21_2.PNG["Fehler: Fehlendes Grafikbild"]
 ----
 . Kehren Sie zur Registerkarte SnapCenter-Ressourcen > Seite Datenbank-Backup zurück, markieren Sie die Daten-Snapshot-Kopie und klicken Sie auf die Schaltfläche Wiederherstellen, um den Workflow zur Datenbankwiederherstellung zu starten.
 +
-image:aws_rds_custom_deploy_snp_22.PNG["Fehler: Fehlendes Grafikbild"]
+image:aws_rds_custom_deploy_snp_22.PNG[""]
 
 . Überprüfen Sie „Alle Datendateien“ und „Datenbankstatus ändern, falls erforderlich für Restore und Recovery“, und klicken Sie auf Weiter.
 +
-image:aws_rds_custom_deploy_snp_23.PNG["Fehler: Fehlendes Grafikbild"]
+image:aws_rds_custom_deploy_snp_23.PNG[""]
 
 . Wählen Sie einen gewünschten Wiederherstellungsumfang mit SCN oder Time aus. Statt die gemounteten Archivprotokolle wie in Schritt 6 gezeigt in das aktuelle Logverzeichnis zu kopieren, kann der gemountete Archiv-Log-Pfad in "Geben Sie externe Archiv-Log-Dateien Speicherorte" zur Wiederherstellung aufgelistet werden.
 +
-image:aws_rds_custom_deploy_snp_24_1.PNG["Fehler: Fehlendes Grafikbild"]
+image:aws_rds_custom_deploy_snp_24_1.PNG[""]
 
 . Geben Sie bei Bedarf ein optionales Preskript an.
 +
-image:aws_rds_custom_deploy_snp_25.PNG["Fehler: Fehlendes Grafikbild"]
+image:aws_rds_custom_deploy_snp_25.PNG[""]
 
 . Geben Sie ggf. ein optionales Nachskript an, das ausgeführt werden soll. Überprüfen Sie die geöffnete Datenbank nach der Wiederherstellung.
 +
-image:aws_rds_custom_deploy_snp_26.PNG["Fehler: Fehlendes Grafikbild"]
+image:aws_rds_custom_deploy_snp_26.PNG[""]
 
 . Geben Sie einen SMTP-Server und eine E-Mail-Adresse an, wenn eine Jobbenachrichtigung erforderlich ist.
 +
-image:aws_rds_custom_deploy_snp_27.PNG["Fehler: Fehlendes Grafikbild"]
+image:aws_rds_custom_deploy_snp_27.PNG[""]
 
 . Stellen Sie die Jobübersicht wieder her. Klicken Sie auf Fertig stellen, um den Wiederherstellungsauftrag zu starten.
 +
-image:aws_rds_custom_deploy_snp_28.PNG["Fehler: Fehlendes Grafikbild"]
+image:aws_rds_custom_deploy_snp_28.PNG[""]
 
 . Validieren Sie die Wiederherstellung aus SnapCenter.
 +
-image:aws_rds_custom_deploy_snp_29_1.PNG["Fehler: Fehlendes Grafikbild"]
+image:aws_rds_custom_deploy_snp_29_1.PNG[""]
 
 . Validieren Sie die Wiederherstellung über den EC2 Instance Host.
 +
-image:aws_rds_custom_deploy_snp_29_2.PNG["Fehler: Fehlendes Grafikbild"]
+image:aws_rds_custom_deploy_snp_29_2.PNG[""]
 
 . Um die Bereitstellung des Wiederherstellungsprotokollvolumens aufzuheben, kehren Sie die Schritte in Schritt 4 um.
 
@@ -168,54 +167,53 @@ Der folgende Abschnitt zeigt, wie der Workflow für SnapCenter-Klone zum Erstell
 
 . Erstellen Sie mit der vollständigen Backup-Ressourcengruppe ein vollständiges Snapshot-Backup der primären Datenbank von SnapCenter.
 +
-image:aws_rds_custom_deploy_replica_02.PNG["Fehler: Fehlendes Grafikbild"]
+image:aws_rds_custom_deploy_replica_02.PNG[""]
 
 . Öffnen Sie auf der Registerkarte SnapCenter-Ressource > Datenbank die Seite Datenbank-Backup-Verwaltung für die primäre Datenbank, aus der das Replikat erstellt werden soll.
 +
-image:aws_rds_custom_deploy_replica_04.PNG["Fehler: Fehlendes Grafikbild"]
+image:aws_rds_custom_deploy_replica_04.PNG[""]
 
 . Mounten Sie den in Schritt 4 erstellte Protokoll-Volume-Snapshot zum Standby-EC2-Instanz-Host.
 +
-image:aws_rds_custom_deploy_replica_13.PNG["Fehler: Fehlendes Grafikbild"]
-image:aws_rds_custom_deploy_replica_14.PNG["Fehler: Fehlendes Grafikbild"]
+image:aws_rds_custom_deploy_replica_13.PNG[""] image:aws_rds_custom_deploy_replica_14.PNG[""]
 
 . Markieren Sie die für das Replikat zu klonenden Snapshot Kopie und klicken Sie auf die Schaltfläche Klonen, um das Klonverfahren zu starten.
 +
-image:aws_rds_custom_deploy_replica_05.PNG["Fehler: Fehlendes Grafikbild"]
+image:aws_rds_custom_deploy_replica_05.PNG[""]
 
 . Ändern Sie den Namen der Replikatkopie, damit sie sich vom Namen der primären Datenbank unterscheidet. Klicken Sie Auf Weiter.
 +
-image:aws_rds_custom_deploy_replica_06.PNG["Fehler: Fehlendes Grafikbild"]
+image:aws_rds_custom_deploy_replica_06.PNG[""]
 
 . Ändern Sie den Klon-Host auf den Standby-EC2-Host, akzeptieren Sie die Standardbenennung und klicken Sie auf Weiter.
 +
-image:aws_rds_custom_deploy_replica_07.PNG["Fehler: Fehlendes Grafikbild"]
+image:aws_rds_custom_deploy_replica_07.PNG[""]
 
 . Ändern Sie Ihre Oracle-Starteinstellungen auf die für den Oracle-Zielserver-Host konfigurierten Einstellungen, und klicken Sie auf Weiter.
 +
-image:aws_rds_custom_deploy_replica_08.PNG["Fehler: Fehlendes Grafikbild"]
+image:aws_rds_custom_deploy_replica_08.PNG[""]
 
 . Geben Sie einen Wiederherstellungspunkt mit entweder Time oder dem SCN und dem angehängten Archivprotokollpfad an.
 +
-image:aws_rds_custom_deploy_replica_15.PNG["Fehler: Fehlendes Grafikbild"]
+image:aws_rds_custom_deploy_replica_15.PNG[""]
 
 . Senden Sie bei Bedarf die SMTP-E-Mail-Einstellungen.
 +
-image:aws_rds_custom_deploy_replica_11.PNG["Fehler: Fehlendes Grafikbild"]
+image:aws_rds_custom_deploy_replica_11.PNG[""]
 
 . Klonen Sie die Jobübersicht, und klicken Sie auf Fertig stellen, um den Klonauftrag zu starten.
 +
-image:aws_rds_custom_deploy_replica_12.PNG["Fehler: Fehlendes Grafikbild"]
+image:aws_rds_custom_deploy_replica_12.PNG[""]
 
 . Überprüfen Sie das Klon-Jobprotokoll, indem Sie das Klon-Jobprotokoll überprüfen.
 +
-image:aws_rds_custom_deploy_replica_17.PNG["Fehler: Fehlendes Grafikbild"]
+image:aws_rds_custom_deploy_replica_17.PNG[""]
 
 +
 Die geklonte Datenbank ist sofort in SnapCenter registriert.
 
 +
-image:aws_rds_custom_deploy_replica_18.PNG["Fehler: Fehlendes Grafikbild"]
+image:aws_rds_custom_deploy_replica_18.PNG[""]
 
 . Deaktivieren Sie den Oracle Archivprotokollmodus. Melden Sie sich als oracle-Benutzer bei der EC2-Instanz an und führen Sie den folgenden Befehl aus:
 +

@@ -29,11 +29,11 @@ Eine typische Sequenz der ENTWICKLUNG und Bereitstellung VON ML-Modellen umfasst
 * Monitoringcnvrg.io hat eine umfassende Plattform entwickelt, um alle Aufgaben von der Forschung bis zur Bereitstellung zu automatisieren. In der folgenden Abbildung ist ein kleiner Ausschnitt von Dashboard-Screenshots zu der Pipeline dargestellt.
 
 
-image:hcaios_image2.png["Fehler: Fehlendes Grafikbild"]
+image:hcaios_image2.png[""]
 
 In der Handhabung sind mehrere Datensätze häufig aus öffentlichen Repositorys und privaten Daten wiedergegeben. Darüber hinaus verfügt jeder Datensatz wahrscheinlich über mehrere Versionen, die sich aus der Datenbereinigung oder dem Feature Engineering ergeben. Eine Konsole, die einen Datensatz-Hub und einen VersionHub bereitstellt, ist erforderlich, um sicherzustellen, dass dem Team Collaboration- und Konsistenztools zur Verfügung stehen, wie in der folgenden Abbildung zu sehen sind.
 
-image:hcaios_image3.png["Fehler: Fehlendes Grafikbild"]
+image:hcaios_image3.png[""]
 
 Der nächste Schritt in der Pipeline ist das Training. Es erfordert mehrere parallele Instanzen von Trainingsmodellen, die jeweils mit einem Datensatz und einer bestimmten Computing-Instanz verknüpft sind. Die Bindung eines Datensatzes an ein bestimmtes Experiment mit einer bestimmten Computing-Instanz ist eine Herausforderung, da es möglich ist, dass einige Experimente mit GPU-Instanzen von Amazon Web Services (AWS) durchgeführt werden, während andere Experimente vor Ort durch DGX-1 oder DGX-2-Instanzen durchgeführt werden. Andere Experimente können auf den CPU-Servern in GCP ausgeführt werden, während der Speicherort des Datensatzes nicht in angemessenem Umfang zu den Computing-Ressourcen liegt, die das Training durchführen. In angemessener Nähe wären volle 10 GbE oder mehr Konnektivität mit niedriger Latenz vom Datensatz-Storage zur Computing-Instanz.
 
@@ -54,4 +54,4 @@ Diese Lösung von NetApp und cnvrg.io bietet Datensatz-Caching, wie in der folge
 
 Die cnvrg.io-Plattform erkennt automatisch ältere Datensätze, die für eine bestimmte Zeit nicht verwendet wurden, und entfernt sie aus dem Cache. Diese behält freien NFS-Cache-Speicherplatz für häufiger verwendete Datensätze bei. Hierbei ist zu beachten, dass das Datensatz-Caching mit ONTAP in der Cloud und on-Premises funktioniert und somit maximale Flexibilität bietet.
 
-image:hcaios_image4.png["Fehler: Fehlendes Grafikbild"]
+image:hcaios_image4.png[""]

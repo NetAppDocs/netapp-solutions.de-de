@@ -32,14 +32,14 @@ So erstellen und mounten Sie das Filesystem Amazon FSX für NetApp ONTAP:
 . Öffnen Sie die Amazon FSX-Konsole bei `https://console.aws.amazon.com/fsx/` Und wählen Sie *Create file System*, um den Assistenten *File System Creation* zu starten.
 . Wählen Sie auf der Seite Select File System Type *Amazon FSX for NetApp ONTAP* aus und klicken Sie dann auf *Weiter*. Die Seite *Create File System* wird angezeigt.
 +
-image:fsx-nfs-image2.png["Fehler: Fehlendes Grafikbild"]
+image:fsx-nfs-image2.png[""]
 
 . Wählen Sie für die Erstellungsmethode *Standard Erstellen*.
 +
-image:fsx-nfs-image3.png["Fehler: Fehlendes Grafikbild"]
+image:fsx-nfs-image3.png[""]
 
 +
-image:fsx-nfs-image4.png["Fehler: Fehlendes Grafikbild"]
+image:fsx-nfs-image4.png[""]
 
 +
 
@@ -55,11 +55,11 @@ NOTE: Stellen Sie sicher, dass es sich um eine neue, festgelegte VPC und nicht u
 NOTE: FSX für ONTAP verwendet standardmäßig 198.19.0.0/16 als Standard-IP-Adressbereich für Endpunktgeräte für das Dateisystem. Stellen Sie sicher, dass der Endpunkt-IP-Adressbereich nicht mit der VMC auf dem AWS SDDC, den zugehörigen VPC-Subnetzen und der On-Premises-Infrastruktur in Konflikt steht. Wenn Sie sich nicht sicher sind, verwenden Sie einen nicht überlappenden Bereich ohne Konflikte.
 
 +
-image:fsx-nfs-image5.png["Fehler: Fehlendes Grafikbild"]
+image:fsx-nfs-image5.png[""]
 
 . Wählen Sie im Abschnitt *Sicherheit & Verschlüsselung* für den Verschlüsselungsschlüssel den AWS KMS-Verschlüsselungsschlüssel (Key Management Service) aus, der die Daten des Filesystems im Ruhezustand schützt. Geben Sie für das Verwaltungspasswort *Dateisystem* ein sicheres Kennwort für den Benutzer fsxadmin ein.
 +
-image:fsx-nfs-image6.png["Fehler: Fehlendes Grafikbild"]
+image:fsx-nfs-image6.png[""]
 
 . Geben Sie im Abschnitt *Default Storage Virtual Machine Configuration* den Namen der SVM an.
 +
@@ -67,7 +67,7 @@ image:fsx-nfs-image6.png["Fehler: Fehlendes Grafikbild"]
 NOTE: Ab GA werden vier NFS-Datastores unterstützt.
 
 +
-image:fsx-nfs-image7.png["Fehler: Fehlendes Grafikbild"]
+image:fsx-nfs-image7.png[""]
 
 . Geben Sie im Abschnitt *Standard-Volume-Konfiguration* den für den Datastore erforderlichen Volume-Namen und die Größe an und klicken Sie auf *Weiter*. Dies sollte ein NFSv3 Volume sein. Wählen Sie für *Storage-Effizienz* *aktiviert*, um die ONTAP Storage-Effizienzfunktionen (Komprimierung, Deduplizierung und Data-Compaction) zu aktivieren. Verwenden Sie nach der Erstellung die Shell, um die Volume-Parameter mit *_Volume modify_* wie folgt zu ändern:
 +
@@ -123,10 +123,10 @@ volume modify -vserver FSxONTAPDatastoreSVM -volume DemoDS002 -space-mgmt-try-fi
 volume modify -vserver FSxONTAPDatastoreSVM -volume DemoDS002 -autosize-mode grow
 ....
 +
-image:fsx-nfs-image8.png["Fehler: Fehlendes Grafikbild"]
+image:fsx-nfs-image8.png[""]
 
 +
-image:fsx-nfs-image9.png["Fehler: Fehlendes Grafikbild"]
+image:fsx-nfs-image9.png[""]
 
 +
 
@@ -135,10 +135,10 @@ NOTE: Bei einem anfänglichen Migrationsszenario kann die standardmäßige Snaps
 . Überprüfen Sie die Konfiguration des Dateisystems, die auf der Seite *Create File System* angezeigt wird.
 . Klicken Sie Auf *Dateisystem Erstellen*.
 +
-image:fsx-nfs-image10.png["Fehler: Fehlendes Grafikbild"]
+image:fsx-nfs-image10.png[""]
 
 +
-image:fsx-nfs-image11.png["Fehler: Fehlendes Grafikbild"]
+image:fsx-nfs-image11.png[""]
 
 +
 
@@ -159,11 +159,11 @@ Nach der Erstellung der Dateisysteme und SVMs erstellen Sie mit VMware Console e
 . Klicken Sie auf der Registerkarte *SDDC-Gruppen* auf *AKTIONEN* und wählen Sie *SDDC-Gruppe erstellen*. Aus Demo-Gründen wird die SDDC-Gruppe genannt `FSxONTAPDatastoreGrp`.
 . Wählen Sie im Raster Mitgliedschaft die SDDCs aus, die als Gruppenmitglieder aufgenommen werden sollen.
 +
-image:fsx-nfs-image12.png["Fehler: Fehlendes Grafikbild"]
+image:fsx-nfs-image12.png[""]
 
 . Überprüfen Sie, ob „VMware Transit Connect für Ihre Gruppe konfigurieren“ Gebühren pro Anlage und Datenübertragung anfällt. Wählen Sie dann *Gruppe erstellen*. Dieser Vorgang kann einige Minuten dauern.
 +
-image:fsx-nfs-image13.png["Fehler: Fehlendes Grafikbild"]
+image:fsx-nfs-image13.png[""]
 
 
 
@@ -173,7 +173,7 @@ image:fsx-nfs-image13.png["Fehler: Fehlendes Grafikbild"]
 ====
 . Hängen Sie die neu erstellte festgelegte VPC der SDDC-Gruppe an. Wählen Sie die Registerkarte *External VPC* aus und folgen Sie der https://docs.vmware.com/en/VMware-Cloud-on-AWS/services/com.vmware.vmc-aws-operations/GUID-A3D03968-350E-4A34-A53E-C0097F5F26A9.html["Anweisungen zum Anschließen einer externen VPC an die Gruppe"^]. Dieser Vorgang kann 10-15 Minuten dauern.
 +
-image:fsx-nfs-image14.png["Fehler: Fehlendes Grafikbild"]
+image:fsx-nfs-image14.png[""]
 
 . Klicken Sie Auf *Konto Hinzufügen*.
 +
@@ -183,7 +183,7 @@ image:fsx-nfs-image14.png["Fehler: Fehlendes Grafikbild"]
 
 . Melden Sie sich wieder in der AWS-Konsole bei demselben AWS-Konto an und navigieren Sie zur Service-Seite *Resource Access Manager*. Es gibt eine Schaltfläche, mit der Sie die Ressourcenfreigabe akzeptieren können.
 +
-image:fsx-nfs-image15.png["Fehler: Fehlendes Grafikbild"]
+image:fsx-nfs-image15.png[""]
 
 +
 
@@ -191,7 +191,7 @@ NOTE: Im Rahmen des externen VPC-Prozesses werden Sie über die AWS-Konsole zu e
 
 . Klicken Sie auf *Ressourcenfreigabe akzeptieren*.
 +
-image:fsx-nfs-image16.png["Fehler: Fehlendes Grafikbild"]
+image:fsx-nfs-image16.png[""]
 
 . Wieder in der VMC-Konsole sehen Sie jetzt, dass die externe VPC in einem zugehörigen Zustand ist. Das kann einige Minuten dauern.
 
@@ -203,18 +203,18 @@ image:fsx-nfs-image16.png["Fehler: Fehlendes Grafikbild"]
 . Wechseln Sie in der AWS Konsole zur VPC-Service-Seite und zur VPC, die für die Bereitstellung des FSX-Filesystems verwendet wurde. Hier erstellen Sie einen Transit Gateway-Anhang, indem Sie im Navigationsfenster rechts auf *Transit Gateway Attachment* klicken.
 . Stellen Sie unter *VPC-Anhang* sicher, dass DNS-Support geprüft wird, und wählen Sie die VPC aus, in der FSX für ONTAP bereitgestellt wurde.
 +
-image:fsx-nfs-image17.png["Fehler: Fehlendes Grafikbild"]
+image:fsx-nfs-image17.png[""]
 
 . Klicken Sie auf *Erstellen* *Transit Gateway-Anlage*.
 +
-image:fsx-nfs-image18.png["Fehler: Fehlendes Grafikbild"]
+image:fsx-nfs-image18.png[""]
 
 . Zurück in der VMware Cloud Console, navigieren Sie zurück zur Registerkarte SDDC Group > External VPC. Wählen Sie die AWS Konto-ID für FSX aus, und klicken Sie auf die VPC und dann auf *Akzeptieren*.
 +
-image:fsx-nfs-image19.png["Fehler: Fehlendes Grafikbild"]
+image:fsx-nfs-image19.png[""]
 
 +
-image:fsx-nfs-image20.png["Fehler: Fehlendes Grafikbild"]
+image:fsx-nfs-image20.png[""]
 
 +
 
@@ -225,10 +225,10 @@ NOTE: Diese Option kann einige Minuten dauern, bis sie angezeigt wird.
 ** Route für den unverankerten IP-Bereich für Amazon FSX für NetApp ONTAP Floating IPs.
 ** Eine Route für den neu erstellten externen VPC-Adressraum.
 +
-image:fsx-nfs-image21.png["Fehler: Fehlendes Grafikbild"]
+image:fsx-nfs-image21.png[""]
 
 +
-image:fsx-nfs-image22.png["Fehler: Fehlendes Grafikbild"]
+image:fsx-nfs-image22.png[""]
 
 
 
@@ -241,16 +241,16 @@ image:fsx-nfs-image22.png["Fehler: Fehlendes Grafikbild"]
 . Erstellen Sie in der AWS Konsole die Route zurück zum SDDC, indem Sie die VPC auf der VPC-Service-Seite lokalisieren und die Routing-Tabelle *main* für die VPC auswählen.
 . Navigieren Sie zur Routentabelle im unteren Bereich und klicken Sie auf *Routen bearbeiten*.
 +
-image:fsx-nfs-image23.png["Fehler: Fehlendes Grafikbild"]
+image:fsx-nfs-image23.png[""]
 
 . Klicken Sie im Fenster *Routen bearbeiten* auf *Route hinzufügen* und geben Sie die CIDR für die SDDC-Infrastruktur ein, indem Sie *Transit Gateway* und die zugehörige TGW-ID auswählen. Klicken Sie auf *Änderungen speichern*.
 +
-image:fsx-nfs-image24.png["Fehler: Fehlendes Grafikbild"]
+image:fsx-nfs-image24.png[""]
 
 . Als nächsten Schritt müssen Sie überprüfen, ob die Sicherheitsgruppe in der zugeordneten VPC mit den richtigen eingehenden Regeln für das CIDR der SDDC-Gruppe aktualisiert wird.
 . Aktualisieren Sie die eingehende Regel mit dem CIDR-Block der SDDC-Infrastruktur.
 +
-image:fsx-nfs-image25.png["Fehler: Fehlendes Grafikbild"]
+image:fsx-nfs-image25.png[""]
 
 +
 
@@ -272,7 +272,7 @@ Nachdem das Filesystem bereitgestellt und die Konnektivität vorhanden ist, grei
 
 . Öffnen Sie in der VMC-Konsole die Registerkarte *Storage* des SDDC.
 +
-image:fsx-nfs-image27.png["Fehler: Fehlendes Grafikbild"]
+image:fsx-nfs-image27.png[""]
 
 . Klicken Sie auf *DATASTORE ANHÄNGEN* und geben Sie die erforderlichen Werte ein.
 +
@@ -280,15 +280,15 @@ image:fsx-nfs-image27.png["Fehler: Fehlendes Grafikbild"]
 NOTE: Die NFS-Server-Adresse ist die NFS IP-Adresse, die unter der Registerkarte FSX > Storage Virtual Machines > Endpunkte in der AWS Konsole zu finden ist.
 
 +
-image:fsx-nfs-image28.png["Fehler: Fehlendes Grafikbild"]
+image:fsx-nfs-image28.png[""]
 
 . Klicken Sie auf *DATASTORE ANHÄNGEN*, um den Datenspeicher an den Cluster anzuhängen.
 +
-image:fsx-nfs-image29.png["Fehler: Fehlendes Grafikbild"]
+image:fsx-nfs-image29.png[""]
 
 . Validieren Sie den NFS-Datenspeicher durch Zugriff auf vCenter wie unten gezeigt:
 +
-image:fsx-nfs-image30.png["Fehler: Fehlendes Grafikbild"]
+image:fsx-nfs-image30.png[""]
 
 
 

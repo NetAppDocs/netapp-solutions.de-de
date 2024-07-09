@@ -27,7 +27,9 @@ In diesem Abschnitt möchten wir uns mit der Performance-Validierung von Vektord
 Bitte überprüfen Sie die für milvus verwendete Methode und den Fortschritt unten.
 
 |===
-| Details | Milvus (Standalone und Cluster) | Postgres(pgvecto.rs) 
+
+
+| Details | Milvus (Standalone und Cluster) | Postgres(pgvecto.rs) # 
 
 
 | Version | 2.3.2 | 0.2.0 
@@ -43,6 +45,9 @@ Bitte überprüfen Sie die für milvus verwendete Methode und den Fortschritt un
 * 10 Millionen Einbettungen
 * 768 Abmessungen
 * ~300 GB Datensatz Größe |  
+
+
+| Storage Controller | AFF 800 * Version – 9.14.1 * 4 x 100 GbE – für milvus und 2 x 100 GbE für Postgres * iscsi |  
 |===
 
 
@@ -51,7 +56,7 @@ Bitte überprüfen Sie die für milvus verwendete Methode und den Fortschritt un
 Wir haben die folgende Performance-Validierung auf milvus Standalone Cluster mit vectorDB-Bench durchgeführt.
 Die Netzwerk- und Serverkonnektivität des eigenständigen milvus-Clusters ist unten angegeben.
 
-image:./perf_mivus_standalone.png["Fehler. Grafikbild fehlt"]
+image:perf_mivus_standalone.png[""]
 
 In diesem Abschnitt geben wir unsere Beobachtungen und Ergebnisse aus dem Testen der eigenständigen Datenbank von Milvus weiter.
 .	Wir haben DiskANN als Indextyp für diese Tests ausgewählt.
@@ -93,7 +98,7 @@ Optimierung nach dem Einfügen | IOPS | < 1,000
 |===
 Das vectorDB-Bench-Ergebnis ist unten.
 
-image:vector_db_result_standalone.png["Fehler:Grafikbild Fehlt"]
+image:vector_db_result_standalone.png[""]
 
 Aus der Performance-Validierung der eigenständigen Milvus-Instanz geht hervor, dass das aktuelle Setup nicht ausreicht, um einen Datensatz von 5 Millionen Vektoren mit einer Dimensionalität von 1536 zu unterstützen. Wir haben festgestellt, dass der Storage über ausreichende Ressourcen verfügt und keinen Engpass im System darstellt.
 
@@ -105,19 +110,18 @@ In diesem Abschnitt wird die Implementierung eines Milvus Clusters in einer Kube
 
 Details zu Implementierungen von VMware vSphere und Kubernetes finden Sie in den folgenden Abschnitten.
 
-image:milvus_vmware_perf.png["Fehler: Fehlendes Grafikbild"]
-image:milvus_cluster_perf.png["Fehler: Fehlendes Grafikbild"]
+image:milvus_vmware_perf.png[""] image:milvus_cluster_perf.png[""]
 
 In diesem Abschnitt stellen wir unsere Beobachtungen und Ergebnisse aus dem Testen der Milvus-Datenbank vor.
 * Der verwendete Indextyp war DiskANN.
 * Die folgende Tabelle bietet einen Vergleich zwischen den Standalone- und Cluster-Bereitstellungen bei der Arbeit mit 5 Millionen Vektoren bei einer Dimensionalität von 1536. Dabei stellten wir fest, dass die Zeit für die Datenaufnahme und die Optimierung nach dem Einfügen in das Cluster geringer war. Die 99. Perzentillatenz bei Abfragen wurde in der Cluster-Implementierung im Vergleich zum Standalone-Setup um das Sechsfache verringert.
 * Obwohl die Rate für Abfragen pro Sekunde (QPS) in der Cluster-Bereitstellung höher war, war sie nicht auf dem gewünschten Niveau.
 
-image:milvus_standalone_cluster_perf.png["Fehler: Fehlendes Grafikbild"]
+image:milvus_standalone_cluster_perf.png[""]
 
 Die nachfolgenden Abbildungen bieten eine Übersicht über verschiedene Storage-Kennzahlen, einschließlich der Storage-Cluster-Latenz und der gesamten IOPS (Input/Output Operations per Second).
 
-image:storagecluster_latency_iops_milcus.png["Fehler: Fehlendes Grafikbild"]
+image:storagecluster_latency_iops_milcus.png[""]
 
 Im folgenden Abschnitt werden die wichtigsten Kennzahlen zur Storage-Performance aufgeführt.
 
@@ -161,7 +165,7 @@ Basierend auf der Performance-Validierung des eigenständigen Milvus- und des Mi
 Wir haben folgende Aktionen auf PostgreSQL(pgvecto.rs) mit VectorDB-Bench durchgeführt:
 Die Details bezüglich der Netzwerk- und Serveranbindung von PostgreSQL (insbesondere pgvecto.rs) lauten wie folgt:
 
-image:pgvecto_perf_network_connectivity.png["Fehler: Fehlendes Grafikbild"]
+image:pgvecto_perf_network_connectivity.png[""]
 
 In diesem Abschnitt stellen wir unsere Beobachtungen und Ergebnisse aus dem Testen der PostgreSQL-Datenbank vor, insbesondere mit pgvecto.rs.
 * Wir haben HNSW als Indextyp für diese Tests ausgewählt, weil zum Zeitpunkt des Tests DiskANN für pgvecto.rs nicht verfügbar war.
@@ -170,16 +174,16 @@ In diesem Abschnitt stellen wir unsere Beobachtungen und Ergebnisse aus dem Test
 
 Die folgenden Abbildungen bieten eine Übersicht über verschiedene Storage-Kennzahlen, einschließlich der Gesamt-IOPS für die Storage-Cluster-Latenz (Input/Output Operations per Second).
 
-image:pgvecto_storage_iops_latency.png["Fehler: Fehlendes Grafikbild"]
+image:pgvecto_storage_iops_latency.png[""]
 
  The following section presents the key storage performance metrics.
-image:pgvecto_storage_perf_metrics.png["Fehler: Fehlendes Grafikbild"]
+image:pgvecto_storage_perf_metrics.png[""]
 
 
 
 === Leistungsvergleich zwischen milvus und Postgres auf der Vektor-DB-Bank
 
-image:perf_comp_milvus_postgres.png["Fehler: Fehlendes Grafikbild"]
+image:perf_comp_milvus_postgres.png[""]
 
 Basierend auf unserer Leistungsvalidierung von Milvus und PostgreSQL mit VectorDBBench konnten wir Folgendes beobachten:
 

@@ -30,11 +30,11 @@ Die folgenden Anwendungsfälle bilden den Kern dieser Lösung. Beide Anwendungsf
 
 Um die Interaktion zwischen Mitarbeitern und Kunden im Support Center zu analysieren, kann jedes Kundengespräch in Form von Audio-Anrufen über die Pipeline geführt werden, um Sentenebenen zu gewinnen. Diese Gefühle können dann von einem Menschen bestätigt werden, um die Gefühle zu rechtfertigen oder sie nach Bedarf anzupassen. Die markierten Daten werden dann an den Feinabstimmung-Schritt zur Verbesserung der Sentimentprognosen weitergeleitet. Falls bereits gekennzeichnete Stimmungsdaten vorliegen, kann eine Modelloptimierung beschleunigt werden. In beiden Fällen ist die Pipeline zu anderen Lösungen generierbar, die die Aufnahme von Audio und die Klassifizierung von Sätzen erfordern.
 
-image:ai-sent-image1.png["Fehler: Fehlendes Grafikbild"]
+image:ai-sent-image1.png[""]
 
 Die Ausgaben für die KI-Einschätzung werden entweder in eine externe Cloud-Datenbank oder in ein vom Unternehmen gemanagtes Storage-System hochgeladen. Die Sentiment-Ergebnisse werden aus dieser größeren Datenbank in den lokalen Speicher übertragen, der zur Nutzung innerhalb des Dashboards zur Anzeige der Sentimentanalyse für Manager verwendet wird. Die primäre Funktionalität des Dashboards ist die Schnittstelle mit dem Kundendienstmitarbeiter in Echtzeit. Manager können die Mitarbeiter während ihrer Anrufe anhand von Live-Updates der Stimmung jedes Satzes bewerten und Feedback geben sowie eine historische Überprüfung der bisherigen Performance oder Kundenreaktionen des Mitarbeiters durchführen.
 
-image:ai-sent-image2.png["Fehler: Fehlendes Grafikbild"]
+image:ai-sent-image2.png[""]
 
 Der link:https://github.com/NetApp/netapp-dataops-toolkit/releases/tag/v2.0.0["NetApp DataOps Toolkit"^] Auch nach der RIVA Inferenzpipeline können die Storage-Systeme weiterhin gemanagt werden, um Sentiment-Labels zu generieren. Diese KI-Ergebnisse können auf ein Datenspeichersystem hochgeladen werden, das vom NetApp DataOps Toolkit verwaltet wird. Die Storage-Systeme müssen Hunderte von Inserts managen können und jede Minute auswählt. Das lokale Gerätelagersystem fragt den größeren Datenspeicher in Echtzeit zur Extraktion ab. Auch größere Storage-Instanzen können nach Archivdaten abgefragt werden, um das Dashboard noch effizienter zu gestalten. Das NetApp DataOps Toolkit fördert beide Nutzungszwecke durch schnelles Klonen von Daten und Verteilung über alle Konsolen, die die Daten nutzen.
 

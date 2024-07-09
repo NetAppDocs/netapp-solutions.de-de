@@ -44,7 +44,7 @@ Die folgenden Schritte müssen für die SnapCenter-Konfiguration und den Schutz 
 
 Konfigurieren Sie die Anmeldeinformationen für die SQL Server-Sicherung, und stellen Sie den Benutzer mit den sysadmin-Rechten wieder her.
 
-image:sqlsb-aws-image1.png["Fehler: Fehlendes Grafikbild"]
+image:sqlsb-aws-image1.png[""]
 
 NetApp empfiehlt den Einsatz rollenbasierter Zugriffssteuerung (Role Based Access Control, RBAC), um Datenschutz- und Managementfunktionen an einzelne Benutzer über das SnapCenter und Fenster-Hosts zu delegieren. Der Benutzer muss Zugriff auf den SQL Server haben, der die Datenbank hostet. Bei mehreren Hosts müssen Benutzername und Passwort auf den verschiedenen Hosts gleich sein. Damit SnapCenter das erforderliche Plug-in auf SQL Server Hosts bereitstellen kann, müssen Sie darüber hinaus die Domäneninformationen für SnapCenter registrieren, um Ihre Anmeldedaten und Hosts zu validieren.
 
@@ -55,11 +55,11 @@ Erweitern Sie die folgenden Abschnitte, um detaillierte Anweisungen zum Abschlie
 ====
 Gehen Sie zu *Einstellungen*, wählen Sie *Anmeldeinformationen* und klicken Sie auf (*+*).
 
-image:sqlsb-aws-image2.png["Fehler: Fehlendes Grafikbild"]
+image:sqlsb-aws-image2.png[""]
 
 Der neue Benutzer muss über Administratorrechte auf dem SQL Server-Host verfügen.
 
-image:sqlsb-aws-image3.png["Fehler: Fehlendes Grafikbild"]
+image:sqlsb-aws-image3.png[""]
 
 ====
 .Speicher konfigurieren
@@ -70,15 +70,15 @@ Gehen Sie wie folgt vor, um Speicher in SnapCenter zu konfigurieren:
 . Wählen Sie in der SnapCenter-Benutzeroberfläche *Speichersysteme* aus. Es gibt zwei Speichertypen, *ONTAP SVM* und *ONTAP Cluster*. Standardmäßig ist der Speichertyp *ONTAP SVM*.
 . Klicken Sie auf (*+*), um die Informationen zum Speichersystem hinzuzufügen.
 +
-image:sqlsb-aws-image4.png["Fehler: Fehlendes Grafikbild"]
+image:sqlsb-aws-image4.png[""]
 
 . Stellen Sie den * FSX für ONTAP-Management*-Endpunkt bereit.
 +
-image:sqlsb-aws-image5.png["Fehler: Fehlendes Grafikbild"]
+image:sqlsb-aws-image5.png[""]
 
 . Die SVM ist jetzt in SnapCenter konfiguriert.
 +
-image:sqlsb-aws-image6.png["Fehler: Fehlendes Grafikbild"]
+image:sqlsb-aws-image6.png[""]
 
 
 
@@ -90,7 +90,7 @@ Führen Sie die folgenden Schritte aus, um einen SQL Server-Host hinzuzufügen:
 
 . Klicken Sie auf der Registerkarte Host auf (*+*), um den Microsoft SQL Server-Host hinzuzufügen.
 +
-image:sqlsb-aws-image7.png["Fehler: Fehlendes Grafikbild"]
+image:sqlsb-aws-image7.png[""]
 
 . Geben Sie den vollständig qualifizierten Domänennamen (FQDN) oder die IP-Adresse des Remote-Hosts an.
 +
@@ -99,17 +99,17 @@ NOTE: Die Anmeldeinformationen werden standardmäßig ausgefüllt.
 
 . Wählen Sie die Option für Microsoft Windows und Microsoft SQL Server aus, und senden Sie sie anschließend ab.
 +
-image:sqlsb-aws-image8.png["Fehler: Fehlendes Grafikbild"]
+image:sqlsb-aws-image8.png[""]
 
 
 
 Die SQL Server-Pakete werden installiert.
 
-image:sqlsb-aws-image9.png["Fehler: Fehlendes Grafikbild"]
+image:sqlsb-aws-image9.png[""]
 
 . Nachdem die Installation abgeschlossen ist, gehen Sie auf die Registerkarte *Ressource*, um zu überprüfen, ob alle FSX für ONTAP iSCSI-Volumes vorhanden sind.
 +
-image:sqlsb-aws-image10.png["Fehler: Fehlendes Grafikbild"]
+image:sqlsb-aws-image10.png[""]
 
 
 
@@ -121,25 +121,25 @@ Führen Sie zum Konfigurieren eines Host-Protokollverzeichnisses die folgenden S
 
 . Aktivieren Sie das Kontrollkästchen. Eine neue Registerkarte wird geöffnet.
 +
-image:sqlsb-aws-image11.png["Fehler: Fehlendes Grafikbild"]
+image:sqlsb-aws-image11.png[""]
 
 . Klicken Sie auf den Link *configure log Directory*.
 +
-image:sqlsb-aws-image12.png["Fehler: Fehlendes Grafikbild"]
+image:sqlsb-aws-image12.png[""]
 
 . Wählen Sie das Laufwerk für das Host-Protokollverzeichnis und das Protokollverzeichnis der FCI-Instanz aus. Klicken Sie Auf *Speichern*. Wiederholen Sie denselben Prozess für den zweiten Node im Cluster. Schließen Sie das Fenster.
 +
-image:sqlsb-aws-image13.png["Fehler: Fehlendes Grafikbild"]
+image:sqlsb-aws-image13.png[""]
 
 
 
 Der Host befindet sich jetzt im Status „aktiv“.
 
-image:sqlsb-aws-image14.png["Fehler: Fehlendes Grafikbild"]
+image:sqlsb-aws-image14.png[""]
 
 . Auf der Registerkarte *Ressourcen* haben wir alle Server und Datenbanken.
 +
-image:sqlsb-aws-image15.png["Fehler: Fehlendes Grafikbild"]
+image:sqlsb-aws-image15.png[""]
 
 
 
@@ -159,39 +159,39 @@ Führen Sie die folgenden Schritte aus, um eine Sicherungsrichtlinie für eine F
 
 . Gehen Sie zu *Einstellungen* und wählen Sie *Richtlinien* oben links. Klicken Sie dann auf *Neu*.
 +
-image:sqlsb-aws-image16.png["Fehler: Fehlendes Grafikbild"]
+image:sqlsb-aws-image16.png[""]
 
 . Geben Sie den Richtliniennamen und eine Beschreibung ein. Klicken Sie Auf *Weiter*.
 +
-image:sqlsb-aws-image17.png["Fehler: Fehlendes Grafikbild"]
+image:sqlsb-aws-image17.png[""]
 
 . Wählen Sie *Full Backup* als Sicherungstyp.
 +
-image:sqlsb-aws-image18.png["Fehler: Fehlendes Grafikbild"]
+image:sqlsb-aws-image18.png[""]
 
 . Wählen Sie die Zeitplanhäufigkeit aus (dies basiert auf dem Unternehmens-SLA). Klicken Sie Auf *Weiter*.
 +
-image:sqlsb-aws-image19.png["Fehler: Fehlendes Grafikbild"]
+image:sqlsb-aws-image19.png[""]
 
 . Konfigurieren Sie die Aufbewahrungseinstellungen für das Backup.
 +
-image:sqlsb-aws-image20.png["Fehler: Fehlendes Grafikbild"]
+image:sqlsb-aws-image20.png[""]
 
 . Konfigurieren der Replikationsoptionen.
 +
-image:sqlsb-aws-image21.png["Fehler: Fehlendes Grafikbild"]
+image:sqlsb-aws-image21.png[""]
 
 . Geben Sie ein Skript zum Ausführen vor und nach der Ausführung eines Backupjobs an (falls vorhanden).
 +
-image:sqlsb-aws-image22.png["Fehler: Fehlendes Grafikbild"]
+image:sqlsb-aws-image22.png[""]
 
 . Überprüfung auf Basis des Backup-Zeitplans durchführen.
 +
-image:sqlsb-aws-image23.png["Fehler: Fehlendes Grafikbild"]
+image:sqlsb-aws-image23.png[""]
 
 . Die Seite *Summary* enthält Details zur Backup Policy. Etwaige Fehler können hier korrigiert werden.
 +
-image:sqlsb-aws-image24.png["Fehler: Fehlendes Grafikbild"]
+image:sqlsb-aws-image24.png[""]
 
 
 
@@ -202,26 +202,26 @@ image:sqlsb-aws-image24.png["Fehler: Fehlendes Grafikbild"]
 
 . Legen Sie das Startdatum und das Ablaufdatum der Backup-Richtlinie fest.
 +
-image:sqlsb-aws-image25.png["Fehler: Fehlendes Grafikbild"]
+image:sqlsb-aws-image25.png[""]
 
 . Legen Sie den Zeitplan für das Backup fest. Klicken Sie dazu auf (*+*), um einen Zeitplan zu konfigurieren. Geben Sie das Datum *Start* und *läuft am* ein. Stellen Sie die Uhrzeit auf Basis des SLA des Unternehmens ein.
 +
-image:sqlsb-aws-image26.png["Fehler: Fehlendes Grafikbild"]
+image:sqlsb-aws-image26.png[""]
 
 . Konfigurieren Sie den Überprüfungsserver. Wählen Sie im Dropdown-Menü den Server aus.
 +
-image:sqlsb-aws-image27.png["Fehler: Fehlendes Grafikbild"]
+image:sqlsb-aws-image27.png[""]
 
 . Bestätigen Sie den konfigurierten Zeitplan, indem Sie auf das Pluszeichen klicken und bestätigen.
 . Geben Sie Informationen für E-Mail-Benachrichtigungen an. Klicken Sie Auf *Weiter*.
 +
-image:sqlsb-aws-image28.png["Fehler: Fehlendes Grafikbild"]
+image:sqlsb-aws-image28.png[""]
 
 
 
 Die Zusammenfassung der Sicherungsrichtlinie für die SQL Server-Datenbank ist jetzt konfiguriert.
 
-image:sqlsb-aws-image29.png["Fehler: Fehlendes Grafikbild"]
+image:sqlsb-aws-image29.png[""]
 
 
 
@@ -231,15 +231,15 @@ Führen Sie die folgenden Schritte aus, um On-Demand SQL Server-Backups zu erste
 
 . Wählen Sie in der Ansicht *Resource* die Ressource aus und wählen Sie *Backup now*.
 +
-image:sqlsb-aws-image30.png["Fehler: Fehlendes Grafikbild"]
+image:sqlsb-aws-image30.png[""]
 
 . Klicken Sie im Dialogfeld *Backup* auf *Backup*.
 +
-image:sqlsb-aws-image31.png["Fehler: Fehlendes Grafikbild"]
+image:sqlsb-aws-image31.png[""]
 
 . Ein Bestätigungsbildschirm wird angezeigt. Klicken Sie zur Bestätigung auf *Ja*.
 +
-image:sqlsb-aws-image32.png["Fehler: Fehlendes Grafikbild"]
+image:sqlsb-aws-image32.png[""]
 
 
 
@@ -249,10 +249,10 @@ image:sqlsb-aws-image32.png["Fehler: Fehlendes Grafikbild"]
 
 . Klicken Sie auf der Registerkarte *Monitor* auf den Job und wählen Sie rechts *Details*, um die Jobs anzuzeigen.
 +
-image:sqlsb-aws-image33.png["Fehler: Fehlendes Grafikbild"]
+image:sqlsb-aws-image33.png[""]
 
 +
-image:sqlsb-aws-image34.png["Fehler: Fehlendes Grafikbild"]
+image:sqlsb-aws-image34.png[""]
 
 
 
@@ -266,15 +266,15 @@ Um eine Sicherungsrichtlinie für mehrere SQL Server-Datenbanken zu konfiguriere
 
 . Wechseln Sie im Register *Ressourcen* aus dem Menü *Ansicht* über das Dropdown-Menü zu einer Ressourcengruppe.
 +
-image:sqlsb-aws-image35.png["Fehler: Fehlendes Grafikbild"]
+image:sqlsb-aws-image35.png[""]
 
 . Klicken Sie für eine neue Ressourcengruppe auf (*+*).
 +
-image:sqlsb-aws-image36.png["Fehler: Fehlendes Grafikbild"]
+image:sqlsb-aws-image36.png[""]
 
 . Geben Sie einen Namen und ein Tag an. Klicken Sie Auf *Weiter*.
 +
-image:sqlsb-aws-image37.png["Fehler: Fehlendes Grafikbild"]
+image:sqlsb-aws-image37.png[""]
 
 . Ressourcen zur Ressourcengruppe hinzufügen:
 +
@@ -282,47 +282,47 @@ image:sqlsb-aws-image37.png["Fehler: Fehlendes Grafikbild"]
 ** *Ressourcentyp.* Wählen Sie aus dem Dropdown-Menü *Datenbank*.
 ** *SQL Server-Instanz.* Wählen Sie den Server aus.
 +
-image:sqlsb-aws-image38.png["Fehler: Fehlendes Grafikbild"]
+image:sqlsb-aws-image38.png[""]
 
 +
 Die Option *Option* Auto wählt alle Ressourcen aus demselben Speichervolume aus* ist standardmäßig ausgewählt. Deaktivieren Sie die Option und wählen Sie nur die Datenbanken aus, die Sie der Ressourcengruppe hinzufügen möchten. Klicken Sie auf den Pfeil, den Sie hinzufügen möchten, und klicken Sie auf *Weiter*.
 
 +
-image:sqlsb-aws-image39.png["Fehler: Fehlendes Grafikbild"]
+image:sqlsb-aws-image39.png[""]
 
 
 
 . Klicken Sie in den Richtlinien auf (*+*).
 +
-image:sqlsb-aws-image40.png["Fehler: Fehlendes Grafikbild"]
+image:sqlsb-aws-image40.png[""]
 
 . Geben Sie den Richtliniennamen der Ressourcengruppe ein.
 +
-image:sqlsb-aws-image41.png["Fehler: Fehlendes Grafikbild"]
+image:sqlsb-aws-image41.png[""]
 
 . Wählen Sie *Full Backup* und die Zeitplanhäufigkeit je nach SLA Ihres Unternehmens.
 +
-image:sqlsb-aws-image42.png["Fehler: Fehlendes Grafikbild"]
+image:sqlsb-aws-image42.png[""]
 
 . Konfigurieren Sie die Aufbewahrungseinstellungen.
 +
-image:sqlsb-aws-image43.png["Fehler: Fehlendes Grafikbild"]
+image:sqlsb-aws-image43.png[""]
 
 . Konfigurieren der Replikationsoptionen.
 +
-image:sqlsb-aws-image44.png["Fehler: Fehlendes Grafikbild"]
+image:sqlsb-aws-image44.png[""]
 
 . Konfigurieren Sie die Skripte, die vor der Durchführung eines Backups ausgeführt werden sollen. Klicken Sie Auf *Weiter*.
 +
-image:sqlsb-aws-image45.png["Fehler: Fehlendes Grafikbild"]
+image:sqlsb-aws-image45.png[""]
 
 . Bestätigen Sie die Verifizierung für die folgenden Backup-Pläne.
 +
-image:sqlsb-aws-image46.png["Fehler: Fehlendes Grafikbild"]
+image:sqlsb-aws-image46.png[""]
 
 . Überprüfen Sie auf der Seite *Summary* die Informationen, und klicken Sie auf *Finish*.
 +
-image:sqlsb-aws-image47.png["Fehler: Fehlendes Grafikbild"]
+image:sqlsb-aws-image47.png[""]
 
 
 
@@ -332,28 +332,28 @@ image:sqlsb-aws-image47.png["Fehler: Fehlendes Grafikbild"]
 
 . Klicken Sie auf das (*+*)-Zeichen, um das Startdatum und das Ablaufdatum zu konfigurieren.
 +
-image:sqlsb-aws-image48.png["Fehler: Fehlendes Grafikbild"]
+image:sqlsb-aws-image48.png[""]
 
 . Stellen Sie die Uhrzeit ein.
 +
-image:sqlsb-aws-image49.png["Fehler: Fehlendes Grafikbild"]
+image:sqlsb-aws-image49.png[""]
 
 +
-image:sqlsb-aws-image50.png["Fehler: Fehlendes Grafikbild"]
+image:sqlsb-aws-image50.png[""]
 
 . Wählen Sie auf der Registerkarte *Verifizierung* den Server aus, konfigurieren Sie den Zeitplan und klicken Sie auf *Weiter*.
 +
-image:sqlsb-aws-image51.png["Fehler: Fehlendes Grafikbild"]
+image:sqlsb-aws-image51.png[""]
 
 . Konfigurieren Sie Benachrichtigungen zum Senden einer E-Mail.
 +
-image:sqlsb-aws-image52.png["Fehler: Fehlendes Grafikbild"]
+image:sqlsb-aws-image52.png[""]
 
 
 
 Die Richtlinie ist jetzt für das Backup mehrerer SQL Server-Datenbanken konfiguriert.
 
-image:sqlsb-aws-image53.png["Fehler: Fehlendes Grafikbild"]
+image:sqlsb-aws-image53.png[""]
 
 
 
@@ -361,20 +361,20 @@ image:sqlsb-aws-image53.png["Fehler: Fehlendes Grafikbild"]
 
 . Wählen Sie auf der Registerkarte *Ressource* die Option Ansicht. Wählen Sie im Dropdown-Menü *Ressourcengruppe* aus.
 +
-image:sqlsb-aws-image54.png["Fehler: Fehlendes Grafikbild"]
+image:sqlsb-aws-image54.png[""]
 
 . Wählen Sie den Namen der Ressourcengruppe aus.
 . Klicken Sie oben rechts auf *Backup now*.
 +
-image:sqlsb-aws-image55.png["Fehler: Fehlendes Grafikbild"]
+image:sqlsb-aws-image55.png[""]
 
 . Ein neues Fenster wird geöffnet. Klicken Sie auf das Kontrollkästchen *nach Sicherung prüfen* und dann auf Sicherung.
 +
-image:sqlsb-aws-image56.png["Fehler: Fehlendes Grafikbild"]
+image:sqlsb-aws-image56.png[""]
 
 . Eine Bestätigungsmeldung wird angezeigt. Klicken Sie Auf *Ja*.
 +
-image:sqlsb-aws-image57.png["Fehler: Fehlendes Grafikbild"]
+image:sqlsb-aws-image57.png[""]
 
 
 
@@ -384,11 +384,11 @@ image:sqlsb-aws-image57.png["Fehler: Fehlendes Grafikbild"]
 
 Klicken Sie in der linken Navigationsleiste auf *Monitor*, wählen Sie den Sicherungsauftrag aus und klicken Sie auf *Details*, um den Auftragsfortschritt anzuzeigen.
 
-image:sqlsb-aws-image58.png["Fehler: Fehlendes Grafikbild"]
+image:sqlsb-aws-image58.png[""]
 
 Klicken Sie auf die Registerkarte *Ressource*, um die Zeit anzuzeigen, die für den Abschluss der Sicherung benötigt wird.
 
-image:sqlsb-aws-image59.png["Fehler: Fehlendes Grafikbild"]
+image:sqlsb-aws-image59.png[""]
 
 
 
@@ -400,49 +400,49 @@ Führen Sie die folgenden Schritte aus, um ein Backup des Transaktionsprotokolls
 
 . Ändern Sie auf der Registerkarte *Ressourcen* das Ansichtsmenü von *Datenbank* in *Ressourcengruppe*.
 +
-image:sqlsb-aws-image60.png["Fehler: Fehlendes Grafikbild"]
+image:sqlsb-aws-image60.png[""]
 
 . Wählen Sie die erstellte Richtlinie für die Ressourcengruppe aus.
 . Wählen Sie oben rechts *Ressourcengruppe ändern*.
 +
-image:sqlsb-aws-image61.png["Fehler: Fehlendes Grafikbild"]
+image:sqlsb-aws-image61.png[""]
 
 . Im Abschnitt *Name* werden standardmäßig der Name und das Tag der Sicherungsrichtlinie angegeben. Klicken Sie Auf *Weiter*.
 +
 Auf der Registerkarte *Resources* werden die Basen hervorgehoben, für die die Backup-Policy für Transaktionen konfiguriert werden soll.
 
 +
-image:sqlsb-aws-image62.png["Fehler: Fehlendes Grafikbild"]
+image:sqlsb-aws-image62.png[""]
 
 . Geben Sie den Richtliniennamen ein.
 +
-image:sqlsb-aws-image63.png["Fehler: Fehlendes Grafikbild"]
+image:sqlsb-aws-image63.png[""]
 
 . Wählen Sie die SQL Server-Backup-Optionen aus.
 . Wählen Sie Protokollsicherung.
 . Legen Sie das Zeitplanintervall auf der Grundlage der RTO Ihres Unternehmens fest. Klicken Sie Auf *Weiter*.
 +
-image:sqlsb-aws-image64.png["Fehler: Fehlendes Grafikbild"]
+image:sqlsb-aws-image64.png[""]
 
 . Konfigurieren Sie die Aufbewahrungseinstellungen für das Protokoll-Backup. Klicken Sie Auf *Weiter*.
 +
-image:sqlsb-aws-image65.png["Fehler: Fehlendes Grafikbild"]
+image:sqlsb-aws-image65.png[""]
 
 . (Optional) Konfigurieren Sie die Replikationsoptionen.
 +
-image:sqlsb-aws-image66.png["Fehler: Fehlendes Grafikbild"]
+image:sqlsb-aws-image66.png[""]
 
 . (Optional) Konfigurieren Sie alle Skripte, die ausgeführt werden sollen, bevor Sie einen Backupjob ausführen.
 +
-image:sqlsb-aws-image67.png["Fehler: Fehlendes Grafikbild"]
+image:sqlsb-aws-image67.png[""]
 
 . (Optional) Konfigurieren Sie die Backup-Verifikation.
 +
-image:sqlsb-aws-image68.png["Fehler: Fehlendes Grafikbild"]
+image:sqlsb-aws-image68.png[""]
 
 . Klicken Sie auf der Seite *Zusammenfassung* auf *Fertig stellen*.
 +
-image:sqlsb-aws-image69.png["Fehler: Fehlendes Grafikbild"]
+image:sqlsb-aws-image69.png[""]
 
 
 
@@ -452,28 +452,28 @@ image:sqlsb-aws-image69.png["Fehler: Fehlendes Grafikbild"]
 
 . Klicken Sie auf die neu erstellte Backup-Richtlinie für das Transaktionsprotokoll.
 +
-image:sqlsb-aws-image70.png["Fehler: Fehlendes Grafikbild"]
+image:sqlsb-aws-image70.png[""]
 
 . Stellen Sie das Datum *Start* und *läuft am* ein.
 . Geben Sie die Häufigkeit der Backup-Richtlinie für Protokolle in Abhängigkeit von SLA, RTP und RPO ein. Klicken Sie auf OK.
 +
-image:sqlsb-aws-image71.png["Fehler: Fehlendes Grafikbild"]
+image:sqlsb-aws-image71.png[""]
 
 . Sie können beide Richtlinien sehen. Klicken Sie Auf *Weiter*.
 +
-image:sqlsb-aws-image72.png["Fehler: Fehlendes Grafikbild"]
+image:sqlsb-aws-image72.png[""]
 
 . Konfigurieren Sie den Überprüfungsserver.
 +
-image:sqlsb-aws-image73.png["Fehler: Fehlendes Grafikbild"]
+image:sqlsb-aws-image73.png[""]
 
 . Konfigurieren Sie die E-Mail-Benachrichtigung.
 +
-image:sqlsb-aws-image74.png["Fehler: Fehlendes Grafikbild"]
+image:sqlsb-aws-image74.png[""]
 
 . Klicken Sie auf der Seite *Zusammenfassung* auf *Fertig stellen*.
 +
-image:sqlsb-aws-image75.png["Fehler: Fehlendes Grafikbild"]
+image:sqlsb-aws-image75.png[""]
 
 
 
@@ -485,16 +485,16 @@ Führen Sie die folgenden Schritte aus, um ein On-Demand-Backup des Transaktions
 
 . Wählen Sie auf der neu erstellten Richtlinienseite oben rechts auf der Seite die Option *Jetzt sichern* aus.
 +
-image:sqlsb-aws-image76.png["Fehler: Fehlendes Grafikbild"]
+image:sqlsb-aws-image76.png[""]
 
 . Wählen Sie im Popup-Fenster auf der Registerkarte *Policy* das Dropdown-Menü aus, wählen Sie die Sicherungsrichtlinie aus und konfigurieren Sie die Sicherung des Transaktionsprotokolls.
 +
-image:sqlsb-aws-image77.png["Fehler: Fehlendes Grafikbild"]
+image:sqlsb-aws-image77.png[""]
 
 . Klicken Sie Auf *Backup*. Ein neues Fenster wird angezeigt.
 . Klicken Sie auf *Ja*, um die Sicherungsrichtlinie zu bestätigen.
 +
-image:sqlsb-aws-image78.png["Fehler: Fehlendes Grafikbild"]
+image:sqlsb-aws-image78.png[""]
 
 
 
@@ -504,7 +504,7 @@ image:sqlsb-aws-image78.png["Fehler: Fehlendes Grafikbild"]
 
 Wechseln Sie zur Registerkarte *Monitoring* und überwachen Sie den Fortschritt des Backupjobs.
 
-image:sqlsb-aws-image79.png["Fehler: Fehlendes Grafikbild"]
+image:sqlsb-aws-image79.png[""]
 
 
 
@@ -527,34 +527,34 @@ Führen Sie die folgenden Schritte aus, um eine SQL Server-Datenbank auf einen b
 
 . Der folgende Screenshot zeigt den Anfangsstatus der SQL Server-Datenbank vor den gelöschten Tabellen.
 +
-image:sqlsb-aws-image80.png["Fehler: Fehlendes Grafikbild"]
+image:sqlsb-aws-image80.png[""]
 
 +
 Der Screenshot zeigt, dass 20 Zeilen aus der Tabelle gelöscht wurden.
 
 +
-image:sqlsb-aws-image81.png["Fehler: Fehlendes Grafikbild"]
+image:sqlsb-aws-image81.png[""]
 
 . Melden Sie sich beim SnapCenter-Server an. Wählen Sie auf der Registerkarte *Ressourcen* die Datenbank aus.
 +
-image:sqlsb-aws-image82.png["Fehler: Fehlendes Grafikbild"]
+image:sqlsb-aws-image82.png[""]
 
 . Wählen Sie die letzte Sicherung aus.
 . Wählen Sie auf der rechten Seite *Wiederherstellen*.
 +
-image:sqlsb-aws-image83.png["Fehler: Fehlendes Grafikbild"]
+image:sqlsb-aws-image83.png[""]
 
 . Ein neues Fenster wird angezeigt. Wählen Sie die Option * Wiederherstellen*.
 . Stellen Sie die Datenbank auf demselben Host wieder her, auf dem das Backup erstellt wurde. Klicken Sie Auf *Weiter*.
 +
-image:sqlsb-aws-image84.png["Fehler: Fehlendes Grafikbild"]
+image:sqlsb-aws-image84.png[""]
 
 . Wählen Sie für den Typ *Recovery* *Alle Protokollsicherungen* aus. Klicken Sie Auf *Weiter*.
 +
-image:sqlsb-aws-image85.png["Fehler: Fehlendes Grafikbild"]
+image:sqlsb-aws-image85.png[""]
 
 +
-image:sqlsb-aws-image86.png["Fehler: Fehlendes Grafikbild"]
+image:sqlsb-aws-image86.png[""]
 
 
 
@@ -562,7 +562,7 @@ image:sqlsb-aws-image86.png["Fehler: Fehlendes Grafikbild"]
 
 . Wählen Sie die Option *beim Wiederherstellen die Datenbank mit dem gleichen Namen überschreiben*. Klicken Sie Auf *Weiter*.
 +
-image:sqlsb-aws-image87.png["Fehler: Fehlendes Grafikbild"]
+image:sqlsb-aws-image87.png[""]
 
 
 
@@ -570,15 +570,15 @@ image:sqlsb-aws-image87.png["Fehler: Fehlendes Grafikbild"]
 
 . Wählen Sie die Option *operativ, aber nicht verfügbar für die Wiederherstellung zusätzlicher Transaktions-Logs*. Klicken Sie Auf *Weiter*.
 +
-image:sqlsb-aws-image88.png["Fehler: Fehlendes Grafikbild"]
+image:sqlsb-aws-image88.png[""]
 
 . Geben Sie die E-Mail-Einstellungen an. Klicken Sie Auf *Weiter*.
 +
-image:sqlsb-aws-image89.png["Fehler: Fehlendes Grafikbild"]
+image:sqlsb-aws-image89.png[""]
 
 . Klicken Sie auf der Seite *Zusammenfassung* auf *Fertig stellen*.
 +
-image:sqlsb-aws-image90.png["Fehler: Fehlendes Grafikbild"]
+image:sqlsb-aws-image90.png[""]
 
 
 
@@ -588,15 +588,15 @@ image:sqlsb-aws-image90.png["Fehler: Fehlendes Grafikbild"]
 
 . Klicken Sie auf der Registerkarte *Überwachung* auf die Details des Wiederherstellungsjobs, um den Fortschritt des Wiederherstellungsjobs anzuzeigen.
 +
-image:sqlsb-aws-image91.png["Fehler: Fehlendes Grafikbild"]
+image:sqlsb-aws-image91.png[""]
 
 . Stellen Sie die Jobdetails wieder her.
 +
-image:sqlsb-aws-image92.png["Fehler: Fehlendes Grafikbild"]
+image:sqlsb-aws-image92.png[""]
 
 . Zurück zum SQL Server-Host > Datenbank > Tabelle vorhanden.
 +
-image:sqlsb-aws-image93.png["Fehler: Fehlendes Grafikbild"]
+image:sqlsb-aws-image93.png[""]
 
 
 

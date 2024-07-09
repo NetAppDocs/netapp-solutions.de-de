@@ -16,11 +16,11 @@ summary: Diese Seite beschreibt die Performance von Splunk SmartStore auf einem 
 [role="lead"]
 In diesem Abschnitt wird die Performance von Splunk SmartStore auf einem NetApp StorageGRID Controller beschrieben. Splunk SmartStore verschiebt warme Daten in Remote-Storage – in diesem Fall StorageGRID Objekt-Storage bei der Performance-Validierung.
 
-image:stgr-splunkss-image10.png["Fehler: Fehlendes Grafikbild"]
+image:stgr-splunkss-image10.png[""]
 
 Wir haben EF600 für Hot/Cache Storage und StorageGRID 6060 für Remote Storage genutzt. Für die Performance-Validierung haben wir folgende Architektur verwendet. Wir haben zwei Suchköpfe, vier schwere Forwarder verwendet, um die Daten an Indexer weiterzuleiten, sieben Splunk Event Generators (Eventgens) um die Echtzeitdaten zu generieren, und 18 Indexer, um die Daten zu speichern.
 
-image:stgr-splunkss-image11.png["Fehler: Fehlendes Grafikbild"]
+image:stgr-splunkss-image11.png[""]
 
 
 
@@ -57,7 +57,7 @@ In dieser Leistungsvalidierung haben wir den SmartStore-Cache auf allen Indexern
 
 Dieses Bild zeigt die in einem Tag aufgenommenen Daten.
 
-image:stgr-splunkss-image12.png["Fehler: Fehlendes Grafikbild"]
+image:stgr-splunkss-image12.png[""]
 
 Wir haben den folgenden Befehl vom Cluster-Master ausgeführt (der Indexname ist `eventgen-test`). Anschließend haben wir über die SmartStore Monitoring Console Dashboards den maximalen und durchschnittlichen Upload-Durchsatz pro Instanz und die gesamte Implementierung erfasst.
 
@@ -140,15 +140,15 @@ rtp-cm01:~ #
 ....
 Wir haben die folgende Suchanfrage auf den Suchkopf ausgeführt um die Performance Matrix zu sammeln.
 
-image:stgr-splunkss-image13.png["Fehler: Fehlendes Grafikbild"]
+image:stgr-splunkss-image13.png[""]
 
 Wir haben die Performance-Informationen vom Cluster-Master erfasst. Die Spitzen-Performance betrug 61,34 GB/s.
 
-image:stgr-splunkss-image14.png["Fehler: Fehlendes Grafikbild"]
+image:stgr-splunkss-image14.png[""]
 
 Die durchschnittliche Performance betrug etwa 29 GB/s.
 
-image:stgr-splunkss-image15.png["Fehler: Fehlendes Grafikbild"]
+image:stgr-splunkss-image15.png[""]
 
 
 
@@ -159,11 +159,11 @@ Die SmartStore-Leistung basiert auf der Suche nach bestimmten Mustern und Zeiche
 
 NOTE: Die grüne Farbe zeigt die Hits Data und die orangefarbene Farbe zeigt die Fehldaten an.
 
-image:stgr-splunkss-image16.png["Fehler: Fehlendes Grafikbild"]
+image:stgr-splunkss-image16.png[""]
 
 Wenn die Abfrage für die Suche auf StorageGRID ausgeführt wird, wird die Zeit für die S3-Abrufrate von StorageGRID im folgenden Bild angezeigt.
 
-image:stgr-splunkss-image17.png["Fehler: Fehlendes Grafikbild"]
+image:stgr-splunkss-image17.png[""]
 
 
 
@@ -171,7 +171,7 @@ image:stgr-splunkss-image17.png["Fehler: Fehlendes Grafikbild"]
 
 Die StorageGRID-Instanz hat einen Load Balancer und drei StorageGRID Controller. Die CPU-Auslastung aller drei Controller beträgt 75 % bis 100 %.
 
-image:stgr-splunkss-image18.png["Fehler: Fehlendes Grafikbild"]
+image:stgr-splunkss-image18.png[""]
 
 
 

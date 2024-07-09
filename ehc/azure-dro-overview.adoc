@@ -26,7 +26,7 @@ Mit der regionsübergreifenden Volume-Replizierung über Azure NetApp Files (ANF
 
 Disaster Recovery Orchestrator (DRO) (eine skriptbasierte Lösung mit einer Benutzeroberfläche) kann verwendet werden, um Workloads, die von einem AVS-SDDC zum anderen repliziert werden, nahtlos wiederherzustellen. DRO automatisiert die Recovery, indem Replikations-Peering gebrochen und das Ziel-Volume dann als Datastore gemountet wird. Dies geschieht durch VM-Registrierung in AVS, um Netzwerkzuordnungen direkt auf NSX-T (in allen AVS Private Clouds enthalten) zu ermöglichen.
 
-image:azure-dro-image1.png["Fehler: Fehlendes Grafikbild"]
+image:azure-dro-image1.png[""]
 
 
 
@@ -69,7 +69,7 @@ https://learn.microsoft.com/en-us/azure/azure-netapp-files/azure-netapp-files-in
 
 Der erste Schritt besteht darin, regionsübergreifende Replikation für die gewünschten Datastore Volumes vom primären AVS-Standort zum sekundären AVS-Standort mit den entsprechenden Frequenzen und Aufbewahrungen einzurichten.
 
-image:azure-dro-image2.png["Fehler: Fehlendes Grafikbild"]
+image:azure-dro-image2.png[""]
 
 Befolgen Sie die hier beschriebenen Schritte https://learn.microsoft.com/en-us/azure/azure-netapp-files/cross-region-replication-create-peering["Verlinken"^] Zur Einrichtung einer regionsübergreifenden Replikation durch Erstellen von Replikations-Peering. Das Service-Level für den Zielkapazitätspool kann mit dem des Quell-Kapazitäts-Pools übereinstimmen. Für diesen speziellen Anwendungsfall können Sie jedoch das Standard-Service-Level und dann auswählen https://learn.microsoft.com/en-us/azure/azure-netapp-files/dynamic-change-volume-service-level["Ändern Sie den Service-Level"^] Im Falle einer echten Katastrophe oder DR-Simulationen.
 
@@ -123,7 +123,7 @@ sudo sh deploy.sh
 ** Benutzername: `admin`
 ** Kennwort: `admin`
 +
-image:azure-dro-image3.png["Fehler: Fehlendes Grafikbild"]
+image:azure-dro-image3.png[""]
 
 
 
@@ -156,7 +156,7 @@ Sie sollten diese Informationen bei der Erstellung der AD-Anwendung erfasst habe
 
 . Bestätigen Sie die Details zu den neuen Anmeldeinformationen, und klicken Sie auf Credential hinzufügen.
 +
-image:azure-dro-image4.png["Fehler: Fehlendes Grafikbild"]
+image:azure-dro-image4.png[""]
 
 +
 Nachdem Sie die Anmeldedaten hinzugefügt haben, wird es Zeit, den primären und sekundären AVS-Standort (sowohl vCenter als auch das Azure NetApp Files-Speicherkonto) zu ermitteln und zu DRO hinzuzufügen. Gehen Sie wie folgt vor, um den Quell- und Zielstandort hinzuzufügen:
@@ -174,7 +174,7 @@ Nachdem Sie die Anmeldedaten hinzugefügt haben, wird es Zeit, den primären und
 ** SDDC vCenter
 ** Azure NetApp Files Storage Konto
 +
-image:azure-dro-image5.png["Fehler: Fehlendes Grafikbild"]
+image:azure-dro-image5.png[""]
 
 
 
@@ -187,18 +187,18 @@ NOTE: Das Hinzufügen einer Quellwebsite wird zu Demonstrationszwecken in diesem
 . DRO listet alle verfügbaren SDDCs innerhalb der Region auf. Wählen Sie die entsprechende Private-Cloud-URL aus der Dropdown-Liste aus.
 . Geben Sie das ein `cloudadmin@vsphere.local` Benutzeranmeldeinformationen. Auf diese kann über das Azure-Portal zugegriffen werden. Befolgen Sie die hier beschriebenen Schritte https://learn.microsoft.com/en-us/azure/azure-vmware/tutorial-access-private-cloud["Verlinken"^]. Klicken Sie anschließend auf *Weiter*.
 +
-image:azure-dro-image6.png["Fehler: Fehlendes Grafikbild"]
+image:azure-dro-image6.png[""]
 
 . Wählen Sie die Details zum Quell-Storge (ANF) aus, indem Sie die Azure Ressourcengruppe und das NetApp Konto auswählen.
 . Klicken Sie Auf *Site Erstellen*.
 +
-image:azure-dro-image7.png["Fehler: Fehlendes Grafikbild"]
+image:azure-dro-image7.png[""]
 
 
 
 Nach dem Hinzufügen führt DRO eine automatische Erkennung durch und zeigt die VMs an, die entsprechende regionsübergreifende Replikate vom Quellstandort zum Zielstandort haben. DRO erkennt automatisch die Netzwerke und Segmente, die von den VMs verwendet werden, und füllt diese aus.
 
-image:azure-dro-image8.png["Fehler: Fehlendes Grafikbild"]
+image:azure-dro-image8.png[""]
 
 Im nächsten Schritt werden die erforderlichen VMs als Ressourcengruppen in ihre funktionalen Gruppen gruppiert.
 
@@ -212,7 +212,7 @@ Um Ressourcengruppen zu erstellen, klicken Sie auf den Menüpunkt *Neue Ressourc
 
 . Greifen Sie auf *Resource Grou*ps zu und klicken Sie auf *Neue Ressourcengruppe erstellen*.
 +
-image:azure-dro-image9.png["Fehler: Fehlendes Grafikbild"]
+image:azure-dro-image9.png[""]
 
 . Wählen Sie unter Neue Ressourcengruppe den Quellstandort aus dem Dropdown-Menü aus und klicken Sie auf *Erstellen*.
 . Geben Sie die Details der Ressourcengruppe ein und klicken Sie auf *Weiter*.
@@ -223,13 +223,13 @@ image:azure-dro-image9.png["Fehler: Fehlendes Grafikbild"]
 ** Standard
 ** Die letzte virtuelle Maschine, die eingeschaltet werden muss
 +
-image:azure-dro-image10.png["Fehler: Fehlendes Grafikbild"]
+image:azure-dro-image10.png[""]
 
 
 
 . Klicken Sie Auf *Ressourcengruppe Erstellen*.
 +
-image:azure-dro-image11.png["Fehler: Fehlendes Grafikbild"]
+image:azure-dro-image11.png[""]
 
 
 
@@ -243,15 +243,15 @@ Gehen Sie wie folgt vor, um mit der Erstellung eines Replikationsplans zu beginn
 
 . Navigieren Sie zu *Replikationspläne* und klicken Sie auf *Neuen Replikationsplan erstellen*.
 +
-image:azure-dro-image12.png["Fehler: Fehlendes Grafikbild"]
+image:azure-dro-image12.png[""]
 
 . Geben Sie im *New Replication Plan* einen Namen für den Plan ein und fügen Sie Wiederherstellungszuordnungen hinzu, indem Sie den Quellstandort, das zugehörige vCenter, den Zielstandort und das zugehörige vCenter auswählen.
 +
-image:azure-dro-image13.png["Fehler: Fehlendes Grafikbild"]
+image:azure-dro-image13.png[""]
 
 . Nachdem die Wiederherstellungszuordnung abgeschlossen ist, wählen Sie die Option *Cluster Mapping* aus.
 +
-image:azure-dro-image14.png["Fehler: Fehlendes Grafikbild"]
+image:azure-dro-image14.png[""]
 
 . Wählen Sie *Ressourcengruppendetails* und klicken Sie auf *Weiter*.
 . Legen Sie die Ausführungsreihenfolge für die Ressourcengruppe fest. Mit dieser Option können Sie die Reihenfolge der Vorgänge auswählen, wenn mehrere Ressourcengruppen vorhanden sind.
@@ -262,39 +262,39 @@ image:azure-dro-image14.png["Fehler: Fehlendes Grafikbild"]
 NOTE: Die regionsübergreifende Replikation (CRR) befindet sich auf Volume-Ebene. Daher werden alle VMs auf dem jeweiligen Volume auf das CRR-Ziel repliziert. Stellen Sie sicher, dass alle VMs ausgewählt werden, die Teil des Datenspeichers sind, da nur virtuelle Maschinen verarbeitet werden, die Teil des Replikationsplans sind.
 
 +
-image:azure-dro-image15.png["Fehler: Fehlendes Grafikbild"]
+image:azure-dro-image15.png[""]
 
 . Unter VM-Details können Sie optional die Größe der CPU- und RAM-Parameter der VMs ändern. Das ist vor allem hilfreich, wenn Sie große Umgebungen auf kleinere Ziel-Cluster wiederherstellen oder DR-Tests durchführen, ohne eine 1:1-physische VMware-Infrastruktur bereitstellen zu müssen. Ändern Sie außerdem die Startreihenfolge und die Startverzögerung (s) für alle ausgewählten VMs in den Ressourcengruppen. Es gibt eine zusätzliche Option, um die Startreihenfolge zu ändern, wenn Änderungen an den Änderungen erforderlich sind, die Sie bei der Auswahl des Ressource- Gruppe-Startauftrags ausgewählt haben. Standardmäßig wird die während der Auswahl der Ressourcengruppe ausgewählte Startreihenfolge verwendet. Änderungen können jedoch in dieser Phase vorgenommen werden.
 +
-image:azure-dro-image16.png["Fehler: Fehlendes Grafikbild"]
+image:azure-dro-image16.png[""]
 
 . Klicken Sie auf *Create Replication Plan*.Nachdem der Replikationsplan erstellt wurde, können Sie die Failover-, Test-Failover- oder Migrationsoptionen je nach Ihren Anforderungen ausführen.
 +
-image:azure-dro-image17.png["Fehler: Fehlendes Grafikbild"]
+image:azure-dro-image17.png[""]
 
 
 
 Während der Failover- und Test-Failover-Optionen wird der aktuellste Snapshot verwendet, oder ein bestimmter Snapshot kann aus einem Point-in-Time-Snapshot ausgewählt werden. Die Point-in-Time-Option kann sehr vorteilhaft sein, wenn Sie vor einem Korruptionsereignis wie Ransomware stehen, wo die neuesten Replikate bereits kompromittiert oder verschlüsselt sind. DRO zeigt alle verfügbaren Zeitpunkte an.
 
-image:azure-dro-image18.png["Fehler: Fehlendes Grafikbild"]
+image:azure-dro-image18.png[""]
 
 Um Failover oder Test Failover mit der im Replikationsplan angegebenen Konfiguration auszulösen, können Sie auf *Failover* oder *Test Failover* klicken. Sie können den Replikationsplan im Aufgabenmenü überwachen.
 
-image:azure-dro-image19.png["Fehler: Fehlendes Grafikbild"]
+image:azure-dro-image19.png[""]
 
 Nachdem der Failover ausgelöst wurde, können die wiederhergestellten Objekte im sekundären Standort AVS SDDC vCenter (VMs, Netzwerke und Datastores) erkannt werden. Standardmäßig werden die VMs im Workload-Ordner wiederhergestellt.
 
-image:azure-dro-image20.png["Fehler: Fehlendes Grafikbild"]
+image:azure-dro-image20.png[""]
 
 Failback kann auf der Ebene des Replikationsplans ausgelöst werden. Im Falle eines Test-Failovers kann die Option zum Abreißen verwendet werden, um die Änderungen rückgängig zu machen und das neu erstellte Volume zu entfernen. Failbacks im Zusammenhang mit Failover sind ein zweistufiger Prozess. Wählen Sie den Replikationsplan aus und wählen Sie *Reverse Data Sync* aus.
 
-image:azure-dro-image21.png["Fehler: Fehlendes Grafikbild"]
+image:azure-dro-image21.png[""]
 
 Wenn dieser Schritt abgeschlossen ist, führen Sie ein Failback aus, um zum primären AVS-Standort zurückzukehren.
 
-image:azure-dro-image22.png["Fehler: Fehlendes Grafikbild"]
+image:azure-dro-image22.png[""]
 
-image:azure-dro-image23.png["Fehler: Fehlendes Grafikbild"]
+image:azure-dro-image23.png[""]
 
 Über das Azure-Portal können wir sehen, dass der Zustand der Replizierung für die entsprechenden Volumes unterbrochen wurde, die dem AVS SDDC am sekundären Standort als Lese-/Schreib-Volumes zugeordnet wurden. Beim Test-Failover weist DRO nicht das Ziel- oder Replikatvolume zu. Stattdessen wird ein neues Volume des erforderlichen regionsübergreifenden Replikations-Snapshots erstellt und das Volume als Datenspeicher bereitgestellt, wodurch zusätzliche physische Kapazität aus dem Kapazitäts-Pool verbraucht wird und sichergestellt wird, dass das Quell-Volume nicht geändert wird. Bemerkenswert ist, dass Replizierungsjobs während DR-Tests oder Triage Workflows fortgesetzt werden können. Darüber hinaus stellt dieser Prozess sicher, dass die Wiederherstellung bereinigt werden kann, ohne dass das Risiko besteht, dass das Replikat zerstört wird, wenn Fehler auftreten oder beschädigte Daten wiederhergestellt werden.
 
