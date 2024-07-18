@@ -1,0 +1,51 @@
+---
+sidebar: sidebar 
+permalink: rhhc/rhhc-dp-velero-solution.html 
+keywords: OpenShift, OCP, Astra Trident, NetApp ONTAP, Red Hat OpenShift, OADP operator, Openshift Data Protection Application operator, Velero, app data protection, Containers 
+summary: Red hat OpenShift Container Application Data Protection mit NetApp ONTAP 
+---
+= Datensicherung für Container-Applikationen in der OpenShift-Container-Plattform mit OpenShift-API für Data Protection (OADP)
+:hardbreaks:
+:allow-uri-read: 
+:nofooter: 
+:icons: font
+:linkattrs: 
+:imagesdir: ./../media/
+
+
+Autor: Banu Sundhar, NetApp
+
+[role="lead"]
+Dieser Abschnitt des Referenzdokuments enthält Details zum Erstellen von Backups von Container-Apps mithilfe der OpenShift-API für die Datensicherung (OADP) mit Velero auf NetApp ONTAP S3 oder NetApp StorageGRID S3. Die Backups von im Namespace enthaltenen Ressourcen, einschließlich Persistent Volumes(PVs) der App werden mithilfe von CSI Astra Trident Snapshots erstellt.
+
+Der persistente Speicher für Container-Apps kann über ONTAP-Speicher gesichert werden, der in den OpenShift-Cluster integriert link:https://docs.netapp.com/us-en/trident/["Astra Trident CSI"]ist. In diesem Abschnitt führen wir link:https://docs.openshift.com/container-platform/4.14/backup_and_restore/application_backup_and_restore/installing/installing-oadp-ocs.html["OpenShift API for Data Protection (OADP)"] Backups von Applikationen durch, einschließlich der Daten-Volumes auf
+
+* ONTAP Objekt-Storage
+* StorageGRID
+
+
+Wir führen dann bei Bedarf ein Restore aus dem Backup durch. Bitte beachten Sie, dass die App nur auf dem Cluster wiederhergestellt werden kann, von dem aus das Backup erstellt wurde.
+
+OADP ermöglicht Backup, Wiederherstellung und Disaster Recovery von Applikationen auf einem OpenShift-Cluster. Zu den mit OADP gesicherten Daten gehören Kubernetes-Ressourcenobjekte, persistente Volumes und interne Images.
+
+image::redhat_openshift_OADP_image1.jpg[OpenShift-API für Data Protection]
+
+Red hat OpenShift nutzt die von den OpenSource Communities entwickelten Lösungen für den Datenschutz. link:https://velero.io/["Velero"] Ist ein Open-Source-Tool für sicheres Backup und Restore, Disaster Recovery und die Migration von Kubernetes-Cluster-Ressourcen und persistenten Volumes. Um Velero einfach nutzen zu können, hat OpenShift den OADP-Operator und das Velero-Plugin für die Integration in die CSI-Speichertreiber entwickelt. Die Kernelemente der OADP-APIs, die offengelegt werden, basieren auf den Velero-APIs. Nach der Installation und Konfiguration des OADP-Bedieners basieren die durchzuführenden Backup-/Wiederherstellungsvorgänge auf den von der Velero-API offengelegten Vorgängen.
+
+image::redhat_openshift_OADP_image2.jpg[OpenShift-API für Data Protection]
+
+OADP 1.3 ist über den Operator Hub von OpenShift Cluster 4.12 und höher verfügbar. Es verfügt über einen integrierten Data Mover, der CSI-Volume-Snapshots in einen Remote-Objektspeicher verschieben kann. Dies sorgt für Portabilität und Langlebigkeit, indem Snapshots während des Backups an einen Speicherort für Objekte verschoben werden. Die Snapshots stehen dann für die Wiederherstellung nach Katastrophen zur Verfügung.
+
+**Im Folgenden sind die Versionen der verschiedenen Komponenten, die für die Beispiele in diesem Abschnitt verwendet werden**
+
+* OpenShift Cluster 4.14
+* OADP Operator 1.13 von Red hat bereitgestellt
+* Velero CLI 1.13 für Linux
+* Astra Trident 24.02
+* ONTAP 9.12
+* postgresql mit Helm installiert.
+
+
+link:https://docs.netapp.com/us-en/trident/["Astra Trident CSI"]
+link:https://docs.openshift.com/container-platform/4.14/backup_and_restore/application_backup_and_restore/installing/installing-oadp-ocs.html["OpenShift API for Data Protection (OADP)"]
+link:https://velero.io/["Velero"]

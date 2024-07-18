@@ -81,13 +81,13 @@ Velero kann für die Verwendung von S3 Compatible Object Storage konfiguriert we
 Um einen Schlüssel von der Webkonsole aus zu erstellen, wählen Sie Geheimnisse aus, und klicken Sie dann auf Schlüssel/Wertgeheimnis. Geben Sie die Werte für den Anmeldeinformationsnamen, den Schlüssel und den angezeigten Wert an. Verwenden Sie unbedingt die Zugriffsschlüssel-ID und den geheimen Zugriffsschlüssel Ihres S3-Benutzers. Nennen Sie das Geheimnis entsprechend. In dem unten stehenden Beispiel wird ein Geheimnis mit den ONTAP S3-Benutzeranmeldeinformationen namens ontap-S3-credentials erstellt.
 
 
-image::redhat_openshift_OADP_install_image4.jpg[Geheimnis für S3-Benutzeranmeldeinformationen]
+image::redhat_openshift_OADP_install_image4.png[Geheimnis für S3-Benutzeranmeldeinformationen]
 
-image::redhat_openshift_OADP_install_image5.jpg[Erstellen Sie Secret für S3-Benutzeranmeldeinformationen]
+image::redhat_openshift_OADP_install_image5.png[Erstellen Sie Secret für S3-Benutzeranmeldeinformationen]
 
 Um einen Schlüssel mit dem Namen sg-s3-credentials aus der CLI zu erstellen, können Sie den folgenden Befehl verwenden.
 
-image::redhat_openshift_OADP_install_image6.jpg[Erstellen Sie mithilfe von CLI Secret für S3-Benutzeranmeldeinformationen]
+image::redhat_openshift_OADP_install_image6.png[Erstellen Sie mithilfe von CLI Secret für S3-Benutzeranmeldeinformationen]
 
 * Um Velero zu konfigurieren, wählen Sie im Menüpunkt unter Operatoren die Option Installed Operators aus, klicken Sie auf OADP Operator und wählen Sie dann die Registerkarte DataProtectionApplication aus.
 
@@ -107,11 +107,11 @@ spec:
   backupLocations:
     - velero:
         config:
-          insecureSkipTLSVerify: 'true' ->use this for https communication with ONTAP S3
+          insecureSkipTLSVerify: 'false' ->use this for https communication with ONTAP S3
           profile: default
-          region: us-east
+          region: us-east-1
           s3ForcePathStyle: 'True' ->This allows use of IP in s3URL
-          s3Url: 'https://10.xx.xx.xx' ->Ensure TLS certificate for S3 is configured
+          s3Url: 'https://10.xx.xx.xx' ->LIF to access S3. Ensure TLS certificate for S3 is configured
         credential:
           key: cloud
           name: ontap-s3-credentials ->previously created secret

@@ -1,0 +1,130 @@
+---
+sidebar: sidebar 
+permalink: rhhc/rhhc-dp-velero-restore.html 
+keywords: OpenShift, OCP, Astra Trident, NetApp ONTAP, Red Hat OpenShift, OADP operator, Openshift Data Protection Application operator, Velero 
+summary: Red hat OpenShift Container Application Data Protection mit NetApp ONTAP 
+---
+= Wiederherstellen einer App aus einem Backup
+:hardbreaks:
+:allow-uri-read: 
+:nofooter: 
+:icons: font
+:linkattrs: 
+:imagesdir: ./../media/
+
+
+[role="lead"]
+In diesem Abschnitt wird beschrieben, wie Apps aus einem Backup wiederhergestellt werden.
+
+
+
+== Voraussetzungen
+
+Um aus einem Backup wiederherzustellen, nehmen wir an, dass der Namespace, in dem die App existierte, versehentlich gelöscht wurde.
+
+image::redhat_openshift_OADP_app_deleted_image1.png[App gelöscht]
+
+.Restore auf denselben Namespace
+[%collapsible]
+====
+Um das Backup wiederherzustellen, das wir gerade erstellt haben, müssen wir eine Restore Custom Resource (CR) erstellen. Geben Sie ihm einen Namen, geben Sie den Namen des Backups an, von dem aus wir die Wiederherstellungs-PVs wiederherstellen möchten, und setzen Sie sie auf „True“. Weitere Parameter können wie in dargestellt eingestellt werden link:https://docs.openshift.com/container-platform/4.14/backup_and_restore/application_backup_and_restore/backing_up_and_restoring/restoring-applications.html["Dokumentation"]. Klicken Sie auf die Schaltfläche Erstellen.
+
+image::redhat_openshift_OADP_restore_image1.jpg[CR wiederherstellen erstellen]
+
+....
+apiVersion: velero.io/v1
+kind: Restore
+apiVersion: velero.io/v1
+metadata:
+  name: restore
+  namespace: openshift-adp
+spec:
+  backupName: backup-postgresql-ontaps3
+  restorePVs: true
+....
+Wenn in der Phase Abgeschlossen angezeigt wird, wird angezeigt, dass die App zum Zeitpunkt der Snapshot-Erstellung wieder in den Status zurückgesetzt wurde. Die App wird im selben Namespace wiederhergestellt.
+
+image::redhat_openshift_OADP_restore_image2.jpg[Wiederherstellung abgeschlossen]
+
+image::redhat_openshift_OADP_restore_image2a.png[Im selben Namespace wiederhergestellt]
+
+====
+.Wiederherstellung in einem anderen Namespace
+[%collapsible]
+====
+Um die App in einem anderen Namespace wiederherzustellen, können Sie in der yaml-Definition des Restore CR ein NamepaceMapping bereitstellen.
+
+Mit der folgenden yaml-Beispieldatei wird ein Restore CR erstellt, um eine App und ihren persistenten Speicher aus dem postgresql-Namespace auf den neuen Namespace postgresql-wiederhergestellt wiederherzustellen.
+
+....
+apiVersion: velero.io/v1
+kind: Restore
+metadata:
+  name: restore-to-different-ns
+  namespace: openshift-adp
+spec:
+  backupName: backup-postgresql-ontaps3
+  restorePVs: true
+  includedNamespaces:
+  - postgresql
+  namespaceMapping:
+    postgresql: postgresql-restored
+....
+Wenn in der Phase Abgeschlossen angezeigt wird, wird angezeigt, dass die App zum Zeitpunkt der Snapshot-Erstellung wieder in den Status zurückgesetzt wurde. Die App wird in einem anderen Namespace wiederhergestellt, wie im yaml angegeben.
+
+image::redhat_openshift_OADP_restore_image3.png[Wiederherstellung in einem neuen Namespace abgeschlossen]
+
+====
+.Wiederherstellung auf eine andere Storage-Klasse
+[%collapsible]
+====
+Velero bietet eine allgemeine Möglichkeit, die Ressourcen während der Wiederherstellung durch Angabe von json Patches zu ändern. Die json-Patches werden auf die Ressourcen angewendet, bevor sie wiederhergestellt werden. Die json-Patches werden in einer configmap angegeben und im Wiederherstellungsbefehl auf die configmap verwiesen. Diese Funktion ermöglicht Ihnen die Wiederherstellung mit einer anderen Storage-Klasse.
+
+Im nachfolgenden Beispiel verwendet die Applikation während der Implementierung ontap-nas als Storage-Klasse für ihre persistenten Volumes. Es wird ein Backup der App Backup-postgresql-ontaps3 erstellt.
+
+image::redhat_openshift_OADP_restore_image4.png[VM mit ontap-nas]
+
+image::redhat_openshift_OADP_restore_image5.png[VM-Backup mit ontap-nas]
+
+Simulieren Sie einen Verlust der App, indem Sie die App deinstallieren.
+
+Um die VM mithilfe einer anderen Storage-Klasse, z. B. der Storage-Klasse ontap-nas-eco, wiederherzustellen, müssen Sie die folgenden zwei Schritte durchführen:
+
+**Schritt 1**
+
+Erstellen Sie eine config map (Console) im openshift-adp Namespace wie folgt: Geben Sie die Details wie im Screenshot gezeigt ein: Select Namespace : openshift-adp Name: Change-ontap-sc (kann jeder beliebige Name sein) Key: Change-ontap-sc-config.yaml: Value:
+
+....
+version: v1
+resourceModifierRules:
+- conditions:
+     groupResource: persistentvolumeclaims
+     resourceNameRegex: "data-postgresql*"
+     namespaces:
+     - postgresql
+  patches:
+  - operation: replace
+    path: "/spec/storageClassName"
+    value: "ontap-nas-eco"
+....
+image::redhat_openshift_OADP_restore_image6.png[Config map-ui]
+
+Das resultierende config map-Objekt sollte wie folgt aussehen (CLI):
+
+image::redhat_openshift_OADP_restore_image7.png[Config Map CLI]
+
+Diese Konfigurationszuordnung wendet die Ressourcenänderungsregel an, wenn die Wiederherstellung erstellt wird. Für alle Ansprüche auf persistente Volumes, die mit RHEL beginnen, wird ein Patch eingesetzt, der den Namen der Storage-Klasse auf ontap-nas-Eco ersetzt.
+
+**Schritt 2**
+
+Verwenden Sie zum Wiederherstellen der VM den folgenden Befehl aus der Velero CLI:
+
+....
+
+#velero restore create restore1 --from-backup backup1 --resource-modifier-configmap change-storage-class-config -n openshift-adp
+....
+Die App wird im selben Namespace mit den Angaben zu persistenten Volumes wiederhergestellt, die über die Storage-Klasse ontap-nas-eco erstellt wurden.
+
+image::redhat_openshift_OADP_restore_image8.png[VM stellt ontap-nas-Eco wieder her]
+
+====
