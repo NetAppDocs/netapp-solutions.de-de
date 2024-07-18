@@ -22,7 +22,7 @@ Im Rahmen der Bereitstellung können Sie die File-Services-Methode auswählen, u
 
 Wenn Benutzer sich über mehrere Standorte innerhalb eines globalen Namespace verteilen, kann Global File Cache die Latenz für häufig genutzte Daten verringern. Die globale Dateicache-Bereitstellung kann mithilfe einer Bereitstellungssammlung und skriptgesteuerter Ereignisse automatisiert werden. Global File Cache wickelt die Lese- und Schreib-Caches lokal ab und unterhält Dateisperren über mehrere Speicherorte hinweg. Global File Cache kann mit allen SMB-File-Servern einschließlich Azure NetApp Files eingesetzt werden.
 
-image:hcvdivds_image13.png[""]
+image::hcvdivds_image13.png[Hcvdivds image13]
 
 Global File Cache erfordert Folgendes:
 
@@ -37,47 +37,47 @@ Für unsere Validierung haben wir die Kern- und Management-Ressourcen in Azure a
 
 . Verwenden Sie im Abschnitt Lizenzkonfiguration den Link Klicken Sie hier, um die Lizenzaktivierung abzuschließen. Dann registrieren Sie den Kern.
 +
-image:hcvdivds_image27.png[""]
+image::hcvdivds_image27.png[Hcvdivds image27]
 
 . Geben Sie das Servicekonto an, das für den Global File Cache verwendet werden soll. Informationen zu den erforderlichen Berechtigungen für dieses Konto finden Sie im https://docs.netapp.com/us-en/occm/download_gfc_resources.html#download-required-resources["GFC-Dokumentation"^].
 +
-image:hcvdivds_image28.png[""]
+image::hcvdivds_image28.png[Hcvdivds image28]
 
 . Fügen Sie einen neuen Back-End-Dateiserver hinzu und geben Sie den Namen oder die IP des Dateiservers an.
 +
-image:hcvdivds_image29.png[""]
+image::hcvdivds_image29.png[Hcvdivds image29]
 
 . Am Rand muss das Cache-Laufwerk den Laufwerksbuchstaben D. haben Wenn dies nicht der Fall ist, verwenden Sie diskpart.exe, um das Volume auszuwählen und den Laufwerksbuchstaben zu ändern. Mit dem Lizenzserver als Edge registrieren.
 +
-image:hcvdivds_image30.png[""]
+image::hcvdivds_image30.png[Hcvdivds image30]
 
 
 
 Wenn die automatische Kernkonfiguration aktiviert ist, werden die Kerninformationen automatisch vom Lizenzverwaltungsserver abgerufen.
 
-image:hcvdivds_image31.png[""]
+image::hcvdivds_image31.png[Hcvdivds image31]
 
 Von jedem Client-Rechner aus können die Administratoren, die zum Zugriff auf den Share auf dem Dateiserver verwendet wurden, über GFC Edge mithilfe von UNC Path auf ihn zugreifen `\\<edge server name>\FASTDATA\<core server name>\<backend file server name>\<share name>`. Administratoren können diesen Pfad in das Benutzerlogonskript oder GPO einschließen, um zu erreichen, dass Benutzer am Edge-Standort ihre Zuordnung vorantreiben.
 
 Um Benutzern weltweit einen transparenten Zugriff zu bieten, kann ein Administrator das Microsoft Distributed Filesystem (DFS) mit Links auf File Server Shares und Edge-Standorte einrichten.
 
-image:hcvdivds_image32.png[""]
+image::hcvdivds_image32.png[Hcvdivds image32]
 
 Wenn sich Benutzer basierend auf den Subnetzen anmelden, die der Site zugeordnet sind, wird der entsprechende Link vom DFS-Client zum Zugriff auf die Daten verwendet.
 
-image:hcvdivds_image33.png[""]
+image::hcvdivds_image33.png[Hcvdivds image33]
 
 Die Dateisymbole ändern sich je nach dem Cache einer Datei. Dateien, die nicht im Cache gespeichert sind, haben in der linken unteren Ecke des Symbols ein graues X. Nachdem ein Benutzer an einem Edge-Standort auf eine Datei zugreift, wird diese Datei im Cache gespeichert und das Symbol ändert sich.
 
-image:hcvdivds_image34.png[""]
+image::hcvdivds_image34.png[Hcvdivds image34]
 
 Wenn eine Datei geöffnet ist und ein anderer Benutzer versucht, dieselbe Datei von einem Randort aus zu öffnen, wird der Benutzer mit der folgenden Auswahl aufgefordert:
 
-image:hcvdivds_image35.png[""]
+image::hcvdivds_image35.png[Hcvdivds image35]
 
 Wenn der Benutzer die Option zum Erhalt einer Benachrichtigung wählt, wenn die Originalversion verfügbar ist, wird der Benutzer wie folgt benachrichtigt:
 
-image:hcvdivds_image36.png[""]
+image::hcvdivds_image36.png[Hcvdivds image36]
 
 Weitere Informationen finden Sie unter https://www.youtube.com/watch?v=91LKb1qsLIM["Video zu Talon und Azure NetApp Files Deployment"^].
 
@@ -87,7 +87,7 @@ Weitere Informationen finden Sie unter https://www.youtube.com/watch?v=91LKb1qsL
 
 NetApp VDS bietet die Datensicherung für Salesforce und Microsoft Office 365, einschließlich Exchange, SharePoint und Microsoft OneDrive. Die folgende Abbildung zeigt, wie NetApp VDS SaaS Backup für diese Datenservices bereitstellt.
 
-image:hcvdivds_image14.png[""]
+image::hcvdivds_image14.png[Hcvdivds image14]
 
 Eine Demonstration zur Datensicherung von Microsoft Office 365 finden Sie unter https://www.youtube.com/watch?v=MRPBSu8RaC0&ab_channel=NetApp["Dieses Video"^].
 

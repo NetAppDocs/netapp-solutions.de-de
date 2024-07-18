@@ -215,7 +215,7 @@ Sie können die logischen Inter-Cluster-Informationen für die ONTAP Quell- und 
 
 . Wechseln Sie in ONTAP System Manager zur Seite „Netzwerkübersicht“ und rufen Sie die IP-Adressen des Typs „Intercluster“ ab, die für die Kommunikation mit der AWS VPC konfiguriert sind, bei der FSX installiert ist.
 +
-image:dr-vmc-aws-image10.png[""]
+image::dr-vmc-aws-image10.png[dr vmc aws image10]
 
 . Um die Intercluster-IP-Adressen über die CLI abzurufen, führen Sie den folgenden Befehl aus:
 +
@@ -239,7 +239,7 @@ Confirm the passphrase:
 ....
 . Im Quell-Cluster können Sie die Cluster-Peer-Beziehung entweder mit ONTAP System Manager oder der CLI einrichten. Navigieren Sie im ONTAP System Manager zu Schutz > Übersicht, und wählen Sie Peer Cluster aus.
 +
-image:dr-vmc-aws-image12.png[""]
+image::dr-vmc-aws-image12.png[dr vmc aws image12]
 
 . Füllen Sie im Dialogfeld Peer Cluster die erforderlichen Informationen aus:
 +
@@ -248,7 +248,7 @@ image:dr-vmc-aws-image12.png[""]
 .. Geben Sie die Intercluster LIF IP-Adresse(n) des ONTAP Ziel-Clusters ein.
 .. Klicken Sie auf Cluster Peering initiieren, um den Prozess abzuschließen.
 +
-image:dr-vmc-aws-image13.png[""]
+image::dr-vmc-aws-image13.png[dr vmc aws image13]
 
 
 
@@ -273,7 +273,7 @@ ONTAP-Dest::> vserver peer create -vserver DestSVM -peer-vserver Backup -peer-cl
 . Akzeptieren Sie vom ONTAP-Quellcluster die Peering-Beziehung entweder mit dem ONTAP System Manager oder der CLI.
 . Wählen Sie im ONTAP System Manager unter „Protection > Overview“ die Option „Peer Storage VMs“ unter „Storage VM Peers“ aus.
 +
-image:dr-vmc-aws-image15.png[""]
+image::dr-vmc-aws-image15.png[dr vmc aws image15]
 
 . Füllen Sie im Dialogfeld Peer Storage VM die erforderlichen Felder aus:
 +
@@ -281,7 +281,7 @@ image:dr-vmc-aws-image15.png[""]
 ** Dem Ziel-Cluster
 ** Der Ziel-Storage-VM
 +
-image:dr-vmc-aws-image16.png[""]
+image::dr-vmc-aws-image16.png[dr vmc aws image16]
 
 
 
@@ -301,7 +301,7 @@ NOTE: Auf dem sekundären Storage werden diese Kennungen mit Richtliniensegeln a
 
 Das folgende Beispiel zeigt ein SnapMirror-Etikett, das an allen Snapshots vorhanden ist, die im Rahmen einer Richtlinie erzeugt wurden, die für die täglichen Backups unserer SQL Server-Datenbank und der Protokoll-Volumes verwendet wird.
 
-image:dr-vmc-aws-image17.png[""]
+image::dr-vmc-aws-image17.png[dr vmc aws image17]
 
 Weitere Informationen zum Erstellen von SnapCenter-Richtlinien für eine SQL Server-Datenbank finden Sie im https://docs.netapp.com/us-en/snapcenter/protect-scsql/task_create_backup_policies_for_sql_server_databases.html["SnapCenter-Dokumentation"^].
 

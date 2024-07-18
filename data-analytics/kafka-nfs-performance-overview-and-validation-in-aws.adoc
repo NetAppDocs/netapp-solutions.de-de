@@ -52,14 +52,14 @@ In der folgenden Tabelle wird die Umgebungskonfiguration für ein Kafka-Cluster 
 
 . Für das Cloud Volumes ONTAP HA-Paar erstellten wir zwei Aggregate mit drei Volumes auf jedem Aggregat auf jedem Storage Controller. Für einen einzelnen Cloud Volumes ONTAP Node erstellen wir sechs Volumes in einem Aggregat.
 +
-image:kafka-nfs-image25.png["Dieses Bild zeigt die Eigenschaften von aggr3 und aggr22."]
+image::kafka-nfs-image25.png[Dieses Bild zeigt die Eigenschaften von aggr3 und aggr22.]
 
 +
-image:kafka-nfs-image26.png["Dieses Bild zeigt die Eigenschaften von aggr2."]
+image::kafka-nfs-image26.png[Dieses Bild zeigt die Eigenschaften von aggr2.]
 
 . Um eine bessere Netzwerk-Performance zu erzielen, haben wir sowohl für das HA-Paar als auch für den einzelnen Node High-Speed-Networking ermöglicht.
 +
-image:kafka-nfs-image27.png["Diese Bilder zeigen, wie Sie Hochgeschwindigkeitsnetzwerke aktivieren."]
+image::kafka-nfs-image27.png[Diese Bilder zeigen, wie Sie Hochgeschwindigkeitsnetzwerke aktivieren.]
 
 . Wir bemerkten, dass der ONTAP NVRAM mehr IOPS hatte, also änderten wir die IOPS für das Cloud Volumes ONTAP Root-Volume auf 2350. Die Root-Datenträger in Cloud Volumes ONTAP waren 47 GB groß. Der folgende ONTAP-Befehl gilt für das HA-Paar und derselbe Schritt gilt für den einzelnen Node.
 +
@@ -88,7 +88,7 @@ Scope: kafka_nfs_cvo_ha1-02
 kafka_nfs_cvo_ha1::*>
 ....
 +
-image:kafka-nfs-image28.png["Diese Bilder zeigen, wie Sie Volume-Eigenschaften ändern."]
+image::kafka-nfs-image28.png[Diese Bilder zeigen, wie Sie Volume-Eigenschaften ändern.]
 
 
 
@@ -99,7 +99,7 @@ In der folgenden Abbildung ist die Architektur eines NAS-basierten Kafka-Cluster
 * *Storage.* Wir verwendeten eine HA-Paar-Cloud Volumes ONTAP-Instanz mit einem 6 TB GP3 AWS-EBS Volume auf der Instanz gemountet. Das Volume wurde dann mit einem NFS-Mount in den Kafka-Broker exportiert.
 
 
-image:kafka-nfs-image29.png["Diese Abbildung stellt die Architektur eines NAS-basierten Kafka-Clusters dar."]
+image::kafka-nfs-image29.png[Diese Abbildung stellt die Architektur eines NAS-basierten Kafka-Clusters dar.]
 
 
 
@@ -362,8 +362,8 @@ Der Sync-Treiber kann einen konsistenten Durchsatz generieren, da die Protokolle
 
 Diese Durchsatzwerte werden für die jeweilige AWS-Konfiguration generiert. Um höhere Performance-Anforderungen zu erfüllen, können die Instanztypen vertikal skaliert und weiter optimiert werden, um einen besseren Durchsatz zu erzielen. Der Gesamtdurchsatz oder die Gesamtrate ist die Kombination von Erzeugerrate und Verbraucherrate.
 
-image:kafka-nfs-image30.png["Vier verschiedene Grafiken werden hier vorgestellt. CVO-HA-Paar-Durchsatztreiber. CVO-HA-Paar-Sync-Treiber. CVO-Single-Node-Durchsatztreiber. CVO-Single-Node Sync Treiber"]
+image::kafka-nfs-image30.png[Vier verschiedene Grafiken werden hier vorgestellt. CVO-HA-Paar-Durchsatztreiber. CVO-HA-Paar-Sync-Treiber. CVO-Single-Node-Durchsatztreiber. CVO-Single-Node Sync Treiber]
 
 Prüfen Sie den Storage-Durchsatz, wenn Sie ein Benchmarking des Durchsatzes oder der Synchronisationstreiber durchführen.
 
-image:kafka-nfs-image31.png["Dieses Diagramm zeigt die Performance in den Bereichen Latenz, IOPS und Durchsatz."]
+image::kafka-nfs-image31.png[Dieses Diagramm zeigt die Performance in den Bereichen Latenz, IOPS und Durchsatz.]

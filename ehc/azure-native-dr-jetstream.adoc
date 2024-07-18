@@ -78,15 +78,15 @@ Die Jetstream DR-Software besteht aus drei Hauptkomponenten: Jetstream DR Manage
 . Registrieren Sie den vCenter-Server mit dem MSA.um die Installation durchzuführen, führen Sie die folgenden detaillierten Schritte aus:
 . Nachdem JetStream DR MSA implementiert und der vCenter Server registriert wurde, greifen Sie über den vSphere Web Client auf das JetStream DR Plug-in zu. Dazu können Sie im Datacenter > Configure > JetStream DR navigieren.
 +
-image:vmware-dr-image8.png[""]
+image::vmware-dr-image8.png[vmware dr-Image8]
 
 . Wählen Sie über die JetStream DR-Schnittstelle den entsprechenden Cluster aus.
 +
-image:vmware-dr-image9.png[""]
+image::vmware-dr-image9.png[vmware dr-Bild9]
 
 . Konfigurieren Sie das Cluster mit dem I/O-Filterpaket.
 +
-image:vmware-dr-image10.png[""]
+image::vmware-dr-image10.png[vmware dr-image10]
 
 . Fügen Sie Azure Blob Storage am Recovery-Standort hinzu.
 . Stellen Sie eine DR Virtual Appliance (DRVA) über die Registerkarte Appliances bereit.
@@ -97,14 +97,14 @@ NOTE: DRVAs können automatisch durch CPT erstellt werden. Für POC-Tests wird j
 
 JetStream DRVA ist eine virtuelle Appliance, die wichtige Funktionen bei der Datenreplizierung unterstützt. Ein geschützter Cluster muss mindestens eine DRVA enthalten, und normalerweise ist pro Host ein DRVA konfiguriert. Jeder DRVA kann mehrere geschützte Domänen verwalten.
 
-image:vmware-dr-image11.png[""]
+image::vmware-dr-image11.png[vmware dr-Bild11]
 
 In diesem Beispiel wurden vier DRVA's für 80 virtuelle Maschinen erstellt.
 
 . Erstellen Sie Protokoll-Volumes für jedes DRVA unter Verwendung von VMDK aus den verfügbaren Datastores oder unabhängigen, gemeinsam genutzten iSCSI-Speicherpools.
 . Erstellen Sie auf der Registerkarte geschützte Domänen die erforderliche Anzahl geschützter Domänen mithilfe von Informationen über die Azure Blob Storage-Site, die DRVA-Instanz und das Replikationsprotokoll. Eine geschützte Domäne definiert eine bestimmte VM oder einen Satz von VMs innerhalb des Clusters, die gemeinsam geschützt werden, und weist eine Prioritätsreihenfolge für Failover-/Failback-Vorgänge zu.
 +
-image:vmware-dr-image12.png[""]
+image::vmware-dr-image12.png[vmware dr-Image12]
 
 . Wählen Sie VMs aus, die Sie sichern möchten, und starten Sie den VM-Schutz der geschützten Domäne. Dies beginnt mit der Datenreplizierung zum zugewiesenen Blob-Store.
 
@@ -115,7 +115,7 @@ NOTE: Vergewissern Sie sich, dass derselbe Sicherungsmodus für alle VMs in eine
 
 NOTE: Write Back(VMDK)-Modus kann eine höhere Performance bieten.
 
-image:vmware-dr-image13.png[""]
+image::vmware-dr-image13.png[vmware dr-Image13]
 
 Vergewissern Sie sich, dass die Protokoll-Volumes für die Replizierung auf hochperformanten Storage platziert sind.
 
@@ -153,15 +153,15 @@ NOTE: Der CloudAdmin-Standardbenutzer in Azure VMware verfügt nicht über ausre
 Der folgende Screenshot zeigt die Installation mithilfe einer DHCP-basierten IP-Adresse.
 
 +
-image:vmware-dr-image14.png[""]
+image::vmware-dr-image14.png[vmware dr-Bild14]
 
 . Nachdem die JetStream DR für AVS-Installation abgeschlossen ist, aktualisieren Sie den Browser. Um auf die JetStream DR-UI zuzugreifen, wechseln Sie zum SDDC Datacenter > Configure > JetStream DR.
 +
-image:vmware-dr-image15.png[""]
+image::vmware-dr-image15.png[vmware dr-Bild15]
 
 . Fügen Sie über die JetStream DR-Schnittstelle das Azure Blob Storage-Konto hinzu, das zum Schutz des lokalen Clusters als Storage-Standort verwendet wurde, und führen Sie die Option Scan Domains aus.
 +
-image:vmware-dr-image16.png[""]
+image::vmware-dr-image16.png[vmware dr-Bild16]
 
 . Nachdem die geschützten Domains importiert wurden, sollten DRVA-Appliances bereitgestellt werden. In diesem Beispiel wird mithilfe der JetStream DR-Benutzeroberfläche eine kontinuierliche Rehydrierung manuell vom Wiederherstellungsstandort gestartet.
 +
@@ -171,7 +171,7 @@ NOTE: Diese Schritte können auch mithilfe von CPT erstellten Plänen automatisi
 . Verwenden von verfügbaren vSAN oder ANF-Datastores für Replizierungsprotokolle erstellen
 . Importieren Sie die geschützten Domänen und konfigurieren Sie die Recovery VA, um den ANF-Datenspeicher für VM-Platzierungen zu verwenden.
 +
-image:vmware-dr-image17.png[""]
+image::vmware-dr-image17.png[vmware dr-image17]
 
 +
 
@@ -179,7 +179,7 @@ NOTE: Stellen Sie sicher, dass DHCP für das ausgewählte Segment aktiviert ist 
 
 . Wählen Sie die entsprechende Failover-Option (Continuous Failover oder Failover) aus. In diesem Beispiel wird die kontinuierliche Rehydrierung (kontinuierliches Failover) ausgewählt.
 +
-image:vmware-dr-image18.png[""]
+image::vmware-dr-image18.png[vmware dr image18]
 
 
 
@@ -201,17 +201,17 @@ NOTE: CPT kann verwendet werden, um den Failover-Plan zur Wiederherstellung der 
 NOTE: Nach dem Failover (zur kontinuierlichen oder standardmäßigen Wiederherstellung), wenn die geschützten VMs in AVS gestartet wurden, wird der Schutz automatisch fortgesetzt und JetStream DR repliziert ihre Daten weiterhin in den entsprechenden/Original-Containern im Azure Blob Storage.
 
 +
-image:vmware-dr-image19.png[""]
+image::vmware-dr-image19.png[vmware dr-Image19]
 
 +
-image:vmware-dr-image20.png[""]
+image::vmware-dr-image20.png[vmware dr-image20]
 
 +
 In der Taskleiste wird der Status von Failover-Aktivitäten angezeigt.
 
 . Nach Abschluss der Aufgabe greifen Sie auf die wiederhergestellten VMs zu, und der Geschäftsbetrieb läuft normal weiter.
 +
-image:vmware-dr-image21.png[""]
+image::vmware-dr-image21.png[vmware dr-image21]
 
 +
 Wenn der primäre Standort wieder in Betrieb ist, kann ein Failback durchgeführt werden. Der VM-Schutz wird wieder aufgenommen und die Datenkonsistenz sollte überprüft werden.
@@ -223,7 +223,7 @@ NOTE: Hinweis: Der `recovery_utility_prepare_failback` Das im Automation Toolkit
 
 . Greifen Sie auf die wiederhergestellte On-Premises-Umgebung zu, rufen Sie die Jetstream DR UI auf und wählen Sie die entsprechende geschützte Domäne aus. Nachdem der geschützte Standort für Failback bereit ist, wählen Sie die Failback-Option in der UI aus.
 +
-image:vmware-dr-image22.png[""]
+image::vmware-dr-image22.png[vmware dr-Image22]
 
 
 
@@ -244,4 +244,4 @@ Die Wiederherstellung von Ransomware kann eine gewaltige Aufgabe sein. Insbesond
 
 Jetstream DR für AVS kann zusammen mit Azure NetApp Files Datastores diese Bedenken lösen, da Unternehmen eine Recovery von verfügbaren Zeitpunkten durchführen können, sodass Workloads bei Bedarf in einem funktionsfähigen, isolierten Netzwerk wiederhergestellt werden können. Durch Recovery können Applikationen funktionieren und miteinander kommunizieren, ohne dass sie dem Nord- Süd-Datenverkehr ausgesetzt werden. So erhalten Sicherheitsteams einen sicheren Ort, um forensische und andere notwendige Korrekturmaßnahmen durchzuführen.
 
-image:vmware-dr-image23.png[""]
+image::vmware-dr-image23.png[vmware dr-Bild23]

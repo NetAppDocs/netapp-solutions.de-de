@@ -76,14 +76,14 @@ Führen Sie die folgenden Schritte aus, um eine SVM sowie mehrere LIFs für NFS-
 
 . Navigieren Sie im ONTAP-Systemmanager im linken Menü zu *Speicher-VMs* und klicken Sie auf *+ Hinzufügen*, um zu starten.
 +
-image:vmware-vcf-asa-image01.png["Klicken Sie auf +Hinzufügen, um mit der Erstellung der SVM zu beginnen"]
+image::vmware-vcf-asa-image01.png[Klicken Sie auf +Hinzufügen, um mit der Erstellung der SVM zu beginnen]
 
 +
 {Nbsp}
 
 . Im *Add Storage VM* Wizard geben Sie einen *Namen* für die SVM an, wählen Sie den *IP Space* aus und klicken dann unter *Access Protocol* auf die Registerkarte *SMB/CIFS, NFS, S3* und aktivieren Sie das Kontrollkästchen *enable NFS*.
 +
-image:vmware-vcf-aff-image35.png["Storage VM Wizard hinzufügen - NFS aktivieren"]
+image::vmware-vcf-aff-image35.png[Storage VM Wizard hinzufügen - NFS aktivieren]
 
 +
 
@@ -92,14 +92,14 @@ TIP: Es ist nicht notwendig, hier die Schaltfläche *NFS-Client-Zugriff zulassen
 
 . Geben Sie im Abschnitt *Network Interface* die *IP-Adresse*, *Subnetzmaske* und *Broadcast Domain und Port* für die erste LIF ein. Für nachfolgende LIFs kann das Kontrollkästchen aktiviert sein, um allgemeine Einstellungen für alle verbleibenden LIFs zu verwenden oder separate Einstellungen zu verwenden.
 +
-image:vmware-vcf-aff-image36.png["Geben Sie die Netzwerkinformationen für LIFs ein"]
+image::vmware-vcf-aff-image36.png[Geben Sie die Netzwerkinformationen für LIFs ein]
 
 +
 {Nbsp}
 
 . Wählen Sie aus, ob das Storage VM Administration-Konto aktiviert werden soll (für mandantenfähige Umgebungen), und klicken Sie auf *Speichern*, um die SVM zu erstellen.
 +
-image:vmware-vcf-asa-image04.png["Aktivieren Sie das SVM-Konto und beenden Sie es"]
+image::vmware-vcf-asa-image04.png[Aktivieren Sie das SVM-Konto und beenden Sie es]
 
 
 
@@ -117,7 +117,7 @@ Gehen Sie wie folgt vor, um eine neue verteilte Portgruppe für das Netzwerk zu 
 
 . Navigieren Sie im vSphere-Client zu *Inventar > Netzwerk* für die Workload-Domäne. Navigieren Sie zum vorhandenen Distributed Switch und wählen Sie die Aktion zum Erstellen von *New Distributed Port Group...* aus.
 +
-image:vmware-vcf-asa-image22.png["Wählen Sie diese Option, um eine neue Portgruppe zu erstellen"]
+image::vmware-vcf-asa-image22.png[Wählen Sie diese Option, um eine neue Portgruppe zu erstellen]
 
 +
 {Nbsp}
@@ -125,7 +125,7 @@ image:vmware-vcf-asa-image22.png["Wählen Sie diese Option, um eine neue Portgru
 . Geben Sie im Assistenten *New Distributed Port Group* einen Namen für die neue Portgruppe ein und klicken Sie auf *Next*, um fortzufahren.
 . Füllen Sie auf der Seite *Configure settings* alle Einstellungen aus. Wenn VLANs verwendet werden, stellen Sie sicher, dass Sie die richtige VLAN-ID angeben. Klicken Sie auf *Weiter*, um fortzufahren.
 +
-image:vmware-vcf-asa-image23.png["Geben Sie die VLAN-ID ein"]
+image::vmware-vcf-asa-image23.png[Geben Sie die VLAN-ID ein]
 
 +
 {Nbsp}
@@ -133,14 +133,14 @@ image:vmware-vcf-asa-image23.png["Geben Sie die VLAN-ID ein"]
 . Überprüfen Sie auf der Seite *Ready to Complete* die Änderungen und klicken Sie auf *Finish*, um die neue verteilte Portgruppe zu erstellen.
 . Nachdem die Portgruppe erstellt wurde, navigieren Sie zur Portgruppe und wählen Sie die Aktion *Einstellungen bearbeiten...* aus.
 +
-image:vmware-vcf-aff-image37.png["DPG - Einstellungen bearbeiten"]
+image::vmware-vcf-aff-image37.png[DPG - Einstellungen bearbeiten]
 
 +
 {Nbsp}
 
 . Navigieren Sie auf der Seite *Distributed Port Group - Einstellungen bearbeiten* im linken Menü zu *Teaming und Failover*. Aktivieren Sie Teaming für die Uplinks, die für NFS-Verkehr verwendet werden sollen, indem Sie sicherstellen, dass sie sich im Bereich *Active Uplinks* befinden. Verschieben Sie alle nicht verwendeten Uplinks nach unten zu *unused Uplinks*.
 +
-image:vmware-vcf-aff-image38.png["DPG - Team-Uplinks"]
+image::vmware-vcf-aff-image38.png[DPG - Team-Uplinks]
 
 +
 {Nbsp}
@@ -156,21 +156,21 @@ Wiederholen Sie diesen Vorgang auf jedem ESXi-Host in der Workload-Domäne.
 
 . Navigieren Sie vom vSphere-Client zu einem der ESXi-Hosts in der Workload-Domäneninventarisierung. Wählen Sie auf der Registerkarte *Configure* *VMkernel Adapter* und klicken Sie auf *Add Networking...*, um zu starten.
 +
-image:vmware-vcf-asa-image30.png["Starten Sie den Assistenten zum Hinzufügen von Netzwerken"]
+image::vmware-vcf-asa-image30.png[Starten Sie den Assistenten zum Hinzufügen von Netzwerken]
 
 +
 {Nbsp}
 
 . Wählen Sie im Fenster *Verbindungstyp auswählen* *VMkernel Netzwerkadapter* und klicken Sie auf *Weiter*, um fortzufahren.
 +
-image:vmware-vcf-asa-image08.png["Wählen Sie VMkernel Netzwerkadapter"]
+image::vmware-vcf-asa-image08.png[Wählen Sie VMkernel Netzwerkadapter]
 
 +
 {Nbsp}
 
 . Wählen Sie auf der Seite *Zielgerät auswählen* eine der zuvor erstellten verteilten Portgruppen für NFS aus.
 +
-image:vmware-vcf-aff-image39.png["Wählen Sie die Zielportgruppe aus"]
+image::vmware-vcf-aff-image39.png[Wählen Sie die Zielportgruppe aus]
 
 +
 {Nbsp}
@@ -178,14 +178,14 @@ image:vmware-vcf-aff-image39.png["Wählen Sie die Zielportgruppe aus"]
 . Behalten Sie auf der Seite *Port Properties* die Standardeinstellungen (keine aktivierten Dienste) bei und klicken Sie auf *Weiter*, um fortzufahren.
 . Geben Sie auf der Seite *IPv4 settings* die *IP-Adresse*, *Subnetzmaske* ein, und geben Sie eine neue Gateway-IP-Adresse ein (nur bei Bedarf). Klicken Sie auf *Weiter*, um fortzufahren.
 +
-image:vmware-vcf-aff-image40.png["VMkernel IPv4-Einstellungen"]
+image::vmware-vcf-aff-image40.png[VMkernel IPv4-Einstellungen]
 
 +
 {Nbsp}
 
 . Überprüfen Sie Ihre Auswahl auf der Seite *Ready to Complete* und klicken Sie auf *Finish*, um den VMkernel-Adapter zu erstellen.
 +
-image:vmware-vcf-aff-image41.png["Prüfen Sie die VMkernel-Auswahl"]
+image::vmware-vcf-aff-image41.png[Prüfen Sie die VMkernel-Auswahl]
 
 
 
@@ -211,14 +211,14 @@ Füllen Sie die folgenden Schritte aus, um ONTAP Tools für VMware vSphere zu im
 . Melden Sie sich bei der vCenter Appliance für die VCF-Managementdomäne an.
 . Klicken Sie in der vCenter-Appliance-Oberfläche mit der rechten Maustaste auf den Management-Cluster und wählen Sie *Deploy OVF Template…* aus
 +
-image:vmware-vcf-aff-image21.png["OVF-Vorlage bereitstellen..."]
+image::vmware-vcf-aff-image21.png[OVF-Vorlage bereitstellen...]
 
 +
 {Nbsp}
 
 . Klicken Sie im Assistenten *OVF-Vorlage bereitstellen* auf das Optionsfeld *Lokale Datei* und wählen Sie die im vorherigen Schritt heruntergeladene OVA-Datei für ONTAP-Tools aus.
 +
-image:vmware-vcf-aff-image22.png["Wählen Sie die OVA-Datei aus"]
+image::vmware-vcf-aff-image22.png[Wählen Sie die OVA-Datei aus]
 
 +
 {Nbsp}
@@ -226,14 +226,14 @@ image:vmware-vcf-aff-image22.png["Wählen Sie die OVA-Datei aus"]
 . Wählen Sie für die Schritte 2 bis 5 des Assistenten einen Namen und Ordner für die VM aus, wählen Sie die Rechenressource aus, überprüfen Sie die Details und akzeptieren Sie die Lizenzvereinbarung.
 . Wählen Sie für den Speicherort der Konfigurations- und Festplattendateien den vSAN Datastore des VCF Management Domain Clusters aus.
 +
-image:vmware-vcf-aff-image23.png["Wählen Sie die OVA-Datei aus"]
+image::vmware-vcf-aff-image23.png[Wählen Sie die OVA-Datei aus]
 
 +
 {Nbsp}
 
 . Wählen Sie auf der Seite Netzwerk auswählen das Netzwerk aus, das für den Verwaltungsdatenverkehr verwendet wird.
 +
-image:vmware-vcf-aff-image24.png["Wählen Sie Netzwerk aus"]
+image::vmware-vcf-aff-image24.png[Wählen Sie Netzwerk aus]
 
 +
 {Nbsp}
@@ -252,10 +252,10 @@ image:vmware-vcf-aff-image24.png["Wählen Sie Netzwerk aus"]
 Klicken Sie auf *Weiter*, um fortzufahren.
 
 +
-image:vmware-vcf-aff-image25.png["OTV-Vorlage anpassen 1"]
+image::vmware-vcf-aff-image25.png[OTV-Vorlage anpassen 1]
 
 +
-image:vmware-vcf-asa-image35.png["OTV-Vorlage anpassen 2"]
+image::vmware-vcf-asa-image35.png[OTV-Vorlage anpassen 2]
 
 +
 {Nbsp}
@@ -278,7 +278,7 @@ image::vmware-asa-image6.png[NetApp ONTAP-Tools]
 
 . Wählen Sie aus dem Dropdown-Menü *INSTANCE* in der Benutzeroberfläche des ONTAP-Tools die OTV-Instanz aus, die der zu verwaltenden Workload-Domain zugeordnet ist.
 +
-image:vmware-vcf-asa-image36.png["Wählen Sie OTV-Instanz"]
+image::vmware-vcf-asa-image36.png[Wählen Sie OTV-Instanz]
 
 +
 {Nbsp}

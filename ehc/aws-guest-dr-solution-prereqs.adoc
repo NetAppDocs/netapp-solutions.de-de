@@ -199,7 +199,7 @@ Die folgenden Administrationsaufgaben müssen zum Aufbau einer DR-Lösung mit VM
 ====
 In der virtuellen VMware Umgebung sind Lizenzen für ESXi Hosts, VMware vCenter Server, NSX-Netzwerke und andere Komponenten enthalten, wie dies in der folgenden Abbildung zu sehen ist. Sie werden alle unterschiedlich lizenziert. Es ist wichtig zu verstehen, wie die zugrunde liegenden Komponenten die verfügbare lizenzierte Kapazität nutzen.
 
-image:dr-vmc-aws-image2.png[""]
+image::dr-vmc-aws-image2.png[dr vmc aws image2]
 
 .ESXi-Hosts
 [%collapsible]
@@ -493,7 +493,7 @@ NOTE: Wenn der IPSec-VPN-Tunnel nicht auf dem Standard-Gateway erstellt wird, m�
 
 Die folgende Abbildung zeigt typische VPN-Verbindungsoptionen.
 
-image:dr-vmc-aws-image3.png[""]
+image::dr-vmc-aws-image3.png[dr vmc aws image3]
 
 =====
 .Direktverbindung
@@ -505,7 +505,7 @@ Die Router-Ausrüstung des Kunden muss sich an einem AWS Direct Connect-Standort
 
 Die folgende Abbildung zeigt die Optionen für die Direct Connect-Schnittstelle.
 
-image:dr-vmc-aws-image4.png[""]
+image::dr-vmc-aws-image4.png[dr vmc aws image4]
 
 =====
 .Transit Gateway
@@ -529,7 +529,7 @@ VMware Cloud SDDC kann in einer einzelnen Verfügbarkeitszone implementiert werd
 
 Um die Datentransferkosten zu minimieren, sollten VMware Cloud SDDC und AWS Instanzen oder Services in derselben Verfügbarkeitszone gehalten werden. NetApp ist besser mit einer Verfügbarkeitszone-ID und nicht mit einem Namen abzustimmen, da AWS die auf das Konto spezifische AZ-Auftragsliste bereitstellt, um die Last über Verfügbarkeitszonen zu verteilen. Ein Konto (US-Ost-1a) könnte beispielsweise auf die AZ-ID 1 verweisen, ein anderer Account (US-Ost-1c) könnte auf die AZ-ID 1 verweisen. Die Verfügbarkeitszone-ID kann auf verschiedene Weise abgerufen werden. Im folgenden Beispiel haben wir die AZ-ID aus dem VPC-Subnetz abgerufen.
 
-image:dr-vmc-aws-image5.png[""]
+image::dr-vmc-aws-image5.png[dr vmc aws image5]
 
 Im VMware Cloud SDDC wird die Netzwerkumgebung über NSX gemanagt. Das Edge-Gateway (Tier-0 Router) für den Nord-Süd-Traffic-Uplink-Port ist mit der AWS VPC verbunden. Das Computing-Gateway und die Management Gateways (Tier-1 Router) verarbeiten Ost-West-Datenverkehr. Wenn die Uplink-Ports des Edge stark verwendet werden, können Sie Traffic-Gruppen erstellen, die mit bestimmten Host-IPs oder Subnetzen verknüpft werden. Durch die Erstellung einer Datenverkehrsgruppe werden zusätzliche Edge-Nodes zum Trennen des Datenverkehrs erstellt. Prüfen Sie die https://docs.vmware.com/en/VMware-Cloud-on-AWS/services/com.vmware.vmc-aws-networking-security/GUID-306D3EDC-F94E-4216-B306-413905A4A784.html["VMware Dokumentation"^] Wählen Sie die Mindestanzahl der vSphere Hosts aus, die für die Verwendung eines MultiEdge-Setups erforderlich sind.
 
@@ -540,7 +540,7 @@ Wenn Sie VMware Cloud SDDC bereitstellen, sind die VMkernel-Ports bereits konfig
 
 Folgende Abbildung zeigt Beispielinformationen für den Host VMkernel.
 
-image:dr-vmc-aws-image6.png[""]
+image::dr-vmc-aws-image6.png[dr vmc aws image6]
 
 =====
 .Bereitgestellte Storage-Netzwerke (iSCSI, NFS)
@@ -573,7 +573,7 @@ Wir verwendeten ONTAP Storage für die VMware Datenspeicher, die die Virtual Mac
 
 In der folgenden Abbildung sind die VMware Storage-Optionen dargestellt.
 
-image:dr-vmc-aws-image7.png[""]
+image::dr-vmc-aws-image7.png[dr vmc aws image7]
 
 ONTAP Volumes wurden für iSCSI- und über NFS-Gast-verbundenen Storage für unsere Applikations-VMs eingesetzt. Folgende Storage-Protokolle wurden für Applikationsdaten verwendet:
 
@@ -622,7 +622,7 @@ Nach der Implementierung von FSX ONTAP ziehen Sie die ONTAP Instanzen vor Ort pe
 
 Die folgende Abbildung zeigt unsere FSX ONTAP-Umgebung.
 
-image:dr-vmc-aws-image8.png[""]
+image::dr-vmc-aws-image8.png[dr vmc aws image8]
 
 =====
 .Netzwerkschnittstellen erstellt
@@ -657,7 +657,7 @@ Wir haben 10 Windows Server 2019 VMs mit SQL Server 2019 mit unterschiedlichen D
 ====
 Wir haben ein SDDC in VMware Cloud auf AWS mit zwei Hosts implementiert, um die von unserem primären Standort aus wiederhergestellten Virtual Machines zum Ausführen von zwei Hosts bereitzustellen.
 
-image:dr-vmc-aws-image9.png[""]
+image::dr-vmc-aws-image9.png[dr vmc aws image9]
 
 ====
 

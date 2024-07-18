@@ -44,21 +44,21 @@ Ein vollständiger Datenbank-Snapshot umfasst alle Oracle Dateien, einschließli
 
 . Melden Sie sich in der Benutzeroberfläche von SnapCenter an und klicken Sie im Menü auf der linken Seite auf „Ressourcen“. Wechseln Sie im Dropdown-Menü Ansicht in die Ansicht Ressourcengruppe.
 +
-image:aws_rds_custom_deploy_snp_10.PNG[""]
+image::aws_rds_custom_deploy_snp_10.PNG[aws rds: Benutzerdefiniertes Deploy snp 10]
 
 . Klicken Sie auf den Namen der vollständigen Backup-Ressource, und klicken Sie dann auf das Symbol Jetzt sichern, um ein Add-hoc-Backup zu starten.
 +
-image:aws_rds_custom_deploy_snp_11.PNG[""]
+image::aws_rds_custom_deploy_snp_11.PNG[aws rds: Benutzerdefiniertes Deploy snp 11]
 
 . Klicken Sie auf Backup und bestätigen Sie dann das Backup, um eine vollständige Datenbank-Sicherung zu starten.
 +
-image:aws_rds_custom_deploy_snp_12.PNG[""]
+image::aws_rds_custom_deploy_snp_12.PNG[aws rds: Benutzerdefiniertes Deploy snp 12]
 
 +
 Öffnen Sie in der Ansicht „Ressource“ für die Datenbank die Seite „verwaltete Backupkopien für die Datenbank“, um zu überprüfen, ob die einmalige Sicherung erfolgreich abgeschlossen wurde. Ein vollständiges Datenbank-Backup erstellt zwei Snapshots: Einen für das Daten-Volume und einen für das Log-Volume.
 
 +
-image:aws_rds_custom_deploy_snp_13.PNG[""]
+image::aws_rds_custom_deploy_snp_13.PNG[aws rds: Benutzerdefiniertes Deploy snp 13]
 
 
 
@@ -70,21 +70,21 @@ Ein Snapshot für das Archivprotokoll wird nur für das Oracle Archiv-Log-Volume
 
 . Melden Sie sich in der Benutzeroberfläche von SnapCenter an und klicken Sie in der Menüleiste links auf die Registerkarte „Ressourcen“. Wechseln Sie im Dropdown-Menü Ansicht in die Ansicht Ressourcengruppe.
 +
-image:aws_rds_custom_deploy_snp_10.PNG[""]
+image::aws_rds_custom_deploy_snp_10.PNG[aws rds: Benutzerdefiniertes Deploy snp 10]
 
 . Klicken Sie auf den Namen der Backup-Ressource protokollieren und klicken Sie dann auf das Symbol Jetzt sichern, um eine zusätzliche Sicherung für Archivprotokolle zu starten.
 +
-image:aws_rds_custom_deploy_snp_14.PNG[""]
+image::aws_rds_custom_deploy_snp_14.PNG[aws rds: Benutzerdefiniertes Deploy snp 14]
 
 . Klicken Sie auf Backup und bestätigen Sie dann das Backup, um eine Archiv-Log-Sicherung zu starten.
 +
-image:aws_rds_custom_deploy_snp_15.PNG[""]
+image::aws_rds_custom_deploy_snp_15.PNG[aws rds: Benutzerdefiniertes Deploy snp 15]
 
 +
 Öffnen Sie in der Ansicht „Ressource“ für die Datenbank die Seite „verwaltete Backupkopien für die Datenbank“, um zu überprüfen, ob die Sicherungskopie für das einmalige Archivprotokoll erfolgreich abgeschlossen wurde. Ein Backup des Archivprotokolls erstellt einen Snapshot für das Protokollvolumen.
 
 +
-image:aws_rds_custom_deploy_snp_16.PNG[""]
+image::aws_rds_custom_deploy_snp_16.PNG[aws rds: Benutzerdefiniertes Deploy snp 16]
 
 
 
@@ -96,23 +96,26 @@ Eine zeitpunktgenaue SnapCenter Wiederherstellung wird auf demselben EC2 Instanz
 
 . Klicken Sie auf der Registerkarte SnapCenter-Ressourcen > Datenbank auf den Datenbanknamen, um das Datenbank-Backup zu öffnen.
 +
-image:aws_rds_custom_deploy_snp_17.PNG[""]
+image::aws_rds_custom_deploy_snp_17.PNG[aws rds: Benutzerdefiniertes Deploy snp 17]
 
 . Wählen Sie die Datenbank-Backup-Kopie und den gewünschten Zeitpunkt für die Wiederherstellung aus. Markieren Sie auch die entsprechende SCN-Nummer für den Point-in-Time. Die Point-in-Time-Wiederherstellung kann entweder mit der Zeit oder mit dem SCN durchgeführt werden.
 +
-image:aws_rds_custom_deploy_snp_18.PNG[""]
+image::aws_rds_custom_deploy_snp_18.PNG[aws rds: Benutzerdefiniertes Deploy snp 18]
 
 . Markieren Sie den Snapshot des Protokollvolumens, und klicken Sie auf die Schaltfläche Mount, um das Volume zu mounten.
 +
-image:aws_rds_custom_deploy_snp_19.PNG[""]
+image::aws_rds_custom_deploy_snp_19.PNG[aws rds: Benutzerdefiniertes Deploy snp 19]
 
 . Wählen Sie die primäre EC2-Instanz, um das Protokoll-Volume zu mounten.
 +
-image:aws_rds_custom_deploy_snp_20.PNG[""]
+image::aws_rds_custom_deploy_snp_20.PNG[aws rds: Benutzerdefiniertes Deploy snp 20]
 
 . Vergewissern Sie sich, dass der Mount-Job erfolgreich abgeschlossen wurde. Überprüfen Sie auch auf dem EC2 Instance-Host, um das gemountete Protokoll-Volume und auch den Mount Point-Pfad zu sehen.
 +
-image:aws_rds_custom_deploy_snp_21_1.PNG[""] image:aws_rds_custom_deploy_snp_21_2.PNG[""]
+image::aws_rds_custom_deploy_snp_21_1.PNG[aws rds: Benutzerdefiniertes Deploy snp 21 1]
+
++
+image::aws_rds_custom_deploy_snp_21_2.PNG[aws rds: Benutzerdefiniertes Deploy snp 21 2]
 
 . Kopieren Sie die Archivprotokolle vom gemounteten Protokollvolume in das aktuelle Archivprotokollverzeichnis.
 +
@@ -122,39 +125,39 @@ image:aws_rds_custom_deploy_snp_21_1.PNG[""] image:aws_rds_custom_deploy_snp_21_
 ----
 . Kehren Sie zur Registerkarte SnapCenter-Ressourcen > Seite Datenbank-Backup zurück, markieren Sie die Daten-Snapshot-Kopie und klicken Sie auf die Schaltfläche Wiederherstellen, um den Workflow zur Datenbankwiederherstellung zu starten.
 +
-image:aws_rds_custom_deploy_snp_22.PNG[""]
+image::aws_rds_custom_deploy_snp_22.PNG[aws rds: Benutzerdefiniertes Deploy snp 22]
 
 . Überprüfen Sie „Alle Datendateien“ und „Datenbankstatus ändern, falls erforderlich für Restore und Recovery“, und klicken Sie auf Weiter.
 +
-image:aws_rds_custom_deploy_snp_23.PNG[""]
+image::aws_rds_custom_deploy_snp_23.PNG[aws rds: Benutzerdefiniertes Deploy snp 23]
 
 . Wählen Sie einen gewünschten Wiederherstellungsumfang mit SCN oder Time aus. Statt die gemounteten Archivprotokolle wie in Schritt 6 gezeigt in das aktuelle Logverzeichnis zu kopieren, kann der gemountete Archiv-Log-Pfad in "Geben Sie externe Archiv-Log-Dateien Speicherorte" zur Wiederherstellung aufgelistet werden.
 +
-image:aws_rds_custom_deploy_snp_24_1.PNG[""]
+image::aws_rds_custom_deploy_snp_24_1.PNG[aws rds: Benutzerdefiniertes Deploy snp 24 1]
 
 . Geben Sie bei Bedarf ein optionales Preskript an.
 +
-image:aws_rds_custom_deploy_snp_25.PNG[""]
+image::aws_rds_custom_deploy_snp_25.PNG[aws rds: Benutzerdefiniertes Deploy snp 25]
 
 . Geben Sie ggf. ein optionales Nachskript an, das ausgeführt werden soll. Überprüfen Sie die geöffnete Datenbank nach der Wiederherstellung.
 +
-image:aws_rds_custom_deploy_snp_26.PNG[""]
+image::aws_rds_custom_deploy_snp_26.PNG[aws rds: Benutzerdefiniertes Deploy snp 26]
 
 . Geben Sie einen SMTP-Server und eine E-Mail-Adresse an, wenn eine Jobbenachrichtigung erforderlich ist.
 +
-image:aws_rds_custom_deploy_snp_27.PNG[""]
+image::aws_rds_custom_deploy_snp_27.PNG[aws rds: Benutzerdefiniertes Deploy snp 27]
 
 . Stellen Sie die Jobübersicht wieder her. Klicken Sie auf Fertig stellen, um den Wiederherstellungsauftrag zu starten.
 +
-image:aws_rds_custom_deploy_snp_28.PNG[""]
+image::aws_rds_custom_deploy_snp_28.PNG[aws rds: Benutzerdefiniertes Deploy snp 28]
 
 . Validieren Sie die Wiederherstellung aus SnapCenter.
 +
-image:aws_rds_custom_deploy_snp_29_1.PNG[""]
+image::aws_rds_custom_deploy_snp_29_1.PNG[aws rds: Benutzerdefiniertes Deploy snp 29 1]
 
 . Validieren Sie die Wiederherstellung über den EC2 Instance Host.
 +
-image:aws_rds_custom_deploy_snp_29_2.PNG[""]
+image::aws_rds_custom_deploy_snp_29_2.PNG[aws rds: Benutzerdefiniertes Deploy snp 29 2]
 
 . Um die Bereitstellung des Wiederherstellungsprotokollvolumens aufzuheben, kehren Sie die Schritte in Schritt 4 um.
 
@@ -167,53 +170,56 @@ Der folgende Abschnitt zeigt, wie der Workflow für SnapCenter-Klone zum Erstell
 
 . Erstellen Sie mit der vollständigen Backup-Ressourcengruppe ein vollständiges Snapshot-Backup der primären Datenbank von SnapCenter.
 +
-image:aws_rds_custom_deploy_replica_02.PNG[""]
+image::aws_rds_custom_deploy_replica_02.PNG[aws rds: Benutzerdefinierte Bereitstellung von Replikat 02]
 
 . Öffnen Sie auf der Registerkarte SnapCenter-Ressource > Datenbank die Seite Datenbank-Backup-Verwaltung für die primäre Datenbank, aus der das Replikat erstellt werden soll.
 +
-image:aws_rds_custom_deploy_replica_04.PNG[""]
+image::aws_rds_custom_deploy_replica_04.PNG[aws rds: Benutzerdefinierte Bereitstellung von Replikat 04]
 
 . Mounten Sie den in Schritt 4 erstellte Protokoll-Volume-Snapshot zum Standby-EC2-Instanz-Host.
 +
-image:aws_rds_custom_deploy_replica_13.PNG[""] image:aws_rds_custom_deploy_replica_14.PNG[""]
+image::aws_rds_custom_deploy_replica_13.PNG[aws rds: Benutzerdefinierte Bereitstellung von Replikat 13]
+
++
+image::aws_rds_custom_deploy_replica_14.PNG[aws rds: Benutzerdefinierte Bereitstellung von Replikat 14]
 
 . Markieren Sie die für das Replikat zu klonenden Snapshot Kopie und klicken Sie auf die Schaltfläche Klonen, um das Klonverfahren zu starten.
 +
-image:aws_rds_custom_deploy_replica_05.PNG[""]
+image::aws_rds_custom_deploy_replica_05.PNG[aws rds: Benutzerdefinierte Bereitstellung von Replikat 05]
 
 . Ändern Sie den Namen der Replikatkopie, damit sie sich vom Namen der primären Datenbank unterscheidet. Klicken Sie Auf Weiter.
 +
-image:aws_rds_custom_deploy_replica_06.PNG[""]
+image::aws_rds_custom_deploy_replica_06.PNG[aws rds: Benutzerdefinierte Bereitstellung von Replikat 06]
 
 . Ändern Sie den Klon-Host auf den Standby-EC2-Host, akzeptieren Sie die Standardbenennung und klicken Sie auf Weiter.
 +
-image:aws_rds_custom_deploy_replica_07.PNG[""]
+image::aws_rds_custom_deploy_replica_07.PNG[aws rds: Benutzerdefinierte Bereitstellung von Replikat 07]
 
 . Ändern Sie Ihre Oracle-Starteinstellungen auf die für den Oracle-Zielserver-Host konfigurierten Einstellungen, und klicken Sie auf Weiter.
 +
-image:aws_rds_custom_deploy_replica_08.PNG[""]
+image::aws_rds_custom_deploy_replica_08.PNG[aws rds: Benutzerdefinierte Bereitstellung von Replikat 08]
 
 . Geben Sie einen Wiederherstellungspunkt mit entweder Time oder dem SCN und dem angehängten Archivprotokollpfad an.
 +
-image:aws_rds_custom_deploy_replica_15.PNG[""]
+image::aws_rds_custom_deploy_replica_15.PNG[aws rds: Benutzerdefinierte Bereitstellung von Replikat 15]
 
 . Senden Sie bei Bedarf die SMTP-E-Mail-Einstellungen.
 +
-image:aws_rds_custom_deploy_replica_11.PNG[""]
+image::aws_rds_custom_deploy_replica_11.PNG[aws rds: Benutzerdefinierte Bereitstellung von Replikat 11]
 
 . Klonen Sie die Jobübersicht, und klicken Sie auf Fertig stellen, um den Klonauftrag zu starten.
 +
-image:aws_rds_custom_deploy_replica_12.PNG[""]
+image::aws_rds_custom_deploy_replica_12.PNG[aws rds: Benutzerdefinierte Bereitstellung von Replikat 12]
 
 . Überprüfen Sie das Klon-Jobprotokoll, indem Sie das Klon-Jobprotokoll überprüfen.
 +
-image:aws_rds_custom_deploy_replica_17.PNG[""]
+image::aws_rds_custom_deploy_replica_17.PNG[aws rds: Benutzerdefinierte Bereitstellung von Replikat 17]
 
 +
 Die geklonte Datenbank ist sofort in SnapCenter registriert.
 
 +
-image:aws_rds_custom_deploy_replica_18.PNG[""]
+image::aws_rds_custom_deploy_replica_18.PNG[aws rds: Benutzerdefinierte Bereitstellung von Replikat 18]
 
 . Deaktivieren Sie den Oracle Archivprotokollmodus. Melden Sie sich als oracle-Benutzer bei der EC2-Instanz an und führen Sie den folgenden Befehl aus:
 +

@@ -97,7 +97,7 @@ Greifen Sie auf den ROSA-Cluster zu, indem Sie einen Admin-Benutzer mit dem folg
 
 Der Befehl liefert eine Ausgabe, die wie folgt aussieht. Melden Sie sich mit dem beim Cluster an `oc login` In der Ausgabe bereitgestellter Befehl.
 
-image:rhhc-rosa-cluster-admin-create.png[""]
+image::rhhc-rosa-cluster-admin-create.png[RHHC rosa Cluster-Admin erstellen]
 
 
 NOTE: Sie können sich auch mit einem Token beim Cluster anmelden. Wenn Sie zum Zeitpunkt der Cluster-Erstellung bereits einen Admin-Benutzer erstellt haben, können Sie sich über die Red hat OpenShift Hybrid Cloud-Konsole mit den Anmeldedaten des Admin-Benutzers beim Cluster anmelden. Klicken Sie dann auf die obere rechte Ecke, wo der Name des angemeldeten Benutzers angezeigt wird, um den zu erhalten `oc login` Befehl (Token Login) für die Befehlszeile.
@@ -114,16 +114,17 @@ Befolgen Sie die Anweisungen link:https://docs.netapp.com/us-en/astra-control-se
 
 Installieren Sie Astra Trident (neueste Version) im ROSA Cluster. Um dies zu tun, können Sie eine der angegebenen Verfahren befolgen link:https://docs.netapp.com/us-en/trident/trident-get-started/kubernetes-deploy.html["Hier"]. Um Trident über das Helm von der Cluster-Konsole zu installieren, erstellen Sie zuerst ein Projekt mit dem Namen Trident.
 
-image:rhhc-trident-project-create.png[""]
+image::rhhc-trident-project-create.png[RHHC-Dreizack-Projekt erstellen]
 
 Erstellen Sie dann in der Entwickleransicht ein Helmdiagramm-Repository. Verwenden Sie für das URL-Feld `'https://netapp.github.io/trident-helm-chart'`. Erstellen Sie dann ein Helm Release für den Trident Operator.
 
-image:rhhc-helm-repo-create.png[""]
-image:rhhc-helm-release-create.png[""]
+image::rhhc-helm-repo-create.png[Rhhc Helm Repo erstellen]
+
+image::rhhc-helm-release-create.png[RHHC-Ruderfreigabe erstellen]
 
 Überprüfen Sie, ob alle Stativpods ausgeführt werden, indem Sie zur Administratoransicht auf der Konsole zurückkehren und Pods im Dreizack-Projekt auswählen.
 
-image:rhhc-trident-installed.png[""]
+image::rhhc-trident-installed.png[RHHC Dreizack installiert]
 
 
 
@@ -134,7 +135,7 @@ Verwenden Sie die unten abgebildeten yaml-Dateien, um ein dreigespanntes Backend
 
 NOTE: Sie können die Objekte über die Befehlszeile erstellen oder mit den yaml-Dateien von der Hybrid Cloud-Konsole aus erstellen.
 
-image:rhhc-fsx-details.png[""]
+image::rhhc-fsx-details.png[Rhhc fsx-Details]
 
 **Trident Back-End-Konfiguration**
 
@@ -191,13 +192,13 @@ deletionPolicy: Delete
 ----
 Stellen Sie sicher, dass die Objekte von Backend, Storage-Klasse und Trident-snapshotclass mit den unten gezeigten Befehlen erstellt werden.
 
-image:rhhc-tbc-sc-verify.png[""]
+image::rhhc-tbc-sc-verify.png[Rhhc tbc sc-Verifikation]
 
 Zu diesem Zeitpunkt ist eine wichtige Änderung erforderlich, ontap-nas statt gp3 als Standard-Storage-Klasse einzustellen, damit die später zu implementierende postgresql-Applikation die Standard-Storage-Klasse verwenden kann. Wählen Sie in der OpenShift-Konsole Ihres Clusters unter Storage StorageClasses aus. Bearbeiten Sie die Annotation der aktuellen Standardklasse mit „false“ und fügen Sie die Annotation storageclass.kubernetes.io/is-default-class für die ontap-nas Storage-Klasse auf „true“ ein.
 
-image:rhhc-change-default-sc.png[""]
+image::rhhc-change-default-sc.png[Rhhc Standard-sc ändern]
 
-image:rhhc-default-sc.png[""]
+image::rhhc-default-sc.png[Rhhc Standard-sc]
 
 
 
@@ -207,25 +208,22 @@ Sie können die Anwendung über die Befehlszeile wie folgt bereitstellen:
 
 `helm install postgresql bitnami/postgresql -n postgresql --create-namespace`
 
-image:rhhc-postgres-install.png[""]
+image::rhhc-postgres-install.png[Rhhc postgres-Installation]
 
 
-NOTE: Wenn die Anwendungspads nicht ausgeführt werden, kann es aufgrund von Einschränkungen im Sicherheitskontext zu einem Fehler kommen.
-image:rhhc-scc-error.png[""]
-Beheben Sie den Fehler, indem Sie den bearbeiten `runAsUser` Und `fsGroup` Felder in `statefuleset.apps/postgresql` Objekt mit der UID, die sich in der Ausgabe des befindet `oc get project` Wie unten gezeigt.
-image:rhhc-scc-fix.png[""]
+NOTE: Wenn die Anwendungspads nicht ausgeführt werden, kann es aufgrund von Einschränkungen im Sicherheitskontext zu einem Fehler kommen. Bild::rhhc-scc-error.png[] Beheben Sie den Fehler, indem Sie die Felder und im Objekt mit der UID bearbeiten `runAsUser` `fsGroup` `statefuleset.apps/postgresql` , die in der Ausgabe des Befehls enthalten ist `oc get project` , wie unten gezeigt. Bild::rhhc-scc-fix.png[]
 
 die postgresql-App sollte ausgeführt werden und persistente Volumes verwenden, die von Amazon FSX für NetApp ONTAP-Storage unterstützt werden.
 
-image:rhhc-postgres-running.png[""]
+image::rhhc-postgres-running.png[Rhhc postgres wird ausgeführt]
 
-image:rhhc-postgres-pvc.png[""]
+image::rhhc-postgres-pvc.png[RHHC postgres pvc]
 
 
 
 ==== **6. Erstellen Sie eine Datenbank und fügen Sie einen Datensatz hinzu**
 
-image:rhhc-postgres-db-create.png[""]
+image::rhhc-postgres-db-create.png[Rhhc postgres db erstellen]
 
 
 
@@ -233,11 +231,11 @@ image:rhhc-postgres-db-create.png[""]
 
 Melden Sie sich bei ACS an. Wählen Sie Cluster aus, und klicken Sie auf Hinzufügen. Wählen Sie andere aus, und laden Sie die Datei kubeconfig hoch oder fügen Sie sie ein.
 
-image:rhhc-acs-add-1.png[""]
+image::rhhc-acs-add-1.png[Rhhc acs Add 1]
 
 Klicken Sie auf *Weiter* und wählen Sie ontap-nas als Standard-Storage-Klasse für ACS aus. Klicken Sie auf *Weiter*, überprüfen Sie die Details und *Hinzufügen* den Cluster.
 
-image:rhhc-acs-add-2.png[""]
+image::rhhc-acs-add-2.png[Rhhc acs Add 2]
 
 
 
@@ -245,7 +243,7 @@ image:rhhc-acs-add-2.png[""]
 
 Definieren Sie die postgresql-Anwendung in ACS. Wählen Sie auf der Landing Page *Applications*, *define* aus und geben Sie die entsprechenden Details ein. Klicken Sie ein paar Mal auf *Weiter*, überprüfen Sie die Details und klicken Sie auf *Definieren*. Die Anwendung wird zu ACS hinzugefügt.
 
-image:rhhc-acs-add-2.png[""]
+image::rhhc-acs-add-2.png[Rhhc acs Add 2]
 
 
 
@@ -255,9 +253,9 @@ Es gibt viele Möglichkeiten, einen Snapshot in ACS zu erstellen. Sie können di
 
 Erstellen Sie einen On-Demand-Snapshot, indem Sie einfach auf *Create Snapshot* klicken, einen Namen angeben, die Details überprüfen und auf *Snapshot* klicken. Nach Abschluss des Vorgangs ändert sich der Snapshot-Status in „funktionstüchtiger Zustand“.
 
-image:rhhc-snapshot-create.png[""]
+image::rhhc-snapshot-create.png[Snapshot von RHC erstellen]
 
-image:rhhc-snapshot-on-demand.png[""]
+image::rhhc-snapshot-on-demand.png[Snapshot on-Demand]
 
 
 
@@ -265,7 +263,7 @@ image:rhhc-snapshot-on-demand.png[""]
 
 Melden Sie sich wieder bei postgresql an, Listen Sie die verfügbaren Datenbanken auf, löschen Sie die zuvor erstellte Datenbank und führen Sie sie erneut auf, um sicherzustellen, dass die Datenbank gelöscht wurde.
 
-image:rhhc-postgres-db-delete.png[""]
+image::rhhc-postgres-db-delete.png[Rhhc postgres db delete]
 
 
 
@@ -273,11 +271,11 @@ image:rhhc-postgres-db-delete.png[""]
 
 Um die Anwendung von einem Snapshot wiederherzustellen, gehen Sie zur ACS-UI-Landing Page, wählen Sie die Anwendung aus und wählen Sie Wiederherstellen. Sie müssen einen Snapshot oder ein Backup auswählen, von dem aus wiederhergestellt werden soll. (In der Regel würden auf Basis einer von Ihnen konfigurierten Richtlinie mehrere erstellt werden.) Treffen Sie in den nächsten Bildschirmanzeigen die richtige Auswahl und klicken Sie dann auf *Wiederherstellen*. Der Anwendungsstatus wechselt von Wiederherstellen zu verfügbar, nachdem er aus dem Snapshot wiederhergestellt wurde.
 
-image:rhhc-app-restore-1.png[""]
+image::rhhc-app-restore-1.png[RHHC-App-Wiederherstellung 1]
 
-image:rhhc-app-restore-2.png[""]
+image::rhhc-app-restore-2.png[Wiederherstellung der rhhc-App 2]
 
-image:rhhc-app-restore-3.png[""]
+image::rhhc-app-restore-3.png[Wiederherstellung der rhhc-App 3]
 
 
 
@@ -285,4 +283,4 @@ image:rhhc-app-restore-3.png[""]
 
 Melden Sie sich beim postgresql-Client an und Sie sollten nun die Tabelle und den Datensatz in der Tabelle sehen, die Sie zuvor hatten.  Das ist alles. Durch Klicken auf eine Schaltfläche wurde Ihre Anwendung in einen früheren Zustand zurückgesetzt. So einfach machen wir es unseren Kunden mit Astra Control.
 
-image:rhhc-app-restore-verify.png[""]
+image::rhhc-app-restore-verify.png[Rhhc-App-Wiederherstellung überprüfen]

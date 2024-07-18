@@ -21,12 +21,12 @@ In der Umgebung wird die Oracle Computing-Instanz über eine Azure Services VM K
 
 Oracle Datenbank-Storage hingegen wird mit dem Azure NetApp Files Service bereitgestellt, der über die Azure-Konsole verfügbar ist. Die Oracle Binär-, Daten- oder Log-Volumes werden anschließend präsentiert und auf einem Azure VM Instance Linux-Host gemountet.
 
-image:db_ora_azure_anf_architecture.PNG["Dieses Bild zeigt die Beziehung zwischen dem primären Standort, dem Standby-Standort und dem vnet Peering jeder dieser Standorte. Dies bildet vier separate virtuelle Netzwerke."]
+image::db_ora_azure_anf_architecture.PNG[Dieses Bild zeigt die Beziehung zwischen dem primären Standort, dem Standby-Standort und dem vnet Peering jeder dieser Standorte. Dies bildet vier separate virtuelle Netzwerke.]
 
 In vielerlei Hinsicht ist die Implementierung von Azure NetApp Files in Azure Cloud einer ONTAP Storage-Architektur vor Ort mit vielen integrierten Redundanzen wie RAID und Dual-Controller sehr ähnlich. Für Disaster Recovery kann ein Standby-Standort in verschiedenen Regionen eingerichtet werden, und die Datenbank kann mithilfe der Replizierung auf Applikationsebene (z. B. Oracle Data Guard) mit dem primären Standort synchronisiert werden.
 
 In unserer Testvalidierung für die Implementierung und Datensicherung von Oracle Datenbanken wird die Oracle Datenbank auf einer einzelnen Azure VM bereitgestellt, wie im folgenden Diagramm dargestellt:
 
-image:db_ora_azure_anf_architecture2.PNG["Dieses Bild zeigt die Organisation einer einzelnen Azure VM mit vnet Peering, um zwei separate virtuelle Netzwerke zu erstellen."]
+image::db_ora_azure_anf_architecture2.PNG[Dieses Bild zeigt die Organisation einer einzelnen Azure VM mit vnet Peering, um zwei separate virtuelle Netzwerke zu erstellen.]
 
 Die Azure Oracle Umgebung kann mit einem Ansible-Controller-Node zur Automatisierung mithilfe von NetApp Tool Kits für Datenbankbereitstellung, Backup, Recovery und Datenbankmigration gemanagt werden. Alle Updates zum Betriebssystemkern oder Oracle Patching der Oracle Azure VM Instance können parallel ausgeführt werden, um das primäre und das Standby-System synchron zu halten. Die anfänglichen Toolkits können sogar problemlos erweitert werden, um bei Bedarf tägliche Oracle-Aufgaben durchzuführen. Informationen zum Einrichten eines CLI-Ansible-Controllers finden Sie unter link:../automation/automation_introduction.html["Automatisierung der NetApp Lösung"^] Und legen Sie los.

@@ -69,7 +69,7 @@ In diesem Tutorial erfahren Sie, wie Sie verschiedene AWS-Services für die Erst
 
 == Der Netapp Architektur Sind
 
-image:mlops_fsxn_cictcd_0.png["Der Netapp Architektur Sind"]
+image::mlops_fsxn_cictcd_0.png[Der Netapp Architektur Sind]
 
 Diese MLOPS-Pipeline ist eine praktische Implementierung, die mithilfe eines Cron-Jobs eine serverlose Funktion auslöst, die wiederum einen AWS-Service ausführt, der mit einer Lifecycle-Callback-Funktion registriert ist. Die *AWS EventBridge* fungiert als Cron-Job. Es ruft regelmäßig eine *AWS Lambda-Funktion* auf, die für die Umschulung und Neuimplementierung des Modells verantwortlich ist. Bei diesem Vorgang wird die *AWS SageMaker Notebook*-Instanz hochgefahren, um die erforderlichen Aufgaben auszuführen.
 
@@ -87,11 +87,11 @@ Es ist wichtig zu beachten, dass die Konfiguration für *Lifecycle-Konfiguration
 
 . Um eine Lifecycle-Konfiguration einzurichten, öffnen Sie das Fenster *SageMaker* und navigieren Sie zu *Lifecycle-Konfigurationen* unter dem Abschnitt *Admin-Konfigurationen*.
 +
-image:mlops_fsxn_cictcd_1.png["SageMaker-Bedienfeld"]
+image::mlops_fsxn_cictcd_1.png[SageMaker-Bedienfeld]
 
 . Wählen Sie die Registerkarte *Notebook-Instanz* aus und klicken Sie auf die Schaltfläche *Konfiguration erstellen*
 +
-image:mlops_fsxn_cictcd_2.png["Begrüßungsseite zur Lebenszykluskonfiguration"]
+image::mlops_fsxn_cictcd_2.png[Begrüßungsseite zur Lebenszykluskonfiguration]
 
 . Fügen Sie den unten stehenden Code in den Eingabebereich ein.
 +
@@ -117,15 +117,15 @@ EOF
 ----
 . Dieses Skript führt das Jupyter Notebook aus, das das erneute Training und die erneute Bereitstellung des Modells für die Inferenz übernimmt. Nach Abschluss der Ausführung wird das Notebook automatisch innerhalb von 5 Minuten heruntergefahren. Weitere Informationen zur Problembeschreibung und zur Codeimplementierung finden Sie unter link:./mlops_fsxn_sagemaker_integration_training.html["Teil 2 – Nutzung von AWS FSX for NetApp ONTAP (FSxN) als Datenquelle für das Modelltraining in SageMaker"].
 +
-image:mlops_fsxn_cictcd_3.png["Lebenszyklukonfiguration erstellen"]
+image::mlops_fsxn_cictcd_3.png[Lebenszyklukonfiguration erstellen]
 
 . Navigieren Sie nach der Erstellung zu Notizbuchinstanzen, wählen Sie die Zielinstanz aus, und klicken Sie im Dropdown-Menü Aktionen auf *Einstellungen aktualisieren*.
 +
-image:mlops_fsxn_cictcd_4.png["Dropdown-Menü „Einstellungen aktualisieren“"]
+image::mlops_fsxn_cictcd_4.png[Dropdown-Menü „Einstellungen aktualisieren“]
 
 . Wählen Sie die erstellte *Lifecycle-Konfiguration* aus und klicken Sie auf *Notebook-Instanz aktualisieren*.
 +
-image:mlops_fsxn_cictcd_5.png["Lebenszykluskonfiguration des Notebooks aktualisieren"]
+image::mlops_fsxn_cictcd_5.png[Lebenszykluskonfiguration des Notebooks aktualisieren]
 
 
 
@@ -137,15 +137,15 @@ Wie bereits erwähnt, ist die *AWS Lambda-Funktion* für die Einrichtung der *AW
 
 . Um eine *AWS Lambda-Funktion* zu erstellen, navigieren Sie zum entsprechenden Panel, wechseln Sie zum Reiter *Funktionen* und klicken Sie auf *Create Function*.
 +
-image:mlops_fsxn_cictcd_6.png["Willkommensseite der AWS Lambda-Funktion"]
+image::mlops_fsxn_cictcd_6.png[Willkommensseite der AWS Lambda-Funktion]
 
 . Bitte legen Sie alle erforderlichen Einträge auf der Seite ab und denken Sie daran, die Runtime auf *Python 3.10* umzuschalten.
 +
-image:mlops_fsxn_cictcd_7.png["Eine AWS Lambda-Funktion erstellen"]
+image::mlops_fsxn_cictcd_7.png[Eine AWS Lambda-Funktion erstellen]
 
 . Bitte überprüfen Sie, ob die vorgesehene Rolle die erforderliche Berechtigung hat *AmazonSageMakerFullAccess* und klicken Sie auf den Button *Funktion erstellen*.
 +
-image:mlops_fsxn_cictcd_8.png["Wählen Sie die Ausführungsrolle aus"]
+image::mlops_fsxn_cictcd_8.png[Wählen Sie die Ausführungsrolle aus]
 
 . Wählen Sie die erstellte Lambda-Funktion aus. Kopieren Sie auf der Registerkarte Code den folgenden Code, und fügen Sie ihn in den Textbereich ein. Dieser Code startet die Notebook-Instanz mit dem Namen *fsxn-ontap*.
 +
@@ -165,15 +165,15 @@ def lambda_handler(event, context):
 ----
 . Klicken Sie auf die Schaltfläche *deploy*, um diese Codeänderung anzuwenden.
 +
-image:mlops_fsxn_cictcd_9.png["Einsatz"]
+image::mlops_fsxn_cictcd_9.png[Einsatz]
 
 . Um anzugeben, wie diese AWS Lambda-Funktion ausgelöst werden soll, klicken Sie auf die Schaltfläche Add Trigger.
 +
-image:mlops_fsxn_cictcd_10.png["AWS Funktions-Trigger hinzufügen"]
+image::mlops_fsxn_cictcd_10.png[AWS Funktions-Trigger hinzufügen]
 
 . Wählen Sie EventBridge aus dem Dropdown-Menü aus, und klicken Sie dann auf das Optionsfeld Neue Regel erstellen. Geben Sie im Feld Ausdruck Zeitplan ein `rate(1 day)`, Und klicken Sie auf die Schaltfläche Hinzufügen, um diese neue Cron-Job-Regel auf die AWS Lambda-Funktion zu erstellen und anzuwenden.
 +
-image:mlops_fsxn_cictcd_11.png["Auslöser fertig stellen"]
+image::mlops_fsxn_cictcd_11.png[Auslöser fertig stellen]
 
 
 

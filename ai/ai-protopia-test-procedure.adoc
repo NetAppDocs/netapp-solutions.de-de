@@ -77,29 +77,29 @@ To access workspace, navigate to http://192.168.0.152:32721
 ....
 . Greifen Sie auf den JupyterLab-Arbeitsbereich über die URL zu, die in der Ausgabe des angegeben ist `create jupyterlab` Befehl. Das Datenverzeichnis stellt das persistente Volume dar, das in den Arbeitsbereich gemountet wurde.
 +
-image:ai-protopia-image3.png[""]
+image::ai-protopia-image3.png[ai Protopia image3]
 
 . Öffnen Sie das `data` Verzeichnis erstellen und die Dateien hochladen, auf denen die Inferenz durchgeführt werden soll. Wenn Dateien in das Datenverzeichnis hochgeladen werden, werden sie automatisch auf dem persistenten Volume gespeichert, das in den Arbeitsbereich eingebunden wurde. Um Dateien hochzuladen, klicken Sie wie im folgenden Bild gezeigt auf das Symbol Dateien hochladen.
 +
-image:ai-protopia-image4.png[""]
+image::ai-protopia-image4.png[ai Protopia image4]
 
 . Kehren Sie zum Verzeichnis der obersten Ebene zurück und erstellen Sie ein neues Notebook.
 +
-image:ai-protopia-image5.png[""]
+image::ai-protopia-image5.png[ai Protopia image5]
 
 . Fügen Sie dem Notebook den Inferenzcode hinzu. Im folgenden Beispiel wird der Inferenzcode für einen Anwendungsfall der Bilderkennung gezeigt.
 +
-image:ai-protopia-image6.png[""]
+image::ai-protopia-image6.png[ai Protopia image6]
 
 +
-image:ai-protopia-image7.png[""]
+image::ai-protopia-image7.png[ai Protopia image7]
 
 . Fügen Sie Protopia Obfuscation in Ihren Inferenzcode ein. Protopia arbeitet direkt mit Kunden zusammen, um eine anwendungsspezifische Dokumentation bereitzustellen und befindet sich außerhalb des Umfangs dieses technischen Berichts. Das folgende Beispiel zeigt den Inferenzcode für eine Bilderkennung, wobei Protopia obfuscation hinzugefügt wurde.
 +
-image:ai-protopia-image8.png[""]
+image::ai-protopia-image8.png[ai Protopia image8]
 
 +
-image:ai-protopia-image9.png[""]
+image::ai-protopia-image9.png[ai Protopia image9]
 
 
 
@@ -147,7 +147,7 @@ spec:
           medium: Memory
       containers:
       - name: inference
-        image: netapp-protopia-inference:latest
+        image:: netapp-protopia-inference:latest
         imagePullPolicy: IfNotPresent
         command: ["python3", "run-accuracy-measurement.py", "--dataset", "/data/netapp-face-detection/FDDB"]
         resources:
@@ -209,7 +209,7 @@ spec:
           medium: Memory
       containers:
       - name: inference
-        image: netapp-protopia-inference:latest
+        image:: netapp-protopia-inference:latest
         imagePullPolicy: IfNotPresent
         env:
         - name: ALPHA

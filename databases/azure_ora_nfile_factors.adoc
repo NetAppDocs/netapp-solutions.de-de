@@ -74,7 +74,7 @@ Das Durchsatzlimit für ein Oracle Datenbank-Volume wird durch eine Kombination 
 
 Das folgende Diagramm zeigt, wie das Durchsatzlimit eines Oracle Datenbank-Volumes berechnet wird.
 
-image:db_ora_azure_anf_factors_01.PNG["Dieses Bild zeigt die auf die drei Kapazitäts-Tiers angewandte Gleichung zur Bestimmung des Gesamtdurchsatzes."]
+image::db_ora_azure_anf_factors_01.PNG[Dieses Bild zeigt die auf die drei Kapazitäts-Tiers angewandte Gleichung zur Bestimmung des Gesamtdurchsatzes.]
 
 Beispiel 1 wird einem Volume aus einem Kapazitäts-Pool mit der Premium-Storage-Tier, dem 2 tib Kontingent zugewiesen ist, ein Durchsatzlimit von 128 MiPS (2 tib * 64 MiB) zugewiesen. Dieses Szenario gilt unabhängig von der Größe des Kapazitäts-Pools oder dem tatsächlichen Volume-Verbrauch.
 
@@ -90,11 +90,11 @@ NetApp empfiehlt das folgende Storage Layout:
 
 * Für kleine Datenbanken. Verwenden Sie ein einzelnes Volume-Layout für alle Oracle-Dateien.
 +
-image:db_ora_azure_anf_factors_02.PNG["Dieses Bild zeigt drei Datenbanken (DB1, DB2 und DB3), die jeweils Datendateien, Wiederherstellungsprotokolle, Archivprotokolle und Kontrolldateien enthalten, und alle innerhalb eines einzigen Kapazitätspools."]
+image::db_ora_azure_anf_factors_02.PNG[Dieses Bild zeigt drei Datenbanken (DB1, DB2 und DB3), die jeweils Datendateien, Wiederherstellungsprotokolle, Archivprotokolle und Kontrolldateien enthalten, und alle innerhalb eines einzigen Kapazitätspools.]
 
 * Bei großen Datenbanken empfiehlt sich das Volume-Layout aus mehreren Volumes: Eines für Oracle Daten und eine doppelte Kontrolldatei und eines für das aktive Protokoll von Oracle, ein archiviertes Protokoll und eine Kontrolldatei. NetApp empfiehlt dringend, ein Volume für die Oracle-Binärdatei anstelle des lokalen Laufwerks zuzuweisen, damit die Datenbank auf einen neuen Host verlagert und schnell wiederhergestellt werden kann.
 +
-image:db_ora_azure_anf_factors_03.PNG["Dieses Bild zeigt zwei Datenbanken mit jeweils zwei Volumes. Das erste Volume enthält Datendateien, während das zweite Volume einer jeden Datenbank Wiederherstellungsprotokolle, Archivprotokolle und Kontrolldateien enthält. Und das alles innerhalb eines einzigen Kapazitäts-Pools."]
+image::db_ora_azure_anf_factors_03.PNG[Dieses Bild zeigt zwei Datenbanken mit jeweils zwei Volumes. Das erste Volume enthält Datendateien, während das zweite Volume einer jeden Datenbank Wiederherstellungsprotokolle, Archivprotokolle und Kontrolldateien enthält. Und das alles innerhalb eines einzigen Kapazitäts-Pools.]
 
 
 
@@ -108,7 +108,7 @@ Durch die Verwendung von dNFS (verfügbar seit Oracle 11g) kann eine Oracle Date
 
 Das folgende Diagramm zeigt den SLOB-Benchmark auf Azure NetApp Files mit Oracle dNFS.
 
-image:db_ora_azure_anf_factors_04.PNG["Dieses Diagramm zeigt deutlich, dass dNFS die Latenz von sequenziellen DB-Dateien (ms) über KNFS verbessert."]
+image::db_ora_azure_anf_factors_04.PNG[Dieses Diagramm zeigt deutlich, dass dNFS die Latenz von sequenziellen DB-Dateien (ms) über KNFS verbessert.]
 
 Weitere Faktoren, die berücksichtigt werden sollten:
 
@@ -123,7 +123,7 @@ sysctl -a | grep tcp.*.slot_table
 ----
 * Die folgende Tabelle enthält die empfohlenen NFS-Mount-Optionen für eine einzelne Instanz von Linux NFSv3.
 +
-image:aws_ora_fsx_ec2_nfs_01.PNG["In dieser Tabelle werden die detaillierten NFS-Mount-Optionen für die folgenden Dateitypen, Kontrolldateien, Datendateien, Wiederherstellungsprotokolle, ORACLE_HOME, Und ORACLE_BASE."]
+image::aws_ora_fsx_ec2_nfs_01.PNG[In dieser Tabelle werden die detaillierten NFS-Mount-Optionen für die folgenden Dateitypen, Kontrolldateien, Datendateien, Wiederherstellungsprotokolle, ORACLE_HOME, Und ORACLE_BASE.]
 
 
 

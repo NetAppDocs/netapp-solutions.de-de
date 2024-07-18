@@ -53,36 +53,38 @@ Bestimmen Sie basierend auf Ihren Workloads, welchen Typ von Azure VM Sie benöt
 
 . Klicken Sie auf der Azure VM Seite auf *Erstellen* und wählen Sie dann *Azure Virtual Machine*.
 +
-image:db_ora_azure_anf_vm_01.PNG["In diesem Screenshot wird die Liste der verfügbaren Azure VMs angezeigt."]
+image::db_ora_azure_anf_vm_01.PNG[In diesem Screenshot wird die Liste der verfügbaren Azure VMs angezeigt.]
 
 . Wählen Sie die Abonnement-ID für die Implementierung aus und wählen Sie dann die Ressourcengruppe, die Region, den Hostnamen, das VM-Image, die Größe Und Authentifizierungsmethode. Wechseln Sie zur Seite Festplatte.
 +
-image:db_ora_azure_anf_vm_02-1.PNG["In diesem Screenshot wird der Input für die Seite Create a Virtual Machine angezeigt."]
-image:db_ora_azure_anf_vm_02-2.PNG["Dieser Screenshot zeigt weitere Informationen für die Seite Create a Virtual Machine."]
+image::db_ora_azure_anf_vm_02-1.PNG[In diesem Screenshot wird der Input für die Seite Create a Virtual Machine angezeigt.]
+
++
+image::db_ora_azure_anf_vm_02-2.PNG[Dieser Screenshot zeigt weitere Informationen für die Seite Create a Virtual Machine.]
 
 . Wählen Sie *Premium SSD* für lokale Betriebssystemredundanz und lassen Sie die Datenfestplatte leer, da die Datenfestplatten vom ANF-Speicher bereitgestellt werden. Wechseln Sie zur Netzwerkseite.
 +
-image:db_ora_azure_anf_vm_03.PNG["In diesem Screenshot wird die Eingabe für die Seite Laufwerke für virtuelle Maschinen erstellen angezeigt."]
+image::db_ora_azure_anf_vm_03.PNG[In diesem Screenshot wird die Eingabe für die Seite Laufwerke für virtuelle Maschinen erstellen angezeigt.]
 
 . Wählen Sie vnet und Subnetz. Weisen Sie eine öffentliche IP für externen VM-Zugriff zu. Wechseln Sie dann zur Seite Verwaltung.
 +
-image:db_ora_azure_anf_vm_04.PNG["Dieser Screenshot zeigt weitere Informationen zur Seite Erstellen einer virtuellen Maschine."]
+image::db_ora_azure_anf_vm_04.PNG[Dieser Screenshot zeigt weitere Informationen zur Seite Erstellen einer virtuellen Maschine.]
 
 . Behalten Sie alle Standardeinstellungen für die Verwaltung bei, und wechseln Sie zur Seite Erweitert.
 +
-image:db_ora_azure_anf_vm_05.PNG["In diesem Screenshot werden die Eingaben auf der Seite „Virtual Machine Management erstellen“ angezeigt."]
+image::db_ora_azure_anf_vm_05.PNG[In diesem Screenshot werden die Eingaben auf der Seite „Virtual Machine Management erstellen“ angezeigt.]
 
 . Behalten Sie alle Standardeinstellungen für die Seite „Erweitert“ bei, es sei denn, Sie müssen eine VM nach der Implementierung mit benutzerdefinierten Skripts anpassen. Gehen Sie dann zur Seite Tags.
 +
-image:db_ora_azure_anf_vm_06.PNG["In diesem Screenshot wird die Eingabe für die Seite Erstellen einer virtuellen Maschine Erweitert angezeigt."]
+image::db_ora_azure_anf_vm_06.PNG[In diesem Screenshot wird die Eingabe für die Seite Erstellen einer virtuellen Maschine Erweitert angezeigt.]
 
 . Fügen Sie bei Bedarf ein Tag für die VM hinzu. Gehen Sie dann zur Seite „Prüfen + Erstellen“.
 +
-image:db_ora_azure_anf_vm_07.PNG["In diesem Screenshot wird die Eingabe für die Seite „Virtual Machine Tags erstellen“ angezeigt."]
+image::db_ora_azure_anf_vm_07.PNG[In diesem Screenshot wird die Eingabe für die Seite „Virtual Machine Tags erstellen“ angezeigt.]
 
 . Der Bereitstellungsworkflow führt eine Validierung der Konfiguration aus, und wenn die Validierung erfolgreich ist, klicken Sie auf *Erstellen*, um die VM zu erstellen.
 +
-image:db_ora_azure_anf_vm_08.PNG["„In diesem Screenshot sehen Sie den Input für die Seite Create a Virtual Machine Review and create.“"]
+image::db_ora_azure_anf_vm_08.PNG[Dieser Screenshot zeigt die Eingabe für die Seite „Create a Virtual Machine review and create“]
 
 
 
@@ -94,28 +96,30 @@ Sie müssen drei NFS-Volumes für einen ANF-Kapazitätspool für die Oracle-Bin�
 
 . Klicken Sie in der Azure Konsole unter der Liste der Azure Services auf Azure NetApp Files, um den Erstellungsworkflow für Volumes zu öffnen. Wenn Sie über mehr als ein ANF-Storage-Konto verfügen, klicken Sie auf das Konto, über das Sie Volumes bereitstellen möchten.
 +
-image:db_ora_azure_anf_vols_00.PNG["Dieser Screenshot zeigt die Seite der Azure Services, wobei ANF hervorgehoben ist."]
+image::db_ora_azure_anf_vols_00.PNG[Dieser Screenshot zeigt die Seite der Azure Services, wobei ANF hervorgehoben ist.]
 
 . Klicken Sie auf Ihrem NetApp Storage Account auf *Volumes* und dann auf *Add Volume*, um neue Oracle Volumes zu erstellen.
 +
-image:db_ora_azure_anf_vols_01_1.PNG["Dieser Screenshot zeigt den Landing Screen für ein NetApp Storage Konto."]
-image:db_ora_azure_anf_vols_01.PNG["Dieser Screenshot zeigt die Volumes, die für das NetApp Storage Konto verfügbar sind."]
+image::db_ora_azure_anf_vols_01_1.PNG[Dieser Screenshot zeigt den Landing Screen für ein NetApp Storage Konto.]
+
++
+image::db_ora_azure_anf_vols_01.PNG[Dieser Screenshot zeigt die Volumes, die für das NetApp Storage Konto verfügbar sind.]
 
 . Eine gute Vorgehensweise: Ermitteln Sie Oracle Volumes mit dem VM-Hostnamen als Präfix und anschließend den Mount-Punkt auf dem Host, z. B. u01 für Oracle binär, u02 für Oracle Daten und u03 für Oracle log. Wählen Sie dieselbe vnet-Anzahl für das Volume wie für die VM. Klicken Sie Auf *Weiter: Protokoll>*.
 +
-image:db_ora_azure_anf_vols_02.PNG["Bildschirm Volume-Erstellung."]
+image::db_ora_azure_anf_vols_02.PNG[Bildschirm Volume-Erstellung.]
 
 . Wählen Sie das NFS-Protokoll, fügen Sie die Oracle-Host-IP-Adresse dem zulässigen Client hinzu und entfernen Sie die Standardrichtlinie, die alle IP-Adressen 0.0.0.0/0 zulässt. Klicken Sie dann auf *Weiter: Tags>*.
 +
-image:db_ora_azure_anf_vols_03.PNG["Protokolleingabe auf dem Bildschirm Volume Creation."]
+image::db_ora_azure_anf_vols_03.PNG[Protokolleingabe auf dem Bildschirm Volume Creation.]
 
 . Fügen Sie bei Bedarf ein Volume-Tag hinzu. Klicken Sie dann auf *Review + Create>*.
 +
-image:db_ora_azure_anf_vols_04.PNG["Tags, die auf dem Bildschirm Volume Creation eingegeben werden."]
+image::db_ora_azure_anf_vols_04.PNG[Tags, die auf dem Bildschirm Volume Creation eingegeben werden.]
 
 . Wenn die Validierung erfolgreich ist, klicken Sie auf *Erstellen*, um das Volume zu erstellen.
 +
-image:db_ora_azure_anf_vols_05.PNG["Überprüfen und Erstellen der Phase des Bildschirms Volume Creation."]
+image::db_ora_azure_anf_vols_05.PNG[Überprüfen und Erstellen der Phase des Bildschirms Volume Creation.]
 
 
 

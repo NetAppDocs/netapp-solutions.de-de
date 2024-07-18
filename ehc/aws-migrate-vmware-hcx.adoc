@@ -65,7 +65,7 @@ Die für diese Validierung verwendete On-Premises-Lab-Umgebung wurde zu Testzwec
 
 Das folgende Bild stellt die allgemeine Architektur dar.
 
-image:fsx-hcx-image1.png[""]
+image::fsx-hcx-image1.png[fsx hcx-Bild1]
 
 ====
 
@@ -87,7 +87,7 @@ Gehen Sie wie folgt vor, um die Installation durchzuführen:
 NOTE: Dieser Schritt dauert bis zu 25 Minuten.
 
 +
-image:fsx-hcx-image2.png[""]
+image::fsx-hcx-image2.png[fsx hcx-Bild2]
 
 . Nachdem die Implementierung abgeschlossen ist, validieren Sie die Implementierung, indem Sie bestätigen, dass HCX Manager und die zugehörigen Plug-ins in der vCenter Console verfügbar sind.
 . Erstellen Sie die entsprechenden Management Gateway-Firewalls, um die erforderlichen Ports für den Zugriff auf HCX Cloud Manager zu öffnen.HCX Cloud Manager ist jetzt für HCX-Vorgänge bereit.
@@ -102,7 +102,7 @@ Damit der On-Premises Connector mit dem HCX Manager in VMC kommunizieren kann, s
 . Navigieren Sie von der VMC-Konsole zum HCX Dashboard, gehen Sie zu Administration und wählen Sie die Registerkarte Systemaktualisierung aus. Klicken Sie auf Download-Link für das OVA-Bild des HCX-Connectors anfordern.
 . Stellen Sie die OVA beim Herunterladen des HCX Connectors im lokalen vCenter Server bereit. Klicken Sie mit der rechten Maustaste auf vSphere Cluster und wählen Sie die Option OVF-Vorlage bereitstellen aus.
 +
-image:fsx-hcx-image5.png[""]
+image::fsx-hcx-image5.png[fsx hcx-Bild5]
 
 . Geben Sie die erforderlichen Informationen im Assistenten zur Bereitstellung von OVF-Vorlagen ein, klicken Sie auf Weiter und anschließend auf Fertig stellen, um die OVA des VMware HCX-Connectors bereitzustellen.
 . Schalten Sie das virtuelle Gerät manuell ein.Schritt-für-Schritt-Anleitungen finden Sie unter https://docs.vmware.com/en/VMware-HCX/services/user-guide/GUID-BFD7E194-CFE5-4259-B74B-991B26A51758.html["VMware HCX-Benutzerhandbuch"^].
@@ -117,7 +117,7 @@ Nachdem Sie den VMware HCX Connector OVA vor Ort bereitgestellt und das Gerät g
 . Wählen Sie in der VMware Cloud Console „Inventar“, wählen Sie das SDDC und klicken Sie auf „Details anzeigen“. Klicken Sie auf der Registerkarte Add ons in der Kachel VMware HCX auf Open HCX.
 . Klicken Sie auf der Registerkarte Aktivierungsschlüssel auf Aktivierungsschlüssel erstellen. Wählen Sie den Systemtyp als HCX-Anschluss aus, und klicken Sie auf Bestätigen, um den Schlüssel zu generieren. Kopieren Sie den Aktivierungsschlüssel.
 +
-image:fsx-hcx-image7.png[""]
+image::fsx-hcx-image7.png[fsx hcx-Bild7]
 
 +
 
@@ -154,7 +154,7 @@ NOTE: Dieser Vorgang dauert etwa 10 bis 20 Minuten, und das Plug-in wird dem vCe
 
 
 
-image:fsx-hcx-image8.png[""]
+image::fsx-hcx-image8.png[fsx hcx-Bild8]
 
 ====
 .Schritt 4: Koppeln Sie den VMware HCX Connector vor Ort mit VMC HCX Cloud Manager
@@ -162,21 +162,21 @@ image:fsx-hcx-image8.png[""]
 ====
 . Um ein Standortpaar zwischen dem lokalen vCenter Server und dem VMC SDDC zu erstellen, melden Sie sich beim lokalen vCenter Server an und greifen Sie auf das HCX vSphere Web Client Plug-in zu.
 +
-image:fsx-hcx-image9.png[""]
+image::fsx-hcx-image9.png[fsx hcx-Bild9]
 
 . Klicken Sie unter Infrastruktur auf Site Pairing hinzufügen. Geben Sie zur Authentifizierung des Remote-Standorts die URL oder IP-Adresse des VMC HCX Cloud Manager und die Anmeldeinformationen für die CloudAdmin-Rolle ein.
 +
-image:fsx-hcx-image10.png[""]
+image::fsx-hcx-image10.png[fsx hcx image10]
 
 +
 
 NOTE: HCX-Informationen sind auf der Seite SDDC-Einstellungen abrufbar.
 
 +
-image:fsx-hcx-image11.png[""]
+image::fsx-hcx-image11.png[fsx hcx image11]
 
 +
-image:fsx-hcx-image12.png[""]
+image::fsx-hcx-image12.png[fsx hcx image12]
 
 . Klicken Sie auf Verbinden, um die Standortpaarung zu starten.
 +
@@ -201,7 +201,7 @@ NOTE: Computing-Profile beinhalten die Parameter für die Computing-, Storage- u
 Ausführliche Anweisungen finden Sie unter https://docs.vmware.com/en/VMware-HCX/4.4/hcx-user-guide/GUID-BBAC979E-8899-45AD-9E01-98A132CE146E.html["Erstellen eines Computing-Profils"^].
 
 +
-image:fsx-hcx-image13.png[""]
+image::fsx-hcx-image13.png[fsx hcx-Bild13]
 
 . Erstellen Sie nach dem Erstellen des Rechenprofils das Netzwerkprofil, indem Sie Multi-Site Service Mesh > Netzwerkprofile > Netzwerkprofil erstellen auswählen.
 . Das Netzwerkprofil definiert einen Bereich von IP-Adressen und Netzwerken, die von HCX für seine virtuellen Appliances verwendet werden.
@@ -210,7 +210,7 @@ image:fsx-hcx-image13.png[""]
 NOTE: Dafür benötigen Sie mindestens zwei IP-Adressen. Diese IP-Adressen werden virtuellen Appliances vom Managementnetzwerk zugewiesen.
 
 +
-image:fsx-hcx-image14.png[""]
+image::fsx-hcx-image14.png[fsx hcx-Bild14]
 
 +
 Ausführliche Anweisungen finden Sie unter https://docs.vmware.com/en/VMware-HCX/4.4/hcx-user-guide/GUID-184FCA54-D0CB-4931-B0E8-A81CD6120C52.html["Erstellen eines Netzwerkprofils"^].
@@ -224,7 +224,7 @@ NOTE: Wenn Sie eine Verbindung mit einem SD-WAN über das Internet herstellen, m
 Das Service-Netz stellt ein lokales und entferntes Compute- und Netzwerkprofil-Paar bereit.
 
 +
-image:fsx-hcx-image15.png[""]
+image::fsx-hcx-image15.png[fsx hcx-Bild15]
 
 +
 
@@ -232,11 +232,11 @@ NOTE: Bei diesem Prozess werden HCX-Appliances bereitgestellt, die automatisch a
 
 . Wählen Sie die Quell- und Remote-Computing-Profile aus, und klicken Sie auf Weiter.
 +
-image:fsx-hcx-image16.png[""]
+image::fsx-hcx-image16.png[fsx hcx-Bild16]
 
 . Wählen Sie den Dienst aus, der aktiviert werden soll, und klicken Sie auf Weiter.
 +
-image:fsx-hcx-image17.png[""]
+image::fsx-hcx-image17.png[fsx hcx image17]
 
 +
 
@@ -244,7 +244,7 @@ NOTE: Für die Replication Assisted vMotion Migration, die SRM-Integration und d
 
 . Erstellen Sie einen Namen für das Service-Mesh, und klicken Sie auf Fertig stellen, um den Erstellungsvorgang zu starten. Die Implementierung dauert etwa 30 Minuten. Nach der Konfiguration des Service-Mesh wurden die virtuelle Infrastruktur und die für die Migration der Virtual Machines erforderlichen Netzwerke erstellt.
 +
-image:fsx-hcx-image18.png[""]
+image::fsx-hcx-image18.png[fsx hcx-Bild18]
 
 
 
@@ -261,7 +261,7 @@ Die HCX-IX Appliance verwendet den Mobility Agent Service, um vMotion-, Cold- un
 
 NOTE: Die HCX-IX Appliance fügt den Mobility Agent-Service als Hostobjekt im vCenter Server hinzu. Der auf diesem Objekt angezeigte Prozessor, Arbeitsspeicher, Speicher und Netzwerkressourcen stellen nicht den tatsächlichen Verbrauch des physischen Hypervisors dar, der die IX-Appliance hostet.
 
-image:fsx-hcx-image19.png[""]
+image::fsx-hcx-image19.png[fsx hcx-Bild19]
 
 .VMware HCX vMotion
 [%collapsible]
@@ -273,15 +273,15 @@ NOTE: Eine Netzwerkerweiterung sollte vorhanden sein (für die Portgruppe, an de
 
 . Wechseln Sie vom lokalen vSphere-Client zum Inventory, klicken Sie mit der rechten Maustaste auf die zu migrierende VM und wählen Sie HCX Actions > Migrate to HCX Target Site aus.
 +
-image:fsx-hcx-image20.png[""]
+image::fsx-hcx-image20.png[fsx hcx image20]
 
 . Wählen Sie im Assistenten für die Migration von Virtual Machines die Remote-Standortverbindung (Ziel-VMC SDDC) aus.
 +
-image:fsx-hcx-image21.png[""]
+image::fsx-hcx-image21.png[fsx hcx image21]
 
 . Fügen Sie einen Gruppennamen hinzu und aktualisieren Sie unter Übertragen und Platzierung die Pflichtfelder (Cluster, Storage und Zielnetzwerk), und klicken Sie auf Validieren.
 +
-image:fsx-hcx-image22.png[""]
+image::fsx-hcx-image22.png[fsx hcx image22]
 
 . Klicken Sie nach Abschluss der Validierungsprüfungen auf Los, um die Migration zu starten.
 +
@@ -290,7 +290,7 @@ NOTE: Der vMotion Transfer erfasst den aktiven VM-Speicher, seinen Ausführungsz
 
 . Über das Dashboard HCX > Migration können Sie den Fortschritt und den Abschluss von vMotion überwachen.
 +
-image:fsx-hcx-image23.png[""]
+image::fsx-hcx-image23.png[fsx hcx image23]
 
 
 
@@ -302,11 +302,11 @@ Wie Sie in der VMware Dokumentation möglicherweise schon bemerkt haben, vereint
 
 Im folgenden Screenshot wird das Migrationsprofil als Replication Assisted vMotion angezeigt.
 
-image:fsx-hcx-image24.png[""]
+image::fsx-hcx-image24.png[fsx hcx image24]
 
 Die Dauer der Replizierung kann gegenüber vMotion einer kleinen Anzahl von VMs länger dauern. Mit RAV synchronisieren Sie nur die Deltas und beinhalten den Speicherinhalt. Nachfolgend sehen Sie einen Screenshot des Migrationsstatus: Hier wird die Startzeit der Migration angegeben, und die Endzeit ist unterschiedlich für jede VM.
 
-image:fsx-hcx-image25.png[""]
+image::fsx-hcx-image25.png[fsx hcx image25]
 
 =====
 Weitere Informationen zu den HCX-Migrationsoptionen und zur Migration von Workloads von On-Premises zu VMware Cloud on AWS mit HCX finden Sie im https://docs.vmware.com/en/VMware-HCX/4.4/hcx-user-guide/GUID-14D48C15-3D75-485B-850F-C5FCB96B5637.html["VMware HCX-Benutzerhandbuch"^].

@@ -21,7 +21,7 @@ In der Umgebung wird die Oracle Computing-Instanz über eine AWS EC2 Instance Co
 
 Oracle Datenbank-Storage auf FSX Volumes hingegen wird mit der AWS FSX Konsole oder der CLI bereitgestellt. Die Oracle-Binärdateien, Daten oder Log-Volumes werden anschließend präsentiert und auf einem Linux-Host der EC2 Instanz gemountet. Jeder Daten- oder Protokoll-Volume kann abhängig vom verwendeten Storage-Protokoll mehrere LUNs zugewiesen sein.
 
-image:aws_ora_fsx_ec2_arch.PNG["Dieses Bild zeigt ein Beispieldiagramm mit einem primären HA-Cluster – dem Standby-HA-Cluster – Management-Nodes – und den zugehörigen Verbindungsknoten."]
+image::aws_ora_fsx_ec2_arch.PNG[Dieses Bild zeigt ein Beispieldiagramm mit einem primären HA-Cluster – dem Standby-HA-Cluster – Management-Nodes – und den zugehörigen Verbindungsknoten.]
 
 Ein FSX Storage-Cluster verfügt über doppelte Redundanz, sodass sowohl der primäre als auch der Standby-Storage-Cluster in zwei verschiedenen Verfügbarkeitszonen implementiert werden können. Datenbank-Volumes werden von einem primären FSX-Cluster auf ein Standby-FSX-Cluster in einem vom Benutzer konfigurierbaren Intervall für alle Oracle Binär-, Daten- und Protokoll-Volumes repliziert.
 

@@ -43,7 +43,7 @@ Das Setup läuft auf AWS. Die folgende Tabelle zeigt die verschiedenen Plattform
 |===
 Die folgende Abbildung zeigt die Architekturkonfiguration dieser Lösung.
 
-image:kafka-nfs-image1.png["Diese Bilder zeigen die AWS-Topologie mit einer VPC, die drei private Subnetze mit einem Producer-Swarm, dem Kafka-Cluster und einer CVO-Instanz enthält."]
+image::kafka-nfs-image1.png[Diese Bilder zeigen die AWS-Topologie mit einer VPC, die drei private Subnetze mit einem Producer-Swarm, dem Kafka-Cluster und einer CVO-Instanz enthält.]
 
 
 
@@ -78,13 +78,13 @@ aws-shantanclastrecall-aws::*> volume create -vserver kafka_svm -volume kafka_fg
 Cluster 1:
 
 +
-image:kafka-nfs-image2.png["Dieser Screenshot zeigt das Demo-Thema, das auf Cluster 1 erstellt wurde."]
+image::kafka-nfs-image2.png[Dieser Screenshot zeigt das Demo-Thema, das auf Cluster 1 erstellt wurde.]
 
 +
 Cluster 2:
 
 +
-image:kafka-nfs-image3.png["Dieser Screenshot zeigt das Demo-Thema, das auf Cluster 2 erstellt wurde."]
+image::kafka-nfs-image3.png[Dieser Screenshot zeigt das Demo-Thema, das auf Cluster 2 erstellt wurde.]
 
 . In diese neu erstellten Themen wurden für beide Cluster Daten geladen. Dies wurde mit dem Producer-perf-Test Toolkit durchgeführt, das im Standard-Kafka-Paket enthalten ist:
 +
@@ -99,7 +99,7 @@ image:kafka-nfs-image3.png["Dieser Screenshot zeigt das Demo-Thema, das auf Clus
 Eine erfolgreiche Integritätsprüfung für Broker auf beiden Clustern wird im nächsten Screenshot angezeigt:
 
 +
-image:kafka-nfs-image4.png["Dieser Screenshot zeigt die Anzeige für eine erfolgreiche Integritätsprüfung auf beiden Brokern."]
+image::kafka-nfs-image4.png[Dieser Screenshot zeigt die Anzeige für eine erfolgreiche Integritätsprüfung auf beiden Brokern.]
 
 
 
@@ -120,7 +120,7 @@ kafka-reassign-partitions --bootstrap-server=172.30.0.198:9092,172.30.0.163:9092
 
 . Nach ein paar Minuten, als die Neuzuweisung abgeschlossen war, zeigte eine weitere Integritätsprüfung der Broker, dass Cluster mit NFSv3-Storage-Volumes ein albernes Problem hatten und abgestürzt waren, während Cluster 1 mit NetApp ONTAP NFSv4.1-Storage-Volumes mit der Korrektur den Betrieb ohne Unterbrechungen fortsetzte.
 +
-image:kafka-nfs-image5.png["Dieser Screenshot zeigt die Ausgabe eines abgestürzten Brokers."]
+image::kafka-nfs-image5.png[Dieser Screenshot zeigt die Ausgabe eines abgestürzten Brokers.]
 
 +
 ** Cluster1-Broker-1 ist aktiv.
@@ -129,12 +129,12 @@ image:kafka-nfs-image5.png["Dieser Screenshot zeigt die Ausgabe eines abgestürz
 
 . Bei der Überprüfung der Kafka-Protokollverzeichnisse wurde deutlich, dass Cluster 1 mit NetApp ONTAP NFSv4.1-Storage-Volumes mit der Korrektur eine saubere Partitionszuweisung hatte, während Cluster 2 mit generischem NFSv3-Storage nicht auf alberne Probleme beim Umbenennen zurückzuführen war, was zum Absturz führte. Das folgende Bild zeigt den Partitionsausgleich von Cluster 2, was zu einem dummen Umbenennungsproblem auf NFSv3 Storage führte.
 +
-image:kafka-nfs-image6.png["In diesem Screenshot wird die Protokollausgabe für Cluster 2 abstürzt."]
+image::kafka-nfs-image6.png[In diesem Screenshot wird die Protokollausgabe für Cluster 2 abstürzt.]
 
 +
 Das folgende Bild zeigt eine saubere Partition Rebalancing von Cluster 1 mit NetApp NFSv4.1 Storage.
 
 +
-image:kafka-nfs-image7.png["In diesem Screenshot wird die Protokollausgabe für eine erfolgreiche Zuweisung einer sauberen Partition für Cluster 1 angezeigt, wobei"]
+image::kafka-nfs-image7.png[In diesem Screenshot wird die Protokollausgabe für eine erfolgreiche Zuweisung einer sauberen Partition für Cluster 1 angezeigt, wobei]
 
 

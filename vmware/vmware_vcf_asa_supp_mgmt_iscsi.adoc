@@ -47,7 +47,8 @@ Dieses Szenario erfordert die folgenden Komponenten und Konfigurationen:
 
 NetApp empfiehlt für iSCSI vollständig redundante Netzwerkdesigns. Das folgende Diagramm zeigt ein Beispiel einer redundanten Konfiguration für Fehlertoleranz für Storage-Systeme, Switches, Netzwerkadapter und Host-Systeme. Weitere Informationen finden Sie im NetApp link:https://docs.netapp.com/us-en/ontap/san-config/index.html["Referenz zur SAN-Konfiguration"] Finden Sie weitere Informationen.
 
-image:vmware-vcf-asa-image74.png["ISCSI-Netzwerkdesign"]
+image::vmware-vcf-asa-image74.png[ISCSI-Netzwerkdesign]
+
 {Nbsp}
 
 Für Multipathing und Failover über mehrere Pfade empfiehlt NetApp für alle SVMs in iSCSI-Konfigurationen die Verwendung von mindestens zwei LIFs pro Storage-Node in separaten ethernet-Netzwerken.
@@ -78,14 +79,14 @@ Führen Sie die folgenden Schritte aus, um eine SVM zusammen mit mehreren LIFs f
 
 . Navigieren Sie im ONTAP-Systemmanager im linken Menü zu *Speicher-VMs* und klicken Sie auf *+ Hinzufügen*, um zu starten.
 +
-image:vmware-vcf-asa-image01.png["Klicken Sie auf +Hinzufügen, um mit der Erstellung der SVM zu beginnen"]
+image::vmware-vcf-asa-image01.png[Klicken Sie auf +Hinzufügen, um mit der Erstellung der SVM zu beginnen]
 
 +
 {Nbsp}
 
 . Im *Add Storage VM* Wizard geben Sie einen *Namen* für die SVM an, wählen Sie den *IP Space* aus und klicken Sie dann unter *Access Protocol auf die Registerkarte *iSCSI* und aktivieren Sie das Kontrollkästchen *enable iSCSI*.
 +
-image:vmware-vcf-asa-image02.png["Storage VM Wizard hinzufügen - iSCSI aktivieren"]
+image::vmware-vcf-asa-image02.png[Storage VM Wizard hinzufügen - iSCSI aktivieren]
 
 . Geben Sie im Abschnitt *Network Interface* die *IP-Adresse*, *Subnetzmaske* und *Broadcast Domain und Port* für die erste LIF ein. Für nachfolgende LIFs kann das Kontrollkästchen aktiviert sein, um allgemeine Einstellungen für alle verbleibenden LIFs zu verwenden oder separate Einstellungen zu verwenden.
 +
@@ -93,11 +94,11 @@ image:vmware-vcf-asa-image02.png["Storage VM Wizard hinzufügen - iSCSI aktivier
 NOTE: Für Multipathing und Failover über mehrere Pfade empfiehlt NetApp für alle SVMs in iSCSI-Konfigurationen die Verwendung von mindestens zwei LIFs pro Storage-Node in separaten Ethernet-Netzwerken.
 
 +
-image:vmware-vcf-asa-image03.png["Geben Sie die Netzwerkinformationen für LIFs ein"]
+image::vmware-vcf-asa-image03.png[Geben Sie die Netzwerkinformationen für LIFs ein]
 
 . Wählen Sie aus, ob das Storage VM Administration-Konto aktiviert werden soll (für mandantenfähige Umgebungen), und klicken Sie auf *Speichern*, um die SVM zu erstellen.
 +
-image:vmware-vcf-asa-image04.png["Aktivieren Sie das SVM-Konto und beenden Sie es"]
+image::vmware-vcf-asa-image04.png[Aktivieren Sie das SVM-Konto und beenden Sie es]
 
 
 
@@ -115,7 +116,7 @@ Gehen Sie wie folgt vor, um eine neue verteilte Portgruppe für jedes iSCSI-Netz
 
 . Navigieren Sie im vSphere-Client für den Management Domain Cluster zu *Inventar > Netzwerk*. Navigieren Sie zum vorhandenen Distributed Switch und wählen Sie die Aktion zum Erstellen von *New Distributed Port Group...* aus.
 +
-image:vmware-vcf-asa-image05.png["Wählen Sie diese Option, um eine neue Portgruppe zu erstellen"]
+image::vmware-vcf-asa-image05.png[Wählen Sie diese Option, um eine neue Portgruppe zu erstellen]
 
 +
 {Nbsp}
@@ -123,7 +124,7 @@ image:vmware-vcf-asa-image05.png["Wählen Sie diese Option, um eine neue Portgru
 . Geben Sie im Assistenten *New Distributed Port Group* einen Namen für die neue Portgruppe ein und klicken Sie auf *Next*, um fortzufahren.
 . Füllen Sie auf der Seite *Configure settings* alle Einstellungen aus. Wenn VLANs verwendet werden, stellen Sie sicher, dass Sie die richtige VLAN-ID angeben. Klicken Sie auf *Weiter*, um fortzufahren.
 +
-image:vmware-vcf-asa-image06.png["Geben Sie die VLAN-ID ein"]
+image::vmware-vcf-asa-image06.png[Geben Sie die VLAN-ID ein]
 
 +
 {Nbsp}
@@ -132,18 +133,18 @@ image:vmware-vcf-asa-image06.png["Geben Sie die VLAN-ID ein"]
 . Wiederholen Sie diesen Vorgang, um eine verteilte Portgruppe für das zweite verwendete iSCSI-Netzwerk zu erstellen und sicherzustellen, dass Sie die richtige *VLAN-ID* eingegeben haben.
 . Nachdem beide Portgruppen erstellt wurden, navigieren Sie zur ersten Portgruppe und wählen Sie die Aktion *Einstellungen bearbeiten...* aus.
 +
-image:vmware-vcf-asa-image27.png["DPG - Einstellungen bearbeiten"]
+image::vmware-vcf-asa-image27.png[DPG - Einstellungen bearbeiten]
 
 +
 {Nbsp}
 
 . Navigieren Sie auf der Seite *Distributed Port Group - Edit Settings* im linken Menü zu *Teaming und Failover* und klicken Sie auf *Uplink2*, um es nach unten zu *unused Uplinks* zu verschieben.
 +
-image:vmware-vcf-asa-image28.png["Setzen Sie Uplink2 auf „nicht verwendet“"]
+image::vmware-vcf-asa-image28.png[Setzen Sie Uplink2 auf „nicht verwendet“]
 
 . Wiederholen Sie diesen Schritt für die zweite iSCSI-Portgruppe. Allerdings bewegt sich dieses Mal *Uplink1* zu *unbenutzten Uplinks*.
 +
-image:vmware-vcf-asa-image29.png["Bewegen Sie Uplink1 auf unbenutzt"]
+image::vmware-vcf-asa-image29.png[Bewegen Sie Uplink1 auf unbenutzt]
 
 
 
@@ -155,42 +156,42 @@ Wiederholen Sie diesen Vorgang auf jedem ESXi-Host in der Managementdomäne.
 
 . Navigieren Sie vom vSphere-Client zu einem der ESXi-Hosts im Inventar der Verwaltungsdomäne. Wählen Sie auf der Registerkarte *Configure* *VMkernel Adapter* und klicken Sie auf *Add Networking...*, um zu starten.
 +
-image:vmware-vcf-asa-image07.png["Starten Sie den Assistenten zum Hinzufügen von Netzwerken"]
+image::vmware-vcf-asa-image07.png[Starten Sie den Assistenten zum Hinzufügen von Netzwerken]
 
 +
 {Nbsp}
 
 . Wählen Sie im Fenster *Verbindungstyp auswählen* *VMkernel Netzwerkadapter* und klicken Sie auf *Weiter*, um fortzufahren.
 +
-image:vmware-vcf-asa-image08.png["Wählen Sie VMkernel Netzwerkadapter"]
+image::vmware-vcf-asa-image08.png[Wählen Sie VMkernel Netzwerkadapter]
 
 +
 {Nbsp}
 
 . Wählen Sie auf der Seite *Zielgerät auswählen* eine der zuvor erstellten verteilten Portgruppen für iSCSI aus.
 +
-image:vmware-vcf-asa-image09.png["Wählen Sie die Zielportgruppe aus"]
+image::vmware-vcf-asa-image09.png[Wählen Sie die Zielportgruppe aus]
 
 +
 {Nbsp}
 
 . Behalten Sie auf der Seite *Port Properties* die Standardeinstellungen bei und klicken Sie auf *Weiter*, um fortzufahren.
 +
-image:vmware-vcf-asa-image10.png["VMkernel-Port-Eigenschaften"]
+image::vmware-vcf-asa-image10.png[VMkernel-Port-Eigenschaften]
 
 +
 {Nbsp}
 
 . Geben Sie auf der Seite *IPv4 settings* die *IP-Adresse*, *Subnetzmaske* ein, und geben Sie eine neue Gateway-IP-Adresse ein (nur bei Bedarf). Klicken Sie auf *Weiter*, um fortzufahren.
 +
-image:vmware-vcf-asa-image11.png["VMkernel IPv4-Einstellungen"]
+image::vmware-vcf-asa-image11.png[VMkernel IPv4-Einstellungen]
 
 +
 {Nbsp}
 
 . Überprüfen Sie Ihre Auswahl auf der Seite *Ready to Complete* und klicken Sie auf *Finish*, um den VMkernel-Adapter zu erstellen.
 +
-image:vmware-vcf-asa-image12.png["Prüfen Sie die VMkernel-Auswahl"]
+image::vmware-vcf-asa-image12.png[Prüfen Sie die VMkernel-Auswahl]
 
 +
 {Nbsp}
@@ -216,14 +217,14 @@ Füllen Sie die folgenden Schritte aus, um ONTAP Tools für VMware vSphere zu im
 . Melden Sie sich bei der vCenter Appliance für die VCF-Managementdomäne an.
 . Klicken Sie in der vCenter-Appliance-Oberfläche mit der rechten Maustaste auf den Management-Cluster und wählen Sie *Deploy OVF Template…* aus
 +
-image:vmware-vcf-aff-image21.png["OVF-Vorlage bereitstellen..."]
+image::vmware-vcf-aff-image21.png[OVF-Vorlage bereitstellen...]
 
 +
 {Nbsp}
 
 . Klicken Sie im Assistenten *OVF-Vorlage bereitstellen* auf das Optionsfeld *Lokale Datei* und wählen Sie die im vorherigen Schritt heruntergeladene OVA-Datei für ONTAP-Tools aus.
 +
-image:vmware-vcf-aff-image22.png["Wählen Sie die OVA-Datei aus"]
+image::vmware-vcf-aff-image22.png[Wählen Sie die OVA-Datei aus]
 
 +
 {Nbsp}
@@ -231,14 +232,14 @@ image:vmware-vcf-aff-image22.png["Wählen Sie die OVA-Datei aus"]
 . Wählen Sie für die Schritte 2 bis 5 des Assistenten einen Namen und Ordner für die VM aus, wählen Sie die Rechenressource aus, überprüfen Sie die Details und akzeptieren Sie die Lizenzvereinbarung.
 . Wählen Sie für den Speicherort der Konfigurations- und Festplattendateien den vSAN Datastore des VCF Management Domain Clusters aus.
 +
-image:vmware-vcf-aff-image23.png["Wählen Sie die OVA-Datei aus"]
+image::vmware-vcf-aff-image23.png[Wählen Sie die OVA-Datei aus]
 
 +
 {Nbsp}
 
 . Wählen Sie auf der Seite Netzwerk auswählen das Netzwerk aus, das für den Verwaltungsdatenverkehr verwendet wird.
 +
-image:vmware-vcf-aff-image24.png["Wählen Sie Netzwerk aus"]
+image::vmware-vcf-aff-image24.png[Wählen Sie Netzwerk aus]
 
 +
 {Nbsp}
@@ -256,10 +257,10 @@ image:vmware-vcf-aff-image24.png["Wählen Sie Netzwerk aus"]
 Klicken Sie auf *Weiter*, um fortzufahren.
 
 +
-image:vmware-vcf-aff-image25.png["OTV-Vorlage anpassen 1"]
+image::vmware-vcf-aff-image25.png[OTV-Vorlage anpassen 1]
 
 +
-image:vmware-vcf-asa-image13.png["OTV-Vorlage anpassen 2"]
+image::vmware-vcf-asa-image13.png[OTV-Vorlage anpassen 2]
 
 +
 {Nbsp}
@@ -277,25 +278,25 @@ Führen Sie die folgenden Schritte aus, um einen VMFS-iSCSI-Datastore als zusät
 
 . Navigieren Sie im vSphere-Client zum Hauptmenü und wählen Sie *NetApp ONTAP-Tools*.
 +
-image:vmware-vcf-asa-image14.png["Navigieren Sie zu ONTAP-Tools"]
+image::vmware-vcf-asa-image14.png[Navigieren Sie zu ONTAP-Tools]
 
 . Klicken Sie in *ONTAP-Tools* auf der Seite erste Schritte (oder von *Speichersystemen*) auf *Hinzufügen*, um ein neues Speichersystem hinzuzufügen.
 +
-image:vmware-vcf-asa-image15.png["Hinzufügen des Storage-Systems"]
+image::vmware-vcf-asa-image15.png[Hinzufügen des Storage-Systems]
 
 +
 {Nbsp}
 
 . Geben Sie die IP-Adresse und Anmeldeinformationen des ONTAP-Speichersystems ein und klicken Sie auf *Hinzufügen*.
 +
-image:vmware-vcf-asa-image16.png["IP und Zugangsdaten für das ONTAP-System bereitstellen"]
+image::vmware-vcf-asa-image16.png[IP und Zugangsdaten für das ONTAP-System bereitstellen]
 
 +
 {Nbsp}
 
 . Klicken Sie auf *Yes*, um das Clusterzertifikat zu autorisieren und das Speichersystem hinzuzufügen.
 +
-image:vmware-vcf-asa-image17.png["Cluster-Zertifikat autorisieren"]
+image::vmware-vcf-asa-image17.png[Cluster-Zertifikat autorisieren]
 
 
 
@@ -310,21 +311,21 @@ Führen Sie die folgenden Schritte aus, um die VCF-Management-VMs auf den iSCSI-
 . Navigieren Sie vom vSphere Client zum Management Domain Cluster und klicken Sie auf die Registerkarte *VMs*.
 . Wählen Sie die VMs aus, die zum iSCSI-Datenspeicher migriert werden sollen, klicken Sie mit der rechten Maustaste und wählen Sie *Migrate..* aus.
 +
-image:vmware-vcf-asa-image18.png["Wählen Sie die zu migrierenden VMs aus"]
+image::vmware-vcf-asa-image18.png[Wählen Sie die zu migrierenden VMs aus]
 
 +
 {Nbsp}
 
 . Wählen Sie im Assistenten *Virtual Machines - Migrate* als Migrationstyp *nur Speicher ändern* aus und klicken Sie auf *Weiter*, um fortzufahren.
 +
-image:vmware-vcf-asa-image19.png["Wählen Sie den Migrationstyp aus"]
+image::vmware-vcf-asa-image19.png[Wählen Sie den Migrationstyp aus]
 
 +
 {Nbsp}
 
 . Wählen Sie auf der Seite *Select Storage* den iSCSI-Datastore aus und wählen Sie *Next*, um fortzufahren.
 +
-image:vmware-vcf-asa-image20.png["Wählen Sie den Ziel-Datastore aus"]
+image::vmware-vcf-asa-image20.png[Wählen Sie den Ziel-Datastore aus]
 
 +
 {Nbsp}
@@ -332,7 +333,7 @@ image:vmware-vcf-asa-image20.png["Wählen Sie den Ziel-Datastore aus"]
 . Überprüfen Sie die Auswahl und klicken Sie auf *Fertig stellen*, um die Migration zu starten.
 . Der Status der Verlagerung kann im Bereich *Letzte Aufgaben* angezeigt werden.
 +
-image:vmware-vcf-asa-image21.png["Bereich „Letzte Aufgaben“ des vSphere-Clients"]
+image::vmware-vcf-asa-image21.png[Bereich „Letzte Aufgaben“ des vSphere-Clients]
 
 
 

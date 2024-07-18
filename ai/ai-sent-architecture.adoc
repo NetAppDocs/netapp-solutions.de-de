@@ -34,7 +34,7 @@ Bei GPU-beschleunigten Datacentern können Unternehmen das NVIDIA verwenden http
 
 Diese Lösung zeigt die Verarbeitung von Audiodateien, das NLP-Modelltraining, das Transfer Learning und die Detailschritte zum Datenmanagement. Die daraus resultierende End-to-End-Pipeline erzeugt eine Sentimentzusammenfassung, die in Echtzeit auf den Dashboards von Mitarbeitern des menschlichen Supports angezeigt wird.
 
-image:ai-sent-image4.png[""]
+image::ai-sent-image4.png[ai gesendet image4]
 
 
 
@@ -233,12 +233,12 @@ Diese Lösung trifft auf folgende Anwendungsfälle zu:
 * Sentimentanalyse
 
 
-image:ai-sent-image6.png[""]
+image::ai-sent-image6.png[ai gesendet image6]
 
 Der Anwendungsfall Speech-to-Text beginnt mit der Aufnahme von Audiodateien für die Support Center. Dieses Audio wird dann an die von RIVA benötigte Struktur angepasst. Wenn die Audiodateien nicht bereits in ihre Analyseneinheiten aufgeteilt wurden, muss dies vor der Übergabe an RIVA erfolgen. Nach der Verarbeitung der Audiodatei wird sie als API-Aufruf an DEN RIVA-Server übergeben. Der Server verwendet eines der vielen Modelle, die er hostet, und gibt eine Antwort aus. Dieser Text (Teil der automatischen Spracherkennung) liefert eine Textdarstellung des Audiosignals. Von dort aus wechselt die Pipeline in den Bereich der Sentiment-Analyse.
 
 Zur Sentimentanalyse dient die Textausgabe der automatischen Spracherkennung als Eingabe zur Textklassifizierung. Textklassifizierung ist die NVIDIA-Komponente zum Klassifizieren von Text in eine beliebige Anzahl von Kategorien. Die Sentiment-Kategorien reichen von positiv bis negativ für die Gespräche im Support Center. Die Leistung der Modelle kann mit einem Holdout-Satz bewertet werden, um den Erfolg des Feintuning-Schritts zu bestimmen.
 
-image:ai-sent-image8.png[""]
+image::ai-sent-image8.png[ai gesendet image8]
 
 Eine ähnliche Pipeline wird sowohl für die sprach-zu-Text- als auch für die Sentimentanalyse im TAO Toolkit verwendet. Der große Unterschied ist die Verwendung von Etiketten, die für die Feinabstimmung der Modelle erforderlich sind. Die TAO Toolkit-Pipeline beginnt mit der Verarbeitung der Datendateien. Dann die vortrainierten Modelle (aus dem https://ngc.nvidia.com/catalog["NVIDIA NGC-Katalog"^]) Sind mit den Support-Center-Daten fein abgestimmt. Die fein abgestimmten Modelle werden anhand ihrer entsprechenden Leistungskennzahlen bewertet und, wenn sie performanter sind als die vortrainierten Modelle, auf DEM RIVA-Server eingesetzt.

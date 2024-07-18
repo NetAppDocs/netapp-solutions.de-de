@@ -45,7 +45,7 @@ Hauptthemen:
 
 Für eine Oracle-Hochverfügbarkeitskonfiguration, wie im Architekturdiagramm gezeigt, müssen Sie mindestens vier Verfügbarkeitszonen in einer Region aktivieren. Die verschiedenen Verfügbarkeitszonen können auch in verschiedenen Regionen aufgestellt werden, um die für das Disaster Recovery erforderlichen Entfernungen zu erfüllen.
 
-image:aws_ora_fsx_ec2_inst_01.PNG[""]
+image::aws_ora_fsx_ec2_inst_01.PNG[aws ora fsx ec2 ab 01]
 
 
 
@@ -66,35 +66,38 @@ Die folgenden Screenshots zeigen die Bereitstellung einer m5-Typ Linux-Instanz m
 
 . Klicken Sie im EC2-Dashboard auf die gelbe Schaltfläche Instanz starten, um den Implementierungs-Workflow für EC2 Instanzen zu starten.
 +
-image:aws_ora_fsx_ec2_inst_02.PNG[""]
+image::aws_ora_fsx_ec2_inst_02.PNG[aws ora fsx ec2 ab 02]
 
 . Wählen Sie in Schritt 1 „Red hat Enterprise Linux 8 (HVM), SSD Volume Type - ami-0b0af3577fe5e3532 (64-bit x86) / ami-01fc429821bf1f4b4 (64-bit ARM)“ aus.
 +
-image:aws_ora_fsx_ec2_inst_03.PNG[""]
+image::aws_ora_fsx_ec2_inst_03.PNG[aws ora fsx ec2 ab 03]
 
 . Wählen Sie in Schritt 2 einen m5-Instanztyp mit der entsprechenden CPU- und Speicherzuweisung basierend auf Ihrem Oracle-Datenbank-Workload aus. Klicken Sie Auf „Weiter: Instanzdetails Konfigurieren“.
 +
-image:aws_ora_fsx_ec2_inst_04.PNG[""]
+image::aws_ora_fsx_ec2_inst_04.PNG[aws ora fsx ec2 ab 04]
 
 . Wählen Sie in Schritt 3 die VPC und das Subnetz aus, in dem die Instanz platziert werden soll, und aktivieren Sie die öffentliche IP-Zuweisung. Klicken Sie Auf „Next: Add Storage“ (Weiter).
 +
-image:aws_ora_fsx_ec2_inst_05.PNG[""]
+image::aws_ora_fsx_ec2_inst_05.PNG[aws ora fsx ec2 ab 05]
 
 . Weisen Sie in Schritt 4 genügend Speicherplatz für die Root-Festplatte zu. Möglicherweise benötigen Sie den Speicherplatz, um einen Swap hinzuzufügen. Standardmäßig weist EC2-Instanz keinen Swap-Speicherplatz zu, was nicht optimal für die Ausführung von Oracle ist.
 +
-image:aws_ora_fsx_ec2_inst_06.PNG[""]
+image::aws_ora_fsx_ec2_inst_06.PNG[aws ora fsx ec2 ab 06]
 
 . Fügen Sie in Schritt 5 bei Bedarf ein Tag für die Instanzidentifikation hinzu.
 +
-image:aws_ora_fsx_ec2_inst_07.PNG[""]
+image::aws_ora_fsx_ec2_inst_07.PNG[aws ora fsx ec2 ab 07]
 
 . Wählen Sie in Schritt 6 eine vorhandene Sicherheitsgruppe aus oder erstellen Sie eine neue mit der gewünschten ein- und ausgehenden Richtlinie für die Instanz.
 +
-image:aws_ora_fsx_ec2_inst_08.PNG[""]
+image::aws_ora_fsx_ec2_inst_08.PNG[aws ora fsx ec2 ab 08]
 
 . Überprüfen Sie in Schritt 7 die Zusammenfassung der Instanzkonfiguration, und klicken Sie auf Starten, um die Instanzbereitstellung zu starten. Sie werden aufgefordert, ein Schlüsselpaar zu erstellen oder ein Schlüsselpaar für den Zugriff auf die Instanz auszuwählen.
 +
-image:aws_ora_fsx_ec2_inst_09.PNG[""] image:aws_ora_fsx_ec2_inst_09_1.PNG[""]
+image::aws_ora_fsx_ec2_inst_09.PNG[aws ora fsx ec2 ab 09]
+
++
+image::aws_ora_fsx_ec2_inst_09_1.PNG[aws ora fsx ec2 ab 09 1]
 
 . Melden Sie sich über ein SSH-Schlüsselpaar bei der EC2-Instanz an. Nehmen Sie ggf. Änderungen an Ihrem Schlüsselnamen und Ihrer Instanz-IP-Adresse vor.
 +
@@ -127,7 +130,7 @@ Wichtige Überlegungen:
 * Backup und Wartung. Automatische tägliche Backups deaktivieren; Datenbank-Storage-Backups werden durch SnapCenter-Planung durchgeführt.
 * Rufen Sie die SVM Management-IP-Adresse und protokollspezifische Zugriffadressen auf der SVM Detailseite ab. Erforderlich für FSX-Konfigurationsautomatisierung
 +
-image:aws_rds_custom_deploy_fsx_01.PNG[""]
+image::aws_rds_custom_deploy_fsx_01.PNG[aws rds: Benutzerdefinierte Bereitstellung von fsx 01]
 
 
 
@@ -135,35 +138,35 @@ Sehen Sie sich die folgenden Schritt-für-Schritt-Anweisungen zum Einrichten ein
 
 . Klicken Sie auf der FSX-Konsole auf Dateisystem erstellen, um den FSX-Bereitstellungsprozess zu starten.
 +
-image:aws_ora_fsx_ec2_stor_01.PNG[""]
+image::aws_ora_fsx_ec2_stor_01.PNG[aws ora fsx ec2 Stor 01]
 
 . Wählen Sie Amazon FSX für NetApp ONTAP aus. Klicken Sie anschließend auf Weiter.
 +
-image:aws_ora_fsx_ec2_stor_02.PNG[""]
+image::aws_ora_fsx_ec2_stor_02.PNG[aws ora fsx ec2 Stor 02]
 
 . Wählen Sie Standard Erstellen und benennen Sie unter Dateisystemdetails Ihr Dateisystem, Multi-AZ HA. Wählen Sie je nach Datenbank-Workload entweder automatisch oder vom Benutzer bereitgestellte IOPS bis zu 80,000 SSD-IOPS. FSX Storage verfügt über bis zu 2 tib NVMe-Caching im Backend, das noch höhere gemessene IOPS liefern kann.
 +
-image:aws_ora_fsx_ec2_stor_03.PNG[""]
+image::aws_ora_fsx_ec2_stor_03.PNG[aws ora fsx ec2 Stor 03]
 
 . Wählen Sie im Abschnitt Netzwerk & Sicherheit die VPC, die Sicherheitsgruppe und die Subnetze aus. Diese sollten vor der Bereitstellung von FSX erstellt werden. Platzieren Sie die FSX-Storage-Nodes auf Basis der Rolle des FSX-Clusters (primär oder Standby) in die entsprechenden Zonen.
 +
-image:aws_ora_fsx_ec2_stor_04.PNG[""]
+image::aws_ora_fsx_ec2_stor_04.PNG[aws ora fsx ec2 Stor 04]
 
 . Akzeptieren Sie im Abschnitt Sicherheit & Verschlüsselung die Standardeinstellung, und geben Sie das fsxadmin-Passwort ein.
 +
-image:aws_ora_fsx_ec2_stor_05.PNG[""]
+image::aws_ora_fsx_ec2_stor_05.PNG[aws ora fsx ec2 Stor 05]
 
 . Geben Sie den SVM-Namen und das vsadmin-Passwort ein.
 +
-image:aws_ora_fsx_ec2_stor_06.PNG[""]
+image::aws_ora_fsx_ec2_stor_06.PNG[aws ora fsx ec2 Stor 06]
 
 . Behalten Sie die Volume-Konfiguration leer. Sie müssen derzeit kein Volume erstellen.
 +
-image:aws_ora_fsx_ec2_stor_07.PNG[""]
+image::aws_ora_fsx_ec2_stor_07.PNG[aws ora fsx ec2 Stor 07]
 
 . Prüfen Sie die Seite Zusammenfassung, und klicken Sie auf Dateisystem erstellen, um die Bereitstellung des FSX-Dateisystems abzuschließen.
 +
-image:aws_ora_fsx_ec2_stor_08.PNG[""]
+image::aws_ora_fsx_ec2_stor_08.PNG[aws ora fsx ec2 Stor 08]
 
 
 
@@ -187,7 +190,11 @@ Wichtige Überlegungen:
 
 Über die AWS FSX-Konsole können Sie drei Volumes für Oracle-Datenbank-File-Storage erstellen: Eines für die Oracle-Binärdatei, eines für die Oracle-Daten und eines für das Oracle-Protokoll. Stellen Sie sicher, dass die Volume-Benennung mit dem Oracle Host-Namen (definiert in der Hosts-Datei im Automatisierungs-Toolkit) übereinstimmt, um die ordnungsgemäße Identifizierung zu finden. In diesem Beispiel verwenden wir db1 als Oracle-Hostname von EC2 anstelle eines typischen IP-Adressenbasierten Hostnamens für eine EC2-Instanz.
 
-image:aws_ora_fsx_ec2_stor_09.PNG[""] image:aws_ora_fsx_ec2_stor_10.PNG[""] image:aws_ora_fsx_ec2_stor_11.PNG[""]
+image::aws_ora_fsx_ec2_stor_09.PNG[aws ora fsx ec2 Stor 09]
+
+image::aws_ora_fsx_ec2_stor_10.PNG[aws ora fsx ec2 Stor 10]
+
+image::aws_ora_fsx_ec2_stor_11.PNG[aws ora fsx ec2 Stor 11]
 
 
 NOTE: Das Erstellen von iSCSI-LUNs wird derzeit nicht von der FSX-Konsole unterstützt. Für die Implementierung von iSCSI-LUNs bei Oracle können die Volumes und LUNs mithilfe von Automatisierung für ONTAP mit dem NetApp Automatisierungs-Toolkit erstellt werden.
@@ -283,7 +290,7 @@ vserver peer create -vserver primary_vserver_name -peer-vserver standby_vserver_
 ----
 . Überprüfen Sie, ob die Cluster- und vserver-Peerings korrekt eingerichtet sind.
 +
-image:aws_ora_fsx_ec2_stor_14.PNG[""]
+image::aws_ora_fsx_ec2_stor_14.PNG[aws ora fsx ec2 Stor 14]
 
 . Erstellung von Ziel-NFS-Volumes im Standby-FSX Cluster für jedes Quell-Volume im primären FSX-Cluster Ersetzen Sie den für Ihre Umgebung geeigneten Volume-Namen.
 +
@@ -416,16 +423,16 @@ Folgen link:https://docs.netapp.com/ocsc-41/index.jsp?topic=%2Fcom.netapp.doc.oc
 
 . Melden SnapCenter Sie sich nach der automatisierten SnapCenter-Installation als administrativer Benutzer für den Windows-Host an, auf dem der SnapCenter-Server installiert ist.
 +
-image:aws_rds_custom_deploy_snp_01.PNG[""]
+image::aws_rds_custom_deploy_snp_01.PNG[aws rds: Benutzerdefiniertes Deploy snp 01]
 
 . Klicken Sie im linken Menü auf Einstellungen und dann Credential und New, um ec2-User-Anmeldeinformationen für die SnapCenter-Plugin-Installation hinzuzufügen.
 +
-image:aws_rds_custom_deploy_snp_02.PNG[""]
+image::aws_rds_custom_deploy_snp_02.PNG[aws rds: Benutzerdefiniertes Deploy snp 02]
 
 . Setzen Sie das ec2-User-Passwort zurück und aktivieren Sie die SSH-Passwort-Authentifizierung, indem Sie den bearbeiten `/etc/ssh/sshd_config` Datei auf dem EC2 Instance Host.
 . Vergewissern Sie sich, dass das Kontrollkästchen „Sudo-Berechtigungen verwenden“ aktiviert ist. Im vorherigen Schritt setzen Sie einfach das ec2-User-Passwort zurück.
 +
-image:aws_rds_custom_deploy_snp_03.PNG[""]
+image::aws_rds_custom_deploy_snp_03.PNG[aws rds: Benutzerdefiniertes Deploy snp 03]
 
 . Fügen Sie zur Namensauflösung den SnapCenter-Servernamen und die IP-Adresse zur Host-Datei der EC2-Instanz hinzu.
 +
@@ -445,31 +452,31 @@ image:aws_rds_custom_deploy_snp_03.PNG[""]
 ----
 . Wählen Sie im linken Menü Hosts > Managed Hosts aus und klicken Sie dann auf Hinzufügen, um den EC2 Instance Host zu SnapCenter hinzuzufügen.
 +
-image:aws_rds_custom_deploy_snp_04.PNG[""]
+image::aws_rds_custom_deploy_snp_04.PNG[aws rds: Benutzerdefiniertes Deploy snp 04]
 
 +
 Aktivieren Sie Oracle Database, und klicken Sie vor dem Senden auf More Options.
 
 +
-image:aws_rds_custom_deploy_snp_05.PNG[""]
+image::aws_rds_custom_deploy_snp_05.PNG[aws rds: Benutzerdefiniertes Deploy snp 05]
 
 +
 Aktivieren Sie Prüfungen Vor Der Installation Überspringen. Bestätigen Sie die Überprüfung der Vorinstallation überspringen, und klicken Sie dann auf nach Speichern senden.
 
 +
-image:aws_rds_custom_deploy_snp_06.PNG[""]
+image::aws_rds_custom_deploy_snp_06.PNG[aws rds: Benutzerdefiniertes Deploy snp 06]
 
 +
 Sie werden mit Fingerabdruck bestätigen aufgefordert und dann auf Bestätigen und Senden klicken.
 
 +
-image:aws_rds_custom_deploy_snp_07.PNG[""]
+image::aws_rds_custom_deploy_snp_07.PNG[aws rds: Benutzerdefiniertes Deploy snp 07]
 
 +
 Nach erfolgreicher Plugin-Konfiguration wird der Gesamtstatus des verwalteten Hosts als aktiv angezeigt.
 
 +
-image:aws_rds_custom_deploy_snp_08.PNG[""]
+image::aws_rds_custom_deploy_snp_08.PNG[aws rds: Benutzerdefiniertes Deploy snp 08]
 
 
 
@@ -494,4 +501,4 @@ Weitere Informationen finden Sie im Abschnitt Oracle von link:hybrid_dbops_snapc
 
 Das folgende Bild zeigt ein Beispiel für die Ressourcengruppen, die zum Backup einer Oracle-Datenbank eingerichtet wurden.
 
-image:aws_rds_custom_deploy_snp_09.PNG[""]
+image::aws_rds_custom_deploy_snp_09.PNG[aws rds: Benutzerdefiniertes Deploy snp 09]

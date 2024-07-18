@@ -40,7 +40,7 @@ Installieren Sie je nach Ihren Anforderungen alle erforderlichen Bibliotheken un
 
 Wir verwenden das Beispiel eines kleinen neuronalen Netzwerks, das auf MNIST-Daten trainiert ist. Der MNIST-Datensatz besteht aus handschriftlichen Bildern von Ziffern von 0 bis 9. Die Bilder sind 28x28 Pixel groß. Der Datensatz ist in 60,000 Zug-Bilder und 10,000 Validierungsbilder unterteilt. Das für dieses Experiment verwendete Neuronale Netzwerk ist ein 2-schichtiges Feedforward-Netzwerk. Das Training wird mit Kubeflow Pipelines durchgeführt. Siehe Dokumentation https://www.kubeflow.org/docs/components/pipelines/v1/introduction/["Hier"^] Finden Sie weitere Informationen. Unsere Kubeflow-Pipeline enthält das Docker-Image aus dem Abschnitt Voraussetzungen.
 
-image:kubeflow_pipeline.png["Kubeflow Pipeline Run Visualization"]
+image::kubeflow_pipeline.png[Kubeflow Pipeline Run Visualization]
 
 
 
@@ -48,7 +48,7 @@ image:kubeflow_pipeline.png["Kubeflow Pipeline Run Visualization"]
 
 Sobald das Modell trainiert ist, können wir die Ergebnisse mit Tensorboard visualisieren. https://www.tensorflow.org/tensorboard["Tensorboard"^] Ist als Funktion im Kubeflow Dashboard verfügbar. Sie können ein individuelles Tensorboard für Ihren Job erstellen. Ein Beispiel unten zeigt die Darstellung der Trainingsgenauigkeit vs. Anzahl der Epochen und Trainingsverluste vs Anzahl der Epochen.
 
-image:tensorboard_graph.png["Tensorboard-Diagramm für Trainingsverlust und Genauigkeit"]
+image::tensorboard_graph.png[Tensorboard-Diagramm für Trainingsverlust und Genauigkeit]
 
 
 
@@ -56,9 +56,9 @@ image:tensorboard_graph.png["Tensorboard-Diagramm für Trainingsverlust und Gena
 
 https://www.kubeflow.org/docs/components/katib/hyperparameter/["Katib"^] Ist ein Werkzeug innerhalb von Kubeflow, das verwendet werden kann, um mit den Modell-Hyperparametern zu experimentieren. Um ein Experiment zu erstellen, definieren Sie zunächst eine gewünschte Metrik/ein Ziel. Dies ist in der Regel die Prüfgenauigkeit. Nachdem die Metrik definiert wurde, wählen Sie Hyperparameter aus, mit denen Sie spielen möchten (Optimizer/Learning_Rate/Anzahl der Ebenen). Katib führt einen Hyperparameter-Sweep mit den benutzerdefinierten Werten durch, um die beste Kombination von Parametern zu finden, die die gewünschte Metrik erfüllen. Sie können diese Parameter in jedem Abschnitt der Benutzeroberfläche definieren. Alternativ können Sie eine *YAML*-Datei mit den erforderlichen Spezifikationen definieren. Unten ist eine Illustration eines Katib-Experiments -
 
-image:katib_experiment_1.png["Katib Experiment Dashboard mit Hyperparametern"]
+image::katib_experiment_1.png[Katib Experiment Dashboard mit Hyperparametern]
 
-image:katib_experiment_2.png["Test erfolgreich"]
+image::katib_experiment_2.png[Test erfolgreich]
 
 
 
@@ -66,6 +66,6 @@ image:katib_experiment_2.png["Test erfolgreich"]
 
 Während des Modelltrainings möchten wir eventuell eine Momentaufnahme des Trainingsdatensatzes zur Rückverfolgbarkeit speichern. Zu diesem Zweck können wir der Pipeline wie unten gezeigt einen Snapshot-Schritt hinzufügen. Zum Erstellen des Snapshots können wir den verwenden https://github.com/NetApp/netapp-dataops-toolkit/tree/main/netapp_dataops_k8s["NetApp DataOps Toolkit für Kubernetes"^].
 
-image:kubeflow_snapshot.png["Code zum Erstellen einer Snapshot-Pipeline in Kubeflow"]
+image::kubeflow_snapshot.png[Code zum Erstellen einer Snapshot-Pipeline in Kubeflow]
 
 Siehe https://github.com/NetApp/netapp-dataops-toolkit/tree/main/netapp_dataops_k8s/Examples/Kubeflow["Beispiel für das NetApp DataOps Toolkit für Kubeflow"^] Finden Sie weitere Informationen.

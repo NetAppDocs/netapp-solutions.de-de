@@ -18,7 +18,7 @@ Vor Ort haben wir den NetApp AFF A900 Storage-Controller mit ONTAP 9.12.1RC1 ver
 
 Wir haben Confluent Kafka 6.2.0 verwendet, um die AFF A900 zu evaluieren. Der Cluster verfügt über acht Broker-Nodes und drei Zookeeper-Nodes. Für Performance-Tests haben wir fünf OMB-Arbeitsknoten verwendet.
 
-image:kafka-nfs-image32.png[""]
+image::kafka-nfs-image32.png[kafka nfs image32]
 
 
 
@@ -121,11 +121,11 @@ Wir haben den AFF A900 anhand des OpenMessaging Benchmarks evaluiert, um einen �
 
 Die stabile Performance mit Confluent Kafka und dem AFF A900 erreichte einen durchschnittlichen Durchsatz von 3,4 GB/s sowohl bei Herstellern als auch bei Verbrauchern. Das sind über 3.4 Millionen Nachrichten im Kafka-Cluster. Durch die Visualisierung des kontinuierlichen Durchsatzes in Byte pro Sekunde für BrokerTopicMetrics sehen wir die hervorragende Steady State Performance und den vom AFF A900 unterstützten Datenverkehr.
 
-image:kafka-nfs-image33.png["Dieses Diagramm zeigt den Durchsatz des Broker-Netzwerks."]
+image::kafka-nfs-image33.png[Dieses Diagramm zeigt den Durchsatz des Broker-Netzwerks.]
 
 Dies entspricht gut der Ansicht der Nachrichten, die pro Thema übermittelt werden. Die folgende Grafik zeigt eine Aufschlüsselung pro Thema. Bei der getesteten Konfiguration sahen wir fast 900.000 Nachrichten pro Thema für vier Themen.
 
-image:kafka-nfs-image34.png["Dieses Diagramm zeigt den Durchsatz des Broker-Netzwerks."]
+image::kafka-nfs-image34.png[Dieses Diagramm zeigt den Durchsatz des Broker-Netzwerks.]
 
 
 
@@ -137,7 +137,7 @@ Um die Storage-Einschränkungen für den Verbraucherdurchsatz in dieser Konfigur
 
 Während des reinen Produzententeils dieser Messung konnten wir einen hohen Spitzendurchsatz beobachten, der die Grenzen der A900-Leistung überstieg (wenn andere Broker-Ressourcen nicht für den Produzenten- und Verbraucherverkehr gesättigt waren).
 
-image:kafka-nfs-image35.png[""]
+image::kafka-nfs-image35.png[kafka nfs-Bild35]
 
 
 NOTE: Wir haben die Nachrichtengröße für diese Messung auf 16.000 erhöht, um den Overhead pro Nachricht zu begrenzen und den Storage-Durchsatz auf NFS-Bereitstellungspunkte zu maximieren.

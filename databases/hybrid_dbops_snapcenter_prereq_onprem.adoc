@@ -41,26 +41,26 @@ Die Storage-Performance spielt für die Gesamt-Performance von Datenbanken und A
 
 Das direkte Anbinden von Storage-LUNs an die Gast-VM entweder über NFS oder iSCSI für virtualisierte Datenbank-Workloads liefert im Allgemeinen eine bessere Performance als über VMDK zugewiesener Storage. NetApp empfiehlt das Storage-Layout für eine große SQL Server Datenbank auf LUNs, die in der folgenden Abbildung dargestellt sind.
 
-image:storage_layout_sqlsvr_large.PNG[""]
+image::storage_layout_sqlsvr_large.PNG[Speicherlayout sqlsvr groß]
 
 Die folgende Abbildung zeigt das von NetApp empfohlene Storage-Layout für kleine oder mittlere SQL Server-Datenbank auf LUNs.
 
-image:storage_layout_sqlsvr_smallmedium.PNG[""]
+image::storage_layout_sqlsvr_smallmedium.PNG[Speicherlayout sqlsvr smallmittell]
 
 
 NOTE: Das Log-Verzeichnis ist SnapCenter dediziert, um Transaktions-Log-Rollup für Datenbank-Recovery durchzuführen. Für eine besonders große Datenbank können einem Volume mehrere LUNs zugewiesen werden, um eine bessere Performance zu erzielen.
 
 Bei Oracle-Datenbank-Workloads unterstützt SnapCenter Datenbankumgebungen, die über ONTAP Storage gesichert sind, die als physische oder virtuelle Geräte auf dem Host gemountet werden. Je nach Wichtigkeit der Umgebung können Sie die gesamte Datenbank auf einem einzigen oder mehreren Storage-Geräten hosten. In der Regel isolieren Kunden Datendateien im dedizierten Storage von allen anderen Dateien, z. B. Kontrolldateien, Wiederherstellungsdateien und Archivprotokolldateien. So sind Administratoren in ONTAP der Lage, in wenigen Sekunden oder Minuten eine große kritische Datenbank (Petabyte-Größe) mit Snapshot Technologie wiederherzustellen (Single-File SnapRestore) oder zu klonen.
 
-image:storage_layout_oracle_typical.PNG[""]
+image::storage_layout_oracle_typical.PNG[Storage-Layout oracle typisch]
 
 Für geschäftskritische Workloads, die von der Latenz abhängig sind, sollte ein dediziertes Storage Volume auf verschiedene Arten von Oracle Dateien implementiert werden, um die bestmögliche Latenz zu erzielen. Bei einer großen Datenbank sollten mehrere LUNs (NetApp empfiehlt bis zu acht) pro Volume Datendateien zugewiesen werden.
 
-image:storage_layout_oracle_dedicated.PNG[""]
+image::storage_layout_oracle_dedicated.PNG[Dediziertes Storage-Layout für oracle]
 
 Bei kleineren Oracle Datenbanken unterstützt SnapCenter Shared-Storage-Layouts, in denen mehrere Datenbanken oder Teile einer Datenbank auf demselben Storage-Volume oder derselben LUN gehostet werden können. Als Beispiel für dieses Layout können Sie Datendateien für alle Datenbanken auf einer +DATA ASM Laufwerksgruppe oder einer Volume-Gruppe hosten. Der Rest der Dateien (Redo-, Archivprotokoll- und Kontrolldateien) kann auf einer anderen dedizierten Laufwerksgruppe oder Volume-Gruppe (LVM) gehostet werden. Ein solches Implementierungsszenario wird im Folgenden dargestellt.
 
-image:storage_layout_oracle_shared.PNG[""]
+image::storage_layout_oracle_shared.PNG[Speicherlayout für oracle Shared]
 
 Um die Verschiebung von Oracle Datenbanken zu erleichtern, sollte Oracle-Binärdatei auf einer separaten LUN installiert werden, die in der regelmäßigen Backup-Richtlinie enthalten ist. So wird sichergestellt, dass bei der Datenbankverschiebung zu einem neuen Serverhost der Oracle Stack für eine Recovery ohne potenzielle Probleme aufgrund einer aus der Synchronisierung bestehenden Oracle-Binärdatei gestartet werden kann.
 
