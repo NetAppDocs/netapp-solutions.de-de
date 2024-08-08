@@ -39,11 +39,15 @@ Generative KI verändert die Art und Weise, wie wir Inhalte erstellen, neue Desi
 
 Unternehmen aus unterschiedlichen Branchen erschließen immer mehr Möglichkeiten, mit der KI neue Wertformen aus vorhandenen Daten für Geschäftsprozesse, Vertrieb, Marketing und juristische Dienstleistungen zu gewinnen und zu gewinnen. Laut IDC (International Data Corporation) ist das Wissensmanagement in der Softwareentwicklung und im Produktdesign am stärksten betroffen, gefolgt von der Erstellung von Storyline für das Marketing und der Codegenerierung für Entwickler. Im Gesundheitswesen beschreiten klinische Forschungseinrichtungen neue Wege in der Medizin. Vortrainierte Modelle wie ProteinBERT integrieren Gene Ontology (GO)-Anmerkungen, um schnell Proteinstrukturen für medizinische Medikamente zu entwerfen, was einen bedeutenden Meilenstein in der Arzneimittelforschung, Bioinformatik und Molekularbiologie darstellt. Biotech-Firmen haben menschliche Studien für generative KI-entdeckte Medizin initiiert, die Krankheiten wie Lungenfibrose (IPF) behandeln soll, eine Lungenerkrankung, die irreversible Narbenbildung des Lungengewebes verursacht.
 
-Abbildung 1: Anwendungsfälle für generative KI Bild::gen-ai-image1.png[„Abbildung 1: Anwendungsfälle für generative KI“]
+Abbildung 1: Anwendungsfälle für generative KI
+
+image::gen-ai-image1.png[Abbildung 1: Anwendungsfälle für generative KI]
 
 Die zunehmende Automatisierungsannahme durch generative KI verändert auch das Angebot und die Nachfrage nach Arbeitsaktivitäten in vielen Berufen. McKinsey erklärt, dass der US-Arbeitsmarkt (Diagramm unten) einen schnellen Wandel durchlaufen hat, der sich nur fortsetzen wird, wenn man die Auswirkungen von KI berücksichtigt.
 
-Quelle: McKinsey & Company image::gen-ai-image3.png[„Abbildung 2: Quelle: McKinsey & Company“]
+Quelle: McKinsey & Company
+
+image::gen-ai-image3.png[Abbildung 2: Quelle: McKinsey & Company]
 
 
 
@@ -57,7 +61,9 @@ LLMs basieren in erster Linie auf Deep Learning, GPUs und Computing-Ressourcen. 
 
 Für die meisten Unternehmen kann der Ansatz zur Bereitstellung von LLMs anhand aktueller Trends in 3 grundlegende Szenarien zusammengefasst werden. Wie in einer aktuellen beschrieben link:https://hbr.org/2023/07/how-to-train-generative-ai-using-your-companys-data["„Harvard Business Review“"] Artikel: (1) Training (Pre-Training) ein LLM von Grund auf neu – teuer und erfordert KI/ML-Experten; (2) Feinabstimmung eines Fundamentalmodells mit Unternehmensdaten – komplex, aber machbar; (3) mithilfe von Retrieval-Augmented Generation (RAG) können Sie Dokumentdatenspeicher, APIs und Vektordatenbanken abfragen, die Unternehmensdaten enthalten. Jeder dieser Faktoren hat Kompromisse zwischen Aufwand, Iterationsgeschwindigkeit, Kosteneffizienz und Modellgenauigkeit bei ihren Implementierungen, die zur Lösung verschiedener Problemtypen eingesetzt werden (Diagramm unten).
 
-Abbildung 3: Problemtypen, Bild::gen-ai-image4.png[Abbildung 3: Problemtypen]
+Abbildung 3: Problemtypen
+
+image::gen-ai-image4.png[Abbildung 3: Problemtypen]
 
 
 
@@ -71,7 +77,9 @@ Ein Basismodell (FM), auch als Basismodell bekannt, ist ein großes KI-Modell (L
 
 Eine der gängigen Vorgehensweisen bei der LLM-Bereitstellung nach Datenvorbereitung und Datenvorverarbeitung ist die Auswahl eines vortrainierten Modells, das für einen großen und vielfältigen Datensatz trainiert wurde. Im Rahmen der Feinabstimmung kann dies ein Open-Source-Modell für große Sprachen sein, wie z. B. link:https://ai.meta.com/llama/["Meta's Llama 2"] Trainiert auf 70 Milliarden Parameter und 2 Billionen Token. Sobald das vortrainierte Modell ausgewählt wurde, wird es im nächsten Schritt auf die domänenspezifischen Daten abgestimmt. Dazu müssen die Parameter des Modells angepasst und an den neuen Daten trainiert werden, um sich an eine bestimmte Domäne und Aufgabe anzupassen. Zum Beispiel BloombergGPT, ein proprietärer LLM, der für eine Vielzahl von Finanzdaten im Dienste der Finanzbranche geschult wurde. Domänenspezifische Modelle, die für eine bestimmte Aufgabe entwickelt und geschult wurden, haben in der Regel eine höhere Genauigkeit und Leistung innerhalb ihres Umfangs, jedoch eine geringe Übertragbarkeit über andere Aufgaben oder Domänen hinweg. Wenn sich das Geschäftsumfeld und die Daten über einen Zeitraum ändern, könnte die Vorhersagegenauigkeit des FM im Vergleich zur Leistung während der Tests sinken. Dies ist der Fall, wenn Umschulungen oder Feinabstimmung des Modells entscheidend wird. Das Modellumtraining in herkömmlichen KI/ML bezieht sich auf die Aktualisierung eines implementierten ML-Modells mit neuen Daten. Diese werden im Allgemeinen durchgeführt, um zwei Arten von Abweichungen zu beseitigen, die auftreten. (1) Konzeptabweichung – Wenn sich die Verbindung zwischen den Eingangsvariablen und den Zielvariablen im Laufe der Zeit ändert, da die Beschreibung dessen, was wir Änderungen vorhersagen wollen, das Modell ungenaue Vorhersagen erzeugen kann. (2) Datendrift – tritt auf, wenn sich die Eigenschaften der Eingabedaten ändern, z. B. Änderungen an Kundengewohnheiten oder -Verhalten im Laufe der Zeit und daher das Modell nicht in der Lage ist, auf solche Änderungen zu reagieren. In ähnlicher Weise gilt die Umschulung für FMS/LLMs, jedoch kann sie sehr viel teurer sein (in Millionen Dollar), daher nicht etwas, was die meisten Unternehmen in Betracht ziehen. Es wird derzeit aktiv erforscht und entwickelt sich immer noch im Bereich von LLMOps. Wenn also ein Modellabfall in fein abgestimmten FMS auftritt, können Unternehmen sich statt einer Umschulung erneut für eine Feinabstimmung entscheiden (wesentlich günstiger) mit einem neueren Datensatz. Nachfolgend sehen Sie ein Beispiel einer Preistabelle für Modelle von Azure-OpenAI Services. Kunden können für jede Aufgabenkategorie Modelle mit bestimmten Datensätzen feinabstimmen und evaluieren.
 
-Quelle: Microsoft Azure Image::gen-ai-image5.png[Quelle: Microsoft Azure]
+Quelle: Microsoft Azure
+
+image::gen-ai-image5.png[Quelle: Microsoft Azure]
 
 
 
@@ -95,7 +103,9 @@ Wie herkömmliche MLOps (Machine Learning) erfordern auch Large Language Model O
 
 == Kundenszenario und NetApp
 
-Abbildung 3: Maschinelles Lernen/großes Sprachmodell Workflow-Bild::gen-ai-image6.png[Abbildung 3: Maschinelles Lernen/Workflow für große Sprachmodelle]
+Abbildung 3: Arbeitsablauf Für Maschinelles Lernen/Große Sprachmodelle
+
+image::gen-ai-image6.png[Abbildung 3: Arbeitsablauf Für Maschinelles Lernen/Große Sprachmodelle]
 
 *Sind wir Training oder Feinabstimmung?* die Frage, ob (a) ein LLM-Modell von Grund auf neu trainieren, ein vortrainiertes FM feinabstimmen oder mit RAG Daten aus Dokumenten-Repositories außerhalb eines Fundamentmodells abrufen und Eingabeaufforderungen erweitern soll, und (b) entweder durch die Nutzung von Open-Source-LLMs (z. B. Llama 2) oder proprietärer FMS (z. B. ChatGPT, Bard, AWS Bedrock) ist eine strategische Entscheidung für Unternehmen. Bei jedem Ansatz gibt es einen Kompromiss zwischen Kosteneffizienz, Datengravität, Betrieb, Modellgenauigkeit und Management von LLMs.
 
@@ -107,7 +117,9 @@ NetApp als Unternehmen nutzt KI intern in seiner Arbeitskultur und in seinem Ans
 
 Daten in generativen KI-Applikationen wie Chatbot, Code-Generierung, Bildgenerierung oder Genommodellausdruck können über das Edge-Ecosystem, das Private-Data-Center und das Hybrid-Multi-Cloud-Ecosystem verschoben und gemanagt werden. So kann ein Echtzeit-KI-bot, der einem Passagier hilft, sein Flugticket von einer Endbenutzer-App, die über APIs von vortrainierten Modellen wie ChatGPT zugänglich ist, auf die Business-Klasse aufzurüsten, diese Aufgabe nicht alleine erfüllen, da die Passagierinformationen nicht öffentlich im Internet verfügbar sind. Die API erfordert Zugriff auf die persönlichen Informationen und Ticketinformationen des Passagiers von der Fluggesellschaft, die in einem Hybrid- oder Multi-Cloud-Ökosystem existieren kann. Ein ähnliches Szenario könnte für Wissenschaftler gelten, die ein Arzneimittelmolekül und Patientendaten über eine Endbenutzeranwendung gemeinsam nutzen, die LLMs zur Durchführung klinischer Studien über die Arzneimittelforschung hinweg verwendet, an denen ein oder mehrere biomedizinische Forschungseinrichtungen beteiligt sind. Vertrauliche Daten, die an FMS oder LLMs weitergeleitet werden, können personenbezogene Daten, Finanzinformationen, Gesundheitsinformationen, biometrische Daten, Standortdaten, Kommunikationsdaten, Online-Verhalten und rechtliche Informationen. Bei Echtzeit-Rendering, prompter Ausführung und Edge-Inferenz werden Daten über Open-Source- oder proprietäre LLM-Modelle in ein Datacenter vor Ort oder auf Public-Cloud-Plattformen verschoben. In allen diesen Szenarien sind Datenmobilität und Datensicherung für den KI-Betrieb bei LLMs von entscheidender Bedeutung, die auf großen Trainingsdatensätzen und der Verschiebung dieser Daten basieren.
 
-Abbildung 4: Generative AI – LLM-Daten-Pipeline-Bild::gen-ai-image7.png[Abbildung 4: Generative AI-LLM-Daten-Pipeline]
+Abbildung 4: Generative AI – LLM-Daten-Pipeline
+
+image::gen-ai-image7.png[Abbildung 4: Generative KI-LLM-Datenpipeline]
 
 Das NetApp Portfolio an Storage-Infrastruktur-, Daten- und Cloud-Services basiert auf intelligenter Datenmanagement-Software.
 
