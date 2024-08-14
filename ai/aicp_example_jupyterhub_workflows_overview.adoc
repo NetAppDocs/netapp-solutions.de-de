@@ -1,0 +1,83 @@
+---
+sidebar: sidebar 
+permalink: ai/aicp_example_jupyterhub_workflows_overview.html 
+keywords: AI, control plane, MLOps, JupyterHub 
+summary: Open-Source-MLOps mit NetApp – Verwenden Sie das NetApp DataOps Toolkit mit JupyterHub 
+---
+= Verwenden Sie das NetApp DataOps Toolkit mit JupyterHub
+:hardbreaks:
+:allow-uri-read: 
+:nofooter: 
+:icons: font
+:linkattrs: 
+:imagesdir: ./../media/
+
+
+[role="lead"]
+Der https://github.com/NetApp/netapp-dataops-toolkit/tree/main/netapp_dataops_k8s["NetApp DataOps Toolkit für Kubernetes"^] kann in Verbindung mit JupyterHub verwendet werden. Durch die Verwendung des NetApp DataOps Toolkits mit JupyterHub können Endbenutzer Volume-Snapshots für das Workspace-Backup und/oder die Rückverfolgbarkeit von Daten zwischen Modellen direkt aus einem Jupyter Notebook erstellen.
+
+
+
+== Ersteinrichtung
+
+Bevor Sie das DataOps Toolkit mit JupyterHub verwenden können, müssen Sie dem Kubernetes-Servicekonto, das JupyterHub einzelnen Benutzern von Jupyter Notebook-Server-Pods zuweist, entsprechende Berechtigungen erteilen. JupyterHub verwendet das Servicekonto, das von der Variable in der JupyterHub Helm-Diagramm-Konfigurationsdatei angegeben `singleuser.serviceAccountName` wird.
+
+
+
+=== Cluster-Rolle für DataOps Toolkit erstellen
+
+Erstellen Sie zunächst eine Cluster-Rolle namens „netapp-dataops“, die über die erforderlichen Kubernetes-API-Berechtigungen für die Erstellung von Volume-Snapshots verfügt.
+
+[source]
+----
+$ vi clusterrole-netapp-dataops-snapshots.yaml
+---
+kind: ClusterRole
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: netapp-dataops-snapshots
+rules:
+- apiGroups: [""]
+  resources: ["persistentvolumeclaims", "persistentvolumeclaims/status", "services"]
+  verbs: ["get", "list"]
+- apiGroups: ["snapshot.storage.k8s.io"]
+  resources: ["volumesnapshots", "volumesnapshots/status", "volumesnapshotcontents", "volumesnapshotcontents/status"]
+  verbs: ["get", "list", "create"]
+
+$ kubectl create -f clusterrole-netapp-dataops-snapshots.yaml
+clusterrole.rbac.authorization.k8s.io/netapp-dataops-snapshots created
+----
+
+
+=== Weisen Sie dem Dienstkonto des Notebook-Servers eine Clusterrolle zu
+
+Erstellen Sie eine Rollenbindung, die die Clusterrolle „netapp-dataops-Snapshots“ dem entsprechenden Servicekonto im entsprechenden Namespace zuweist. Wenn Sie beispielsweise JupyterHub im Namespace 'jupyterhub' installiert haben und Sie das Service-Konto 'default' über die Variable angegeben `singleuser.serviceAccountName` haben, würden Sie die Clusterrolle 'netapp-dataops-Snapshots' dem Service-Konto 'default' im Namespace 'jupyterhub' zuweisen, wie im folgenden Beispiel gezeigt.
+
+[source]
+----
+$ vi rolebinding-jupyterhub-netapp-dataops-snapshots.yaml
+---
+kind: RoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: jupyterhub-netapp-dataops-snapshots
+  namespace: jupyterhub # Replace with you JupyterHub namespace
+subjects:
+- kind: ServiceAccount
+  name: default # Replace with your JupyterHub singleuser.serviceAccountName
+  namespace: jupyterhub # Replace with you JupyterHub namespace
+roleRef:
+  kind: ClusterRole
+  name: netapp-dataops-snapshots
+  apiGroup: rbac.authorization.k8s.io
+
+$ kubectl create -f ./rolebinding-jupyterhub-netapp-dataops-snapshots.yaml
+rolebinding.rbac.authorization.k8s.io/jupyterhub-netapp-dataops-snapshots created
+----
+
+
+== Erstellen Von Volume-Snapshots In Jupyter Notebook
+
+Jetzt können JupyterHub-Benutzer das NetApp DataOps Toolkit verwenden, um Volume-Snapshots direkt aus einem Jupyter Notebook zu erstellen, wie im folgenden Beispiel gezeigt.
+
+image::aicp_jhub_dotk_nb.png[aicp jhub dotk nb]

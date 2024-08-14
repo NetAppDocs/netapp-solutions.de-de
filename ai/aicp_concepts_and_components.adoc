@@ -1,7 +1,7 @@
 ---
 sidebar: sidebar 
 permalink: ai/aicp_concepts_and_components.html 
-keywords: Trident, DeepOps, ONTAP, FlexClone, containers, AI, Kubernetes, Kubeflow, Jupyter, Airflow 
+keywords: MLOps, Trident, ONTAP, containers, AI, Kubernetes, Kubeflow, Jupyter, Airflow, MLflow, JupyterHub 
 summary: Open Source MLOPS with NetApp – Technologieübersicht 
 ---
 = Technologischer Überblick
@@ -49,19 +49,55 @@ Kubernetes ist eine ursprünglich von Google entwickelte Open-Source-Plattform z
 
 == NetApp Astra Trident
 
-Astra Trident ermöglicht die Nutzung und das Management von Storage-Ressourcen über alle gängigen NetApp Storage-Plattformen hinweg, in der Public Cloud oder lokal, einschließlich ONTAP (AFF, FAS, Select, Cloud, Amazon FSX for NetApp ONTAP), Element Software (NetApp HCI, SolidFire), Azure NetApp Files Service und Cloud Volumes Service auf Google Cloud. Astra Trident ist ein CSI-konformer dynamischer Storage-Orchestrator, der sich nativ in Kubernetes integrieren lässt.
+link:https://docs.netapp.com/us-en/trident/index.html["Astra Trident"^] Ermöglicht die Nutzung und das Management von Storage-Ressourcen über alle gängigen NetApp Storage-Plattformen hinweg, in der Public Cloud oder vor Ort, einschließlich ONTAP (AFF, FAS, Select, Cloud Amazon FSX für NetApp ONTAP), Azure NetApp Files Service und Google Cloud NetApp Volumes. Astra Trident ist ein CSI-konformer dynamischer Storage-Orchestrator, der sich nativ in Kubernetes integrieren lässt.
 
 
 
 == NetApp DataOps Toolkit
 
-Der link:https://github.com/NetApp/netapp-dataops-toolkit["NetApp DataOps Toolkit"] Ein Python-basiertes Tool, das das Management von Workspaces für Entwicklung/Training und Inferenz-Servern mit hochperformantem, horizontal skalierbarem NetApp Storage vereinfacht Die wichtigsten Funktionen:
+Es link:https://github.com/NetApp/netapp-dataops-toolkit["NetApp DataOps Toolkit"^] ist ein Python-basiertes Tool, das das Management von Workspaces für Entwicklung/Training und Inferenz-Servern mit hochperformantem, horizontal skalierbarem NetApp Storage vereinfacht. Die wichtigsten Funktionen:
 
 * Schnelle Bereitstellung neuer Workspaces mit hoher Kapazität, die auf hochperformantem, horizontal skalierbarem NetApp-Storage beruhen
 * Klonen Sie Workspaces mit hoher Kapazität nahezu instan, um Experimente oder schnelle Iterationen zu ermöglichen.
 * Nahezu instanziiert Snapshots von Arbeitsbereichen mit hoher Kapazität für Backups und/oder Rückverfolgbarkeit/Baselining.
 * Provisionieren, Klonen und Snapshot High-Capacity-High-Performance-Daten-Volumes gleichzeitig
 
+
+
+
+== Apache Airflow
+
+Apache Airflow ist eine Open-Source-Workflow-Managementplattform, die programmatisches Authoring, Scheduling und Monitoring für komplexe Unternehmens-Workflows ermöglicht. Sie wird häufig zur Automatisierung von ETL- und Daten-Pipeline-Workflows verwendet, beschränkt sich jedoch nicht auf diese Arten von Workflows. Das Airflow-Projekt wurde von Airbnb gestartet, ist aber inzwischen sehr populär in der Branche und fällt nun unter die Schirmherrschaft der Apache Software Foundation. Der Luftstrom wird in Python geschrieben, Airflow-Workflows werden über Python-Skripte erstellt und Airflow wird nach dem Prinzip „Configuration as Code“ entworfen. Viele Benutzer von Airflow setzen nun Airflow auf Kubernetes aus.
+
+
+
+=== Gesteuerte Acyclic-Grafiken (DAGs)
+
+In Airflow werden Workflows als gesteuerte Acyclic Grafs (DAGs) bezeichnet. DAGs bestehen aus Aufgaben, die je nach DAG-Definition nacheinander, parallel oder kombiniert ausgeführt werden. Der Airflow Scheduler führt individuelle Aufgaben auf einem Array von Mitarbeitern aus und erfüllt dabei die in der DAG-Definition festgelegten Abhängigkeiten auf Aufgabenebene. DAGs werden über Python Skripte definiert und erstellt.
+
+
+
+== Jupyter Notebook
+
+Jupyter Notebooks sind Wiki-ähnliche Dokumente, die sowohl Live-Code als auch beschreibenden Text enthalten. Jupyter Notebooks werden in der KI- und ML-Community häufig eingesetzt, um KI- und ML-Projekte zu dokumentieren, zu speichern und gemeinsam zu nutzen. Weitere Informationen zu Jupyter Notebooks finden Sie auf der http://www.jupyter.org/["Jupyter-Website"^].
+
+
+
+=== Jupyter Notebook Server
+
+Ein Jupyter Notebook-Server ist eine Open-Source-Webanwendung, mit der Benutzer Jupyter Notebooks erstellen können.
+
+
+
+== JupyterHub
+
+JupyterHub ist eine Anwendung für mehrere Benutzer, mit der ein einzelner Benutzer seinen eigenen Jupyter Notebook-Server bereitstellen und darauf zugreifen kann. Weitere Informationen zu JupyterHub finden Sie auf der https://jupyter.org/hub["Website von JupyterHub"^].
+
+
+
+== MLflow
+
+MLflow ist eine beliebte Open-Source-Plattform für KI-Lifecycle-Management. Zu den wichtigsten Funktionen von MLflow gehören das KI/ML-Experimenttracking und ein Repository für KI/ML-Modelle. Weitere Informationen zu MLflow finden Sie auf der https://www.mlflow.org/["MLflow-Website"^].
 
 
 
@@ -77,27 +113,15 @@ Kubeflow Pipelines sind ein Schlüsselbestandteil von Kubeflow. Kubeflow Pipelin
 
 
 
-=== Jupyter Notebook Server
+=== Kubeflow Notebooks
 
-Ein Jupyter Notebook Server ist eine Open Source Web-Anwendung, mit der Data Scientists Wiki-ähnliche Dokumente erstellen können, genannt Jupyter Notebooks, die sowohl Live-Code als auch einen beschreibenden Test enthalten. Jupyter Notebooks werden in der KI- und ML-Community häufig eingesetzt, um KI- und ML-Projekte zu dokumentieren, zu speichern und gemeinsam zu nutzen. Kubeflow vereinfacht die Bereitstellung und Bereitstellung von Jupyter Notebook-Servern auf Kubernetes. Weitere Informationen zu Jupyter Notebooks finden Sie auf der http://www.jupyter.org/["Jupyter-Website"^]. Weitere Informationen zu Jupyter Notebooks im Kontext von Kubeflow finden Sie im https://www.kubeflow.org/docs/components/notebooks/overview/["Offizielle Dokumentation von Kubeflow"^].
+Kubeflow vereinfacht die Bereitstellung und Bereitstellung von Jupyter Notebook-Servern auf Kubernetes. Weitere Informationen zu Jupyter Notebooks im Kontext von Kubeflow finden Sie im https://www.kubeflow.org/docs/components/notebooks/overview/["Offizielle Dokumentation von Kubeflow"^].
 
 
 
 === Katib
 
 Katib ist ein Kubernetes-natives Projekt für automatisiertes maschinelles Lernen (AutoML). Katib unterstützt Hyperparameter-Tuning, Early Stop und neuronale Architektursuche (NAS). Katib ist ein Projekt, das unabhängig von ML-Frameworks (Machine Learning) ist. Es kann Hyperparameter von Anwendungen einstellen, die in einer beliebigen Sprache des Benutzers geschrieben werden, und unterstützt nativ viele ML-Frameworks, wie TensorFlow, MXNet, PyTorch, XGBoost, und andere. Katib unterstützt viele verschiedene AutoML-Algorithmen, wie Bayesian-Optimierung, Tree of Parzen Estimators, Random Search, Covariance Matrix Adaptation Evolution Strategy, Hyperband, Efficient Neural Architecture Search, Differentiable Architecture Search und viele mehr. Weitere Informationen zu Jupyter Notebooks im Kontext von Kubeflow finden Sie im https://www.kubeflow.org/docs/components/katib/overview/["Offizielle Dokumentation von Kubeflow"^].
-
-
-
-== Apache Airflow
-
-Apache Airflow ist eine Open-Source-Workflow-Managementplattform, die programmatisches Authoring, Scheduling und Monitoring für komplexe Unternehmens-Workflows ermöglicht. Sie wird häufig zur Automatisierung von ETL- und Daten-Pipeline-Workflows verwendet, beschränkt sich jedoch nicht auf diese Arten von Workflows. Das Airflow-Projekt wurde von Airbnb gestartet, ist aber inzwischen sehr populär in der Branche und fällt nun unter die Schirmherrschaft der Apache Software Foundation. Der Luftstrom wird in Python geschrieben, Airflow-Workflows werden über Python-Skripte erstellt und Airflow wird nach dem Prinzip „Configuration as Code“ entworfen. Viele Benutzer von Airflow setzen nun Airflow auf Kubernetes aus.
-
-
-
-=== Gesteuerte Acyclic-Grafiken (DAGs)
-
-In Airflow werden Workflows als gesteuerte Acyclic Grafs (DAGs) bezeichnet. DAGs bestehen aus Aufgaben, die je nach DAG-Definition nacheinander, parallel oder kombiniert ausgeführt werden. Der Airflow Scheduler führt individuelle Aufgaben auf einem Array von Mitarbeitern aus und erfüllt dabei die in der DAG-Definition festgelegten Abhängigkeiten auf Aufgabenebene. DAGs werden über Python Skripte definiert und erstellt.
 
 
 
@@ -136,7 +160,7 @@ ONTAP bietet überdurchschnittliche Performance und Datensicherung, erweitert di
 
 ONTAP bietet folgende Funktionen, um anspruchsvolle und sich ständig ändernde Geschäftsanforderungen zu erfüllen:
 
-* Nahtlose Skalierung und unterbrechungsfreier Betrieb. Mit ONTAP sind das Hinzufügen von Kapazitäten zu bestehenden Controllern und das Scale-out von Clustern unterbrechungsfrei möglich. Kunden können Upgrades auf die neuesten Technologien wie NVMe und 32 GB FC ohne teure Datenmigrationen oder Ausfälle durchführen.
+* Nahtlose Skalierung und unterbrechungsfreier Betrieb. Mit ONTAP sind das Hinzufügen von Kapazitäten zu bestehenden Controllern und das Scale-out von Clustern unterbrechungsfrei möglich. Kunden können ein Upgrade auf die neuesten Technologien ohne teure Datenmigrationen oder Ausfälle durchführen.
 * Cloud-Anbindung: ONTAP ist die Storage-Managementsoftware mit der umfassendsten Cloud-Integration und bietet Optionen für softwaredefinierten Storage und Cloud-native Instanzen in allen Public Clouds.
 * Integration in moderne Applikationen: ONTAP bietet Datenservices der Enterprise-Klasse für Plattformen und Applikationen der neuesten Generation, wie autonome Fahrzeuge, Smart Citys und Industrie 4.0, auf derselben Infrastruktur, die bereits vorhandene Unternehmensanwendungen unterstützt.
 
@@ -173,7 +197,7 @@ SnapMirror Software nutzt NetApp ONTAP Storage-Effizienzfunktionen, indem nur ge
 
 == NetApp BlueXP Kopie und Synchronisierung
 
-BlueXP Copy and Sync ist ein NetApp Service für schnelle und sichere Datensynchronisierung. Unabhängig davon, ob Sie Dateien zwischen On-Premises-NFS- oder SMB-Dateifreigaben, NetApp StorageGRID, NetApp ONTAP S3, NetApp Cloud Volumes Service, Azure NetApp Files, AWS S3, AWS EFS, Azure Blob mit Google Cloud Storage oder IBM Cloud Object Storage verschiebt BlueXP Copy and Sync die Dateien schnell und sicher an den gewünschten Speicherort.
+link:https://bluexp.netapp.com/cloud-sync-service["BlueXP Copy und Sync"^] Ist ein NetApp Service für schnelle und sichere Datensynchronisierung. Unabhängig davon, ob Sie Dateien zwischen On-Premises-NFS- oder SMB-Dateifreigaben, NetApp StorageGRID, NetApp ONTAP S3, NetApp Cloud Volumes Service, Azure NetApp Files, AWS S3, AWS EFS, Azure Blob mit Google Cloud Storage oder IBM Cloud Object Storage verschiebt BlueXP Copy and Sync die Dateien schnell und sicher an den gewünschten Speicherort.
 
 Nach der Übertragung stehen die Daten an der Quelle und am Ziel vollständig zur Verfügung. BlueXP Copy and Sync kann Daten nach Bedarf synchronisieren, wenn ein Update ausgelöst wird oder Daten kontinuierlich anhand eines vordefinierten Zeitplans synchronisiert werden. Trotzdem werden mit BlueXP Copy and Sync nur die Deltas verschoben, sodass Zeit und Kosten für die Datenreplizierung minimiert werden.
 
@@ -183,11 +207,7 @@ BlueXP Copy and Sync ist ein Software-as-a-Service-Tool (SaaS), das sich äußer
 
 == NetApp XCP
 
-Der Client-basierte NetApp XCP Software ermöglicht Datenmigrationen zwischen beliebigen Systemen von NetApp und NetApp zu NetApp sowie Einblicke in das Filesystem. XCP ist für Skalierung ausgelegt und erreicht maximale Performance, indem alle verfügbaren Systemressourcen für umfangreiche Datensätze und hochperformante Migrationen genutzt werden. Mit XCP erhalten Sie eine vollständige Übersicht über das Dateisystem und können Berichte generieren.
-
-NetApp XCP ist in einem einzigen Paket erhältlich, das NFS- und SMB-Protokolle unterstützt. XCP enthält eine Linux-Binärdatei für NFS-Datensätze und ein Windows Executable für SMB-Datensätze.
-
-Die hostbasierte Software NetApp XCP File Analytics erkennt Dateifreigaben, führt Scans im Filesystem aus und bietet ein Dashboard für Dateianalysen. XCP File Analytics ist sowohl mit Systemen von NetApp als auch mit Systemen anderer Hersteller kompatibel und wird auf Linux- oder Windows-Hosts ausgeführt, um Analysen für NFS- und SMB-exportierte Filesysteme zu ermöglichen.
+link:https://xcp.netapp.com/["NetApp XCP"^] Client-basierte Software für Datenmigration zwischen NetApp Systemen und NetApp Systemen sowie für Erkenntnisse zu Filesystemen. XCP ist für Skalierung ausgelegt und erreicht maximale Performance, indem alle verfügbaren Systemressourcen für umfangreiche Datensätze und hochperformante Migrationen genutzt werden. Mit XCP erhalten Sie eine vollständige Übersicht über das Dateisystem und können Berichte generieren.
 
 
 

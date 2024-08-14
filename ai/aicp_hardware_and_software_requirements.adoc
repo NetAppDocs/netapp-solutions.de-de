@@ -14,19 +14,65 @@ summary: Open Source-MLOps mit NetApp – Architektur
 
 
 [role="lead"]
-Diese Lösung ist nicht von bestimmter Hardware abhängig. Die Lösung ist mit jeder physischen NetApp Storage Appliance, jeder softwaredefinierten Instanz oder jedem Cloud-Service kompatibel, der von Trident unterstützt wird. Beispiele hierfür sind ein NetApp AFF Storage-System, Amazon FSX für NetApp ONTAP, Azure NetApp Files oder eine NetApp Cloud Volumes ONTAP Instanz. Darüber hinaus kann die Lösung auf jedem Kubernetes-Cluster implementiert werden, solange die verwendete Kubernetes-Version von Kubeflow und NetApp Astra Trident unterstützt wird. Eine Liste der von Kubeflow unterstützten Kubernetes-Versionen finden Sie im https://www.kubeflow.org/docs/started/getting-started/["Offizielle Dokumentation von Kubeflow"^]. Eine Liste der von Trident unterstützten Kubernetes-Versionen finden Sie im https://docs.netapp.com/us-en/trident/index.html["Trident Dokumentation"^]. In den folgenden Tabellen finden Sie Einzelheiten zur Umgebung, die zur Validierung der Lösung verwendet wurde.
+Diese Lösung ist nicht von bestimmter Hardware abhängig. Die Lösung ist mit jeder physischen NetApp Storage Appliance, jeder softwaredefinierten Instanz oder jedem Cloud-Service kompatibel, die von NetApp Astra Trident unterstützt wird. Beispiele hierfür sind ein NetApp AFF Storage-System, Amazon FSX für NetApp ONTAP, Azure NetApp Files, Google Cloud NetApp Volumes oder eine NetApp Cloud Volumes ONTAP Instanz. Darüber hinaus kann die Lösung auf jedem Kubernetes-Cluster implementiert werden, sofern die verwendete Kubernetes-Version von NetApp Astra Trident und den anderen zu implementierenden Lösungskomponenten unterstützt wird. Eine Liste der von Trident unterstützten Kubernetes-Versionen finden Sie unter https://docs.netapp.com/us-en/trident/index.html["Trident Dokumentation"^]. Die folgenden Tabellen enthalten Einzelheiten zu den Umgebungen, die zur Validierung der verschiedenen Komponenten dieser Lösung verwendet wurden.
+
+
+
+== Apache Airflow Validation Environment
 
 |===
 | Software-Komponente | Version 
 
 
-| Apache Airflow | 2.0.1 
+| Apache Airflow | 2.0.1, Bereitstellung über link:https://artifacthub.io/packages/helm/airflow-helm/airflow["Apache Airflow Helm-Diagramm"^] 8.0.8 
 
 
-| Apache Airflow Helm Chart | 8.0.8 
+| Kubernetes | 1.18 
 
 
-| Kubeflow | 1.7, bereitgestellt über link:https://www.deploykf.org["Einsatz KF"] 0.1.1 
+| NetApp Astra Trident | 21.01 
+|===
+
+
+== JupyterHub-Validierungsumgebung
+
+|===
+| Software-Komponente | Version 
+
+
+| JupyterHub | 4.1.5, Bereitstellung über link:https://hub.jupyter.org/helm-chart/["JupyterHub Helm-Diagramm"^] 3.3.7 
+
+
+| Kubernetes | 1.29 
+
+
+| NetApp Astra Trident | 24.02 
+|===
+
+
+== MLflow-Validierungsumgebung
+
+|===
+| Software-Komponente | Version 
+
+
+| MLflow | 2.14.1, Bereitstellung über link:https://artifacthub.io/packages/helm/bitnami/mlflow["MLflow Helm-Diagramm"^] 1.4.12 
+
+
+| Kubernetes | 1.29 
+
+
+| NetApp Astra Trident | 24.02 
+|===
+
+
+== Kubeflow-Validierungsumgebung
+
+|===
+| Software-Komponente | Version 
+
+
+| Kubeflow | 1.7, Bereitstellung über link:https://www.deploykf.org["Einsatz KF"^] 0.1.1 
 
 
 | Kubernetes | 1.26 
@@ -38,4 +84,4 @@ Diese Lösung ist nicht von bestimmter Hardware abhängig. Die Lösung ist mit j
 
 == Unterstützung
 
-NetApp bietet keine Enterprise-Unterstützung für Apache Airflow, Kubeflow oder Kubernetes. Wenn Sie an einer vollständig unterstützten MLOPS-Plattform interessiert sind, link:https://www.netapp.com/us/contact-us/index.aspx?for_cr=us["Kontakt zu NetApp"] Über vollständig unterstützte MLOps-Lösungen die NetApp gemeinsam mit Partnern anbietet.
+NetApp bietet keinen Enterprise-Support für Apache Airflow, JupyterHub, MLflow, Kubeflow oder Kubernetes. Wenn Sie an einer vollständig unterstützten MLOPS Plattform interessiert sind, link:https://www.netapp.com/us/contact-us/index.aspx?for_cr=us["Kontakt zu NetApp"^] über vollständig unterstützte MLOPS Lösungen, die NetApp gemeinsam mit Partnern anbietet.
