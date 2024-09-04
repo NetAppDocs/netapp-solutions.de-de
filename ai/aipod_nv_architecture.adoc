@@ -22,7 +22,9 @@ Dieser Abschnitt konzentriert sich auf die Architektur des NetApp AIPod mit NVID
 
 Diese Referenzarchitektur nutzt separate Fabrics für den Compute-Cluster-Interconnect- und Storage-Zugriff, wobei die InfiniBand (IB) mit 400 GB/s zwischen den Computing-Nodes verbunden ist. Die Abbildung unten zeigt die allgemeine Lösungstopologie von NetApp AIPod mit DGX H100 Systemen.
 
-_NetApp AIpod-Lösungstopologie_ Bild::aipod_nv_a900topo.png[]
+_NetApp AIPOD-Lösungstopologie_
+
+image::aipod_nv_a900topo.png[Aipod nv a900topo]
 
 
 
@@ -52,7 +54,9 @@ Die Workload-SVM ist mit insgesamt acht logischen Schnittstellen (LIFs) konfigur
 
 Die Management SVM benötigt nur eine einzelne LIF, die sich auf den auf jedem Controller konfigurierten 2-Port-Schnittstellengruppen befindet. Andere FlexGroup Volumes werden auf der Management-SVM bereitgestellt, um Artefakte im Cluster-Management wie Cluster-Node-Images, Systemüberwachungsdaten und Home Directories der Endbenutzer zu beherbergen. Die nachfolgende Abbildung zeigt die logische Konfiguration des Storage-Systems.
 
-_NetApp A900 Storage Cluster logische Konfiguration_ Image::aipod_nv_A900logical.png[]
+_NetApp A900 logische Konfiguration des Storage-Clusters_
+
+image::aipod_nv_A900logical.png[Aipd nv A900logisch]
 
 
 
