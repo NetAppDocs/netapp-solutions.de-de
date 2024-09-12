@@ -24,7 +24,7 @@ Niyaz Mohamed, NetApp
 
 Disaster Recovery Orchestrator (DRO, eine skriptbasierte Lösung mit UI) kann verwendet werden, um Workloads, die von lokalen Systemen auf FSX für ONTAP repliziert werden, nahtlos wiederherzustellen. DRO automatisiert die Recovery von SnapMirror Ebene durch VM-Registrierung zu VMC und Netzwerkzuordnungen direkt auf NSX-T. Diese Funktion ist in allen VMC Umgebungen enthalten.
 
-image::dro-vmc-image1.png[Diese Abbildung zeigt die Struktur und die Verbindungen zwischen einem On-Premises-Datacenter, einer VMware Cloud auf AWS SDDC Instanz und Amazon FSX für NetApp ONTAP. Dazu gehören SnapMirror Replizierung, DRaaS-Ops-Datenverkehr, Internet oder Direktverbindung sowie VMware Transit Connect.]
+image:dro-vmc-image1.png["Diese Abbildung zeigt die Struktur und die Verbindungen zwischen einem On-Premises-Datacenter, einer VMware Cloud auf AWS SDDC Instanz und Amazon FSX für NetApp ONTAP. Dazu gehören SnapMirror Replizierung, DRaaS-Ops-Datenverkehr, Internet oder Direktverbindung sowie VMware Transit Connect."]
 
 
 
@@ -51,7 +51,7 @@ Amazon FSX für NetApp ONTAP ist ein vollständig gemanagter Service, der zuverl
 
 Im nächsten Schritt werden NetApp BlueXP verwendet, um die bereitgestellte FSX für ONTAP auf AWS Instanzen zu ermitteln und die gewünschten Datastore-Volumes aus einer lokalen Umgebung mit der entsprechenden Häufigkeit und mit der Aufbewahrung von NetApp Snapshot Kopien in FSX für ONTAP zu replizieren:
 
-image::dro-vmc-image2.png[Diese Grafik zeigt die Beziehungskarte BlueXP Canvas, die die verschiedenen Interaktionen zwischen aktivierten Diensten anzeigt.]
+image:dro-vmc-image2.png["Diese Grafik zeigt die Beziehungskarte BlueXP Canvas, die die verschiedenen Interaktionen zwischen aktivierten Diensten anzeigt."]
 
 Befolgen Sie die Schritte in diesem Link, um BlueXP zu konfigurieren. Sie können die NetApp ONTAP CLI auch verwenden, um die Replikation über diesen Link zu planen.
 
@@ -138,7 +138,7 @@ Password: admin
 
 NOTE: Das Passwort kann mit der Option „Passwort ändern“ geändert werden.
 
-image::dro-vmc-image3.png[Anmeldebildschirm von Disaster Recovery Orchestrator:]
+image:dro-vmc-image3.png["Anmeldebildschirm von Disaster Recovery Orchestrator:"]
 
 
 
@@ -164,13 +164,13 @@ Im ersten Schritt werden lokale und Cloud-Ressourcen (vCenter und Storage) zu DR
 
 
 
-image::dro-vmc-image4.png[Temporäre Platzhalterbildbeschreibung.]
+image:dro-vmc-image4.png["Temporäre Platzhalterbildbeschreibung."]
 
-image::dro-vmc-image5.png[DRO-Site-Übersichtsseite mit Quell- und Zielstandorten.]
+image:dro-vmc-image5.png["DRO-Site-Übersichtsseite mit Quell- und Zielstandorten."]
 
 Sobald DRO hinzugefügt wurde, führt die automatische Erkennung durch und zeigt die VMs mit entsprechenden SnapMirror Replikaten vom Quell-Storage auf FSX für ONTAP an. DRO erkennt automatisch die von den VMs verwendeten Netzwerke und Portgruppen und füllt sie aus.
 
-image::dro-vmc-image6.png[Bildschirm zur automatischen Erkennung mit 219 VMs und 10 Datastores.]
+image:dro-vmc-image6.png["Bildschirm zur automatischen Erkennung mit 219 VMs und 10 Datastores."]
 
 Im nächsten Schritt werden die erforderlichen VMs in funktionale Gruppen zusammengefasst, die als Ressourcengruppen dienen.
 
@@ -196,7 +196,7 @@ Folgende Optionen stehen zur Verfügung:
 . Klicken Sie Auf *Ressourcengruppe Erstellen*.
 
 
-image::dro-vmc-image7.png[Screenshot der Ressourcengruppenliste mit zwei Einträgen: Test und DemoRG1.]
+image:dro-vmc-image7.png["Screenshot der Ressourcengruppenliste mit zwei Einträgen: Test und DemoRG1."]
 
 
 
@@ -208,15 +208,15 @@ Gehen Sie wie folgt vor, um mit der Erstellung eines Replikationsplans zu beginn
 
 . Öffnen Sie *Replikationspläne*, und klicken Sie auf *Neuen Replikationsplan erstellen*.
 +
-image::dro-vmc-image8.png[Screenshot des Replikationsplans mit einem Plan namens DemoRP.]
+image:dro-vmc-image8.png["Screenshot des Replikationsplans mit einem Plan namens DemoRP."]
 
 . Geben Sie unter *New Replication Plan* einen Namen für den Plan ein und fügen Sie Recovery Mappings hinzu, indem Sie den Quellstandort, das zugehörige vCenter, den Zielstandort und das zugehörige vCenter auswählen.
 +
-image::dro-vmc-image9.png[Screenshot der Details des Replikationsplans, einschließlich der Recovery-Zuordnung.]
+image:dro-vmc-image9.png["Screenshot der Details des Replikationsplans, einschließlich der Recovery-Zuordnung."]
 
 . Wählen Sie nach Abschluss der Recovery-Zuordnung die Cluster-Zuordnung aus.
 +
-image::dro-vmc-image10.png[Temporäre Platzhalterbildbeschreibung.]
+image:dro-vmc-image10.png["Temporäre Platzhalterbildbeschreibung."]
 
 . Wählen Sie *Ressourcengruppendetails* und klicken Sie auf *Weiter*.
 . Legen Sie die Ausführungsreihenfolge für die Ressourcengruppe fest. Mit dieser Option können Sie die Reihenfolge der Vorgänge auswählen, wenn mehrere Ressourcengruppen vorhanden sind.
@@ -227,47 +227,41 @@ image::dro-vmc-image10.png[Temporäre Platzhalterbildbeschreibung.]
 NOTE: SnapMirror befindet sich auf Volume-Ebene. Daher werden alle VMs zum Replizierungsziel repliziert. Vergewissern Sie sich, dass alle VMs ausgewählt sind, die Teil des Datastores sind. Sind sie nicht ausgewählt, werden nur die VMs verarbeitet, die Teil des Replikationsplans sind.
 
 +
-image::dro-vmc-image11.png[Temporäre Platzhalterbildbeschreibung.]
+image:dro-vmc-image11.png["Temporäre Platzhalterbildbeschreibung."]
 
 . Unter den VM-Details können Sie optional die Größe der CPU- und RAM-Parameter der VM ändern. Dies kann sich sehr hilfreich erweisen, wenn Sie große Umgebungen auf kleinere Zielcluster wiederherstellen oder DR-Tests durchführen möchten, ohne eine eineineineineinone physische VMware-Infrastruktur bereitstellen zu müssen. Zudem können Sie die Boot-Reihenfolge und die Boot-Verzögerung (Sekunden) für alle ausgewählten VMs innerhalb der Ressourcengruppen ändern. Es gibt eine zusätzliche Option, um die Startreihenfolge zu ändern, wenn Änderungen von den während der Auswahl der Ressourcengruppe ausgewählten Änderungen erforderlich sind. Standardmäßig wird die während der Ressourcengruppenauswahl ausgewählte Startreihenfolge verwendet. Änderungen können jedoch in dieser Phase vorgenommen werden.
 +
-image::dro-vmc-image12.png[Temporäre Platzhalterbildbeschreibung.]
+image:dro-vmc-image12.png["Temporäre Platzhalterbildbeschreibung."]
 
 . Klicken Sie Auf *Replikationsplan Erstellen*.
 +
-image::dro-vmc-image13.png[Temporäre Platzhalterbildbeschreibung.]
+image:dro-vmc-image13.png["Temporäre Platzhalterbildbeschreibung."]
 
 
 
 Nach dem Erstellen des Replizierungsplans können je nach Anforderungen die Failover-Option, die Test-Failover-Option oder die Migrationsoption ausgeübt werden. Während der Failover- und Test-Failover-Optionen wird die aktuellste SnapMirror Snapshot Kopie verwendet. Zudem kann aus einer zeitpunktgenauen Snapshot Kopie (gemäß der Aufbewahrungsrichtlinie von SnapMirror) eine bestimmte Snapshot Kopie ausgewählt werden. Die Point-in-Time-Option ist besonders dann hilfreich, wenn ein Korruptionsereignis wie Ransomware anfällt, wenn die neuesten Replikate bereits kompromittiert oder verschlüsselt sind. DRO zeigt alle verfügbaren Punkte in der Zeit an. Um Failover oder Failover-Tests mit der im Replikationsplan angegebenen Konfiguration auszulösen, können Sie auf *Failover* oder *Test Failover* klicken.
 
-image::dro-vmc-image14.png[Temporäre Platzhalterbildbeschreibung.]
-
-image::dro-vmc-image15.png[Auf diesem Bildschirm erhalten Sie die Details zum Volume Snapshot und können zwischen der Verwendung des neuesten Snapshots und der Auswahl eines bestimmten Snapshots wählen.]
+image:dro-vmc-image14.png["Temporäre Platzhalterbildbeschreibung."] image:dro-vmc-image15.png["Auf diesem Bildschirm erhalten Sie die Details zum Volume Snapshot und können zwischen der Verwendung des neuesten Snapshots und der Auswahl eines bestimmten Snapshots wählen."]
 
 Der Replikationsplan kann im Aufgabenmenü überwacht werden:
 
-image::dro-vmc-image16.png[Im Aufgabenmenü werden alle Jobs und Optionen für den Replikationsplan angezeigt. Außerdem können Sie die Protokolle sehen.]
+image:dro-vmc-image16.png["Im Aufgabenmenü werden alle Jobs und Optionen für den Replikationsplan angezeigt. Außerdem können Sie die Protokolle sehen."]
 
 Nach der Auslösung des Failover sind die wiederhergestellten Elemente in VMC vCenter (VMs, Netzwerke, Datastores) ersichtlich. Standardmäßig werden die VMs in den Workload-Ordner wiederhergestellt.
 
-image::dro-vmc-image17.png[Temporäre Platzhalterbildbeschreibung.]
+image:dro-vmc-image17.png["Temporäre Platzhalterbildbeschreibung."]
 
 Failback kann auf der Ebene des Replikationsplans ausgelöst werden. Bei einem Test-Failover kann mit der Option „Tear-Down“ ein Rollback der Änderungen durchgeführt und die FlexClone Beziehung entfernt werden. Failback ist in Verbindung mit Failover ein Prozess in zwei Schritten. Wählen Sie den Replikationsplan aus und wählen Sie *Datensynchronisation umkehren*.
 
-image::dro-vmc-image18.png[Screenshot von Replication Plan Übersicht mit Dropdown-Menü mit Option Reverse Data Sync.]
-
-image::dro-vmc-image19.png[Temporäre Platzhalterbildbeschreibung.]
+image:dro-vmc-image18.png["Screenshot von Replication Plan Übersicht mit Dropdown-Menü mit Option Reverse Data Sync."] image:dro-vmc-image19.png["Temporäre Platzhalterbildbeschreibung."]
 
 Wenn dieser Vorgang abgeschlossen ist, können Sie ein Failback auslösen und zum ursprünglichen Produktionsstandort zurückkehren.
 
-image::dro-vmc-image20.png[Screenshot von Replication Plan Übersicht mit Dropdown-Menü mit der Failback-Option.]
-
-image::dro-vmc-image21.png[Screenshot der DRO-Übersichtsseite mit der ursprünglichen Produktionsstätte in Betrieb.]
+image:dro-vmc-image20.png["Screenshot von Replication Plan Übersicht mit Dropdown-Menü mit der Failback-Option."] image:dro-vmc-image21.png["Screenshot der DRO-Übersichtsseite mit der ursprünglichen Produktionsstätte in Betrieb."]
 
 Aus NetApp BlueXP können wir sehen, dass die Replikationsintegrität für die entsprechenden Volumes (die auf VMC als Read-Write-Volumes zugeordnet wurden) aufgebrochen ist. Beim Test-Failover weist DRO nicht das Ziel- oder Replikatvolume zu. Stattdessen wird eine FlexClone Kopie der erforderlichen SnapMirror Instanz (oder Snapshot) erstellt und die FlexClone Instanz offenlegt, die keine zusätzliche physische Kapazität für FSX für ONTAP beansprucht. Dadurch wird sichergestellt, dass das Volume nicht geändert wird und Replikatjobs sogar während DR-Tests oder während der Triage-Workflows fortgesetzt werden können. Darüber hinaus stellt dieser Prozess sicher, dass bei Auftreten von Fehlern oder beschädigten Daten die Wiederherstellung bereinigt werden kann, ohne dass das Replikat zerstört werden könnte.
 
-image::dro-vmc-image22.png[Temporäre Platzhalterbildbeschreibung.]
+image:dro-vmc-image22.png["Temporäre Platzhalterbildbeschreibung."]
 
 
 

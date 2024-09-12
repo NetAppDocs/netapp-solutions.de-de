@@ -21,19 +21,19 @@ Für grafikintensive Anwendungen bietet Microsoft Azure die NV Serie auf Basis d
 
 NOTE: Eine NVIDIA-Lizenz ist in der NV Serie enthalten.
 
-image::hcvdivds_image37.png[Hcvdivds image37]
+image:hcvdivds_image37.png["Die Abbildung zeigt den Input/Output-Dialog oder die Darstellung des schriftlichen Inhalts"]
 
 Bei NetApp HCI enthält die H615C GPU drei NVIDIA Tesla T4-Karten. Jede NVIDIA Tesla T4-Karte verfügt über eine Touring-basierte GPU mit 16 GB GDDR6-Speicher. Wenn sie in einer VMware vSphere Umgebung verwendet werden, können Virtual Machines die GPU gemeinsam nutzen, wobei jede VM einen dedizierten Frame-Puffer-Speicher hat. Die GPUs auf dem NetApp HCI H615C sind für Ray-Tracing verfügbar, um realistische Bilder einschließlich Lichtreflexionen herzustellen. Bitte beachten Sie, dass Sie einen NVIDIA-Lizenzserver mit einer Lizenz für GPU-Funktionen benötigen.
 
-image::hcvdivds_image38.png[Hcvdivds image38]
+image:hcvdivds_image38.png["Die Abbildung zeigt den Input/Output-Dialog oder die Darstellung des schriftlichen Inhalts"]
 
 Um die GPU zu verwenden, müssen Sie den entsprechenden Treiber installieren, der vom NVIDIA-Lizenzportal heruntergeladen werden kann. In einer Azure-Umgebung ist der NVIDIA-Treiber als GPU-Treiber-Erweiterung verfügbar. Als Nächstes müssen die Gruppenrichtlinien im folgenden Screenshot aktualisiert werden, um GPU-Hardware für Remote-Desktop-Service-Sessions zu verwenden. Sie sollten den H.264-Grafikmodus priorisieren und die Encoder-Funktionalität aktivieren.
 
-image::hcvdivds_image39.png[Hcvdivds image39]
+image:hcvdivds_image39.png["Die Abbildung zeigt den Input/Output-Dialog oder die Darstellung des schriftlichen Inhalts"]
 
 Validierung der GPU-Performance-Überwachung mit Task Manager oder mithilfe der nvidia-smi-CLI bei der Ausführung von WebGL-Samples. Stellen Sie sicher, dass GPU-, Arbeitsspeicher- und Encoderressourcen verbraucht werden.
 
-image::hcvdivds_image40.png[Hcvdivds image40]
+image:hcvdivds_image40.png["Die Abbildung zeigt den Input/Output-Dialog oder die Darstellung des schriftlichen Inhalts"]
 
 Um sicherzustellen, dass die Virtual Machine in der NetApp HCI H615C mit Virtual Desktop Service implementiert wird, definieren Sie eine Site mit der vCenter Cluster-Ressource, die H615C Hosts enthält. Die VM-Vorlage muss das erforderliche vGPU-Profil aufweisen.
 

@@ -58,24 +58,15 @@ Nach der Konfiguration des VMware Kontos und der ordnungsgemäßen Größenbesti
 
 . Melden Sie sich mit Ihren vorhandenen oder neu erstellten VMware Zugangsdaten bei der VMware Cloud Console an.
 +
-image::aws-config-1.png[aws Konfig 1]
+image:aws-config-1.png["Die Abbildung zeigt den Input/Output-Dialog oder die Darstellung des schriftlichen Inhalts"]
 
 . Konfigurieren Sie die AWS Region, die Implementierung und den Host-Typ sowie den SDDC-Namen:
 +
-image::aws-config-2.png[aws Konfiguration 2]
+image:aws-config-2.png["Die Abbildung zeigt den Input/Output-Dialog oder die Darstellung des schriftlichen Inhalts"]
 
 . Stellen Sie eine Verbindung mit dem gewünschten AWS Konto her und führen Sie den AWS Cloud-Formationstack aus.
 +
-image::aws-config-3.png[aws Konfiguration 3]
-
-+
-image::aws-config-4.png[aws Konfiguration 4]
-
-+
-image::aws-config-5.png[aws Konfiguration 5]
-
-+
-image::aws-config-6.png[aws Konfiguration 6]
+image:aws-config-3.png["Die Abbildung zeigt den Input/Output-Dialog oder die Darstellung des schriftlichen Inhalts"] image:aws-config-4.png["Die Abbildung zeigt den Input/Output-Dialog oder die Darstellung des schriftlichen Inhalts"] image:aws-config-5.png["Die Abbildung zeigt den Input/Output-Dialog oder die Darstellung des schriftlichen Inhalts"] image:aws-config-6.png["Die Abbildung zeigt den Input/Output-Dialog oder die Darstellung des schriftlichen Inhalts"]
 
 +
 
@@ -83,25 +74,25 @@ NOTE: In dieser Validierung wird Single-Host-Konfiguration verwendet.
 
 . Wählen Sie die gewünschte AWS VPC aus, mit der die VMC-Umgebung verbunden werden soll.
 +
-image::aws-config-7.png[aws Konfiguration 7]
+image:aws-config-7.png["Die Abbildung zeigt den Input/Output-Dialog oder die Darstellung des schriftlichen Inhalts"]
 
 . VMC-Managementsubnetz konfigurieren: Dieses Subnetz enthält von VMC gemanagte Services wie vCenter, NSX usw. Wählen Sie keinen überlappenden Adressraum mit anderen Netzwerken, die Verbindung zur SDDC-Umgebung benötigen. Folgen Sie abschließend den unten aufgeführten Empfehlungen für CIDR-Größe.
 +
-image::aws-config-8.png[aws Konfiguration 8]
+image:aws-config-8.png["Die Abbildung zeigt den Input/Output-Dialog oder die Darstellung des schriftlichen Inhalts"]
 
 . Prüfen und bestätigen Sie die SDDC-Konfiguration und klicken Sie dann auf Bereitstellen des SDDC.
 +
-image::aws-config-9.png[aws Konfiguration 9]
+image:aws-config-9.png["Die Abbildung zeigt den Input/Output-Dialog oder die Darstellung des schriftlichen Inhalts"]
 
 +
 Die Implementierung dauert normalerweise etwa zwei Stunden.
 
 +
-image::aws-config-10.png[aws Konfiguration 10]
+image:aws-config-10.png["Die Abbildung zeigt den Input/Output-Dialog oder die Darstellung des schriftlichen Inhalts"]
 
 . Nach Abschluss der Fertigstellung ist das SDDC einsatzbereit.
 +
-image::aws-config-11.png[aws Konfiguration 11]
+image:aws-config-11.png["Die Abbildung zeigt den Input/Output-Dialog oder die Darstellung des schriftlichen Inhalts"]
 
 
 
@@ -116,42 +107,30 @@ So verbinden Sie VMware Cloud mit FSX ONTAP:
 
 . Wenn die VMware Cloud Implementierung abgeschlossen und mit AWS VPC verbunden ist, müssen Sie Amazon FSX für NetApp ONTAP in ein neues VPC anstatt in der mit der Integration verbundenen VPC implementieren (siehe Abbildung unten). FSX (NFS- und SMB-fließende IPs) ist nicht zugänglich, wenn sie in der verbundenen VPC implementiert werden. ISCSI-Endpunkte wie Cloud Volumes ONTAP funktionieren genauso gut wie die verbundene VPC.
 +
-image::aws-connect-fsx-1.png[aws Connect fsx 1]
+image:aws-connect-fsx-1.png["Die Abbildung zeigt den Input/Output-Dialog oder die Darstellung des schriftlichen Inhalts"]
 
 . Eine zusätzliche VPC in derselben Region implementieren und dann Amazon FSX für NetApp ONTAP in die neue VPC implementieren.
 +
 Die Konfiguration einer SDDC-Gruppe in der VMware Cloud Konsole ermöglicht die erforderlichen Netzwerkkonfigurationsoptionen für die Verbindung zur neuen VPC, bei der FSX implementiert wird. Überprüfen Sie in Schritt 3, ob „VMware Transit Connect für Ihre Gruppe konfigurieren“ Gebühren pro Anlage und Datenübertragung anfällt und wählen Sie „Gruppe erstellen“. Dieser Vorgang kann einige Minuten dauern.
 
 +
-image::aws-connect-fsx-2.png[aws Connect fsx 2]
-
-+
-image::aws-connect-fsx-3.png[aws Connect fsx 3]
-
-+
-image::aws-connect-fsx-4.png[aws Connect fsx 4]
+image:aws-connect-fsx-2.png["Die Abbildung zeigt den Input/Output-Dialog oder die Darstellung des schriftlichen Inhalts"] image:aws-connect-fsx-3.png["Die Abbildung zeigt den Input/Output-Dialog oder die Darstellung des schriftlichen Inhalts"] image:aws-connect-fsx-4.png["Die Abbildung zeigt den Input/Output-Dialog oder die Darstellung des schriftlichen Inhalts"]
 
 . Binden Sie die neu erstellte VPC an die gerade erstellte SDDC-Gruppe. Wählen Sie die Registerkarte External VPC aus, und folgen Sie der link:https://docs.vmware.com/en/VMware-Cloud-on-AWS/services/com.vmware.vmc-aws-operations/GUID-A3D03968-350E-4A34-A53E-C0097F5F26A9.html["Anweisungen zum Anschließen eines externen VPC"] Für die Gruppe. Dieser Vorgang kann 10 bis 15 Minuten in Anspruch nehmen.
 +
-image::aws-connect-fsx-5.png[aws Connect fsx 5]
-
-+
-image::aws-connect-fsx-6.png[aws Connect fsx 6]
+image:aws-connect-fsx-5.png["Die Abbildung zeigt den Input/Output-Dialog oder die Darstellung des schriftlichen Inhalts"] image:aws-connect-fsx-6.png["Die Abbildung zeigt den Input/Output-Dialog oder die Darstellung des schriftlichen Inhalts"]
 
 . Im Rahmen des externen VPC-Prozesses werden Sie über die AWS-Konsole zu einer neuen, gemeinsam genutzten Ressource über den Resource Access Manager aufgefordert. Die gemeinsam genutzte Ressource ist die link:https://aws.amazon.com/transit-gateway["AWS Transit Gateway"] Management über VMware Transit Connect
 +
-image::aws-connect-fsx-7.png[aws Connect fsx 7]
-
-+
-image::aws-connect-fsx-8.png[aws Connect fsx 8]
+image:aws-connect-fsx-7.png["Die Abbildung zeigt den Input/Output-Dialog oder die Darstellung des schriftlichen Inhalts"] image:aws-connect-fsx-8.png["Die Abbildung zeigt den Input/Output-Dialog oder die Darstellung des schriftlichen Inhalts"]
 
 . Erstellen Sie den Transit Gateway-Anhang.
 +
-image::aws-connect-fsx-9.png[aws Connect fsx 9]
+image:aws-connect-fsx-9.png["Die Abbildung zeigt den Input/Output-Dialog oder die Darstellung des schriftlichen Inhalts"]
 
 . Nehmen Sie wieder an der VMC-Konsole die VPC-Anlage an. Dieser Vorgang dauert etwa 10 Minuten.
 +
-image::aws-connect-fsx-10.png[aws Connect fsx 10]
+image:aws-connect-fsx-10.png["Die Abbildung zeigt den Input/Output-Dialog oder die Darstellung des schriftlichen Inhalts"]
 
 . Klicken Sie auf der Registerkarte External VPC auf das Bearbeiten-Symbol in der Spalte Routen und fügen Sie die folgenden erforderlichen Routen hinzu:
 +
@@ -159,17 +138,17 @@ image::aws-connect-fsx-10.png[aws Connect fsx 10]
 ** Eine Route für den unverankerten IP-Bereich für Cloud Volumes ONTAP (falls zutreffend).
 ** Eine Route für den neu erstellten externen VPC-Adressraum.
 +
-image::aws-connect-fsx-11.png[aws Connect fsx 11]
+image:aws-connect-fsx-11.png["Die Abbildung zeigt den Input/Output-Dialog oder die Darstellung des schriftlichen Inhalts"]
 
 
 
 . Außerdem bidirektionalen Datenverkehr zulassen link:https://docs.vmware.com/en/VMware-Cloud-on-AWS/services/com.vmware.vmc-aws-operations/GUID-DE330202-D63D-408A-AECF-7CDC6ADF7EAC.html["Firewall-Regeln"] Für den Zugriff auf FSX/CVO. Befolgen Sie diese link:https://docs.vmware.com/en/VMware-Cloud-on-AWS/services/com.vmware.vmc-aws-operations/GUID-DE330202-D63D-408A-AECF-7CDC6ADF7EAC.html["Detaillierte Schritte"] Für die Firewall des Computing-Gateways für die SDDC-Workload-Konnektivität.
 +
-image::aws-connect-fsx-12.png[aws Connect fsx 12]
+image:aws-connect-fsx-12.png["Die Abbildung zeigt den Input/Output-Dialog oder die Darstellung des schriftlichen Inhalts"]
 
 . Nachdem die Firewall-Gruppen sowohl für das Management- als auch für das Computing-Gateway konfiguriert wurden, ist der Zugriff auf vCenter wie folgt möglich:
 +
-image::aws-connect-fsx-13.png[aws Connect fsx 13]
+image:aws-connect-fsx-13.png["Die Abbildung zeigt den Input/Output-Dialog oder die Darstellung des schriftlichen Inhalts"]
 
 
 

@@ -1,0 +1,48 @@
+---
+sidebar: sidebar 
+keywords: Cyber vault, cybervault, cyber-vault, data protection, security, ransomware, ONTAP 
+permalink: /cyber-vault/ontap-cyber-vault-overview.html 
+summary: Dies ist ein Überblick über die Cyber Vault-Lösung von NetApp ONTAP, die auf SnapLock Compliance für eine unveränderliche und nicht löschbare Datenaufbewahrung basiert. 
+---
+= Übersicht über die ONTAP Cyber-Vault
+:hardbreaks:
+:allow-uri-read: 
+:nofooter: 
+:icons: font
+:linkattrs: 
+:imagesdir: ../media/
+
+
+[role="lead"]
+Die größte Bedrohung, die die Implementierung von Cyber-Vaulting erfordert, ist die zunehmende Verbreitung und zunehmende Raffinesse von Cyber-Angriffen, insbesondere Ransomware und Datenschutzverletzungen. link:https://www.verizon.com/business/resources/reports/dbir/["Mit einem Anstieg des Phishing"^] Und immer ausgefeiltere Methoden zum Stehlen von Zugangsdaten können dann für den Zugriff auf Infrastruktursysteme verwendet werden, wenn ein Ransomware-Angriff beginnt. Selbst gehärtete Infrastruktursysteme sind in diesen Fällen angreifGefahr. Die einzige Verteidigung gegen ein kompromittiertes System ist, die Daten in einem Cyber-Vault zu schützen und isolieren.
+
+
+NOTE: Ab Juli 2024 wurden die Inhalte aus zuvor als PDFs veröffentlichten technischen Berichten in die ONTAP Produktdokumentation integriert. Zudem erhalten neue technische Berichte (TRs) wie dieses Dokument keine TR-Nummern mehr.
+
+
+
+== Was ist Cyber-Vaulting?
+
+Bei Cyber-Vaulting handelt es sich um ein spezifisches Datensicherungsverfahren, bei dem geschäftskritische Daten getrennt von der primären IT-Infrastruktur in einer isolierten Umgebung gespeichert werden.
+
+„Air Gapped“, „unveränderlich“ und „unlöschbar“ Datenspeicher, die immun gegen Bedrohungen sind, die das Hauptnetzwerk betreffen, wie Malware, Ransomware oder sogar Bedrohungen von innen. Cyber-Vaulting kann mit *unveränderlichen* und *unlöschbaren* Snapshots erreicht werden.
+
+Air-Gap-Backups, die herkömmliche Methoden verwenden, erfordern die Schaffung von Speicherplatz und die physische Trennung des primären und sekundären Mediums. Durch Verlagerung der Medien an einen anderen Standort und/oder durch Trennung der Konnektivität haben schlechte Akteure keinen Zugriff auf die Daten. So sind die Daten geschützt, können aber zu langsameren Recovery-Zeiten führen.
+
+
+
+== Der Ansatz von NetApp für Cyber-Vaulting
+
+Zu den wichtigsten Funktionen der NetApp Referenzarchitektur für Cyber-Vaulting-Systeme gehören:
+
+* Sichere, isolierte Storage-Infrastruktur (z. B. isolierte Storage-Systeme mit Air Gap-Separierung)
+* Kopien der Daten müssen ausnahmslos sowohl *unveränderlich* als auch *unlöschbar* sein
+* Strenge Zugriffssteuerung und Multi-Faktor-Authentifizierung
+* Funktionen zur schnellen Datenwiederherstellung
+
+
+Sie können NetApp-Storage mit ONTAP als Cyber-Vault mit Air-Gap-Technologie nutzenlink:../../ontap/snaplock/commit-snapshot-copies-worm-concept.html["SnapLock Compliance zur WORM-Sicherung von Snapshot Kopien"^]. Sie können alle grundlegenden SnapLock Compliance-Aufgaben im Cyber Vault ausführen. Nach der Konfiguration werden Cyber Vault Volumes automatisch gesichert, sodass die Snapshot Kopien nicht mehr manuell für das WORM-Verfahren gespeichert werden müssen. Weitere Informationen zum logischen Air-Gating finden Sie hier link:https://www.netapp.com/blog/ransomware-protection-snaplock/["Blog"^]
+
+SnapLock Compliance wird zur Einhaltung der Bank- und Finanzvorschriften SEC 70-A-4(f), FINRA 4511(c) und CFTC 1.31(c)-(d) eingesetzt. Es wurde von Cohasset Associates zur Einhaltung dieser Vorschriften zertifiziert (Prüfungsbericht auf Anfrage verfügbar). Mit SnapLock Compliance erhalten Sie bei dieser Zertifizierung einen gesicherten Mechanismus für das Air Gap Ihrer Daten, auf den sich die größten Finanzinstitute weltweit verlassen, um sowohl die Aufbewahrung als auch den Abruf von Bankdaten zu gewährleisten.
+
+image:ontap-cyber-vault-logical-air-gap.png["Cyber-Vault mithilfe von NetApp ONTAP logisch Air Gap"]

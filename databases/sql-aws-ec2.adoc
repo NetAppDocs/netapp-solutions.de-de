@@ -147,15 +147,15 @@ Führen Sie die folgenden Schritte aus, um Volumes und LUNs für SQL Server zu e
 . Öffnen Sie die Amazon FSX-Konsole bei https://console.aws.amazon.com/fsx/[]
 . Erstellen Sie mit der Option „Standard erstellen“ unter „Erstellungsmethode“ ein Amazon FSX für das Filesystem von NetApp ONTAP. So können Sie FSxadmin- und vsadmin-Anmeldeinformationen definieren.
 +
-image::sql-awsec2-image1.png[sql awsec2 image1]
+image:sql-awsec2-image1.png["Die Abbildung zeigt den Input/Output-Dialog oder die Darstellung des schriftlichen Inhalts"]
 
 . Geben Sie das Passwort für fsxadmin an.
 +
-image::sql-awsec2-image2.png[sql awsec2 image2]
+image:sql-awsec2-image2.png["Die Abbildung zeigt den Input/Output-Dialog oder die Darstellung des schriftlichen Inhalts"]
 
 . Geben Sie das Passwort für SVMs an.
 +
-image::sql-awsec2-image3.png[sql awsec2 image3]
+image:sql-awsec2-image3.png["Die Abbildung zeigt den Input/Output-Dialog oder die Darstellung des schriftlichen Inhalts"]
 
 . Erstellen Sie Volumes, indem Sie den Schritt befolgen, der in aufgeführt ist https://docs.aws.amazon.com/fsx/latest/ONTAPGuide/creating-volumes.html["Erstellung eines Volumes auf FSX für NetApp ONTAP"^].
 +
@@ -193,7 +193,7 @@ Set-Service -Name msiscsi -StartupType Automatic
 Get-InitiatorPort | select NodeAddress
 ....
 +
-image::sql-awsec2-image4.png[sql awsec2 image4]
+image:sql-awsec2-image4.png["Die Abbildung zeigt den Input/Output-Dialog oder die Darstellung des schriftlichen Inhalts"]
 
 . Stellen Sie eine Verbindung zu Storage Virtual Machines (SVM) mithilfe von putty her und erstellen Sie eine iGroup.
 +
@@ -206,7 +206,7 @@ igroup create -igroup igrp_ws2019sql1 -protocol iscsi -ostype windows -initiator
 lun create -path /vol/vol_awssqlprod01_data/lun_awssqlprod01_data -size 700GB -ostype windows_2008 -space-allocation enabled lun create -path /vol/vol_awssqlprod01_log/lun_awssqlprod01_log -size 100GB -ostype windows_2008 -space-allocation enabled
 ....
 +
-image::sql-awsec2-image5.png[sql awsec2 image5]
+image:sql-awsec2-image5.png["Die Abbildung zeigt den Input/Output-Dialog oder die Darstellung des schriftlichen Inhalts"]
 
 . Verwenden Sie Windows_2008 als empfohlenen LUN-Typ, um die I/O-Ausrichtung mit dem OS-Partitionierungsschema zu erreichen. Siehe https://docs.netapp.com/us-en/ontap/san-admin/io-misalignments-properly-aligned-luns-concept.html["Hier"^] Finden Sie weitere Informationen.
 . Verwenden Sie den folgenden SSH-Befehl für die Zuordnung der Initiatorgruppe zu den LUNs, die Sie gerade erstellt haben.
@@ -216,21 +216,21 @@ lun show
 lun map -path /vol/vol_awssqlprod01_data/lun_awssqlprod01_data -igroup igrp_awssqlprod01lun map -path /vol/vol_awssqlprod01_log/lun_awssqlprod01_log -igroup igrp_awssqlprod01
 ....
 +
-image::sql-awsec2-image6.png[sql awsec2 image6]
+image:sql-awsec2-image6.png["Die Abbildung zeigt den Input/Output-Dialog oder die Darstellung des schriftlichen Inhalts"]
 
 . Führen Sie für eine freigegebene Festplatte, die Windows Failover Cluster verwendet, einen SSH-Befehl aus, um die gleiche LUN der Initiatorgruppe zuzuordnen, die zu allen Servern gehört, die am Windows Failover Cluster teilnehmen.
 . Windows Server mit einer SVM mit einem iSCSI-Ziel verbinden. Suchen Sie die Ziel-IP-Adresse aus dem AWS Portal.
 +
-image::sql-awsec2-image7.png[sql awsec2 image7]
+image:sql-awsec2-image7.png["Die Abbildung zeigt den Input/Output-Dialog oder die Darstellung des schriftlichen Inhalts"]
 
 . Wählen Sie im Server Manager und im Menü Extras den iSCSI-Initiator aus. Wählen Sie die Registerkarte Ermittlung aus, und wählen Sie dann Portal ermitteln aus. Geben Sie im vorherigen Schritt die iSCSI-IP-Adresse ein, und wählen Sie Erweitert. Wählen Sie im lokalen Adapter Microsoft iSCSI Initiator aus. Wählen Sie in Initiator-IP die IP des Servers aus. Wählen Sie anschließend OK, um alle Fenster zu schließen.
 +
-image::sql-awsec2-image8.png[sql awsec2 image8]
+image:sql-awsec2-image8.png["Die Abbildung zeigt den Input/Output-Dialog oder die Darstellung des schriftlichen Inhalts"]
 
 . Wiederholen Sie Schritt 12 für die zweite iSCSI-IP-Adresse der SVM.
 . Wählen Sie die Registerkarte *Ziele* aus, wählen Sie *Verbinden* und wählen Sie *muti-Pfad aktivieren*.
 +
-image::sql-awsec2-image9.png[sql awsec2 image9]
+image:sql-awsec2-image9.png["Die Abbildung zeigt den Input/Output-Dialog oder die Darstellung des schriftlichen Inhalts"]
 
 . Fügen Sie für eine optimale Performance weitere Sitzungen hinzu. NetApp empfiehlt die Erstellung von fünf iSCSI-Sitzungen. Wählen Sie *Eigenschaften *> *Sitzung hinzufügen *> *Erweitert* aus, und wiederholen Sie Schritt 12.
 +
@@ -239,7 +239,7 @@ $TargetPortals = ('10.2.1.167', '10.2.2.12')
 foreach ($TargetPortal in $TargetPortals) {New-IscsiTargetPortal -TargetPortalAddress $TargetPortal}
 ....
 +
-image::sql-awsec2-image10.png[sql awsec2 image10]
+image:sql-awsec2-image10.png["Die Abbildung zeigt den Input/Output-Dialog oder die Darstellung des schriftlichen Inhalts"]
 
 
 
@@ -259,7 +259,7 @@ Connect-IscsiTarget -IsMultipathEnabled $true -NodeAddress $target.NodeAddress -
 }
 ....
 +
-image::sql-awsec2-image11.png[sql awsec2 image11]
+image:sql-awsec2-image11.png["Die Abbildung zeigt den Input/Output-Dialog oder die Darstellung des schriftlichen Inhalts"]
 
 .. Initialisieren Sie die Festplatten mit dem folgenden PowerShell-Befehl.
 +
@@ -268,7 +268,7 @@ $disks = Get-Disk | where PartitionStyle -eq raw
 foreach ($disk in $disks) {Initialize-Disk $disk.Number}
 ....
 +
-image::sql-awsec2-image12.png[sql awsec2 image12]
+image:sql-awsec2-image12.png["Die Abbildung zeigt den Input/Output-Dialog oder die Darstellung des schriftlichen Inhalts"]
 
 .. Führen Sie die Befehle Partition erstellen und Disk formatieren mit PowerShell aus.
 +
@@ -350,7 +350,7 @@ Informationen zur Versionskompatibilität finden Sie im https://mysupport.netapp
 ====
 Die folgende Abbildung zeigt einige Überlegungen beim Erstellen des Microsoft SQL Server Datenbank-Storage-Layouts beim Backup mit SnapCenter.
 
-image::sql-awsec2-image13.png[sql awsec2 image13]
+image:sql-awsec2-image13.png["Die Abbildung zeigt den Input/Output-Dialog oder die Darstellung des schriftlichen Inhalts"]
 
 *Best Practices*
 
@@ -383,15 +383,15 @@ Führen Sie nach der Installation von SnapCenter die folgenden Schritte aus, um 
 
 . Um Anmeldeinformationen einzurichten, wählen Sie *Einstellungen* > *Neu* und geben Sie die Anmeldeinformationen ein.
 +
-image::sql-awsec2-image14.png[sql awsec2 image14]
+image:sql-awsec2-image14.png["Die Abbildung zeigt den Input/Output-Dialog oder die Darstellung des schriftlichen Inhalts"]
 
 . Fügen Sie das Storage-System hinzu, indem Sie Storage-Systeme > Neu auswählen und die entsprechende FSX für ONTAP-Storage-Informationen bereitstellen.
 +
-image::sql-awsec2-image15.png[sql awsec2 image15]
+image:sql-awsec2-image15.png["Die Abbildung zeigt den Input/Output-Dialog oder die Darstellung des schriftlichen Inhalts"]
 
 . Fügen Sie Hosts hinzu, indem Sie *Hosts* > *Add* auswählen und dann die Hostinformationen angeben. SnapCenter installiert das Windows und SQL Server Plug-in automatisch. Dieser Vorgang kann einige Zeit in Anspruch nehmen.
 +
-image::sql-awsec2-image16.png[sql awsec2 image16]
+image:sql-awsec2-image16.png["Die Abbildung zeigt den Input/Output-Dialog oder die Darstellung des schriftlichen Inhalts"]
 
 
 
@@ -409,13 +409,13 @@ Die Größenformel für das Host-Protokoll-Verzeichnis setzt folgende voraus:
 * Eine Systemdatenbank-Sicherung, die die tempdb-Datenbank nicht enthält
 * Eine 10% LUN Overheadfläche somit ist das Host-Log-Verzeichnis auf einem dedizierten Volume oder einer LUN vorhanden. Die Datenmenge im Host-Log-Verzeichnis hängt von der Größe der Backups und der Anzahl der Tage ab, die Backups aufbewahrt werden.
 +
-image::sql-awsec2-image17.png[sql awsec2 image17]
+image:sql-awsec2-image17.png["Die Abbildung zeigt den Input/Output-Dialog oder die Darstellung des schriftlichen Inhalts"]
 
 +
 Wenn die LUNs bereits bereitgestellt wurden, können Sie den Bereitstellungspunkt auswählen, der das Host-Protokollverzeichnis darstellt.
 
 +
-image::sql-awsec2-image18.png[sql awsec2 image18]
+image:sql-awsec2-image18.png["Die Abbildung zeigt den Input/Output-Dialog oder die Darstellung des schriftlichen Inhalts"]
 
 
 
@@ -435,23 +435,23 @@ Nachdem Sie die Datenbank und die Protokolldateien auf den FSX ONTAP LUNs platzi
 +
 .. Wählen Sie *Ressourcen*, und wählen Sie dann *Microsoft SQL Server *im Dropdown-Menü oben links. Wählen Sie *Ressourcen Aktualisieren*.
 +
-image::sql-awsec2-image19.png[sql awsec2 image19]
+image:sql-awsec2-image19.png["Die Abbildung zeigt den Input/Output-Dialog oder die Darstellung des schriftlichen Inhalts"]
 
 .. Wählen Sie die zu sichernde Datenbank aus, und wählen Sie dann *Weiter* und (**), um die Policy hinzuzufügen, falls noch keine Policy erstellt wurde. Befolgen Sie die * Neue SQL Server Backup Policy*, um eine neue Richtlinie zu erstellen.
 +
-image::sql-awsec2-image20.png[sql awsec2 image20]
+image:sql-awsec2-image20.png["Die Abbildung zeigt den Input/Output-Dialog oder die Darstellung des schriftlichen Inhalts"]
 
 .. Wählen Sie ggf. den Überprüfungsserver aus. Dieser Server ist der Server, auf dem SnapCenter DBCC CHECKDB ausgeführt wird, nachdem eine vollständige Sicherung erstellt wurde. Klicken Sie auf *Weiter*, um eine Benachrichtigung zu erhalten, und wählen Sie zur Überprüfung *Zusammenfassung*. Klicken Sie nach der Überprüfung auf *Fertig stellen*.
 +
-image::sql-awsec2-image21.png[sql awsec2 image21]
+image:sql-awsec2-image21.png["Die Abbildung zeigt den Input/Output-Dialog oder die Darstellung des schriftlichen Inhalts"]
 
 .. Klicken Sie auf *Jetzt sichern*, um das Backup zu testen. Wählen Sie in den Popup-Fenstern die Option *Backup* aus.
 +
-image::sql-awsec2-image22.png[sql awsec2 image22]
+image:sql-awsec2-image22.png["Die Abbildung zeigt den Input/Output-Dialog oder die Darstellung des schriftlichen Inhalts"]
 
 .. Wählen Sie *Monitor*, um zu überprüfen, ob die Sicherung abgeschlossen wurde.
 +
-image::sql-awsec2-image23.png[sql awsec2 image23]
+image:sql-awsec2-image23.png["Die Abbildung zeigt den Input/Output-Dialog oder die Darstellung des schriftlichen Inhalts"]
 
 
 
@@ -473,13 +473,13 @@ Führen Sie die folgenden Schritte aus, um eine individuelle Datenbank auf einen
 
 . Wählen Sie Ressourcen und dann die Datenbank aus, die Sie wiederherstellen möchten.
 +
-image::sql-awsec2-image24.png[sql awsec2 image24]
+image:sql-awsec2-image24.png["Die Abbildung zeigt den Input/Output-Dialog oder die Darstellung des schriftlichen Inhalts"]
 
 . Wählen Sie den Backupnamen aus, von dem die Datenbank wiederhergestellt werden soll, und wählen Sie anschließend Wiederherstellen.
 . Folgen Sie den * Restore* Pop-up-Fenstern, um die Datenbank wiederherzustellen.
 . Wählen Sie *Monitor*, um zu überprüfen, ob der Wiederherstellungsprozess erfolgreich ist.
 +
-image::sql-awsec2-image25.png[sql awsec2 image25]
+image:sql-awsec2-image25.png["Die Abbildung zeigt den Input/Output-Dialog oder die Darstellung des schriftlichen Inhalts"]
 
 
 
@@ -550,12 +550,12 @@ Mit dem folgenden Schritt werden Datenbanken zu der neuen SQL Server-Instanz gek
 . Wählen Sie Ressourcen und dann die Datenbank aus, die Sie klonen möchten.
 . Wählen Sie den Backup-Namen aus, den Sie klonen möchten, und wählen Sie dann Klonen aus.
 +
-image::sql-awsec2-image26.png[sql awsec2 image26]
+image:sql-awsec2-image26.png["Die Abbildung zeigt den Input/Output-Dialog oder die Darstellung des schriftlichen Inhalts"]
 
 . Befolgen Sie die Anweisungen zum Klonen aus Backup, indem Sie die neue SQL Server Instanz auf EC2 und den Instanznamen angeben, um den Klonprozess abzuschließen.
 . Wählen Sie Überwachen, um sicherzustellen, dass das Klonen abgeschlossen ist.
 +
-image::sql-awsec2-image27.png[sql awsec2 image27]
+image:sql-awsec2-image27.png["Die Abbildung zeigt den Input/Output-Dialog oder die Darstellung des schriftlichen Inhalts"]
 
 
 

@@ -25,15 +25,15 @@ In diesem Abschnitt befassen wir uns eingehend damit, wie SnapCenter die Vektord
 
 . Richten Sie den Host ein, der zur Ausführung von SnapCenter-Befehlen verwendet wird.
 +
-image::sc_host_setup.png[sc-Host-Einrichtung]
+image:sc_host_setup.png["Die Abbildung zeigt den Input/Output-Dialog oder die Darstellung des schriftlichen Inhalts"]
 
 . Installieren und konfigurieren Sie das Speicher-Plug-in. Wählen Sie aus dem hinzugefügten Host "More Options". Navigieren Sie zum heruntergeladenen Speicher-Plug-in, und wählen Sie es aus dem aus link:https://automationstore.netapp.com/snap-detail.shtml?packUuid=Storage&packVersion=1.0["NetApp Automation Store"]. Installieren Sie das Plugin und speichern Sie die Konfiguration.
 +
-image::sc_storage_plugin.png[sc Speicher-Plug-in]
+image:sc_storage_plugin.png["Die Abbildung zeigt den Input/Output-Dialog oder die Darstellung des schriftlichen Inhalts"]
 
 . Storage-System und Volume einrichten: Fügen Sie das Storage-System unter „Storage System“ hinzu und wählen Sie die SVM (Storage Virtual Machine) aus. In diesem Beispiel haben wir uns für „vs_nvidia“ entschieden.
 +
-image::sc_storage_system.png[sc-Speichersystem]
+image:sc_storage_system.png["Die Abbildung zeigt den Input/Output-Dialog oder die Darstellung des schriftlichen Inhalts"]
 
 . Erstellen Sie eine Ressource für die Vektordatenbank, die eine Sicherungsrichtlinie und einen benutzerdefinierten Snapshot-Namen enthält.
 +
@@ -41,7 +41,7 @@ image::sc_storage_system.png[sc-Speichersystem]
 ** Wählen Sie im Abschnitt Storage Footprint die Volumes aus, die mit den Kundendaten der Vektordatenbank und den Milvus-Clusterdaten verknüpft sind. In unserem Beispiel sind dies "vol1" und "vectordbpv".
 ** Erstellen Sie eine Richtlinie für den Schutz der Vektordatenbank, und schützen Sie die Vektordatenbankressource mithilfe der Richtlinie.
 +
-image::sc_resource_vectordatabase.png[sc-Ressourcenvektordatenbank]
+image:sc_resource_vectordatabase.png["Die Abbildung zeigt den Input/Output-Dialog oder die Darstellung des schriftlichen Inhalts"]
 
 
 
@@ -102,7 +102,7 @@ root@node2:~#
 ----
 . Initiieren Sie ein Backup mit dem CG-Snapshot (Consistency Group) von der Ressource 'milvusdb'
 +
-image::sc_backup_vector_database.png[sc-Backup-Vektordatenbank]
+image:sc_backup_vector_database.png["Die Abbildung zeigt den Input/Output-Dialog oder die Darstellung des schriftlichen Inhalts"]
 
 . Zum Testen der Backup-Funktion haben wir nach dem Backup-Prozess entweder eine neue Tabelle hinzugefügt oder einige Daten aus dem NFS entfernt (S3 NAS Bucket).
 +
@@ -134,7 +134,7 @@ root@node2:~#
 ----
 . Führen Sie eine vollständige Wiederherstellung des S3-NAS-Buckets aus dem vorherigen Snapshot durch.
 +
-image::sc_restore_vector_database.png[sc stellt die Vektordatenbank wieder her]
+image:sc_restore_vector_database.png["Die Abbildung zeigt den Input/Output-Dialog oder die Darstellung des schriftlichen Inhalts"]
 
 . Verwenden Sie ein Python-Skript, um die Daten aus den Sammlungen „Hello_milvus_netapp_sc_Test“ und „Hello_milvus_netapp_sc_test2“ zu überprüfen.
 +

@@ -42,9 +42,7 @@ Dieses Szenario umfasst die folgenden grundlegenden Schritte:
 
 Das folgende Diagramm zeigt eine typische VMware Site Recovery-Architektur mit ONTAP Tools für VMware vSphere 10, die in einer Hochverfügbarkeitskonfiguration mit 3 Nodes konfiguriert sind.
 
-image::vmware-nfs-srm-image05.png[Appliance konfigurieren]
-
-{Nbsp}
+image:vmware-nfs-srm-image05.png["Appliance konfigurieren"] {Nbsp}
 
 
 
@@ -99,14 +97,14 @@ Die folgenden Schritte müssen sowohl für den primären als auch für den sekun
 
 . Navigieren Sie in einem Webbrowser zu https://<SRM_appliance_IP>:5480*[] und melden Sie sich an. Klicken Sie auf *Gerät konfigurieren*, um zu beginnen.
 +
-image::vmware-nfs-srm-image01.png[Appliance konfigurieren]
+image:vmware-nfs-srm-image01.png["Appliance konfigurieren"]
 
 +
 {Nbsp}
 
 . Geben Sie auf der Seite *Platform Services Controller* des Assistenten Site Recovery Manager konfigurieren die Anmeldeinformationen des vCenter-Servers ein, für den SRM registriert wird. Klicken Sie auf *Weiter*, um fortzufahren.
 +
-image::vmware-nfs-srm-image02.png[Platform Services Controller]
+image:vmware-nfs-srm-image02.png["Platform Services Controller"]
 
 +
 {Nbsp}
@@ -114,7 +112,7 @@ image::vmware-nfs-srm-image02.png[Platform Services Controller]
 . Sehen Sie sich auf der Seite *vCenter Server* den verbundenen Vserver an und klicken Sie auf *Weiter*, um fortzufahren.
 . Geben Sie auf der Seite *Name and Extension* einen Namen für den SRM-Standort, eine Administrator-E-Mail-Adresse und den lokalen Host ein, der von SRM verwendet werden soll. Klicken Sie auf *Weiter*, um fortzufahren.
 +
-image::vmware-nfs-srm-image03.png[Appliance konfigurieren]
+image:vmware-nfs-srm-image03.png["Appliance konfigurieren"]
 
 +
 {Nbsp}
@@ -131,7 +129,7 @@ Führen Sie die folgenden Schritte aus, um SRA auf der SRM-Appliance zu konfigur
 . Laden Sie die SRA für ONTAP-Tools 10 unter herunter https://mysupport.netapp.com/site/products/all/details/otv10/downloads-tab["NetApp Support Website"] und speichern Sie die Datei tar.gz in einem lokalen Ordner.
 . Klicken Sie in der SRM Management Appliance auf *Storage Replication Adapter* im linken Menü und dann auf *New Adapter*.
 +
-image::vmware-nfs-srm-image04.png[Fügen Sie einen neuen SRM-Adapter hinzu]
+image:vmware-nfs-srm-image04.png["Fügen Sie einen neuen SRM-Adapter hinzu"]
 
 +
 {Nbsp}
@@ -153,35 +151,35 @@ Der folgende Schritt wird im vCenter Client des primären Standorts durchgeführ
 
 . Klicken Sie im vSphere-Client im linken Menü auf *Site Recovery*. Ein neues Browserfenster wird für die SRM-Management-UI am primären Standort geöffnet.
 +
-image::vmware-nfs-srm-image06.png[Standort-Recovery]
+image:vmware-nfs-srm-image06.png["Standort-Recovery"]
 
 +
 {Nbsp}
 
 . Klicken Sie auf der Seite *STANDORTWIEDERHERSTELLUNG* auf *NEUES STANDORTPAAR*.
 +
-image::vmware-nfs-srm-image07.png[Standort-Recovery]
+image:vmware-nfs-srm-image07.png["Standort-Recovery"]
 
 +
 {Nbsp}
 
 . Überprüfen Sie auf der Seite *Pair type* des *New Pair Wizard*, ob der lokale vCenter Server ausgewählt ist, und wählen Sie den *Pair Typ* aus. Klicken Sie auf *Weiter*, um fortzufahren.
 +
-image::vmware-nfs-srm-image08.png[Paartyp]
+image:vmware-nfs-srm-image08.png["Paartyp"]
 
 +
 {Nbsp}
 
 . Geben Sie auf der Seite *Peer vCenter* die Zugangsdaten des vCenter am sekundären Standort ein und klicken Sie auf *Find vCenter Instances*. Überprüfen Sie, ob die vCenter-Instanz erkannt wurde, und klicken Sie auf *Weiter*, um fortzufahren.
 +
-image::vmware-nfs-srm-image09.png[Peer vCenter]
+image:vmware-nfs-srm-image09.png["Peer vCenter"]
 
 +
 {Nbsp}
 
 . Aktivieren Sie auf der Seite *Services* das Kontrollkästchen neben der vorgeschlagenen Standortkopplung. Klicken Sie auf *Weiter*, um fortzufahren.
 +
-image::vmware-nfs-srm-image10.png[Services]
+image:vmware-nfs-srm-image10.png["Services"]
 
 +
 {Nbsp}
@@ -189,7 +187,7 @@ image::vmware-nfs-srm-image10.png[Services]
 . Überprüfen Sie auf der Seite *Ready to Complete* die vorgeschlagene Konfiguration und klicken Sie dann auf die Schaltfläche *Finish*, um die Standortanordnung zu erstellen
 . Das neue Standortpaar und seine Zusammenfassung können auf der Übersichtsseite angezeigt werden.
 +
-image::vmware-nfs-srm-image11.png[Zusammenfassung der Standortpaar]
+image:vmware-nfs-srm-image11.png["Zusammenfassung der Standortpaar"]
 
 
 
@@ -201,35 +199,35 @@ Der folgende Schritt wird in der Oberfläche „Standortwiederherstellung“ des
 
 . Navigieren Sie in der Benutzeroberfläche für die Standortwiederherstellung im linken Menü zu *Konfigurieren > Array-basierte Replikation > Array Pairs*. Klicken Sie auf *ADD*, um zu beginnen.
 +
-image::vmware-nfs-srm-image12.png[Array-Paare]
+image:vmware-nfs-srm-image12.png["Array-Paare"]
 
 +
 {Nbsp}
 
 . Überprüfen Sie auf der Seite *Speicherreplikationsadapter* des Assistenten *Array Pair hinzufügen*, ob der SRA-Adapter für den primären Standort vorhanden ist, und klicken Sie auf *Weiter*, um fortzufahren.
 +
-image::vmware-nfs-srm-image13.png[Array-Paar hinzufügen]
+image:vmware-nfs-srm-image13.png["Array-Paar hinzufügen"]
 
 +
 {Nbsp}
 
 . Geben Sie auf der Seite *Local Array Manager* einen Namen für das Array am primären Standort, den FQDN des Speichersystems, die SVM-IP-Adressen, die NFS bereitstellen, und optional die Namen bestimmter Volumes ein, die ermittelt werden sollen. Klicken Sie auf *Weiter*, um fortzufahren.
 +
-image::vmware-nfs-srm-image14.png[Lokaler Array-Manager]
+image:vmware-nfs-srm-image14.png["Lokaler Array-Manager"]
 
 +
 {Nbsp}
 
 . Geben Sie im *Remote Array Manager* dieselben Informationen wie im letzten Schritt für das ONTAP-Speichersystem am sekundären Standort ein.
 +
-image::vmware-nfs-srm-image15.png[Remote Array-Manager]
+image:vmware-nfs-srm-image15.png["Remote Array-Manager"]
 
 +
 {Nbsp}
 
 . Wählen Sie auf der Seite *Array pairs* die zu aktivierenden Array-Paare aus und klicken Sie auf *Weiter*, um fortzufahren.
 +
-image::vmware-nfs-srm-image16.png[Array-Paare]
+image:vmware-nfs-srm-image16.png["Array-Paare"]
 
 +
 {Nbsp}
@@ -245,42 +243,42 @@ Der folgende Schritt wird in der Oberfläche „Standortwiederherstellung“ des
 
 . Klicken Sie in der Site Recovery Oberfläche auf die Registerkarte *Schutzgruppen* und dann auf *Neue Schutzgruppe*, um zu beginnen.
 +
-image::vmware-nfs-srm-image17.png[Standort-Recovery]
+image:vmware-nfs-srm-image17.png["Standort-Recovery"]
 
 +
 {Nbsp}
 
 . Geben Sie auf der Seite *Name und Richtung* des *New Protection Group*-Assistenten einen Namen für die Gruppe ein und wählen Sie die Standortrichtung zum Schutz der Daten aus.
 +
-image::vmware-nfs-srm-image18.png[Name und Richtung]
+image:vmware-nfs-srm-image18.png["Name und Richtung"]
 
 +
 {Nbsp}
 
 . Wählen Sie auf der Seite *Typ* den Typ der Schutzgruppe (Datastore, VM oder vVol) aus und wählen Sie das Array-Paar aus. Klicken Sie auf *Weiter*, um fortzufahren.
 +
-image::vmware-nfs-srm-image19.png[Typ]
+image:vmware-nfs-srm-image19.png["Typ"]
 
 +
 {Nbsp}
 
 . Wählen Sie auf der Seite *Datastore groups* die Datastores aus, die in die Schutzgruppe aufgenommen werden sollen. VMs, die sich derzeit auf dem Datenspeicher befinden, werden für jeden ausgewählten Datenspeicher angezeigt. Klicken Sie auf *Weiter*, um fortzufahren.
 +
-image::vmware-nfs-srm-image20.png[Datastore-Gruppen]
+image:vmware-nfs-srm-image20.png["Datastore-Gruppen"]
 
 +
 {Nbsp}
 
 . Wählen Sie auf der Seite *Wiederherstellungsplan* optional die Schutzgruppe zu einem Wiederherstellungsplan hinzufügen. In diesem Fall ist der Wiederherstellungsplan noch nicht erstellt, sodass *nicht zum Wiederherstellungsplan hinzufügen* ausgewählt ist. Klicken Sie auf *Weiter*, um fortzufahren.
 +
-image::vmware-nfs-srm-image21.png[Recovery-Plan]
+image:vmware-nfs-srm-image21.png["Recovery-Plan"]
 
 +
 {Nbsp}
 
 . Überprüfen Sie auf der Seite *Ready to Complete* die neuen Parameter der Schutzgruppe und klicken Sie auf *Finish*, um die Gruppe zu erstellen.
 +
-image::vmware-nfs-srm-image22.png[Recovery-Plan]
+image:vmware-nfs-srm-image22.png["Recovery-Plan"]
 
 
 
@@ -292,28 +290,28 @@ Der folgende Schritt wird in der Oberfläche „Standortwiederherstellung“ des
 
 . Klicken Sie in der Benutzeroberfläche der Standortwiederherstellung auf die Registerkarte *Wiederherstellungsplan* und dann auf *Neuer Wiederherstellungsplan*, um zu beginnen.
 +
-image::vmware-nfs-srm-image23.png[Neuer Recovery-Plan]
+image:vmware-nfs-srm-image23.png["Neuer Recovery-Plan"]
 
 +
 {Nbsp}
 
 . Geben Sie auf der Seite *Name und Richtung* des Assistenten *Wiederherstellungsplan erstellen* einen Namen für den Wiederherstellungsplan ein und wählen Sie die Richtung zwischen Quell- und Zielstandort aus. Klicken Sie auf *Weiter*, um fortzufahren.
 +
-image::vmware-nfs-srm-image24.png[Name und Richtung]
+image:vmware-nfs-srm-image24.png["Name und Richtung"]
 
 +
 {Nbsp}
 
 . Wählen Sie auf der Seite *Schutzgruppen* die zuvor erstellten Schutzgruppen aus, die in den Wiederherstellungsplan aufgenommen werden sollen. Klicken Sie auf *Weiter*, um fortzufahren.
 +
-image::vmware-nfs-srm-image25.png[Schutzgruppen]
+image:vmware-nfs-srm-image25.png["Schutzgruppen"]
 
 +
 {Nbsp}
 
 . Konfigurieren Sie auf dem *Test Networks* bestimmte Netzwerke, die während des Tests des Plans verwendet werden. Wenn keine Zuordnung vorhanden ist oder kein Netzwerk ausgewählt ist, wird ein isoliertes Testnetzwerk erstellt. Klicken Sie auf *Weiter*, um fortzufahren.
 +
-image::vmware-nfs-srm-image26.png[Netzwerke testen]
+image:vmware-nfs-srm-image26.png["Netzwerke testen"]
 
 +
 {Nbsp}
@@ -337,28 +335,28 @@ Der folgende Schritt wird in der Benutzeroberfläche für die Standortwiederhers
 
 . Klicken Sie in der Benutzeroberfläche für die Standortwiederherstellung auf die Registerkarte *Wiederherstellungsplan* und wählen Sie dann einen Wiederherstellungsplan aus. Klicken Sie auf die Schaltfläche *Test*, um den Failover zum sekundären Standort zu testen.
 +
-image::vmware-nfs-srm-image27.png[Testen Sie den Failover]
+image:vmware-nfs-srm-image27.png["Testen Sie den Failover"]
 
 +
 {Nbsp}
 
 . Sie können den Fortschritt des Tests im Aufgabenbereich Site Recovery sowie im Aufgabenbereich vCenter anzeigen.
 +
-image::vmware-nfs-srm-image28.png[Testen Sie das Failover im Aufgabenbereich]
+image:vmware-nfs-srm-image28.png["Testen Sie das Failover im Aufgabenbereich"]
 
 +
 {Nbsp}
 
 . SRM sendet Befehle über den SRA an das sekundäre ONTAP Storage-System. Eine FlexClone des letzten Snapshots wird auf dem sekundären vSphere-Cluster erstellt und gemountet. Der neu gemountete Datastore kann im Storage Inventory angezeigt werden.
 +
-image::vmware-nfs-srm-image29.png[Neu eingebauter Datastore]
+image:vmware-nfs-srm-image29.png["Neu eingebauter Datastore"]
 
 +
 {Nbsp}
 
 . Wenn der Test abgeschlossen ist, klicken Sie auf *Cleanup*, um den Datenspeicher zu entsperren und zur ursprünglichen Umgebung zurückzukehren.
 +
-image::vmware-nfs-srm-image30.png[Neu eingebauter Datastore]
+image:vmware-nfs-srm-image30.png["Neu eingebauter Datastore"]
 
 
 
@@ -370,14 +368,14 @@ Führen Sie eine vollständige Recovery und einen Failover auf den sekundären S
 
 . Klicken Sie in der Benutzeroberfläche für die Standortwiederherstellung auf die Registerkarte *Wiederherstellungsplan* und wählen Sie dann einen Wiederherstellungsplan aus. Klicken Sie auf die Schaltfläche *Ausführen*, um den Failover zum sekundären Standort zu starten.
 +
-image::vmware-nfs-srm-image31.png[Führen Sie ein Failover aus]
+image:vmware-nfs-srm-image31.png["Führen Sie ein Failover aus"]
 
 +
 {Nbsp}
 
 . Sobald der Failover abgeschlossen ist, werden der gemountete Datastore und die VMs am sekundären Standort registriert.
 +
-image::vmware-nfs-srm-image32.png[Filover abgeschlossen]
+image:vmware-nfs-srm-image32.png["Filover abgeschlossen"]
 
 
 

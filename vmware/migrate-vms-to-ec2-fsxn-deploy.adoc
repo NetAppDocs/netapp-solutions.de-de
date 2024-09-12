@@ -24,11 +24,11 @@ Das https://docs.aws.amazon.com/fsx/latest/ONTAPGuide/getting-started-step1.html
 
 Für die Zwecke dieser Demonstration ist „DRaaSDemo“ der Name des erstellten Dateisystems.
 
-image::migrate-ec2-fsxn-image02.png[Abbildung der Benutzeroberfläche des Demo-Dateisystems]
+image:migrate-ec2-fsxn-image02.png["Abbildung der Benutzeroberfläche des Demo-Dateisystems"]
 
 Sobald die AWS VPC konfiguriert und FSX for ONTAP bereitgestellt wurde, basierend auf Ihren Performance-Anforderungen, loggen Sie sich bei ein link:http://cloud.cirrusdata.com/["cloud.cirrusdata.com"] Und link:https://customer.cirrusdata.com/cdc/kb/articles/get-started-with-cirrus-data-cloud-4eDqjIxQpg["Erstellen Sie ein neues Projekt"] Oder auf ein vorhandenes Projekt zugreifen.
 
-image::migrate-ec2-fsxn-image03.png[Bild der Benutzeroberfläche von Cirrus Data Projects]
+image:migrate-ec2-fsxn-image03.png["Bild der Benutzeroberfläche von Cirrus Data Projects"]
 
 Bevor Sie das Rezept für MigrationOps entwickeln, sollte AWS Cloud als Integration hinzugefügt werden. CMC bietet integrierte Integration mit FSX für ONTAP und AWS. Die Integration von FSX for ONTAP bietet folgende automatisierte Funktionen:
 
@@ -59,11 +59,11 @@ So konfigurieren Sie die CMC-Integration für FSX für ONTAP und AWS:
 . Navigieren Sie zu Integrationen -> Goodies.
 . Blättern Sie zu FSX für NetApp ONTAP, und klicken Sie auf INTEGRATION HINZUFÜGEN.
 +
-image::migrate-ec2-fsxn-image04.png[Abbildung der Benutzeroberfläche von Cirrus Data „Integration hinzufügen“]
+image:migrate-ec2-fsxn-image04.png["Abbildung der Benutzeroberfläche von Cirrus Data „Integration hinzufügen“"]
 
 . Geben Sie einen beschreibenden Namen (ausschließlich zu Anzeigezwecken) an, und fügen Sie die entsprechenden Anmeldeinformationen hinzu.
 +
-image::migrate-ec2-fsxn-image05.png[Abbildung der Benutzeroberfläche von Cirrus Data „Integration hinzufügen“]
+image:migrate-ec2-fsxn-image05.png["Abbildung der Benutzeroberfläche von Cirrus Data „Integration hinzufügen“"]
 
 . Sobald die Integration erstellt wurde, wählen Sie während der Erstellung einer neuen Migrationssitzung die Option Zielvolumen automatisch zuweisen aus, um automatisch neue Volumes auf FSX für ONTAP zuzuweisen.
 +
@@ -77,7 +77,7 @@ image::migrate-ec2-fsxn-image05.png[Abbildung der Benutzeroberfläche von Cirrus
 
 . Sobald Sie fertig sind, fügen Sie die Integration für AWS, folgen Sie den Schritten auf dem Bildschirm.
 +
-image::migrate-ec2-fsxn-image06.png[Abbildung der Benutzeroberfläche von Cirrus Data „Integration hinzufügen“]
+image:migrate-ec2-fsxn-image06.png["Abbildung der Benutzeroberfläche von Cirrus Data „Integration hinzufügen“"]
 
 +
 *Hinweis*: Diese Integration wird bei der Migration von Virtual Machines vom lokalen Storage zu AWS zusammen mit der Integration von FSX for ONTAP verwendet.
@@ -102,7 +102,7 @@ VMware Gast-VMs in vCenter im lokalen Datacenter:
 
 *Hinweis*: Die im vorherigen Abschnitt konfigurierte Integration automatisiert die Konfiguration des neuen Zielspeichers bei der Erstellung der neuen Laufwerke, bei der Einrichtung der Hosteinheiten und ihrer IQNs und sogar bei der Wiederherstellung der Anwendungs-VM (Host) für iSCSI- und Multipath-Konfigurationen.
 
-image::migrate-ec2-fsxn-image07.png[Image der virtuellen VMware-Maschinen, die migriert werden]
+image:migrate-ec2-fsxn-image07.png["Image der virtuellen VMware-Maschinen, die migriert werden"]
 
 Bei dieser Demonstration werden die Applikations-VMDKs von jeder VM auf ein automatisch bereitgestelltes und zugeordnetes iSCSI-Volume von FSX für ONTAP migriert. Die OS VMDK wird in diesem Fall zu einem Amazon EBS Volume migriert, da Amazon EC2 Instanzen diesen Amazon EBS nur als Boot-Disk unterstützen.
 
@@ -122,10 +122,10 @@ Hierzu klicken Sie auf Data Migration > Migration Hosts > Klicken Sie auf „Dep
 Kopieren Sie anschließend die `iex` Befehl an den Host und führen Sie es mit PowerShell aus. Sobald die Bereitstellung des Agenten erfolgreich war, wird der Host unter „Migrationshosts“ zum Projekt hinzugefügt.
 
 +
-image::migrate-ec2-fsxn-image08.png[Abbildung der Installationsschnittstelle von Cirrus Data]
+image:migrate-ec2-fsxn-image08.png["Abbildung der Installationsschnittstelle von Cirrus Data"]
 
 +
-image::migrate-ec2-fsxn-image09.png[Abbildung des Windows-Installationsfortschritts]
+image:migrate-ec2-fsxn-image09.png["Abbildung des Windows-Installationsfortschritts"]
 
 . Bereiten Sie die YAML für jede virtuelle Maschine vor.
 +
@@ -209,22 +209,22 @@ operations:
 . Sofern nicht `scheduled_start_time` Feld wird in der Konfiguration angegeben, der Vorgang wird sofort gestartet.
 . Der Vorgang wird jetzt ausgeführt und fortgesetzt. Über die Benutzeroberfläche von Cirrus Data Cloud können Sie den Fortschritt mit detaillierten Meldungen überwachen. Diese Schritte umfassen automatisch Aufgaben, die normalerweise manuell ausgeführt werden, z. B. die automatische Zuweisung und das Erstellen von Migrationssitzungen.
 +
-image::migrate-ec2-fsxn-image10.png[Bild des Fortschritts der Datenmigration bei Cirrus]
+image:migrate-ec2-fsxn-image10.png["Bild des Fortschritts der Datenmigration bei Cirrus"]
 
 +
 *Hinweis*: Während der Host-zu-Host-Migration wird eine zusätzliche Sicherheitsgruppe mit einer Regel erstellt, die Inbound 4996-Port zulässt, die den erforderlichen Port für die Kommunikation ermöglicht und nach Abschluss der Synchronisierung automatisch gelöscht wird.
 
 +
-image::migrate-ec2-fsxn-image11.png[Bild der für die Cirrus-Datenmigration erforderlichen Inbound-Regel]
+image:migrate-ec2-fsxn-image11.png["Bild der für die Cirrus-Datenmigration erforderlichen Inbound-Regel"]
 
 . Während diese Migrationssitzung synchronisiert wird, gibt es in Phase 3 (Umstellung) einen zukünftigen Schritt mit dem Label „Genehmigung erforderlich“. Nach einem MigrateOps-Rezept müssen kritische Aufgaben (wie beispielsweise Migration-Umstellungen) vor der Ausführung erst genehmigt werden. Projektoperatoren oder Administratoren können diese Aufgaben über die Benutzeroberfläche genehmigen. Es kann auch ein zukünftiges Genehmigungsfenster erstellt werden.
 +
-image::migrate-ec2-fsxn-image12.png[Bild der Cirrus Datenmigrationssynchronisierung]
+image:migrate-ec2-fsxn-image12.png["Bild der Cirrus Datenmigrationssynchronisierung"]
 
 . Nach der Genehmigung wird der MigrateOps-Vorgang mit der Umstellung fortgesetzt.
 . Nach einem kurzen Moment wird der Vorgang abgeschlossen.
 +
-image::migrate-ec2-fsxn-image13.png[Bild des Abschlusses der Datenmigration bei Cirrus]
+image:migrate-ec2-fsxn-image13.png["Bild des Abschlusses der Datenmigration bei Cirrus"]
 
 +
 *Hinweis*: Mit Hilfe der Cirrus Data cmotion™ Technologie wurde der Zielspeicher mit allen aktuellen Änderungen auf dem neuesten Stand gehalten. Daher dauert es nach Genehmigung nur eine Minute, bis der gesamte endgültige Umstellungsprozess abgeschlossen ist.

@@ -58,29 +58,29 @@ NOTE: Um die Appliance herunterzuladen, muss sich ein Benutzer bei F5 registrier
 
 . Klicken Sie mit der rechten Maustaste auf den Infrastruktur-Ressourcen-Pool, und wählen Sie OVF-Vorlage bereitstellen aus. Ein Assistent startet, mit dem Sie die OVA-Datei auswählen können, die Sie gerade in Schritt 1 heruntergeladen haben. Klicken Sie Auf Weiter.
 +
-image::deploy-big_ip_1.PNG[Implementierung von Big-IP-Appliances]
+image:deploy-big_ip_1.png["Implementierung von Big-IP-Appliances"]
 
 . Klicken Sie auf Weiter, um die einzelnen Schritte fortzusetzen und die Standardwerte für jeden angezeigten Bildschirm zu akzeptieren, bis Sie den Bildschirm zur Speicherauswahl erreichen. Wählen Sie den VM_Datastore aus, für den Sie die virtuelle Maschine bereitstellen möchten, und klicken Sie dann auf Weiter.
 . Auf dem nächsten Bildschirm des Assistenten können Sie die virtuellen Netzwerke für die Verwendung in der Umgebung anpassen. Wählen Sie VM_Network für das Feld External aus, und wählen Sie Management_Network für das Feld Management aus. Interne Konfigurationen und HA werden für erweiterte Konfigurationen der F5 Big-IP Appliance verwendet und sind nicht konfiguriert. Diese Parameter können allein gelassen oder für die Verbindung mit verteilten Portgruppen ohne Infrastruktur konfiguriert werden. Klicken Sie Auf Weiter.
 +
-image::deploy-big_ip_2.PNG[Big_IP-Appliance implementieren]
+image:deploy-big_ip_2.png["Bereitstellung von Big_IP-Appliance, Teil 2"]
 
 . Prüfen Sie den Übersichtsbildschirm für das Gerät und klicken Sie, wenn alle Informationen richtig sind, auf Fertig stellen, um die Bereitstellung zu starten.
 . Klicken Sie nach der Implementierung der virtuellen Appliance mit der rechten Maustaste, und schalten Sie sie ein. Er sollte eine DHCP-Adresse im Managementnetzwerk erhalten. Die Appliance ist auf Linux basiert und verfügt über VMware Tools, sodass Sie die im vSphere Client empfangenen DHCP-Adressen anzeigen können.
 +
-image::deploy-big_ip_3.PNG[Implementierung von Big-IP-Appliances]
+image:deploy-big_ip_3.png["Einsatz von Big-IP-Appliance, Teil 3"]
 
 . Öffnen Sie einen Webbrowser, und stellen Sie im vorherigen Schritt eine Verbindung mit dem Gerät unter der IP-Adresse her. Die Standardanmeldedaten sind admin/admin. Nach der ersten Anmeldung werden Sie umgehend aufgefordert, das Admin-Passwort zu ändern. Sie gelangen dann zu einem Bildschirm, auf dem Sie sich mit den neuen Anmeldedaten anmelden müssen.
 +
-image::big-IP_config_1.PNG[Big-IP-Konfiguration]
+image:big-IP_config_1.png["Big-IP-Konfiguration"]
 
 . Der erste Bildschirm fordert den Benutzer auf, das Setup-Dienstprogramm abzuschließen. Starten Sie das Dienstprogramm, indem Sie auf Weiter klicken.
 +
-image::big-IP_config_2.PNG[Big-IP-Konfiguration]
+image:big-IP_config_2.png["Big-IP-Konfiguration, Teil 2"]
 
 . Im nächsten Bildschirm wird die Aktivierung der Lizenz für das Gerät angezeigt. Klicken Sie zum Starten auf Aktivieren. Wenn Sie auf der nächsten Seite dazu aufgefordert werden, fügen Sie entweder den 30-Tage-Evaluierungslizenzschlüssel ein, den Sie bei der Anmeldung zum Download erhalten haben, oder die dauerhafte Lizenz, die Sie beim Kauf des Geräts erworben haben. Klicken Sie Auf Weiter.
 +
-image::big-IP_config_3.PNG[Big-IP-Konfiguration]
+image:big-IP_config_3.png["Big-IP-Konfiguration, Teil 3"]
 
 +
 
@@ -89,23 +89,23 @@ NOTE: Damit das Gerät die Aktivierung durchführen kann, muss das auf der Verwa
 . Auf dem nächsten Bildschirm wird die Endbenutzer-Lizenzvereinbarung (End User License Agreement, EULA) angezeigt. Wenn die Bedingungen in der Lizenz akzeptabel sind, klicken Sie auf Akzeptieren.
 . Auf dem nächsten Bildschirm wird die verstrichene Zeit gezählt, während die bisherigen Konfigurationsänderungen überprüft werden. Klicken Sie auf Weiter, um mit der Erstkonfiguration fortzufahren.
 +
-image::big-IP_config_4.PNG[Big-IP-Konfiguration]
+image:big-IP_config_4.png["Big-IP-Konfiguration, Teil 4"]
 
 . Das Fenster Konfigurationsänderung wird geschlossen, und im Setup-Dienstprogramm wird das Menü Ressourcenbereitstellung angezeigt. In diesem Fenster werden die derzeit lizenzierten Funktionen sowie die aktuellen Ressourcenzuordnungen für die virtuelle Appliance und jeden laufenden Service aufgeführt.
 +
-image::big-IP_config_5.png[Big-IP-Konfiguration]
+image:big-IP_config_5.png["Big-IP-Konfiguration, Teil 5"]
 
 . Durch Klicken auf die Menüoption Plattform auf der linken Seite kann die Plattform zusätzlich geändert werden. Änderungen umfassen die Einstellung der Management-IP-Adresse, die mit DHCP konfiguriert ist, die Einstellung des Host-Namens und der Zeitzone, in der die Appliance installiert ist, sowie das Sichern der Appliance über den Zugriff über SSH.
 +
-image::big-IP_config_6.PNG[Big-IP-Konfiguration]
+image:big-IP_config_6.png["Big-IP-Konfiguration, Teil 6"]
 
 . Klicken Sie dann auf das Menü Netzwerk, mit dem Sie Standard-Netzwerkfunktionen konfigurieren können. Klicken Sie auf Weiter, um den Assistenten für die Standard-Netzwerkkonfiguration zu starten.
 +
-image::big-IP_config_7.PNG[Big-IP-Konfiguration]
+image:big-IP_config_7.png["Big-IP-Konfiguration, Teil 7"]
 
 . Auf der ersten Seite des Assistenten werden die Redundanz konfiguriert; lassen Sie die Standardeinstellungen, und klicken Sie auf Weiter. Auf der nächsten Seite können Sie eine interne Schnittstelle am Load Balancer konfigurieren. Schnittstelle 1.1 wird dem VMNIC namens Internal im OVF-Bereitstellungsassistenten zugeordnet.
 +
-image::big-IP_config_8.PNG[Big-IP-Konfiguration]
+image:big-IP_config_8.png["Big-IP-Konfiguration, Teil 8"]
 
 +
 
@@ -113,21 +113,21 @@ NOTE: Die Leerzeichen auf dieser Seite für Self IP Address, Netzmaske und Float
 
 . Auf der nächsten Seite können Sie ein externes Netzwerk konfigurieren, mit dem Services den in Kubernetes implementierten Pods zugeordnet werden können. Wählen Sie aus dem Bereich VM_Network eine statische IP, die entsprechende Subnetzmaske und eine unverankerte IP aus demselben Bereich aus. Schnittstelle 1.2 wird dem VMNIC namens External im OVF-Bereitstellungsassistenten zugeordnet.
 +
-image::big-IP_config_9.PNG[Big-IP-Konfiguration]
+image:big-IP_config_9.png["Big-IP-Konfiguration, Teil 9"]
 
 . Auf der nächsten Seite können Sie ein internes HA-Netzwerk konfigurieren, wenn Sie mehrere virtuelle Appliances in der Umgebung bereitstellen. Um fortzufahren, müssen Sie die Felder Self-IP Address und Netmasks ausfüllen. Sie müssen Schnittstelle 1.3 als VLAN Interface auswählen, das dem vom OVF-Vorlagenassistenten definierten HA-Netzwerk zugeordnet wird.
 +
-image::big-IP_config_10.png[Big-IP-Konfiguration]
+image:big-IP_config_10.png["Big-IP-Konfiguration, Teil 10"]
 
 . Auf der nächsten Seite können Sie die NTP-Server konfigurieren. Klicken Sie dann auf Weiter, um mit dem DNS-Setup fortzufahren. Die DNS-Server und die Domänensuchliste sollten bereits vom DHCP-Server ausgefüllt werden. Klicken Sie auf Weiter, um die Standardeinstellungen zu übernehmen und fortzufahren.
 . Klicken Sie für den Rest des Assistenten auf Weiter, um das Advanced Peering Setup fortzusetzen, dessen Konfiguration über den Umfang dieses Dokuments hinausgeht. Klicken Sie anschließend auf Fertig stellen, um den Assistenten zu beenden.
 . Erstellen Sie einzelne Partitionen für den Anthos Admin-Cluster und für jeden in der Umgebung implementierten Benutzer-Cluster. Klicken Sie im Menü auf der linken Seite auf System, navigieren Sie zu Benutzern, und klicken Sie auf Partitionsliste.
 +
-image::big-IP_config_11.PNG[Big-IP-Konfiguration]
+image:big-IP_config_11.png["Big-IP-Konfiguration, Teil 11"]
 
 . Der angezeigte Bildschirm zeigt nur die aktuelle gemeinsame Partition an. Klicken Sie auf der rechten Seite auf Erstellen, um die erste zusätzliche Partition zu erstellen, und benennen Sie sie `GKE-Admin`. Klicken Sie dann auf Wiederholen, und benennen Sie die Partition `User-Cluster-1`. Klicken Sie erneut auf die Schaltfläche Wiederholen, um die nächste Partition zu benennen `User-Cluster-2`. Klicken Sie abschließend auf Fertig, um den Assistenten abzuschließen. Der Bildschirm Partitionsliste wird mit allen jetzt aufgeführten Partitionen angezeigt.
 +
-image::big-IP_config_12.PNG[Big-IP-Konfiguration]
+image:big-IP_config_12.png["Big-IP-Konfiguration, Teil 12"]
 
 
 

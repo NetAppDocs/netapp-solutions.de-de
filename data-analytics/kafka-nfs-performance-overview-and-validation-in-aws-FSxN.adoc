@@ -196,7 +196,7 @@ https://docs.aws.amazon.com/cli/latest/reference/fsx/update-file-system.html[]
 Das folgende Bild zeigt unsere letzte Architektur unseres FSX für NetApp ONTAP-basierten Kafka-Clusters:
 
 +
-image::aws-fsx-kafka-arch1.png[Dieses Bild zeigt die Architektur eines FSxN-basierten Kafka-Clusters.]
+image:aws-fsx-kafka-arch1.png["Dieses Bild zeigt die Architektur eines FSxN-basierten Kafka-Clusters."]
 
 +
 ** Computing: Wir nutzten einen drei-Knoten-Kafka-Cluster mit einem drei-Knoten-Zookeeper-Ensemble, das auf dedizierten Servern lief. Jeder Broker hatte sechs NFS-Mount-Punkte auf sechs Volumes auf der FSX für NetApp ONTAP-Instanz.
@@ -254,12 +254,12 @@ Der Sync-Treiber kann einen konsistenten Durchsatz generieren, da die Protokolle
 
 Diese Durchsatzwerte werden für die jeweilige AWS-Konfiguration generiert. Um höhere Performance-Anforderungen zu erfüllen, können die Instanztypen vertikal skaliert und weiter optimiert werden, um einen besseren Durchsatz zu erzielen. Der Gesamtdurchsatz oder die Gesamtrate ist die Kombination von Erzeugerrate und Verbraucherrate.
 
-image::aws-fsxn-performance-rf-1-rf-3.png[Dieses Bild zeigt die Performance von kafka mit RF1 und RF3]
+image:aws-fsxn-performance-rf-1-rf-3.png["Dieses Bild zeigt die Performance von kafka mit RF1 und RF3"]
 
 Das folgende Diagramm zeigt den 2-GB/s-FSX für NetApp ONTAP und 4-GB/s-Performance für Kafka-Replizierungsfaktor 3. Der Replizierungsfaktor 3 führt den Lese- und Schreibvorgang dreimal auf dem FSX für NetApp ONTAP-Storage durch. Die Gesamtrate für den Durchsatztreiber beträgt 881 MB/sec, was den Kafka-Betrieb ungefähr 2.64 GB/sec auf dem 2GB/sec FSX für NetApp ONTAP-Dateisystem liest und schreibt. Die Gesamtrate für den Durchsatztreiber beträgt 1328 MB/sec, was den kafka-Betrieb ungefähr 3.98 GB/sec liest und schreibt. Unsere Kafka-Performance ist linear und skalierbar basierend auf dem FSX for NetApp ONTAP Throughput.
 
-image::aws-fsxn-2gb-4gb-scale.png[Dieses Bild zeigt die Scale-out-Leistung von 2 GB/s und 4 GB/s.]
+image:aws-fsxn-2gb-4gb-scale.png["Dieses Bild zeigt die Scale-out-Leistung von 2 GB/s und 4 GB/s."]
 
 Das folgende Diagramm zeigt die Performance zwischen EC2-Instanz und FSX für NetApp ONTAP (Kafka-Replizierungsfaktor: 3)
 
-image::aws-fsxn-ec2-fsxn-comparition.png[Dieses Bild zeigt den Leistungsvergleich zwischen EC2 und FSxN in RF3.]
+image:aws-fsxn-ec2-fsxn-comparition.png["Dieses Bild zeigt den Leistungsvergleich zwischen EC2 und FSxN in RF3."]

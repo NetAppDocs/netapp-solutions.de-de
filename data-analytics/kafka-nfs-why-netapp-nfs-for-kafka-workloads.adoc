@@ -59,7 +59,7 @@ In der folgenden Tabelle ist die Umgebungskonfiguration aufgeführt, mit der die
 
 Das in diesem Testfall verwendete Benchmark-Tool ist das https://openmessaging.cloud/["OpenMessaging"^] Framework: OpenMessaging ist herstellerneutral und sprachunabhängig; es bietet Branchenrichtlinien für Finanzen, E-Commerce, IoT und Big Data und unterstützt die Entwicklung von Messaging- und Streaming-Anwendungen über heterogene Systeme und Plattformen hinweg. Die folgende Abbildung zeigt die Interaktion von OpenMessaging-Clients mit einem Kafka-Cluster.
 
-image::kafka-nfs-image8.png[Dieses Bild zeigt die Interaktion von OpenMessaging Clients mit einem Kafka Cluster.]
+image:kafka-nfs-image8.png["Dieses Bild zeigt die Interaktion von OpenMessaging Clients mit einem Kafka Cluster."]
 
 * *Compute.* Wir benutzten einen drei-Knoten-Kafka-Cluster mit einem drei-Knoten-Zookeeper-Ensemble, das auf dedizierten Servern läuft. Jeder Broker hatte zwei NFSv4.1-Mount-Punkte auf ein einzelnes Volume in der NetApp CVO-Instanz über eine dedizierte LIF.
 * *Monitoring.* für eine Prometheus-Grafana-Kombination haben wir zwei Knoten verwendet. Zur Generierung von Workloads verfügen wir über ein separates Cluster mit drei Nodes, das in diesen Kafka-Cluster erzeugt und genutzt werden kann.
@@ -71,12 +71,12 @@ image::kafka-nfs-image8.png[Dieses Bild zeigt die Interaktion von OpenMessaging 
 
 
 
-image::kafka-nfs-image9.png[Dieses Bild zeigt die Spezifikationen, die für die Kafka-Broker ausgewählt wurden.]
+image:kafka-nfs-image9.png["Dieses Bild zeigt die Spezifikationen, die für die Kafka-Broker ausgewählt wurden."]
 
 * *OpenMessaging Benchmark (OMB) Workload-Konfiguration.* die folgenden Spezifikationen wurden bereitgestellt. Wir haben einen angestrebten Erzeugertarif angegeben, der unten hervorgehoben wurde.
 
 
-image::kafka-nfs-image10.png[Dieses Bild zeigt die Spezifikationen, die für die OpenMessaging Benchmark Workload-Konfiguration ausgewählt wurden.]
+image:kafka-nfs-image10.png["Dieses Bild zeigt die Spezifikationen, die für die OpenMessaging Benchmark Workload-Konfiguration ausgewählt wurden."]
 
 
 
@@ -113,15 +113,15 @@ Es gibt zwei Hauptvorteile bei der Nutzung von NetApp NFS-Storage mit Kafka:
 * *Eine Verdreifachung der CPU-Auslastung bei höheren Erzeugungsraten.* wie erwartet gab es eine Aufwärtsbewegung für die Erhöhung der CPU-Auslastung, da die Erzeugungsraten erhöht wurden. Die CPU-Auslastung bei Kafka-Brokern mit das ist jedoch von 31 % bei der niedrigeren Produktzrate auf 70 % bei der höheren Produktzrate gestiegen, was einer Steigerung um 39 % entspricht. Bei einem NFS Storage Backend stieg die CPU-Auslastung von 26% auf 38%, was einer Steigerung von 12% entspricht.
 
 
-image::kafka-nfs-image11.png[In diesem Diagramm wird das Verhalten eines das-basierten Clusters dargestellt.]
+image:kafka-nfs-image11.png["In diesem Diagramm wird das Verhalten eines das-basierten Clusters dargestellt."]
 
-image::kafka-nfs-image12.png[In diesem Diagramm wird das Verhalten eines NFS-basierten Clusters dargestellt.]
+image:kafka-nfs-image12.png["In diesem Diagramm wird das Verhalten eines NFS-basierten Clusters dargestellt."]
 
 Außerdem zeigt das bei 100,000 Meldungen eine höhere CPU-Auslastung als ein NFS-Cluster.
 
-image::kafka-nfs-image13.png[Dieses Diagramm zeigt das Verhalten eines das-basierten Clusters bei 100,000 Meldungen.]
+image:kafka-nfs-image13.png["Dieses Diagramm zeigt das Verhalten eines das-basierten Clusters bei 100,000 Meldungen."]
 
-image::kafka-nfs-image14.png[Dieses Diagramm zeigt das Verhalten eines NFS-basierten Clusters bei 100,000 Meldungen.]
+image:kafka-nfs-image14.png["Dieses Diagramm zeigt das Verhalten eines NFS-basierten Clusters bei 100,000 Meldungen."]
 
 
 
@@ -156,7 +156,7 @@ In der folgenden Tabelle wird die Umgebungskonfiguration für ein Kafka-Cluster 
 |===
 In der folgenden Abbildung ist die Architektur eines NAS-basierten Kafka-Clusters dargestellt.
 
-image::kafka-nfs-image8.png[Diese Abbildung stellt die Architektur eines NAS-basierten Kafka-Clusters dar.]
+image:kafka-nfs-image8.png["Diese Abbildung stellt die Architektur eines NAS-basierten Kafka-Clusters dar."]
 
 * *Compute.* Ein Kafka-Cluster mit drei Knoten mit einem Zookeeper-Ensemble, das auf dedizierten Servern läuft. Jeder Broker verfügt über zwei NFS-Mount-Punkte zu einem einzelnen Volume in der NetApp CVO-Instanz über eine dedizierte LIF.
 * *Monitoring.* zwei Knoten für eine Prometheus-Grafana Kombination. Zur Generierung von Workloads verwenden wir ein separates Cluster mit drei Nodes, das diesen Kafka-Cluster produzieren und nutzen kann.
@@ -164,7 +164,7 @@ image::kafka-nfs-image8.png[Diese Abbildung stellt die Architektur eines NAS-bas
 * *Broker-Konfiguration.* das einzige konfigurierbare Element in diesem Testfall sind Kafka-Broker. Für die Kafka-Broker wurden folgende Spezifikationen ausgewählt. Der `replica.lag.time.mx.ms` Wird auf einen hohen Wert gesetzt, da dadurch festgelegt wird, wie schnell ein bestimmter Knoten aus der ISR-Liste entfernt wird. Wenn Sie zwischen schlechten und gesunden Knoten wechseln, möchten Sie nicht, dass diese Broker-ID von der ISR-Liste ausgeschlossen wird.
 
 
-image::kafka-nfs-image15.png[Dieses Bild zeigt die für die Kafka-Broker ausgewählten Spezifikationen.]
+image:kafka-nfs-image15.png["Dieses Bild zeigt die für die Kafka-Broker ausgewählten Spezifikationen."]
 
 
 
@@ -182,7 +182,7 @@ image::kafka-nfs-image15.png[Dieses Bild zeigt die für die Kafka-Broker ausgew�
 ** *EC2-basierter Cluster.* Ein Kafka-Broker-Datenverzeichnis ist zugeordnet `/mnt/data-2` (In der folgenden Abbildung: Broker-1 von cluster1 [left Terminal]).
 ** *NetApp NFS-basierter Cluster.* Ein Kafka Broker Datenverzeichnis ist auf NFS Point montiert `/mnt/data` (In der folgenden Abbildung, Broker-1 von cluster2 [rechtes Terminal]).
 +
-image::kafka-nfs-image16.png[Dieses Bild zeigt zwei Terminalbildschirme.]
+image:kafka-nfs-image16.png["Dieses Bild zeigt zwei Terminalbildschirme."]
 
 
 
@@ -215,11 +215,11 @@ Wir beobachteten, dass der EC2-basierte Cluster 10 Minuten benötigt, um die Wie
 
 . Der Backup-Knoten wurde um 08:55:53,730 gestartet.
 +
-image::kafka-nfs-image17.png[Dieses Bild zeigt die Protokollausgabe für ein das-basiertes Cluster an.]
+image:kafka-nfs-image17.png["Dieses Bild zeigt die Protokollausgabe für ein das-basiertes Cluster an."]
 
 . Der Datenneuerstellungsprozess endete um 09:05:24,860. Die Verarbeitung von 110 GB Daten dauerte ca. 10 Minuten.
 +
-image::kafka-nfs-image18.png[Dieses Bild zeigt die Protokollausgabe für ein das-basiertes Cluster an.]
+image:kafka-nfs-image18.png["Dieses Bild zeigt die Protokollausgabe für ein das-basiertes Cluster an."]
 
 
 
@@ -229,17 +229,17 @@ image::kafka-nfs-image18.png[Dieses Bild zeigt die Protokollausgabe für ein das
 
 . Der Backup-Knoten wurde um 09:39:17,213 gestartet. Der Startprotokolleintrag ist unten hervorgehoben.
 +
-image::kafka-nfs-image19.png[Dieses Bild zeigt die Protokollausgabe für ein NFS-basiertes Cluster.]
+image:kafka-nfs-image19.png["Dieses Bild zeigt die Protokollausgabe für ein NFS-basiertes Cluster."]
 
 . Der Datenneuerstellungsvorgang endete um 09:42:29,115. Die Verarbeitung von 110 GB Daten dauerte ca. 3 Minuten.
 +
-image::kafka-nfs-image20.png[Dieses Bild zeigt die Protokollausgabe für ein NFS-basiertes Cluster.]
+image:kafka-nfs-image20.png["Dieses Bild zeigt die Protokollausgabe für ein NFS-basiertes Cluster."]
 
 +
 Der Test wurde bei Vermittlern mit etwa 1 TB Daten wiederholt, sodass für das etwa 48 Minuten und für NFS 3 Minuten in Anspruch genommen wurden. Die Ergebnisse sind im folgenden Diagramm dargestellt.
 
 +
-image::kafka-nfs-image21.png[Dieses Diagramm zeigt die Zeit, die für die Wiederherstellung von Vermittlern in Abhängigkeit von der Datenmenge, die auf dem Broker für ein das-basiertes Cluster oder einen NFS-basierten Cluster geladen wird.]
+image:kafka-nfs-image21.png["Dieses Diagramm zeigt die Zeit, die für die Wiederherstellung von Vermittlern in Abhängigkeit von der Datenmenge, die auf dem Broker für ein das-basiertes Cluster oder einen NFS-basierten Cluster geladen wird."]
 
 
 
@@ -275,7 +275,7 @@ In der folgenden Tabelle wird die Umgebungskonfiguration für ein Kafka-Cluster 
 |===
 In der folgenden Abbildung ist die Architektur eines NAS-basierten Kafka-Clusters dargestellt.
 
-image::kafka-nfs-image8.png[Diese Abbildung stellt die Architektur eines NAS-basierten Kafka-Clusters dar.]
+image:kafka-nfs-image8.png["Diese Abbildung stellt die Architektur eines NAS-basierten Kafka-Clusters dar."]
 
 * *Compute.* Wir benutzten einen drei-Knoten-Kafka-Cluster mit einem drei-Knoten-Zookeeper-Ensemble, das auf dedizierten Servern läuft. Jeder Broker hatte zwei NFS-Mount-Punkte zu einem einzelnen Volume auf der NetApp CVO-Instanz über eine dedizierte LIF.
 * *Monitoring.* für eine Prometheus-Grafana-Kombination haben wir zwei Knoten verwendet. Zur Generierung von Workloads haben wir ein separates Cluster mit drei Nodes verwendet, das für diesen Kafka-Cluster erzeugt und genutzt werden kann.
@@ -300,8 +300,8 @@ Die Kompression wurde am Produktionsende ausgeschaltet, wodurch die Produzenten 
 
 Bei Daten, die mit dem OMB-Tool generiert wurden, erzielten wir eine Speicherersparnis von ~33 % bei einem Storage-Effizienzverhältnis von 1.70:1. Wie in den folgenden Abbildungen zu sehen, betrug der logische Speicherplatz der erzeugten Daten 420,3 GB und der physische Speicherplatz für die Daten 281,7 GB.
 
-image::kafka-nfs-image22.png[Dieses Bild stellt die Speicherersparnis in VMDISK dar.]
+image:kafka-nfs-image22.png["Dieses Bild stellt die Speicherersparnis in VMDISK dar."]
 
-image::kafka-nfs-image23.png[Screenshot]
+image:kafka-nfs-image23.png["Screenshot"]
 
-image::kafka-nfs-image24.png[Screenshot]
+image:kafka-nfs-image24.png["Screenshot"]

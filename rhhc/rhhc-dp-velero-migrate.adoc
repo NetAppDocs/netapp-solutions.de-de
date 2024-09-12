@@ -62,7 +62,7 @@ spec:
 * Erstellen Sie eine Anwendung auf dem Cluster und erstellen Sie ein Backup dieser Anwendung. Installieren Sie beispielsweise eine Postgres-Anwendung.
 
 
-image::redhat_openshift_OADP_migrate_image1.png[Installieren Sie die Postgres-App]
+image:redhat_openshift_OADP_migrate_image1.png["Installieren Sie die Postgres-App"]
 
 * Verwenden Sie die folgenden Spezifikationen für die Backup-CR:
 
@@ -78,7 +78,7 @@ spec:
   storageLocation: velero-sample-1
   ttl: 720h0m0s
 ....
-image::redhat_openshift_OADP_migrate_image2.png[Installieren Sie die Postgres-App]
+image:redhat_openshift_OADP_migrate_image2.png["Installieren Sie die Postgres-App"]
 
 Sie können auf die Registerkarte **Alle Instanzen** klicken, um die verschiedenen Objekte zu sehen, die erstellt werden und durch verschiedene Phasen zu bewegen, um schließlich zur Backup ** abgeschlossen** Phase zu kommen.
 
@@ -96,13 +96,13 @@ Eine Sicherung der Ressourcen im Namespace postgresql wird im Objektspeicherort 
 * Die Backup-CR muss vom zweiten Cluster aus sichtbar sein.
 
 
-image::redhat_openshift_OADP_migrate_image3.png[trident installiert ist]
+image:redhat_openshift_OADP_migrate_image3.png["trident installiert ist"]
 
-image::redhat_openshift_OADP_migrate_image4.png[Postgres nicht bereits installiert]
+image:redhat_openshift_OADP_migrate_image4.png["Postgres nicht bereits installiert"]
 
-image::redhat_openshift_OADP_migrate_image5.png[OADP auf Cluster 2installiert]
+image:redhat_openshift_OADP_migrate_image5.png["OADP auf Cluster 2installiert"]
 
-image::redhat_openshift_OADP_migrate_image6.png[Backup-Speicherort, der auf denselben Objektspeicher verweist]
+image:redhat_openshift_OADP_migrate_image6.png["Backup-Speicherort, der auf denselben Objektspeicher verweist"]
 
 Stellen Sie die App auf diesem Cluster aus dem Backup wieder her. Verwenden Sie die folgende yaml-Datei, um die CR-Wiederherstellung zu erstellen.
 
@@ -119,8 +119,8 @@ spec:
 ....
 Wenn die Wiederherstellung abgeschlossen ist, sehen Sie, dass die postgresql-App auf diesem Cluster ausgeführt wird und mit der pvc und einem entsprechenden pv verknüpft ist. Der Status der App ist der gleiche wie beim Backup.
 
-image::redhat_openshift_OADP_migrate_image7.png[Wiederherstellung erfolgreich]
+image:redhat_openshift_OADP_migrate_image7.png["Wiederherstellung erfolgreich"]
 
-image::redhat_openshift_OADP_migrate_image8.png[Postgres migriert]
+image:redhat_openshift_OADP_migrate_image8.png["Postgres migriert"]
 
 ====

@@ -22,18 +22,18 @@ Unternehmen nutzen die Public Cloud als praktikable Ressource und Ziel für die 
 
 . Um zu überprüfen, ob die Klonwiederherstellung das letzte verfügbare Protokoll durchlaufen hat, haben wir eine kleine Testtabelle erstellt und eine Zeile eingefügt. Die Testdaten würden nach einer vollständigen Wiederherstellung des letzten verfügbaren Protokolls wiederhergestellt.
 +
-image::snapctr_ora_dr_01.PNG[Snapctr ora dr 01]
+image:snapctr_ora_dr_01.png["Die Abbildung zeigt den Input/Output-Dialog oder die Darstellung des schriftlichen Inhalts"]
 
 . Melden Sie sich bei SnapCenter als Benutzer-ID für das Datenbankmanagement für Oracle an. Öffnen Sie die Registerkarte Ressourcen, auf der die von SnapCenter geschützten Oracle-Datenbanken angezeigt werden.
 +
-image::snapctr_ora_dr_02.PNG[Snapctr ora dr 02]
+image:snapctr_ora_dr_02.png["Die Abbildung zeigt den Input/Output-Dialog oder die Darstellung des schriftlichen Inhalts"]
 
 . Wählen Sie die Oracle-Protokollressourcengruppe aus, und klicken Sie auf Jetzt sichern, um manuell ein Oracle-Protokoll-Backup auszuführen, um die letzte Transaktion zum Ziel in der Cloud zu bereinigen. In einem echten DR-Szenario hängt die letzte wiederherstellbare Transaktion von der Replizierungshäufigkeit des Datenbank-Protokoll-Volumes in die Cloud ab, was wiederum von der RTO- oder RPO-Richtlinie des Unternehmens abhängt.
 +
-image::snapctr_ora_dr_03.PNG[Snapctr ora dr 03]
+image:snapctr_ora_dr_03.png["Die Abbildung zeigt den Input/Output-Dialog oder die Darstellung des schriftlichen Inhalts"]
 
 +
-image::snapctr_ora_dr_04.PNG[Snapctr ora dr 04]
+image:snapctr_ora_dr_04.png["Die Abbildung zeigt den Input/Output-Dialog oder die Darstellung des schriftlichen Inhalts"]
 
 +
 
@@ -41,25 +41,25 @@ NOTE: Asynchronous SnapMirror verliert im Rahmen eines Disaster-Recovery-Szenari
 
 . Wählen Sie das letzte Protokoll-Backup auf den sekundären Spiegelsicherungs(s) aus, und mounten Sie das Protokoll-Backup.
 +
-image::snapctr_ora_dr_05.PNG[Snapctr ora dr 05]
+image:snapctr_ora_dr_05.png["Die Abbildung zeigt den Input/Output-Dialog oder die Darstellung des schriftlichen Inhalts"]
 
 +
-image::snapctr_ora_dr_06.PNG[Snapctr ora dr 06]
+image:snapctr_ora_dr_06.png["Die Abbildung zeigt den Input/Output-Dialog oder die Darstellung des schriftlichen Inhalts"]
 
 . Wählen Sie das letzte vollständige Datenbank-Backup aus und klicken Sie auf Klonen, um den Klon-Workflow zu initiieren.
 +
-image::snapctr_ora_dr_07.PNG[Snapctr ora dr 07]
+image:snapctr_ora_dr_07.png["Die Abbildung zeigt den Input/Output-Dialog oder die Darstellung des schriftlichen Inhalts"]
 
 . Wählen Sie eine eindeutige Clone-DB-ID auf dem Host aus.
 +
-image::snapctr_ora_dr_08.PNG[Snapctr ora dr 08]
+image:snapctr_ora_dr_08.png["Die Abbildung zeigt den Input/Output-Dialog oder die Darstellung des schriftlichen Inhalts"]
 
 . Stellen Sie ein Protokoll-Volume bereit und mounten Sie es im Oracle Flash Recovery-Bereich und bei Online-Protokollen am Ziel-DR-Server.
 +
-image::snapctr_ora_dr_09.PNG[Snapctr ora dr 09]
+image:snapctr_ora_dr_09.png["Die Abbildung zeigt den Input/Output-Dialog oder die Darstellung des schriftlichen Inhalts"]
 
 +
-image::snapctr_ora_dr_10.PNG[Snapctr ora dr 10]
+image:snapctr_ora_dr_10.png["Die Abbildung zeigt den Input/Output-Dialog oder die Darstellung des schriftlichen Inhalts"]
 
 +
 
@@ -67,31 +67,31 @@ NOTE: Bei dem Klonverfahren von Oracle wird kein Protokoll-Volume erstellt, das 
 
 . Wählen Sie den Host und den Speicherort des Zielklonen aus, um die Datendateien, Kontrolldateien und Wiederherstellungsprotokolle zu platzieren.
 +
-image::snapctr_ora_dr_11.PNG[Snapctr ora dr 11]
+image:snapctr_ora_dr_11.png["Die Abbildung zeigt den Input/Output-Dialog oder die Darstellung des schriftlichen Inhalts"]
 
 . Wählen Sie die Anmeldeinformationen für den Klon aus. Geben Sie die Details zur Oracle Home-Konfiguration auf dem Ziel-Server ein.
 +
-image::snapctr_ora_dr_12.PNG[Snapctr ora dr 12]
+image:snapctr_ora_dr_12.png["Die Abbildung zeigt den Input/Output-Dialog oder die Darstellung des schriftlichen Inhalts"]
 
 . Geben Sie die vor dem Klonen auszulaufenden Skripte an. Datenbankparameter können bei Bedarf angepasst werden.
 +
-image::snapctr_ora_dr_13.PNG[Snapctr ora dr 13]
+image:snapctr_ora_dr_13.png["Die Abbildung zeigt den Input/Output-Dialog oder die Darstellung des schriftlichen Inhalts"]
 
 . Wählen Sie als Recovery-Option bis Abbrechen aus, sodass die Recovery alle verfügbaren Archivprotokolle ausgeführt wird, um die letzte Transaktion, die am sekundären Cloud-Standort repliziert wurde, wiederzugewinnen.
 +
-image::snapctr_ora_dr_14.PNG[Snapctr ora dr 14]
+image:snapctr_ora_dr_14.png["Die Abbildung zeigt den Input/Output-Dialog oder die Darstellung des schriftlichen Inhalts"]
 
 . Konfigurieren Sie bei Bedarf den SMTP-Server für E-Mail-Benachrichtigungen.
 +
-image::snapctr_ora_dr_15.PNG[Snapctr ora dr 15]
+image:snapctr_ora_dr_15.png["Die Abbildung zeigt den Input/Output-Dialog oder die Darstellung des schriftlichen Inhalts"]
 
 . Zusammenfassung DES DR-Klons:
 +
-image::snapctr_ora_dr_16.PNG[Snapctr ora dr 16]
+image:snapctr_ora_dr_16.png["Die Abbildung zeigt den Input/Output-Dialog oder die Darstellung des schriftlichen Inhalts"]
 
 . Geklonte DBs sind sofort nach Abschluss des Klons mit SnapCenter registriert und sind dann für den Backup-Schutz verfügbar.
 +
-image::snapctr_ora_dr_16_1.PNG[Snapctr ora dr 16 1]
+image:snapctr_ora_dr_16_1.png["Die Abbildung zeigt den Input/Output-Dialog oder die Darstellung des schriftlichen Inhalts"]
 
 
 
@@ -101,11 +101,11 @@ image::snapctr_ora_dr_16_1.PNG[Snapctr ora dr 16 1]
 
 . Validierung der letzten Testtransaktion, die am DR-Standort in der Cloud gespeichert, repliziert und wiederhergestellt wurde
 +
-image::snapctr_ora_dr_17.PNG[Snapctr ora dr 17]
+image:snapctr_ora_dr_17.png["Die Abbildung zeigt den Input/Output-Dialog oder die Darstellung des schriftlichen Inhalts"]
 
 . Konfigurieren Sie den Flash-Recovery-Bereich.
 +
-image::snapctr_ora_dr_18.PNG[Snapctr ora dr 18]
+image:snapctr_ora_dr_18.png["Die Abbildung zeigt den Input/Output-Dialog oder die Darstellung des schriftlichen Inhalts"]
 
 . Konfigurieren Sie den Oracle Listener für den Benutzerzugriff.
 . Verteilen Sie das geklonte Volume vom replizierten Quell-Volume.
@@ -121,42 +121,42 @@ NOTE: Durch die Aufteilung des Klons wird möglicherweise eine temporäre Storag
 
 . Um sicherzustellen, dass die SQL-Klon-Recovery durch das letzte verfügbare Protokoll ausgeführt wurde, haben wir eine kleine Testtabelle erstellt und eine Reihe eingefügt. Die Testdaten würden nach einer vollständigen Wiederherstellung des letzten verfügbaren Protokolls wiederhergestellt.
 +
-image::snapctr_sql_dr_01.PNG[Snapctr sql dr 01]
+image:snapctr_sql_dr_01.png["Die Abbildung zeigt den Input/Output-Dialog oder die Darstellung des schriftlichen Inhalts"]
 
 . Melden Sie sich mit einer Datenbank-Management-Benutzer-ID für SQL Server bei SnapCenter an. Navigieren Sie zur Registerkarte Ressourcen, auf der die SQL Server-Schutzressourcen-Gruppe angezeigt wird.
 +
-image::snapctr_sql_dr_02.PNG[Snapctr sql dr 02]
+image:snapctr_sql_dr_02.png["Die Abbildung zeigt den Input/Output-Dialog oder die Darstellung des schriftlichen Inhalts"]
 
 . Führen Sie ein Protokoll-Backup manuell aus, um die letzte Transaktion auszuführen, die in den sekundären Storage in der Public Cloud repliziert werden soll.
 +
-image::snapctr_sql_dr_03.PNG[Snapctr sql dr 03]
+image:snapctr_sql_dr_03.png["Die Abbildung zeigt den Input/Output-Dialog oder die Darstellung des schriftlichen Inhalts"]
 
 . Wählen Sie das letzte vollständige SQL Server-Backup für den Klon aus.
 +
-image::snapctr_sql_dr_04.PNG[Snapctr sql dr 04]
+image:snapctr_sql_dr_04.png["Die Abbildung zeigt den Input/Output-Dialog oder die Darstellung des schriftlichen Inhalts"]
 
 . Legen Sie die Kloneinstellung fest, z. B. den Klon-Server, die Kloninstanz, den Klonnamen und die Mount-Option. Der sekundäre Storage-Standort, an dem das Klonen durchgeführt wird, ist automatisch gefüllt.
 +
-image::snapctr_sql_dr_05.PNG[Snapctr sql dr 05]
+image:snapctr_sql_dr_05.png["Die Abbildung zeigt den Input/Output-Dialog oder die Darstellung des schriftlichen Inhalts"]
 
 . Wählen Sie alle anzuwendenden Protokollsicherungen aus.
 +
-image::snapctr_sql_dr_06.PNG[Snapctr sql dr 06]
+image:snapctr_sql_dr_06.png["Die Abbildung zeigt den Input/Output-Dialog oder die Darstellung des schriftlichen Inhalts"]
 
 . Geben Sie alle optionalen Skripte an, die vor oder nach dem Klonen ausgeführt werden sollen.
 +
-image::snapctr_sql_dr_07.PNG[Snapctr sql dr 07]
+image:snapctr_sql_dr_07.png["Die Abbildung zeigt den Input/Output-Dialog oder die Darstellung des schriftlichen Inhalts"]
 
 . Geben Sie einen SMTP-Server an, wenn eine E-Mail-Benachrichtigung gewünscht wird.
 +
-image::snapctr_sql_dr_08.PNG[Snapctr sql dr 08]
+image:snapctr_sql_dr_08.png["Die Abbildung zeigt den Input/Output-Dialog oder die Darstellung des schriftlichen Inhalts"]
 
 . Zusammenfassung DES DR-Klons: Geklonte Datenbanken werden sofort in SnapCenter registriert und stehen für den Backup-Schutz zur Verfügung.
 +
-image::snapctr_sql_dr_09.PNG[Snapctr sql dr 09]
+image:snapctr_sql_dr_09.png["Die Abbildung zeigt den Input/Output-Dialog oder die Darstellung des schriftlichen Inhalts"]
 
 +
-image::snapctr_sql_dr_10.PNG[Snapctr sql dr 10]
+image:snapctr_sql_dr_10.png["Die Abbildung zeigt den Input/Output-Dialog oder die Darstellung des schriftlichen Inhalts"]
 
 
 
@@ -166,11 +166,11 @@ image::snapctr_sql_dr_10.PNG[Snapctr sql dr 10]
 
 . Überwachen des Auftragsstatus von Klonen.
 +
-image::snapctr_sql_dr_11.PNG[Snapctr sql dr 11]
+image:snapctr_sql_dr_11.png["Die Abbildung zeigt den Input/Output-Dialog oder die Darstellung des schriftlichen Inhalts"]
 
 . Überprüfen Sie, ob die letzte Transaktion repliziert und mit allen Klonen von Protokolldateien und Recoverys wiederhergestellt wurde.
 +
-image::snapctr_sql_dr_12.PNG[Snapctr sql dr 12]
+image:snapctr_sql_dr_12.png["Die Abbildung zeigt den Input/Output-Dialog oder die Darstellung des schriftlichen Inhalts"]
 
 . Konfigurieren Sie ein neues SnapCenter-Protokollverzeichnis auf dem DR-Server für die Sicherung der SQL Server-Protokolle.
 . Verteilen Sie das geklonte Volume vom replizierten Quell-Volume.

@@ -22,12 +22,12 @@ Damit das Astra Control Center Ihre Workloads managen kann, müssen Sie zuerst I
 
 . Der erste Schritt besteht darin, die Tanzu Kubernetes Cluster zum Astra Control Center hinzuzufügen und zu verwalten. Gehen Sie zu Clusters und klicken Sie auf Cluster hinzufügen, laden Sie die kubeconfig-Datei für den Tanzu Kubernetes-Cluster hoch, und klicken Sie auf Storage auswählen.
 +
-image::vtwn_image09.jpg[Astra Control Center erstellt ein Cluster]
+image:vtwn_image09.jpg["Astra Control Center erstellt ein Cluster"]
 
 . Astra Control Center erkennt geeignete Storage-Klassen. Wählen Sie jetzt aus, wie Storage Volumes mithilfe von Trident durch eine SVM auf NetApp ONTAP bereitgestellt werden, und klicken Sie auf „Review“ (prüfen). Überprüfen Sie im nächsten Teilfenster die Details, und klicken Sie auf Cluster hinzufügen.
 . Wenn der Cluster hinzugefügt wird, wechselt er in den Status Erkennung, während das Astra Control Center den Cluster prüft und die erforderlichen Agenten installiert. Der Cluster-Status ändert sich in `Healthy` Nach der erfolgreichen Registrierung.
 +
-image::vtwn_image10.jpg[Astra Control Center Cluster verfügbar]
+image:vtwn_image10.jpg["Astra Control Center Cluster verfügbar"]
 
 +
 
@@ -35,18 +35,18 @@ NOTE: Alle Tanzu Kubernetes Cluster, die von Astra Control Center verwaltet werd
 
 . Importieren Sie ONTAP-Cluster als Storage-Ressourcen, die vom Astra Control Center als Back-Ends gemanagt werden sollen. Wenn dem Astra Tanzu Kubernetes Cluster hinzugefügt werden und eine Speicheraglass konfiguriert ist, erkennt und inspiziert er den ONTAP Cluster automatisch auf der Lagerscheinwerfer, importiert ihn aber nicht in das zu verwaltende Astra Control Center.
 +
-image::vtwn_image11.jpg[Backend-Discovery für Astra Control Center]
+image:vtwn_image11.jpg["Backend-Discovery für Astra Control Center"]
 
 . Um die ONTAP-Cluster zu importieren, navigieren Sie zu Back Ends, klicken Sie auf das Dropdown-Menü und wählen Sie Verwalten neben dem zu verwaltenden ONTAP-Cluster aus. Geben Sie die ONTAP-Cluster-Anmeldeinformationen ein, klicken Sie auf Informationen überprüfen und klicken Sie dann auf Speicher-Backend importieren.
 +
-image::vtwn_image12.jpg[Astra Control Center erstellen Backend]
+image:vtwn_image12.jpg["Astra Control Center erstellen Backend"]
 
 . Nach dem Hinzufügen der Back-Ends ändert sich der Status in „verfügbar“. Diese Back-Ends enthalten nun Informationen über die persistenten Volumes im Tanzu Kubernetes Cluster und die entsprechenden Volumes auf dem ONTAP-System.
 +
-image::vtwn_image13.jpg[Astra Control Center Back-Ends verfügbar]
+image:vtwn_image13.jpg["Astra Control Center Back-Ends verfügbar"]
 
 . Für Backups und Restores in Tanzu Kubernetes Clustern mit Astra Control Center müssen Sie einen Objekt-Storage-Bucket bereitstellen, der das S3-Protokoll unterstützt. Derzeit werden ONTAP S3, StorageGRID, AWS S3 und Microsoft Azure Blob Storage unterstützt. Im Rahmen dieser Installation wird ein AWS S3-Bucket konfiguriert. Wechseln Sie zu Buckets, klicken Sie auf „Bucket hinzufügen“ und wählen Sie „Allgemeines S3“ aus. Geben Sie die Details zum S3-Bucket und die Zugangsdaten ein, um darauf zuzugreifen, klicken Sie auf das Kontrollkästchen „Bucket als Standard-Bucket für die Cloud“ und klicken Sie dann auf „Hinzufügen“.
 +
-image::vtwn_image14.jpg[Astra Control Center Bucket erstellen]
+image:vtwn_image14.jpg["Astra Control Center Bucket erstellen"]
 
 

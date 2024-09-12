@@ -67,7 +67,7 @@ Bevor Sie beginnen, stellen Sie sicher, dass die folgenden Voraussetzungen erfü
 * Bei der Implementierung der Lösung in einem VPC ohne Internetzugang sind VPC-Endpunkte für AWS SSM, FSX und SES so eingerichtet, dass Lambda diese Services über das interne AWS-Netzwerk erreichen kann.
 
 
-image::fsxn-monitoring-resizing-architecture.png[Dieses Bild zeigt die in dieser Lösung verwendete allgemeine Architektur.]
+image:fsxn-monitoring-resizing-architecture.png["Dieses Bild zeigt die in dieser Lösung verwendete allgemeine Architektur."]
 
 ====
 
@@ -99,7 +99,7 @@ git clone https://github.com/NetApp/fsxn-monitoring-auto-resizing.git
 . Navigieren Sie zu AWS Console > *S3* und klicken Sie auf *Create bucket*. Erstellen Sie den Bucket mit den Standardeinstellungen.
 . Klicken Sie im Bucket auf *Upload* > *Dateien hinzufügen* und wählen Sie *Utilities.zip* aus dem geklonten GitHub-Repository auf Ihrem System aus.
 +
-image::fsxn-monitoring-resizing-s3-upload-zip-files.png[Dieses Bild zeigt das S3-Fenster mit ZIP-Dateien, die hochgeladen werden]
+image:fsxn-monitoring-resizing-s3-upload-zip-files.png["Dieses Bild zeigt das S3-Fenster mit ZIP-Dateien, die hochgeladen werden"]
 
 
 
@@ -116,7 +116,7 @@ Befolgen Sie diesen Schritt, wenn Sie die Lösung ohne Internetzugang bereitstel
 NOTE: Überspringen Sie diesen Schritt, wenn das SES SMTP Setup bereits vorhanden ist.
 
 +
-image::fsxn-monitoring-resizing-ses-smtp-creds-addition.png[Diese Abbildung zeigt das Fenster SMTP-Anmeldeinformationen erstellen unter AWS SES]
+image:fsxn-monitoring-resizing-ses-smtp-creds-addition.png["Diese Abbildung zeigt das Fenster SMTP-Anmeldeinformationen erstellen unter AWS SES"]
 
 
 
@@ -133,7 +133,7 @@ Specify template: Upload a template file
 Choose file: Browse to the cloned GitHub repo and select fsxn-monitoring-solution.yaml
 ----
 +
-image::fsxn-monitoring-resizing-create-cft-1.png[Dieses Bild stellt das Fenster „AWS CloudFormation Create Stack“ dar]
+image:fsxn-monitoring-resizing-create-cft-1.png["Dieses Bild stellt das Fenster „AWS CloudFormation Create Stack“ dar"]
 
 +
 Klicken Sie auf Weiter
@@ -144,24 +144,24 @@ Klicken Sie auf Weiter
 NOTE: Wenn „hat VPC Internetzugang?“ Ist auf falsch, „SMTP Username for AWS SES“ und „SMTP Password for AWS SES“ sind erforderlich. Andernfalls können sie leer gelassen werden.
 
 +
-image::fsxn-monitoring-resizing-cft-stack-details-1.png[Dieses Bild stellt das Fenster „AWS CloudFormation Stack Details“ dar]
+image:fsxn-monitoring-resizing-cft-stack-details-1.png["Dieses Bild stellt das Fenster „AWS CloudFormation Stack Details“ dar"]
 
 +
-image::fsxn-monitoring-resizing-cft-stack-details-2.png[Dieses Bild stellt das Fenster „AWS CloudFormation Stack Details“ dar]
+image:fsxn-monitoring-resizing-cft-stack-details-2.png["Dieses Bild stellt das Fenster „AWS CloudFormation Stack Details“ dar"]
 
 +
-image::fsxn-monitoring-resizing-cft-stack-details-3.png[Dieses Bild stellt das Fenster „AWS CloudFormation Stack Details“ dar]
+image:fsxn-monitoring-resizing-cft-stack-details-3.png["Dieses Bild stellt das Fenster „AWS CloudFormation Stack Details“ dar"]
 
 +
-image::fsxn-monitoring-resizing-cft-stack-details-4.png[Dieses Bild stellt das Fenster „AWS CloudFormation Stack Details“ dar]
+image:fsxn-monitoring-resizing-cft-stack-details-4.png["Dieses Bild stellt das Fenster „AWS CloudFormation Stack Details“ dar"]
 
 . Sobald die CloudFormation-Implementierung beginnt, erhält die in der „Absender-E-Mail-ID“ genannte E-Mail-ID eine E-Mail mit der Bitte, die Nutzung der E-Mail-Adresse mit AWS SES zu autorisieren. Klicken Sie auf den Link, um die E-Mail-Adresse zu bestätigen.
 . Sobald die Bereitstellung des CloudFormation-Stacks abgeschlossen ist, wird bei Warnungen/Benachrichtigungen eine E-Mail mit den Benachrichtigungsdetails an die Empfänger-E-Mail-ID gesendet.
 +
-image::fsxn-monitoring-resizing-email-1.png[Dieses Bild zeigt die E-Mail-Benachrichtigung, die empfangen wird, wenn Benachrichtigungen verfügbar sind]
+image:fsxn-monitoring-resizing-email-1.png["Dieses Bild zeigt die E-Mail-Benachrichtigung, die empfangen wird, wenn Benachrichtigungen verfügbar sind"]
 
 +
-image::fsxn-monitoring-resizing-email-2.png[Dieses Bild zeigt die E-Mail-Benachrichtigung, die empfangen wird, wenn Benachrichtigungen verfügbar sind]
+image:fsxn-monitoring-resizing-email-2.png["Dieses Bild zeigt die E-Mail-Benachrichtigung, die empfangen wird, wenn Benachrichtigungen verfügbar sind"]
 
 
 
@@ -193,7 +193,7 @@ Befolgen Sie diesen Schritt, wenn Sie die Lösung ohne Internetzugang bereitstel
 . Navigieren Sie zu AWS Console > *AWS Simple Email Service (SES)* > SMTP Settings und klicken Sie auf *Create SMTP credentials*
 . Geben Sie einen IAM-Benutzernamen ein, oder behalten Sie den Standardwert bei, und klicken Sie auf Erstellen. Speichern Sie den Benutzernamen und das Passwort zur weiteren Verwendung.
 +
-image::fsxn-monitoring-resizing-ses-smtp-creds-addition.png[Diese Abbildung zeigt das Fenster SMTP-Anmeldeinformationen erstellen unter AWS SES]
+image:fsxn-monitoring-resizing-ses-smtp-creds-addition.png["Diese Abbildung zeigt das Fenster SMTP-Anmeldeinformationen erstellen unter AWS SES"]
 
 
 
@@ -215,7 +215,7 @@ Value: <Enter the password for "fsxadmin" user configured on FSx for ONTAP>
 Klicken Sie auf *Parameter erstellen*.
 Wiederholen Sie die oben genannten Schritte für alle FSX für ONTAP-Dateisysteme, die überwacht werden sollen.
 
-image::fsxn-monitoring-resizing-ssm-parameter.png[Dieses Bild zeigt das Fenster zur Erstellung von SSM-Parametern in der AWS Konsole.]
+image:fsxn-monitoring-resizing-ssm-parameter.png["Dieses Bild zeigt das Fenster zur Erstellung von SSM-Parametern in der AWS Konsole."]
 
 Führen Sie die gleichen Schritte zum Speichern des smtp-Benutzernamens und smtp-Kennworts aus, wenn Sie die Lösung ohne Internetzugang bereitstellen. Andernfalls überspringen Sie das Hinzufügen dieser 2 Parameter.
 
@@ -234,7 +234,7 @@ Klicken Sie auf *Create Identity*
 
 Die in der „Absender-E-Mail-ID“ genannte E-Mail-ID erhält eine E-Mail, in der der Inhaber aufgefordert wird, die Nutzung der E-Mail-Adresse mit AWS SES zu autorisieren. Klicken Sie auf den Link, um die E-Mail-Adresse zu bestätigen.
 
-image::fsxn-monitoring-resizing-ses.png[Dieses Bild zeigt das Fenster zur Erstellung der SES-Identität in der AWS Konsole.]
+image:fsxn-monitoring-resizing-ses.png["Dieses Bild zeigt das Fenster zur Erstellung der SES-Identität in der AWS Konsole."]
 
 ====
 .Schritt 5: Einrichtung von VPC-Endpunkten (erforderlich, wenn kein Internetzugang verfügbar ist)
@@ -259,10 +259,10 @@ Policy: <Either choose Full access or set your own custom policy>
 Klicken Sie auf Endpunkt erstellen.
 
 +
-image::fsxn-monitoring-resizing-vpc-endpoint-create-1.png[Dieses Bild zeigt das Fenster zur Erstellung des VPC-Endpunkts]
+image:fsxn-monitoring-resizing-vpc-endpoint-create-1.png["Dieses Bild zeigt das Fenster zur Erstellung des VPC-Endpunkts"]
 
 +
-image::fsxn-monitoring-resizing-vpc-endpoint-create-2.png[Dieses Bild zeigt das Fenster zur Erstellung des VPC-Endpunkts]
+image:fsxn-monitoring-resizing-vpc-endpoint-create-2.png["Dieses Bild zeigt das Fenster zur Erstellung des VPC-Endpunkts"]
 
 . Befolgen Sie denselben Prozess für die Erstellung von SES und SSM VPC-Endpunkten. Alle Parameter bleiben wie oben, außer Dienste, die *com.amazonaws.<region>.smtp* und *com.amazonaws.<region>.ssm* entsprechen.
 
@@ -290,26 +290,26 @@ Advanced Settings:
 Klicken Sie auf *Funktion erstellen*.
 
 +
-image::fsxn-monitoring-resizing-lambda-creation-1.png[Dieses Bild stellt das Fenster Lambda-Erstellung auf der AWS-Konsole dar.]
+image:fsxn-monitoring-resizing-lambda-creation-1.png["Dieses Bild stellt das Fenster Lambda-Erstellung auf der AWS-Konsole dar."]
 
 +
-image::fsxn-monitoring-resizing-lambda-creation-2.png[Dieses Bild stellt das Fenster Lambda-Erstellung auf der AWS-Konsole dar.]
+image:fsxn-monitoring-resizing-lambda-creation-2.png["Dieses Bild stellt das Fenster Lambda-Erstellung auf der AWS-Konsole dar."]
 
 . Navigieren Sie zur neu erstellten Lambda-Funktion > Blättern Sie nach unten zum Abschnitt *Ebenen* und klicken Sie auf *Ebene hinzufügen*.
 +
-image::fsxn-monitoring-resizing-add-layer-button.png[Dieses Bild zeigt die Schaltfläche „Layer hinzufügen“ der AWS Lambda Funktionskonsole.]
+image:fsxn-monitoring-resizing-add-layer-button.png["Dieses Bild zeigt die Schaltfläche „Layer hinzufügen“ der AWS Lambda Funktionskonsole."]
 
 . Klicken Sie unter *Layer source* auf *eine neue Ebene erstellen*
 . Erstellen Sie eine Ebene und laden Sie die Datei *Utilities.zip* hoch. Wählen Sie *Python 3.9* als kompatible Laufzeit und klicken Sie auf *Create*.
 +
-image::fsxn-monitoring-resizing-create-layer-paramiko.png[Dieses Bild zeigt das Fenster Create New Layer auf der AWS-Konsole.]
+image:fsxn-monitoring-resizing-create-layer-paramiko.png["Dieses Bild zeigt das Fenster Create New Layer auf der AWS-Konsole."]
 
 . Navigieren Sie zurück zur AWS Lambda-Funktion > *Layer hinzufügen* > *Custom Layers* und fügen Sie die Dienstprogramme-Ebene hinzu.
 +
-image::fsxn-monitoring-resizing-add-layer-window.png[Dieses Bild stellt das Fenster „Layer hinzufügen“ der AWS Lambda-Funktionskonsole dar.]
+image:fsxn-monitoring-resizing-add-layer-window.png["Dieses Bild stellt das Fenster „Layer hinzufügen“ der AWS Lambda-Funktionskonsole dar."]
 
 +
-image::fsxn-monitoring-resizing-layers-added.png[Dieses Bild zeigt die hinzugefügten Schichten der AWS Lambda Funktionskonsole.]
+image:fsxn-monitoring-resizing-layers-added.png["Dieses Bild zeigt die hinzugefügten Schichten der AWS Lambda Funktionskonsole."]
 
 . Navigieren Sie zur Registerkarte *Konfiguration* der Lambda-Funktion und klicken Sie unter *Allgemeine Konfiguration* auf *Bearbeiten*. Ändern Sie die Zeitlimit auf *5 Min* und klicken Sie auf *Speichern*.
 . Navigieren Sie zur Registerkarte *Berechtigungen* der Lambda-Funktion und klicken Sie auf die zugewiesene Rolle. Klicken Sie auf der Registerkarte Berechtigungen der Rolle auf *Berechtigungen hinzufügen* > *Inline-Richtlinie erstellen*.
@@ -374,7 +374,7 @@ Nehmen Sie alle Dateisysteme in die Liste für die Überwachung und die automati
 | *Recipient_email* | Zeichenfolge | (Erforderlich) Geben Sie die E-Mail-ID ein, über die Sie die Benachrichtigungen erhalten möchten. 
 |===
 +
-image::fsxn-monitoring-resizing-lambda-code.png[Dieses Bild zeigt den Lambda-Code auf der AWS Lambda-Funktionskonsole.]
+image:fsxn-monitoring-resizing-lambda-code.png["Dieses Bild zeigt den Lambda-Code auf der AWS Lambda-Funktionskonsole."]
 
 . Klicken Sie auf *Test*, erstellen Sie ein Testereignis mit einem leeren JSON-Objekt und führen Sie den Test durch, indem Sie auf *Invoke* klicken, um zu überprüfen, ob das Skript ordnungsgemäß ausgeführt wird.
 . Nach erfolgreichem Test navigieren Sie zu *Konfiguration* > *Trigger* > *Trigger hinzufügen*.
@@ -391,7 +391,7 @@ Schedule expression: <Use "rate(1 day)" if you want the function to run daily or
 Klicken Sie auf Hinzufügen.
 
 +
-image::fsxn-monitoring-resizing-eventbridge.png[Dieses Bild zeigt das Fenster zur Erstellung der Event Bridge auf der AWS Lambda-Funktionskonsole.]
+image:fsxn-monitoring-resizing-eventbridge.png["Dieses Bild zeigt das Fenster zur Erstellung der Event Bridge auf der AWS Lambda-Funktionskonsole."]
 
 
 

@@ -26,7 +26,7 @@ Mit dem zunehmenden Automatisierungsgrad von Teams fühlen sich die Veränderung
 
 In diesem Anwendungsfall schauen wir uns eine Pipeline für die Förderung bis zur Produktion genauer an, die eine neue Version einer Applikation implementiert: Zuerst in eine Staging-Umgebung und dann in eine Produktionsumgebung. Dieses Beispiel gilt gleichermaßen für die großen Public Clouds und auch für eine On-Premises-Umgebung. Obwohl wir die Bereitstellung einer Version der App zeigen, kann die Pipeline auch mit anderen Strategien wie blau/grün oder canary Deployment verwendet werden. Als Teil der CI/CD-Pipeline werden wir die Anwendung durch ein komplettes Applikations-Backup schützen. Ein applikationsgerechtes Backup der Applikation in der Produktion mit seinen Daten, Zustand und Konfiguration kann für zahlreiche DevOps-Workflows nützlich sein.
 
-image::dwn_image1.jpg[DevOps mit NetApp Astra: Anwendungsfall 1-Architektur]
+image:dwn_image1.jpg["DevOps mit NetApp Astra: Anwendungsfall 1-Architektur"]
 
 Die Anwendung zur Validierung dieses Anwendungsfalls war https://magento.com/["Magento"^], Eine E-Commerce-Lösung mit webbasiertem Frontend, eine Elasticsearch-Instanz für Such- und Analysefunktionen sowie eine MariaDB-Datenbank, die alle Shopping-Bestands- und Transaktionsdetails erfasst. Diese Container-Applikation wurde in einem Red hat OpenShift-Cluster installiert. Jeder POD in der Applikation verwendete persistente Volumes zum Speichern von Daten. Die persistenten Volumes wurden automatisch durch NetApp Astra Trident erstellt, den Container-Storage Interface-konformen Storage-Orchestrator für Kubernetes. Er ermöglicht die Bereitstellung von Storage auf NetApp Storage-Systemen. Darüber hinaus wurde die betreffende Applikation durch Astra Control Center verwaltet, mit der anschließend Applikations-Backups ausgelöst werden konnten, die den Zustand der Applikation zusammen mit den in persistenten Volumes gespeicherten Daten speicherten. Wir haben das verwendet https://github.com/NetApp/netapp-astra-toolkits["NetApp Astra Control Python SDK"^] Um den Prozess der Auslösung von Applikations-Backups zu automatisieren, der dann in eine CI/CD-Pipeline eingeführt wurde. Diese Pipeline wurde mit dem beliebten CI/CD-Tool namens erstellt und ausgeführt [https://www.jenkins.io/["Jenkins"^]] Zum Automatisieren des Ablaufes zum Erstellen, Sichern und Implementieren der Applikation
 
@@ -87,7 +87,7 @@ magento-mariadb-0                                        1/1     Running   0    
 . Klicken Sie in der Produktionsumgebung auf die Ellipse gegenüber der Magento-Anwendung (`magento-prod`Und klicken Sie auf Verwalten.
 . Die Anwendung Magento wird nun vom Astra Control Center verwaltet. Alle von Astra Control unterstützten Vorgänge können auf der Anwendung ausgeführt werden. Beachten Sie auch die Version der Anwendung.
 +
-image::dwn_image2.jpg[Magento-Version vor dem Upgrade prüfen]
+image:dwn_image2.jpg["Magento-Version vor dem Upgrade prüfen"]
 
 . Wiederholen Sie die Schritte für die Verwaltung der Magento-Anwendung in der Staging-Umgebung (`magento-staging`).
 
@@ -102,7 +102,7 @@ Bei der Arbeit mit neuen Applikationsversionen verwenden wir eine CI/CD-Pipeline
 . Navigieren Sie zu verwalten Jenkins > Anmeldeinformationen verwalten, und klicken Sie auf die entsprechende Domäne.
 . Klicken Sie auf Anmeldeinformationen hinzufügen, und legen Sie den Benutzernamen fest, der das Passwort und den Umfang auf „Global“ gesetzt hat. Geben Sie den Benutzernamen, das Passwort und eine ID für die Anmeldeinformationen ein, und klicken Sie auf OK.
 +
-image::dwn_image8.jpg[Anmeldedaten Erstellen]
+image:dwn_image8.jpg["Anmeldedaten Erstellen"]
 
 . Wiederholen Sie das gleiche Verfahren für die anderen beiden Anmeldedaten.
 . Gehen Sie zurück zum Dashboard, erstellen Sie eine Pipeline, indem Sie auf Neues Element klicken und dann auf Pipeline klicken.
@@ -130,27 +130,27 @@ MAGENTO_MARIADB_ROOT_CREDS = credentials('magento-mariadb-root-cred')
 ----
 . Klicken Sie Auf Jetzt Erstellen. Die Pipeline beginnt mit der Ausführung und führt die einzelnen Schritte durch. Das Anwendungsabbild wird zuerst erstellt und in die Container-Registrierung hochgeladen.
 +
-image::dwn_image3.jpg[Fortschritt Der Verkaufskanäle]
+image:dwn_image3.jpg["Fortschritt Der Verkaufskanäle"]
 
 . Die Applikations-Backups werden über Astra Control initiiert.
 +
-image::dwn_image4.jpg[Backup initiiert]
+image:dwn_image4.jpg["Backup initiiert"]
 
 . Nachdem die Backup-Phasen erfolgreich abgeschlossen sind, überprüfen Sie die Backups aus dem Astra Control Center.
 +
-image::dwn_image5.jpg[Backup erfolgreich]
+image:dwn_image5.jpg["Backup erfolgreich"]
 
 . Anschließend wird die neue Version der Applikation in der Staging-Umgebung bereitgestellt.
 +
-image::dwn_image6.jpg[Staging-Implementierung gestartet]
+image:dwn_image6.jpg["Staging-Implementierung gestartet"]
 
 . Nach Abschluss dieses Schritts wartet das Programm, bis der Benutzer die Bereitstellung in der Produktion genehmigt. Nehmen Sie in dieser Phase an, dass das QA-Team einige manuelle Tests durchführt und die Produktion genehmigt. Sie können dann auf Genehmigen klicken, um die neue Version der Anwendung in der Produktionsumgebung zu implementieren.
 +
-image::dwn_image7.jpg[Warten auf die Werbeaktion]
+image:dwn_image7.jpg["Warten auf die Werbeaktion"]
 
 . Überprüfen Sie, ob die Produktionsanwendung auch auf die gewünschte Version aktualisiert wird.
 +
-image::dwn_image11.jpg[Prod-App aktualisiert]
+image:dwn_image11.jpg["Prod-App aktualisiert"]
 
 
 

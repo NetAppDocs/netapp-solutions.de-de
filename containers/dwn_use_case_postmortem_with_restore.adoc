@@ -24,7 +24,7 @@ Im link:dwn_use_case_integrated_data_protection.html["Erster Anwendungsfall"], W
 
 In einem herkömmlichen Workflow würde das Entwicklungsteam versuchen, das Problem anhand von Fehlerberichten von Kunden in Echtzeit zu beheben, nachdem ein Fehler beim Upgrade der Anwendung auf eine neue Version aufgetreten ist. Alternativ könnte das Team bei der ersten Fehlermeldung versuchen, die Applikation in eine parallele Debugging-Umgebung neu zu implementieren, um diesen Prozess offline zu schalten. Sie könnten eine ältere Code-Basis von einer früheren Version in den Produktionsbetrieb wiederherstellen, um die Arbeitsreihenfolge der Applikation wiederherzustellen.
 
-image::dwn_image9.jpg[Herkömmlicher Workflow]
+image:dwn_image9.jpg["Herkömmlicher Workflow"]
 
 Obwohl dieser Ansatz funktioniert, muss das Team sicherstellen, dass der Zustand der defekten Produktions-App mit der Version übereinstimmt, die in der Produktion gesehen wurde, als die Probleme aufgetreten sind. Sie müssten auch Zeit auf die Förderung des bekannten fehlerfreien Builds in die Produktion verwenden, indem sie Code aus ihrem Repository abrufen und die Machine-Images neu implementieren, um die Applikation in einem guten, ausgeführten Zustand wiederherzustellen. Auch in diesem Szenario wurde nicht berücksichtigt, ob die Produktionsdatenbank selbst durch den fehlerhaften Code beschädigt war. Im Idealfall gibt es separate Backup-Prozesse für die Datenbankdaten, aber müssen wir davon ausgehen, dass sie mit dem Zustand der Applikation, wie sie veröffentlicht wurde, konsistent sind? Hier zeigen die Vorteile statusbehafteter und applikationskonsistenter Backups, Restores und Klone mit Astra Control ihren Wert.
 
@@ -32,7 +32,7 @@ Erstens können wir Astra Control nutzen, um eine Nachmortem-Analyse über den S
 
 Darüber hinaus unterstützt Astra Control die Möglichkeit zur Wiederherstellung der vorhandenen Daten, mit der die Produktionsanwendung auf ein letztes akzeptables Backup wiederhergestellt werden kann (das der betroffenen Codeversion vorausging). Die wiederhergestellte Version übernimmt die Position der vorherigen, Buggy-Produktionsanwendung auf anwendungskonsistente und zustandsorientierte Weise, einschließlich der zuvor zugewiesenen Ingress-IP. Aus diesem Grund haben Kunden, die auf das Front-End zugreifen, den Übergang zur Backup-Version nicht bemerkt.
 
-image::dwn_image10.jpg[Workflow nach Abschluss eines Nachfalls]
+image:dwn_image10.jpg["Workflow nach Abschluss eines Nachfalls"]
 
 
 
@@ -57,7 +57,7 @@ Folgende Tools oder Plattformen wurden implementiert und als Voraussetzungen kon
 
 Angesichts des Upgrades der Applikation auf eine neue Version, der Applikation in der Produktionsumgebung (`magento-prod`) Verhält sich nicht wie vorgesehen nach der Aktualisierung. Nehmen wir an, dass die Daten, die von Front-End-Abfragen zurückgegeben werden, nicht mit der Anfrage übereinstimmen oder dass die Datenbank tatsächlich beschädigt wurde. Um die Pipeline zu klonen und wiederherzustellen, gehen Sie wie folgt vor:
 
-image::dwn_image12.jpg[Fehlerhafte Anwendung]
+image:dwn_image12.jpg["Fehlerhafte Anwendung"]
 
 . Melden Sie sich bei Jenkins an und erstellen Sie eine Pipeline, indem Sie auf Neues Element und anschließend auf Pipeline klicken.
 . Kopieren Sie die Pipeline aus der Jenkinsdatei https://github.com/NetApp/netapp-astra-toolkits/blob/main/ci_cd_examples/jenkins_pipelines/clone_for_postmortem_and_restore/Jenkinsfile["Hier"^].
@@ -79,15 +79,15 @@ DEBUG_KUBERNETES_CLUSTER = 'ocp-vmw'
 ----
 . Klicken Sie Auf Jetzt Erstellen. Die Pipeline beginnt mit der Ausführung und führt die einzelnen Schritte durch. Die Anwendung wird zuerst im aktuellen Status in einer Debug-Umgebung geklont, und die Anwendung wird dann auf das bekannte Backup wiederhergestellt.
 +
-image::dwn_image15.jpg[Post-Sterbliche-Pipeline]
+image:dwn_image15.jpg["Post-Sterbliche-Pipeline"]
 
 . Vergewissern Sie sich, dass es sich bei der geklonten Applikation um die Fehlerversion handelt.
 +
-image::dwn_image13.jpg[Fehler Bei Geklonter App]
+image:dwn_image13.jpg["Fehler Bei Geklonter App"]
 
 . Überprüfen Sie, ob die Produktionsumgebung in einem funktionierenden Backup wiederhergestellt wird und die Applikation in der Produktion wie erwartet funktioniert.
 +
-image::dwn_image14.jpg[Prod-App Wurde Wiederhergestellt]
+image:dwn_image14.jpg["Prod-App Wurde Wiederhergestellt"]
 
 
 

@@ -1,0 +1,32 @@
+---
+sidebar: sidebar 
+keywords: Cyber vault, cybervault, cyber-vault, data protection, security, ransomware, ONTAP, hardening 
+permalink: /cyber-vault/ontap-cyber-vault-sizing.html 
+summary: Anleitung zur Dimensionierung eines ONTAP-Cybervault 
+---
+= Cyber-Vault-Dimensionierung mit ONTAP
+:hardbreaks:
+:allow-uri-read: 
+:nofooter: 
+:icons: font
+:linkattrs: 
+:imagesdir: ../media/
+
+
+[role="lead"]
+Die Dimensionierung eines Cyber-Vaults erfordert Verständnis, wie viele Daten in einem bestimmten Recovery Time Objective (RTO) wiederhergestellt werden müssen. Viele Faktoren spielen bei der richtigen Entwicklung einer Cyber-Vault-Lösung der richtigen Größe eine Rolle.
+
+
+
+== Überlegungen zum Sizing
+
+. Was sind die Quellplattform-Modelle (FAS V AFF A-Serie V AFF C-Serie)?
+. Wie hoch ist die Bandbreite und Latenz zwischen der Quelle und dem Cyber-Vault?
+. Wie groß sind die Dateigrößen und wie viele Dateien?
+. Welche Recovery-Zeitvorgabe ist für Sie zu erreichen?
+. Wie viele Daten müssen innerhalb des RTO wiederhergestellt werden?
+. Wie viele SnapMirror-Fan-in-Beziehungen wird der Cyber-Vault aufnehmen?
+. Wird es ein oder mehrere Recoverys gleichzeitig geben?
+. Werden diese mehrfachen Recoverys auf derselben Primärquelle stattfinden?
+. Wird SnapMirror während einer Recovery von einem Vault auf den Vault replizieren?
+

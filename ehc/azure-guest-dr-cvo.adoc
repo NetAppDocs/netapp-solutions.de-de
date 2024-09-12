@@ -25,7 +25,7 @@ Autoren: Ravi BCB und Niyaz Mohamed, NetApp
  This covers application data; however, what about the actual VMs themselves. Disaster recovery should cover all dependent components, including virtual machines, VMDKs, application data, and more. To accomplish this, SnapMirror along with Jetstream can be used to seamlessly recover workloads replicated from on-premises to Cloud Volumes ONTAP while using vSAN storage for VM VMDKs.
 Dieses Dokument bietet einen Schritt-für-Schritt-Ansatz zur Einrichtung und Durchführung von Disaster Recovery mit NetApp SnapMirror, JetStream und der Azure VMware Lösung (AVS).
 
-image::dr-cvo-avs-image1.png[dr cvo avs image1]
+image:dr-cvo-avs-image1.png["Die Abbildung zeigt den Input/Output-Dialog oder die Darstellung des schriftlichen Inhalts"]
 
 
 
@@ -75,7 +75,7 @@ NOTE: Es gibt mehrere Optionen, um On-Premises-Datacenter mit Azure zu verbinden
 ====
 Der erste Schritt besteht darin, Cloud Volumes ONTAP auf Azure ( zu konfigurierenlink:azure-guest.html["Verlinken"^]) Und replizieren Sie die gewünschten Volumen zu Cloud Volumes ONTAP mit den gewünschten Frequenzen und Snapshot-Aufbewahrung.
 
-image::dr-cvo-avs-image2.png[dr cvo avs image2]
+image:dr-cvo-avs-image2.png["Die Abbildung zeigt den Input/Output-Dialog oder die Darstellung des schriftlichen Inhalts"]
 
 ====
 .Konfigurieren Sie AVS-Hosts und CVO-Datenzugriff
@@ -104,17 +104,17 @@ Die Jetstream DR-Software besteht aus drei Hauptkomponenten: Der JetStream DR Ma
 . Registrieren Sie den vCenter-Server mit dem MSA.
 . Nachdem JetStream DR MSA implementiert und der vCenter Server registriert wurde, navigieren Sie zum JetStream DR Plug-in mit dem vSphere Web Client. Dazu können Sie im Datacenter > Configure > JetStream DR navigieren.
 +
-image::dr-cvo-avs-image3.png[dr cvo avs image3]
+image:dr-cvo-avs-image3.png["Die Abbildung zeigt den Input/Output-Dialog oder die Darstellung des schriftlichen Inhalts"]
 
 . Führen Sie über die JetStream DR-Schnittstelle die folgenden Aufgaben aus:
 +
 .. Konfigurieren Sie das Cluster mit dem I/O-Filterpaket.
 +
-image::dr-cvo-avs-image4.png[dr cvo avs image4]
+image:dr-cvo-avs-image4.png["Die Abbildung zeigt den Input/Output-Dialog oder die Darstellung des schriftlichen Inhalts"]
 
 .. Fügen Sie den Azure Blob-Storage am Recovery-Standort hinzu.
 +
-image::dr-cvo-avs-image5.png[dr cvo avs image5]
+image:dr-cvo-avs-image5.png["Die Abbildung zeigt den Input/Output-Dialog oder die Darstellung des schriftlichen Inhalts"]
 
 
 
@@ -124,21 +124,21 @@ image::dr-cvo-avs-image5.png[dr cvo avs image5]
 NOTE: Verwenden Sie das Kapazitätsplanungs-Tool, um die Anzahl der benötigten DRVAs zu ermitteln.
 
 +
-image::dr-cvo-avs-image6.png[dr cvo avs image6]
+image:dr-cvo-avs-image6.png["Die Abbildung zeigt den Input/Output-Dialog oder die Darstellung des schriftlichen Inhalts"]
 
 +
-image::dr-cvo-avs-image7.png[dr cvo avs image7]
+image:dr-cvo-avs-image7.png["Die Abbildung zeigt den Input/Output-Dialog oder die Darstellung des schriftlichen Inhalts"]
 
 . Erstellen Sie Protokoll-Volumes für jedes DRVA unter Verwendung der VMDK aus den verfügbaren Datenspeichern oder dem unabhängigen gemeinsamen iSCSI-Speicherpool.
 +
-image::dr-cvo-avs-image8.png[dr cvo avs image8]
+image:dr-cvo-avs-image8.png["Die Abbildung zeigt den Input/Output-Dialog oder die Darstellung des schriftlichen Inhalts"]
 
 . Erstellen Sie auf der Registerkarte geschützte Domänen die erforderliche Anzahl geschützter Domänen mithilfe von Informationen über die Azure Blob Storage-Site, die DRVA-Instanz und das Replikationsprotokoll. Eine geschützte Domäne definiert eine bestimmte VM oder einen Satz von Applikations-VMs innerhalb des Clusters, die gemeinsam gesichert werden und einer Prioritätsreihenfolge für Failover-/Failback-Vorgänge zugewiesen ist.
 +
-image::dr-cvo-avs-image9.png[dr cvo avs image9]
+image:dr-cvo-avs-image9.png["Die Abbildung zeigt den Input/Output-Dialog oder die Darstellung des schriftlichen Inhalts"]
 
 +
-image::dr-cvo-avs-image10.png[dr cvo avs image10]
+image:dr-cvo-avs-image10.png["Die Abbildung zeigt den Input/Output-Dialog oder die Darstellung des schriftlichen Inhalts"]
 
 . Wählen Sie die zu sichernden VMs aus und gruppieren Sie die VMs je nach Abhängigkeit in Applikationsgruppen. Anhand von Applikationsdefinitionen können Gruppen von VMs zu logischen Gruppen gruppiert werden, die ihre Boot-Aufträge, Boot-Verzögerungen und optionale Applikationsvalidierungen enthalten, die nach der Recovery ausgeführt werden können.
 +
@@ -150,19 +150,19 @@ NOTE: Vergewissern Sie sich, dass derselbe Sicherungsmodus für alle VMs in eine
 NOTE: Write Back(VMDK)-Modus bietet eine höhere Performance.
 
 +
-image::dr-cvo-avs-image11.png[dr cvo avs image11]
+image:dr-cvo-avs-image11.png["Die Abbildung zeigt den Input/Output-Dialog oder die Darstellung des schriftlichen Inhalts"]
 
 . Stellen Sie sicher, dass Replizierungs-Protokoll-Volumes auf hochperformanten Storage platziert werden.
 +
-image::dr-cvo-avs-image12.png[dr cvo avs image12]
+image:dr-cvo-avs-image12.png["Die Abbildung zeigt den Input/Output-Dialog oder die Darstellung des schriftlichen Inhalts"]
 
 . Klicken Sie nach dem Abschluss auf Schutz für die geschützte Domäne starten. Damit wird die Datenreplizierung für die ausgewählten VMs auf den zugewiesenen Blob-Speicher gestartet.
 +
-image::dr-cvo-avs-image13.png[dr cvo avs image13]
+image:dr-cvo-avs-image13.png["Die Abbildung zeigt den Input/Output-Dialog oder die Darstellung des schriftlichen Inhalts"]
 
 . Nach Abschluss der Replizierung wird der Sicherungsstatus der VM als wiederherstellbar markiert.
 +
-image::dr-cvo-avs-image14.png[dr cvo avs image14]
+image:dr-cvo-avs-image14.png["Die Abbildung zeigt den Input/Output-Dialog oder die Darstellung des schriftlichen Inhalts"]
 
 +
 
@@ -170,7 +170,7 @@ NOTE: Failover-Runbooks können so konfiguriert werden, dass sie die VMs gruppie
 
 . Klicken Sie auf Einstellungen und dann auf den Link Runbook Configure, um die Runbook-Gruppe zu konfigurieren.
 +
-image::dr-cvo-avs-image15.png[dr cvo avs image15]
+image:dr-cvo-avs-image15.png["Die Abbildung zeigt den Input/Output-Dialog oder die Darstellung des schriftlichen Inhalts"]
 
 . Klicken Sie auf die Schaltfläche Gruppe erstellen, um mit der Erstellung einer neuen Runbook-Gruppe zu beginnen.
 +
@@ -178,22 +178,22 @@ image::dr-cvo-avs-image15.png[dr cvo avs image15]
 NOTE: Falls erforderlich, wenden Sie im unteren Teil des Bildschirms benutzerdefinierte Pre-scripts und Post-scripts an, um automatisch vor und nach dem Betrieb der Runbook-Gruppe auszuführen. Stellen Sie sicher, dass die Runbook-Skripte auf dem Management-Server residieren.
 
 +
-image::dr-cvo-avs-image16.png[dr cvo avs image16]
+image:dr-cvo-avs-image16.png["Die Abbildung zeigt den Input/Output-Dialog oder die Darstellung des schriftlichen Inhalts"]
 
 . Bearbeiten Sie die VM-Einstellungen nach Bedarf. Geben Sie die Parameter für die Wiederherstellung der VMs an, einschließlich der Boot-Sequenz, der Boot-Verzögerung (angegeben in Sekunden), der Anzahl der CPUs und der zuzuzuzuzuzuzuzuzuzuzuzuzuzuweist. Ändern Sie die Boot-Sequenz der VMs, indem Sie auf die Pfeile nach oben oder unten klicken. Zur Aufbewahrung von MAC stehen auch Optionen zur Verfügung.
 +
-image::dr-cvo-avs-image17.png[dr cvo avs image17]
+image:dr-cvo-avs-image17.png["Die Abbildung zeigt den Input/Output-Dialog oder die Darstellung des schriftlichen Inhalts"]
 
 . Statische IP-Adressen können manuell für die einzelnen VMs der Gruppe konfiguriert werden. Klicken Sie auf den Link „NIC-Ansicht“ einer VM, um die IP-Adresseinstellungen manuell zu konfigurieren.
 +
-image::dr-cvo-avs-image18.png[dr cvo avs image18]
+image:dr-cvo-avs-image18.png["Die Abbildung zeigt den Input/Output-Dialog oder die Darstellung des schriftlichen Inhalts"]
 
 . Klicken Sie auf die Schaltfläche Konfigurieren, um die NIC-Einstellungen für die jeweiligen VMs zu speichern.
 +
-image::dr-cvo-avs-image19.png[dr cvo avs image19]
+image:dr-cvo-avs-image19.png["Die Abbildung zeigt den Input/Output-Dialog oder die Darstellung des schriftlichen Inhalts"]
 
 +
-image::dr-cvo-avs-image20.png[dr cvo avs image20]
+image:dr-cvo-avs-image20.png["Die Abbildung zeigt den Input/Output-Dialog oder die Darstellung des schriftlichen Inhalts"]
 
 
 
@@ -227,24 +227,24 @@ NOTE: Der CloudAdmin-Standardbenutzer der Azure VMware-Lösung verfügt nicht ü
 Der folgende Screenshot zeigt die Installation mithilfe einer DHCP-basierten IP-Adresse.
 
 +
-image::dr-cvo-avs-image21.png[dr cvo avs image21]
+image:dr-cvo-avs-image21.png["Die Abbildung zeigt den Input/Output-Dialog oder die Darstellung des schriftlichen Inhalts"]
 
 . Nachdem die JetStream DR für AVS-Installation abgeschlossen ist, aktualisieren Sie den Browser. Um auf die JetStream DR-UI zuzugreifen, wechseln Sie zum SDDC Datacenter > Configure > JetStream DR.
 +
-image::dr-cvo-avs-image22.png[dr cvo avs image22]
+image:dr-cvo-avs-image22.png["Die Abbildung zeigt den Input/Output-Dialog oder die Darstellung des schriftlichen Inhalts"]
 
 . Führen Sie über die JetStream DR-Schnittstelle die folgenden Aufgaben aus:
 +
 .. Fügen Sie das Azure Blob Storage-Konto hinzu, das zur Sicherung des lokalen Clusters als Storage-Standort verwendet wurde, und starten Sie dann die Option Scan Domains.
 .. Wählen Sie im angezeigten Popup-Dialogfeld die zu importierende geschützte Domäne aus, und klicken Sie anschließend auf den Link Importieren.
 +
-image::dr-cvo-avs-image23.png[dr cvo avs image23]
+image:dr-cvo-avs-image23.png["Die Abbildung zeigt den Input/Output-Dialog oder die Darstellung des schriftlichen Inhalts"]
 
 
 
 . Die Domäne wird zur Wiederherstellung importiert. Gehen Sie auf die Registerkarte geschützte Domänen und überprüfen Sie, ob die vorgesehene Domäne ausgewählt wurde, oder wählen Sie die gewünschte aus dem Menü geschützte Domäne auswählen aus. Eine Liste der wiederherstellbaren VMs in der geschützten Domäne wird angezeigt.
 +
-image::dr-cvo-avs-image24.png[dr cvo avs image24]
+image:dr-cvo-avs-image24.png["Die Abbildung zeigt den Input/Output-Dialog oder die Darstellung des schriftlichen Inhalts"]
 
 . Nachdem die geschützten Domains importiert wurden, sollten DRVA-Appliances bereitgestellt werden.
 +
@@ -254,7 +254,7 @@ NOTE: Diese Schritte können auch mithilfe von CPT- erstellten Plänen automatis
 . Verwenden von verfügbaren vSAN oder ANF-Datastores für Replizierungsprotokolle erstellen
 . Importieren Sie die geschützten Domänen und konfigurieren Sie die Recovery-VA, um einen ANF-Datenspeicher für VM-Platzierungen zu verwenden.
 +
-image::dr-cvo-avs-image25.png[dr cvo avs image25]
+image:dr-cvo-avs-image25.png["Die Abbildung zeigt den Input/Output-Dialog oder die Darstellung des schriftlichen Inhalts"]
 
 +
 
@@ -266,7 +266,7 @@ NOTE: Stellen Sie sicher, dass DHCP für das ausgewählte Segment aktiviert ist 
 NOTE: Obwohl sich der kontinuierliche Failover- und Failover-Modus bei der Konfiguration unterscheiden, werden beide Failover-Modi mit den gleichen Schritten konfiguriert. Failover-Schritte werden als Reaktion auf ein Notfall konfiguriert und durchgeführt. Ein kontinuierlicher Failover kann jederzeit konfiguriert werden und dann im Hintergrund während des normalen Systembetriebs ausgeführt werden. Nach einem Zwischenfall wird der fortlaufende Failover abgeschlossen, sodass die Eigentümerschaft der geschützten VMs direkt auf den Recovery-Standort übertragen wird (RTO von nahezu null).
 
 +
-image::dr-cvo-avs-image26.png[dr cvo avs image26]
+image:dr-cvo-avs-image26.png["Die Abbildung zeigt den Input/Output-Dialog oder die Darstellung des schriftlichen Inhalts"]
 
 
 
@@ -278,10 +278,10 @@ Der kontinuierliche Failover-Prozess beginnt und der Fortschritt kann über die 
 ====
 . Nach einem Ausfall im geschützten Cluster der lokalen Umgebung (teilweiser oder kompletter Ausfall) können Sie das Failover für VMs auslösen. Dazu verwenden Sie Jetstream, nachdem die SnapMirror Beziehung für die jeweiligen Applikations-Volumes unterbrochen wurde.
 +
-image::dr-cvo-avs-image27.png[dr cvo avs image27]
+image:dr-cvo-avs-image27.png["Die Abbildung zeigt den Input/Output-Dialog oder die Darstellung des schriftlichen Inhalts"]
 
 +
-image::dr-cvo-avs-image28.png[dr cvo avs image28]
+image:dr-cvo-avs-image28.png["Die Abbildung zeigt den Input/Output-Dialog oder die Darstellung des schriftlichen Inhalts"]
 
 +
 
@@ -292,19 +292,19 @@ NOTE: Dieser Schritt kann zur Erleichterung des Recovery-Prozesses einfach autom
 Im Dialogfeld, das beim Abschluss des Failover angezeigt wird, kann die Failover-Aufgabe als geplant oder als erzwungen angegeben werden.
 
 +
-image::dr-cvo-avs-image29.png[dr cvo avs image29]
+image:dr-cvo-avs-image29.png["Die Abbildung zeigt den Input/Output-Dialog oder die Darstellung des schriftlichen Inhalts"]
 
 +
-image::dr-cvo-avs-image30.png[dr cvo avs image30]
+image:dr-cvo-avs-image30.png["Die Abbildung zeigt den Input/Output-Dialog oder die Darstellung des schriftlichen Inhalts"]
 
 +
 Erzwungenes Failover geht davon aus, dass auf den primären Standort nicht mehr zugegriffen werden kann und die Eigentümerschaft der geschützten Domäne direkt vom Recovery-Standort übernommen werden muss.
 
 +
-image::dr-cvo-avs-image31.png[dr cvo avs image31]
+image:dr-cvo-avs-image31.png["Die Abbildung zeigt den Input/Output-Dialog oder die Darstellung des schriftlichen Inhalts"]
 
 +
-image::dr-cvo-avs-image32.png[dr cvo avs image32]
+image:dr-cvo-avs-image32.png["Die Abbildung zeigt den Input/Output-Dialog oder die Darstellung des schriftlichen Inhalts"]
 
 . Nachdem der kontinuierliche Failover abgeschlossen ist, wird eine Meldung angezeigt, die den Abschluss der Aufgabe bestätigt. Nach Abschluss der Aufgabe greifen Sie auf die wiederhergestellten VMs zu, um ISCSI- oder NFS-Sitzungen zu konfigurieren.
 +
@@ -316,20 +316,20 @@ NOTE: Der Failover-Modus wird in Failover ausgeführt, und der Status der VM ist
 NOTE: Um die Failover-Konfiguration und die Infrastruktur zu überprüfen, kann JetStream DR im Testmodus (Option Test Failover) betrieben werden, um die Wiederherstellung von Virtual Machines und deren Daten vom Objektspeicher in einer Test-Recovery-Umgebung zu beobachten. Wenn ein Failover-Verfahren im Testmodus ausgeführt wird, ähnelt sein Vorgang einem tatsächlichen Failover-Prozess.
 
 +
-image::dr-cvo-avs-image33.png[dr cvo avs image33]
+image:dr-cvo-avs-image33.png["Die Abbildung zeigt den Input/Output-Dialog oder die Darstellung des schriftlichen Inhalts"]
 
 . Sobald die Virtual Machines wiederhergestellt sind, wird Disaster Recovery für Storage auf dem Gast-Storage eingesetzt. Um diesen Prozess zu demonstrieren, wird SQL-Server in diesem Beispiel verwendet.
 . Melden Sie sich bei der wiederhergestellten SnapCenter-VM auf dem AVS SDDC an und aktivieren Sie den DR-Modus.
 +
 .. Greifen Sie über Browsern auf die SnapCenter-Benutzeroberfläche zu.
 +
-image::dr-cvo-avs-image34.png[dr cvo avs image34]
+image:dr-cvo-avs-image34.png["Die Abbildung zeigt den Input/Output-Dialog oder die Darstellung des schriftlichen Inhalts"]
 
 .. Navigieren Sie auf der Seite Einstellungen zu Einstellungen > Globale Einstellungen > Disaster Recovery.
 .. Wählen Sie Disaster Recovery Aktivieren.
 .. Klicken Sie Auf Anwenden.
 +
-image::dr-cvo-avs-image35.png[dr cvo avs image35]
+image:dr-cvo-avs-image35.png["Die Abbildung zeigt den Input/Output-Dialog oder die Darstellung des schriftlichen Inhalts"]
 
 .. Überprüfen Sie, ob der DR-Job aktiviert ist, indem Sie auf Überwachen > Jobs klicken.
 +
@@ -340,27 +340,27 @@ NOTE: Für das Storage Disaster Recovery sollte NetApp SnapCenter 4.6 oder höhe
 
 . Stellen Sie sicher, dass die SnapMirror Beziehung beschädigt ist.
 +
-image::dr-cvo-avs-image36.png[dr cvo avs image36]
+image:dr-cvo-avs-image36.png["Die Abbildung zeigt den Input/Output-Dialog oder die Darstellung des schriftlichen Inhalts"]
 
 . Verbinden Sie die LUN aus Cloud Volumes ONTAP mit der wiederhergestellten SQL Gast-VM mit gleichen Laufwerksbuchstaben.
 +
-image::dr-cvo-avs-image37.png[dr cvo avs image37]
+image:dr-cvo-avs-image37.png["Die Abbildung zeigt den Input/Output-Dialog oder die Darstellung des schriftlichen Inhalts"]
 
 . Öffnen Sie den iSCSI-Initiator, löschen Sie die vorherige getrennte Sitzung und fügen Sie das neue Ziel zusammen mit Multipath für die replizierten Cloud Volumes ONTAP Volumes hinzu.
 +
-image::dr-cvo-avs-image38.png[dr cvo avs image38]
+image:dr-cvo-avs-image38.png["Die Abbildung zeigt den Input/Output-Dialog oder die Darstellung des schriftlichen Inhalts"]
 
 . Stellen Sie sicher, dass alle Laufwerke mit denselben Laufwerksbuchstaben verbunden sind, die vor DR verwendet wurden.
 +
-image::dr-cvo-avs-image39.png[dr cvo avs image39]
+image:dr-cvo-avs-image39.png["Die Abbildung zeigt den Input/Output-Dialog oder die Darstellung des schriftlichen Inhalts"]
 
 . Starten Sie den MSSQL-Serverdienst neu.
 +
-image::dr-cvo-avs-image40.png[dr cvo avs image40]
+image:dr-cvo-avs-image40.png["Die Abbildung zeigt den Input/Output-Dialog oder die Darstellung des schriftlichen Inhalts"]
 
 . Stellen Sie sicher, dass die SQL-Ressourcen wieder online sind.
 +
-image::dr-cvo-avs-image41.png[dr cvo avs image41]
+image:dr-cvo-avs-image41.png["Die Abbildung zeigt den Input/Output-Dialog oder die Darstellung des schriftlichen Inhalts"]
 
 +
 
@@ -384,30 +384,30 @@ Wenn der primäre Standort wieder in Betrieb ist, können Sie ein Failback durch
 NOTE: Mit dem CPT-generierten Failback-Plan kann außerdem die Rückgabe der VMs und ihrer Daten aus dem Objektspeicher in die ursprüngliche VMware Umgebung initiiert werden.
 
 +
-image::dr-cvo-avs-image42.png[dr cvo avs image42]
+image:dr-cvo-avs-image42.png["Die Abbildung zeigt den Input/Output-Dialog oder die Darstellung des schriftlichen Inhalts"]
 
 +
 
 NOTE: Geben Sie die maximale Verzögerung an, nachdem Sie die VMs am Recovery-Standort angehalten und am geschützten Standort neu gestartet haben. Die zum Abschluss dieses Prozesses erforderliche Zeit umfasst das Abschließen der Replizierung nach dem Stoppen von Failover-VMs, die zum Reinigen des Recovery-Standorts benötigte Zeit und die Zeit zur Wiederherstellung von VMs am geschützten Standort. NetApp empfiehlt 10 Minuten.
 
 +
-image::dr-cvo-avs-image43.png[dr cvo avs image43]
+image:dr-cvo-avs-image43.png["Die Abbildung zeigt den Input/Output-Dialog oder die Darstellung des schriftlichen Inhalts"]
 
 . Schließen Sie den Failback-Prozess ab, und bestätigen Sie anschließend die Wiederaufnahme des VM-Schutzes und der Datenkonsistenz.
 +
-image::dr-cvo-avs-image44.png[dr cvo avs image44]
+image:dr-cvo-avs-image44.png["Die Abbildung zeigt den Input/Output-Dialog oder die Darstellung des schriftlichen Inhalts"]
 
 . Nachdem die VMs wiederhergestellt wurden, trennen Sie den sekundären Storage vom Host und stellen eine Verbindung zum primären Storage her.
 +
-image::dr-cvo-avs-image45.png[dr cvo avs image45]
+image:dr-cvo-avs-image45.png["Die Abbildung zeigt den Input/Output-Dialog oder die Darstellung des schriftlichen Inhalts"]
 
 +
-image::dr-cvo-avs-image46.png[dr cvo avs image46]
+image:dr-cvo-avs-image46.png["Die Abbildung zeigt den Input/Output-Dialog oder die Darstellung des schriftlichen Inhalts"]
 
 . Starten Sie den MSSQL-Serverdienst neu.
 . Vergewissern Sie sich, dass die SQL-Ressourcen wieder online sind.
 +
-image::dr-cvo-avs-image47.png[dr cvo avs image47]
+image:dr-cvo-avs-image47.png["Die Abbildung zeigt den Input/Output-Dialog oder die Darstellung des schriftlichen Inhalts"]
 
 +
 

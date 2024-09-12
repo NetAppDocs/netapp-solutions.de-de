@@ -39,7 +39,7 @@ Amazon FSX for NetApp ONTAP ist eine wirklich vollständig gemanagte Storage-Lö
 
 === Netzwerkumgebung
 
-image::mlops_fsxn_sagemaker_integration_training_0.png[Netzwerkumgebung zu optimieren]
+image:mlops_fsxn_sagemaker_integration_training_0.png["Netzwerkumgebung zu optimieren"]
 
 FSxN (Amazon FSX for NetApp ONTAP) ist ein AWS Storage-Service. Sie umfasst ein Filesystem, das auf dem NetApp ONTAP System ausgeführt wird, und eine AWS-gemanagte System Virtual Machine (SVM), die eine Verbindung mit ihr herstellt. Im angegebenen Diagramm befindet sich der von AWS gemanagte NetApp ONTAP-Server außerhalb der VPC. Die SVM dient als Vermittler zwischen SageMaker und dem NetApp ONTAP-System, empfängt Betriebsanforderungen von SageMaker und leitet sie an den zugrunde liegenden Speicher weiter. Für den Zugriff auf FSxN muss SageMaker innerhalb derselben VPC wie die FSxN-Bereitstellung platziert werden. Diese Konfiguration gewährleistet die Kommunikation und den Datenzugriff zwischen SageMaker und FSxN.
 
@@ -55,7 +55,7 @@ Beim Lesen von Daten wird FSxN als privater S3-Bucket konfiguriert. Weitere Info
 
 == Integrationsübersicht
 
-image::mlops_fsxn_sagemaker_integration_training_1.png[Schulungsworkflow]
+image:mlops_fsxn_sagemaker_integration_training_1.png["Schulungsworkflow"]
 
 Der Workflow, in dem Trainingsdaten in FSxN für den Aufbau eines Deep-Learning-Modells in SageMaker verwendet werden, lässt sich in drei Hauptschritte zusammenfassen: Definition des Datenladers, Modelltraining und Bereitstellung. Auf hoher Ebene bilden diese Schritte die Grundlage einer MLOPS-Pipeline. Jeder Schritt umfasst jedoch mehrere detaillierte Teilschritte für eine umfassende Implementierung. Diese Teilschritte umfassen verschiedene Aufgaben wie Datenvorverarbeitung, Dataset-Splitting, Modellkonfiguration, Hyperparameter-Tuning, Modellbewertung, und Modellimplementierung. Diese Schritte gewährleisten einen gründlichen und effektiven Prozess für die Erstellung und Implementierung von Deep-Learning-Modellen unter Verwendung von Trainingsdaten von FSxN in der SageMaker-Umgebung.
 
@@ -353,7 +353,7 @@ Dieser Code erleichtert die Bereitstellung eines PyTorch-Modells auf SageMaker. 
 image_object = list(bucket.objects.filter('dataset/tyre'))[0].get()
 image_bytes = image_object['Body'].read()
 
-with Image.open(with Image.open(BytesIO(image_bytes)) as image::
+with Image.open(with Image.open(BytesIO(image_bytes)) as image:
     predicted_classes = sagemaker_predictor.predict(image)
 
     print(predicted_classes)

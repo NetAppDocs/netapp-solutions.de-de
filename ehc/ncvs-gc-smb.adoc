@@ -45,7 +45,7 @@ Beispielsweise verwendet dieses Cloud Volumes Service Volume den folgenden UNC-F
 
 Im Active Directory sind dies die von Cloud Volumes Service generierten SPN-Einträge:
 
-image::ncvs-gc-image6.png[Ncvs gc-Bild6]
+image:ncvs-gc-image6.png["Die Abbildung zeigt den Input/Output-Dialog oder die Darstellung des schriftlichen Inhalts"]
 
 Dies ist das Ergebnis des DNS-Vorwärts-/Reverse-Lookups:
 
@@ -71,7 +71,7 @@ In einigen Fällen kann es ein Sicherheitsbedenken für Endbenutzer sein, den Na
 
 Wenn Sie Aliase für den SMB-Freigabepfad erstellen möchten, können Sie den Namen CNAME-Datensatz in DNS verwenden. Beispiel: Wenn Sie den Namen verwenden möchten `\\CIFS` Auf Freigaben statt auf `\\cvs-east- 433d.cvsdemo.local`, Aber Sie möchten immer noch Kerberos-Authentifizierung verwenden, ein CNAME in DNS, der auf den vorhandenen A/AAAA-Datensatz verweist, und ein zusätzlicher SPN, der dem bestehenden Computerkonto hinzugefügt wurde, bietet Kerberos-Zugriff.
 
-image::ncvs-gc-image7.png[Ncvs gc-Bild7]
+image:ncvs-gc-image7.png["Die Abbildung zeigt den Input/Output-Dialog oder die Darstellung des schriftlichen Inhalts"]
 
 Dies ist das resultierende DNS-Weitersuchergebnis nach dem Hinzufügen eines CNAME:
 
@@ -85,11 +85,11 @@ Aliases:  cifs.cvsdemo.local
 ....
 Dies ist die resultierende SPN-Abfrage nach dem Hinzufügen neuer SPNs:
 
-image::ncvs-gc-image8.png[Ncvs gc-Bild8]
+image:ncvs-gc-image8.png["Die Abbildung zeigt den Input/Output-Dialog oder die Darstellung des schriftlichen Inhalts"]
 
 In einer Paketerfassung können wir die Session-Setup-Anforderung mit dem SPN sehen, der an den CNAME gebunden ist.
 
-image::ncvs-gc-image9.png[Ncvs gc-Bild9]
+image:ncvs-gc-image9.png["Die Abbildung zeigt den Input/Output-Dialog oder die Darstellung des schriftlichen Inhalts"]
 
 
 
@@ -148,9 +148,9 @@ Standardmäßig enthalten alle ACLs und Initial Volume ACLs mit vollständiger K
 
 Wenn ein Benutzer beispielsweise nur Lesezugriff auf die Cloud Volumes Service Volume-Datei-ACL hat, wird ihm der Zugriff auf die Erstellung von Dateien und Ordnern verweigert, obwohl die share ACL für alle mit Full Control eingestellt ist, wie in der folgenden Abbildung dargestellt.
 
-image::ncvs-gc-image10.png[Ncvs gc-Bild10]
+image:ncvs-gc-image10.png["Die Abbildung zeigt den Input/Output-Dialog oder die Darstellung des schriftlichen Inhalts"]
 
-image::ncvs-gc-image11.png[Ncvs gc-Bild11]
+image:ncvs-gc-image11.png["Die Abbildung zeigt den Input/Output-Dialog oder die Darstellung des schriftlichen Inhalts"]
 
 Gehen Sie wie folgt vor, um die besten Sicherheitsergebnisse zu erzielen:
 
@@ -172,7 +172,7 @@ Einige dieser Optionen hängen von der Cloud Volumes Service-Ebene (Leistung ode
 * *Snapshot-Verzeichnis sichtbar machen (sowohl für CVS-Performance als auch für CVS-SW verfügbar).* mit dieser Option lässt sich kontrollieren, ob SMB-Clients in einem SMB-Share auf das Snapshot-Verzeichnis zugreifen können (`\\server\share\~snapshot` Und/oder Registerkarte frühere Versionen). Die Standardeinstellung ist nicht aktiviert, was bedeutet, dass das Volume standardmäßig den Zugriff auf das ausgeblendet und deaktiviert `~snapshot` Verzeichnis, und es werden keine Snapshot-Kopien auf der Registerkarte Vorherige Versionen des Volumes angezeigt.
 
 
-image::ncvs-gc-image12.png[Ncvs gc-Bild12]
+image:ncvs-gc-image12.png["Die Abbildung zeigt den Input/Output-Dialog oder die Darstellung des schriftlichen Inhalts"]
 
 Das Ausblenden von Snapshot Kopien vor Endbenutzern kann aus Sicherheitsgründen oder aus Performance-Gründen (Ausblenden dieser Ordner vor AV-Scans) oder unter Voreinstellung gewünscht werden. Cloud Volumes Service Snapshots sind schreibgeschützt, d. h. selbst wenn diese Snapshots sichtbar sind, können Endanwender Dateien im Snapshot Verzeichnis nicht löschen oder ändern. Dateiberechtigungen auf die Dateien oder Ordner beim Erstellen der Snapshot Kopie. Wenn sich die Berechtigungen einer Datei oder eines Ordners zwischen Snapshot Kopien ändern, gelten die Änderungen auch für die Dateien oder Ordner im Snapshot Verzeichnis. Benutzer und Gruppen können auf Basis von Berechtigungen auf diese Dateien oder Ordner zugreifen. Das Löschen oder Modifizierungen von Dateien im Snapshot Verzeichnis ist zwar nicht möglich, aber es ist möglich, Dateien oder Ordner aus dem Snapshot Verzeichnis zu kopieren.
 
@@ -202,11 +202,11 @@ Wenn Sie einen Benutzer angeben, der zu Backup-Benutzern hinzugefügt werden sol
 
 Wenn Sie Benutzern von Sicherheitsberechtigungen einen Benutzer hinzufügen, erhält der Benutzer die SeSecurityPrivilege, die in einigen Anwendungsanwendungsfällen, wie z. B., nützlich ist https://docs.netapp.com/us-en/ontap/smb-hyper-v-sql/add-sesecurityprivilege-user-account-task.html["SQL Server auf SMB-Freigaben"^].
 
-image::ncvs-gc-image13.png[Ncvs gc-Bild13]
+image:ncvs-gc-image13.png["Die Abbildung zeigt den Input/Output-Dialog oder die Darstellung des schriftlichen Inhalts"]
 
 Sie können die Mitgliedschaften der lokalen Cloud Volumes Service-Gruppen über das MMC mit den entsprechenden Berechtigungen anzeigen. Die folgende Abbildung zeigt Benutzer, die mit der Cloud Volumes Service Konsole hinzugefügt wurden.
 
-image::ncvs-gc-image14.png[Ncvs gc-Bild14]
+image:ncvs-gc-image14.png["Die Abbildung zeigt den Input/Output-Dialog oder die Darstellung des schriftlichen Inhalts"]
 
 Die folgende Tabelle zeigt die Liste der Standard-BUILTIN-Gruppen und welche Benutzer/Gruppen standardmäßig hinzugefügt werden.
 
@@ -232,9 +232,9 @@ Die folgende Tabelle zeigt die Liste der Standard-BUILTIN-Gruppen und welche Ben
 
 Sie können lokale Benutzer und Gruppen (und Gruppenmitglieder) im MMC-Fenster anzeigen, aber Sie können keine Objekte hinzufügen oder löschen oder Gruppenmitgliedschaften von dieser Konsole aus ändern. Standardmäßig werden nur die Gruppe Domänenadministratoren und der Administrator der BUILTIN\Administrators in Cloud Volumes Service hinzugefügt. Derzeit können Sie dies nicht ändern.
 
-image::ncvs-gc-image15.png[Ncvs gc-Bild15]
+image:ncvs-gc-image15.png["Die Abbildung zeigt den Input/Output-Dialog oder die Darstellung des schriftlichen Inhalts"]
 
-image::ncvs-gc-image16.png[Ncvs gc-Bild16]
+image:ncvs-gc-image16.png["Die Abbildung zeigt den Input/Output-Dialog oder die Darstellung des schriftlichen Inhalts"]
 
 
 
@@ -250,9 +250,9 @@ Wenn Sie SMB-Freigaben mit den entsprechenden Berechtigungen anzeigen, sehen Sie
 
 Denken Sie daran, dass pro Region nur eine Active Directory-Verbindung zulässig ist.
 
-image::ncvs-gc-image17.png[Ncvs gc-Bild17]
+image:ncvs-gc-image17.png["Die Abbildung zeigt den Input/Output-Dialog oder die Darstellung des schriftlichen Inhalts"]
 
-image::ncvs-gc-image18.png[Ncvs gc-Bild18]
+image:ncvs-gc-image18.png["Die Abbildung zeigt den Input/Output-Dialog oder die Darstellung des schriftlichen Inhalts"]
 
 Die folgende Tabelle zeigt eine Liste der unterstützten/nicht unterstützten Funktionen für MMC.
 

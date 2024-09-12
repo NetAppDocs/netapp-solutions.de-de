@@ -34,7 +34,7 @@ Voraussetzungen:
 * Stellen Sie sicher, dass der CIDR-Bereich nicht mit Ihren lokalen oder Cloud-Subnetzen überlappt. Der CIDR-Bereich muss /27 oder höher sein.
 
 
-image::gcve-deploy-1.png[Gcve-Bereitstellung 1]
+image:gcve-deploy-1.png["Die Abbildung zeigt den Input/Output-Dialog oder die Darstellung des schriftlichen Inhalts"]
 
 Hinweis: Die Erstellung einer privaten Cloud kann zwischen 30 Minuten und 2 Stunden dauern.
 
@@ -46,19 +46,19 @@ Konfigurieren Sie nach der Bereitstellung der Private Cloud den privaten Zugriff
 
 Dadurch wird sichergestellt, dass das VPC-Netzwerk, auf dem Cloud Volumes ONTAP-Instanzen ausgeführt werden, mit der GCVE Private Cloud kommunizieren kann. Folgen Sie dazu dem link:https://cloud.google.com/architecture/partners/netapp-cloud-volumes/quickstart["GCP-Dokumentation"]. Richten Sie für den Cloud Volume Service eine Verbindung zwischen VMware Engine und Cloud Volumes Service ein, indem Sie einmalig zwischen den Mandanten-Host-Projekten Peering durchführen. Gehen Sie wie folgt vor, um ausführliche Schritte zu erhalten link:https://cloud.google.com/vmware-engine/docs/vmware-ecosystem/howto-cloud-volumes-service["Verlinken"].
 
-image::gcve-access-1.png[Zugriff 1]
+image:gcve-access-1.png["Die Abbildung zeigt den Input/Output-Dialog oder die Darstellung des schriftlichen Inhalts"]
 
 Melden Sie sich mit dem CloudOwner@gve.local-Benutzer bei vcenter an. Rufen Sie das VMware Engine Portal auf, rufen Sie zu Ressourcen auf und wählen Sie die entsprechende Private Cloud aus. Klicken Sie im Abschnitt grundlegende Informationen auf den Link Anzeigen, um die vCenter-Anmeldedaten (vCenter Server, HCX Manager) oder NSX-T-Anmeldeinformationen (NSX Manager) anzuzeigen.
 
-image::gcve-access-2.png[Zugriff auf 2]
+image:gcve-access-2.png["Die Abbildung zeigt den Input/Output-Dialog oder die Darstellung des schriftlichen Inhalts"]
 
 Öffnen Sie in einer virtuellen Windows-Maschine einen Browser, und navigieren Sie zur vCenter Web-Client-URL (`"https://10.0.16.6/"`) Und verwenden Sie den Admin-Benutzernamen als CloudOwner@gve.local und fügen Sie das kopierte Passwort ein. Auf ähnliche Weise kann auch NSX-T-Manager über die Web-Client-URL zugegriffen werden (`"https://10.0.16.11/"`) Und den Admin-Benutzernamen verwenden und das kopierte Passwort einfügen, um neue Segmente zu erstellen oder die vorhandenen Tier-Gateways zu ändern.
 
 Wenn Sie ein lokales Netzwerk zur Private Cloud der VMware Engine verbinden möchten, nutzen Sie Cloud-VPN oder Cloud Interconnect, um entsprechende Konnektivität zu erhalten und stellen sicher, dass die erforderlichen Ports geöffnet sind. Gehen Sie wie folgt vor, um ausführliche Schritte zu erhalten link:https://ubuntu.com/server/docs/service-iscsi["Verlinken"].
 
-image::gcve-access-3.png[Zugriff auf 3]
+image:gcve-access-3.png["Die Abbildung zeigt den Input/Output-Dialog oder die Darstellung des schriftlichen Inhalts"]
 
-image::gcve-access-4.png[Zugriff auf 4]
+image:gcve-access-4.png["Die Abbildung zeigt den Input/Output-Dialog oder die Darstellung des schriftlichen Inhalts"]
 
 ====
 .Stellen Sie zusätzlichen Datastore für den NetApp-Cloud-Volume-Service in GCVE bereit

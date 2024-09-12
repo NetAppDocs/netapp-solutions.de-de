@@ -1,0 +1,36 @@
+---
+sidebar: sidebar 
+keywords: Cyber vault, cybervault, cyber-vault, data protection, security, ransomware, ONTAP, hardening 
+permalink: /cyber-vault/ontap-cyber-vault-hardening.html 
+summary: Zusätzliche Schritte empfohlen, um einen Cyber-Vault für ONTAP zu härten 
+---
+= Cyber-Vault-Härtung
+:hardbreaks:
+:allow-uri-read: 
+:nofooter: 
+:icons: font
+:linkattrs: 
+:imagesdir: ../media/
+
+
+[role="lead"]
+Dies sind die zusätzlichen Empfehlungen, um eine ONTAP Cyber-Vault zu erhärten. Weitere Empfehlungen und Verfahren finden Sie im folgenden Leitfaden zur ONTAP-Härtung.
+
+
+
+== Empfehlungen zur Erhöhung der Cyber-Vault-Sicherheit
+
+* Isolieren Sie die Managementebenen des Cyber-Vaults
+* Aktivieren Sie Daten-LIFs auf dem Ziel-Cluster nicht, da sie einen zusätzlichen Angriffsvektor darstellen
+* Beschränken Sie auf dem Ziel-Cluster mithilfe einer Service-Richtlinie den Intercluster LIF-Zugriff auf das Quell-Cluster
+* Segmentierung der Management-LIF auf dem Ziel-Cluster für eingeschränkten Zugriff mit einer Service-Richtlinie und einem Bastion-Host
+* Beschränken Sie den gesamten Datenverkehr vom Quell-Cluster zum Cyber-Vault, um nur die für den SnapMirror-Datenverkehr erforderlichen Ports zuzulassen
+* Deaktivieren Sie nach Möglichkeit nicht benötigte Managementzugriffsmethoden in ONTAP, um die Angriffsfläche zu verringern
+* Aktivieren Sie Audit-Protokollierung und Remote-Protokollspeicherung
+* Multi-Admin-Verifizierung ermöglichen und Verifizierung durch einen Administrator außerhalb der regulären Storage-Administratoren (z. B. CISO-Mitarbeiter) erfordern
+* Implementierung von rollenbasierter Zugriffssteuerung
+* Erfordern Sie für System Manager und SSH eine administrative Multi-Faktor-Authentifizierung
+* Verwenden Sie für Skripts und REST-API-Aufrufe eine Token-basierte Authentifizierung
+
+
+link:../../ontap/ontap-security-hardening/security-hardening-overview.html["ONTAP-Härtungsleitfaden"]link:../../ontap/multi-admin-verify/index.html["Übersicht über die Verifizierung mit mehreren Administratoren"^]link:https://www.netapp.com/media/17055-tr4647.pdf["Leitfaden zur ONTAP Multi-Faktor-Authentifizierung"^]Wie Sie diese Härtungsschritte durchführen können, entnehmen Sie bitte dem ,  und.

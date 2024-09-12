@@ -101,30 +101,27 @@ Das Toolkit besteht aus einem webbasierten HTML-Parser und zwei SQL-Skripten zur
 ====
 . Öffnen Sie das HTML-Parser-AWR-Modul.
 +
-image::db_sizing_ora_parser_01.png[Dieses Bild enthält einen HTML-Parser-Bildschirm für die Oracle-Größenbestimmung]
+image:db_sizing_ora_parser_01.png["Dieses Bild enthält einen HTML-Parser-Bildschirm für die Oracle-Größenbestimmung"]
 
 . Prüfen Sie das Ausgabeformat als .csv, und klicken Sie auf `Upload files` Um den awr-Bericht hochzuladen. Der Parser gibt Ergebnisse in einer HTML-Seite mit einer Tabellenzusammenfassung sowie einer output.csv-Datei in zurück `Download` Ordner.
 +
-image::db_sizing_ora_parser_02.png[Dieses Bild enthält einen HTML-Parser-Bildschirm für die Oracle-Größenbestimmung]
+image:db_sizing_ora_parser_02.png["Dieses Bild enthält einen HTML-Parser-Bildschirm für die Oracle-Größenbestimmung"]
 
 . Öffnen Sie die Excel-Vorlagendatei, und kopieren Sie den csv-Inhalt in Spalte A und Zelle 1, um die Dimensionierungsinformationen des DB-Servers zu generieren.
 +
-image::db_sizing_ora_parser_03_anf.png[Dieses Bild enthält einen Screenshot der Excel-Vorlage für die Oracle-Größenbestimmung]
+image:db_sizing_ora_parser_03_anf.png["Dieses Bild enthält einen Screenshot der Excel-Vorlage für die Oracle-Größenbestimmung"]
 
 . Markieren Sie Spalte A und Felder 1 und 2, und klicken Sie auf `Data`Dann `Text to Columns` Um den Text Wizzard zu öffnen. Wählen `Delimited`Dann `Next` Zum nächsten Bildschirm.
 +
-image::db_sizing_ora_parser_04_anf.png[Dieses Bild enthält einen Screenshot der Excel-Vorlage für die Oracle-Größenbestimmung]
+image:db_sizing_ora_parser_04_anf.png["Dieses Bild enthält einen Screenshot der Excel-Vorlage für die Oracle-Größenbestimmung"]
 
 . Prüfen `Other`Geben Sie dann '=' als ein `Delimiters`. Klicken Sie auf `Next` Zum nächsten Bildschirm.
 +
-image::db_sizing_ora_parser_05_anf.png[Dieses Bild enthält einen Screenshot der Excel-Vorlage für die Oracle-Größenbestimmung]
+image:db_sizing_ora_parser_05_anf.png["Dieses Bild enthält einen Screenshot der Excel-Vorlage für die Oracle-Größenbestimmung"]
 
 . Klicken Sie auf `Finish` Um die Konvertierung der Zeichenfolge in ein lesbares Spaltenformat abzuschließen. Hinweis: Die Felder für die VM- und ANF-Größenbestimmung wurden mit Daten gefüllt, die aus dem Oracle AWR-Bericht abgerufen wurden.
 +
-image::db_sizing_ora_parser_06_anf.png[Dieses Bild enthält einen Screenshot der Excel-Vorlage für die Oracle-Größenbestimmung]
-
-+
-image::db_sizing_ora_parser_07_anf.png[Dieses Bild enthält einen Screenshot der Excel-Vorlage für die Oracle-Größenbestimmung]
+image:db_sizing_ora_parser_06_anf.png["Dieses Bild enthält einen Screenshot der Excel-Vorlage für die Oracle-Größenbestimmung"] image:db_sizing_ora_parser_07_anf.png["Dieses Bild enthält einen Screenshot der Excel-Vorlage für die Oracle-Größenbestimmung"]
 
 . Führen Sie das Skript ora_db_Data_size.sql, ora_db_logs_size.sql als DBA in sqlplus aus, um die Datengröße der Oracle-Datenbank und die Größe der archivierten Protokolle mit der Anzahl der Tage des Aufbewahrungsfensters abzurufen.
 +
@@ -167,7 +164,7 @@ NOTE: Die mit den oben genannten Skripts abgerufenen Informationen zur Datenbank
 
 . Geben Sie das Ergebnis in die Excel-Datei ein, um die Ausgabe der Anleitung zur Größenbestimmung abzuschließen.
 +
-image::db_sizing_ora_parser_08_anf.png[Dieses Bild enthält einen Screenshot der Excel-Vorlage für die Oracle-Größenbestimmung]
+image:db_sizing_ora_parser_08_anf.png["Dieses Bild enthält einen Screenshot der Excel-Vorlage für die Oracle-Größenbestimmung"]
 
 . ANF verwendet ein drei-Tier-Service-Level (Standard, Premium, Ultra) für das Management der Durchsatzgrenze für Datenbank-Volumes. Siehe link:https://learn.microsoft.com/en-us/azure/azure-netapp-files/azure-netapp-files-service-levels["Service-Level für Azure NetApp Files"^] Entsprechende Details. Wählen Sie basierend auf den Ergebnissen der Sizing-Anleitungen ein ANF-Service-Level aus, das den Durchsatz bietet, der die Anforderung für die Datenbank erfüllt.
 

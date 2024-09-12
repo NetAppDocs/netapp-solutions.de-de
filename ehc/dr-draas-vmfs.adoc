@@ -20,7 +20,7 @@ In diesem Abschnitt des Dokuments wird die Konfiguration von BlueXP  DRaaS zur 
 
 Mithilfe des BlueXP  Disaster Recovery Service, der in die NetApp BlueXP  Konsole integriert ist, können Kunden ihre lokalen VMware vCenter zusammen mit ONTAP Storage erkennen, Ressourcengruppen erstellen, einen Disaster Recovery-Plan erstellen, ihn Ressourcengruppen zuordnen und Failover und Failback testen oder ausführen. SnapMirror bietet Block-Replizierung auf Storage-Ebene, sodass die beiden Standorte mit inkrementellen Änderungen aktualisiert werden können, was zu einem RPO von bis zu 5 Minuten führt. Außerdem ist es möglich, DR-Verfahren als regelmäßiges Drill-Verfahren zu simulieren, ohne Auswirkungen auf die Produktion und replizierte Datenspeicher zu haben oder zusätzliche Storage-Kosten entstehen. Bei BlueXP  Disaster Recovery wird mithilfe der FlexClone Technologie von ONTAP eine platzsparende Kopie des VMFS Datastore vom letzten replizierten Snapshot am DR-Standort erstellt. Nach Abschluss des DR-Tests können Kunden die Testumgebung wieder löschen, ohne die tatsächlich replizierten Produktionsressourcen zu beeinträchtigen. Wenn (geplant oder ungeplant) das eigentliche Failover mit nur wenigen Klicks ausgeführt werden muss, orchestriert der BlueXP  Disaster Recovery Service alle Schritte, die zum automatischen Einrichten der geschützten Virtual Machines am designierten Disaster Recovery-Standort erforderlich sind. Der Service umkehrt auch die SnapMirror-Beziehung zum primären Standort und repliziert bei Bedarf alle Änderungen für einen Failback-Vorgang von sekundär zu primär. All dies kann mit einem Bruchteil der Kosten im Vergleich zu anderen bekannten Alternativen erreicht werden.
 
-image::dr-draas-vmfs-image0.png[dr draas vmfs image0]
+image:dr-draas-vmfs-image0.png["Die Abbildung zeigt den Input/Output-Dialog oder die Darstellung des schriftlichen Inhalts"]
 
 
 
@@ -33,7 +33,7 @@ Um die BlueXP  Disaster Recovery zu starten, verwenden Sie die BlueXP  Konsole
 . Das BlueXP  Disaster Recovery Dashboard wird angezeigt.
 
 
-image:dr-draas-vmfs-image1.png[""]
+image:dr-draas-vmfs-image1.png["Die Abbildung zeigt den Input/Output-Dialog oder die Darstellung des schriftlichen Inhalts"]
 
 Stellen Sie vor der Konfiguration des Disaster Recovery-Plans sicher, dass die folgenden Voraussetzungen erfüllt sind:
 
@@ -49,7 +49,7 @@ Sobald die Verbindung zwischen dem Quell- und dem Zielstandort hergestellt ist, 
 
 NOTE: NetApp empfiehlt die Implementierung des BlueXP  Connectors am Disaster Recovery-Standort oder an einem dritten Standort, damit der BlueXP  Connector über das Netzwerk mit den Quell- und Zielressourcen kommunizieren kann, wenn es zu echten Ausfällen oder Naturkatastrophen kommt.
 
-image:dr-draas-vmfs-image2.png[""]
+image:dr-draas-vmfs-image2.png["Die Abbildung zeigt den Input/Output-Dialog oder die Darstellung des schriftlichen Inhalts"]
 
 
 NOTE: Die Unterstützung von lokalen zu lokalen VMFS-Datastores wird in einer Vorschau auf Technologie ausgeführt, während dieses Dokument verfasst wird. Die Funktion wird sowohl bei FC- als auch bei ISCSI-protokollbasierten VMFS-Datenspeichern unterstützt.
@@ -63,19 +63,19 @@ Der erste Schritt zur Vorbereitung auf Disaster Recovery besteht darin, die loka
 
 NOTE: Stellen Sie sicher, dass die ONTAP-Speichersysteme der Arbeitsumgebung innerhalb des Arbeitsbereichs hinzugefügt werden. Öffnen Sie die BlueXP -Konsole, und wählen Sie aus der linken Navigation *Schutz > Notfallwiederherstellung* aus. Wählen Sie *vCenter-Server ermitteln* oder verwenden Sie das Hauptmenü, Wählen Sie *Standorte > Hinzufügen > vCenter hinzufügen*.
 
-image:dr-draas-vmfs-image3.png[""]
+image:dr-draas-vmfs-image3.png["Die Abbildung zeigt den Input/Output-Dialog oder die Darstellung des schriftlichen Inhalts"]
 
 Fügen Sie die folgenden Plattformen hinzu:
 
 * *Quelle*. VCenter vor Ort.
 
 
-image:dr-draas-vmfs-image4.png[""]
+image:dr-draas-vmfs-image4.png["Die Abbildung zeigt den Input/Output-Dialog oder die Darstellung des schriftlichen Inhalts"]
 
 * *Ziel*. VMC SDDC vCenter:
 
 
-image:dr-draas-vmfs-image5.png[""]
+image:dr-draas-vmfs-image5.png["Die Abbildung zeigt den Input/Output-Dialog oder die Darstellung des schriftlichen Inhalts"]
 
 Sobald die vCenters hinzugefügt wurden, wird eine automatische Erkennung ausgelöst.
 
@@ -95,7 +95,7 @@ Wenn die SnapMirror Beziehung unterbrochen wird, wird das Ziel-Volume beschreibb
 
 Der Prozess zur Erstellung der SnapMirror-Replizierung bleibt für jede Applikation unverändert. Der Prozess kann manuell oder automatisiert werden. Am einfachsten lässt sich BlueXP  zur Konfiguration der SnapMirror Replizierung nutzen, indem das ONTAP Quell-System der Umgebung einfach per Drag & Drop auf das Ziel gezogen wird, um den Assistenten zu starten, der den Rest des Prozesses durchläuft.
 
-image:dr-draas-vmfs-image6.png[""]
+image:dr-draas-vmfs-image6.png["Die Abbildung zeigt den Input/Output-Dialog oder die Darstellung des schriftlichen Inhalts"]
 
 Auch BlueXP  DRaaS kann dasselbe automatisieren, wenn die folgenden beiden Kriterien erfüllt sind:
 
@@ -103,7 +103,7 @@ Auch BlueXP  DRaaS kann dasselbe automatisieren, wenn die folgenden beiden Krit
 * Quell-SVM und Ziel-SVM haben eine Peer-Beziehung.
 
 
-image:dr-draas-vmfs-image7.png[""]
+image:dr-draas-vmfs-image7.png["Die Abbildung zeigt den Input/Output-Dialog oder die Darstellung des schriftlichen Inhalts"]
 
 
 NOTE: Wenn die SnapMirror-Beziehung bereits über CLI für das Volume konfiguriert ist, nimmt BlueXP  DRaaS die Beziehung auf und fährt mit den restlichen Workflow-Operationen fort.
@@ -117,34 +117,34 @@ NOTE: Abgesehen von den oben genannten Ansätzen kann die SnapMirror Replikation
 
 Nachdem die Quell- und Zielstandorte hinzugefügt wurden, führt die BlueXP  Disaster Recovery automatische Tiefenerkennung durch und zeigt die VMs zusammen mit den zugehörigen Metadaten an. BlueXP  Disaster Recovery erkennt auch automatisch die von den VMs verwendeten Netzwerke und Portgruppen und füllt diese aus.
 
-image:dr-draas-vmfs-image8.png[""]
+image:dr-draas-vmfs-image8.png["Die Abbildung zeigt den Input/Output-Dialog oder die Darstellung des schriftlichen Inhalts"]
 
 Nach dem Hinzufügen der Standorte können VMs zu Ressourcengruppen zusammengefasst werden. Mit den BlueXP  Disaster Recovery-Ressourcengruppen können Sie eine Reihe abhängiger VMs in logischen Gruppen gruppieren, die ihre Boot-Aufträge und Boot-Verzögerungen enthalten, die bei der Recovery ausgeführt werden können. Um Ressourcengruppen zu erstellen, navigieren Sie zu *Ressourcengruppen* und klicken Sie auf *Neue Ressourcengruppe erstellen*.
 
-image:dr-draas-vmfs-image9.png[""]
+image:dr-draas-vmfs-image9.png["Die Abbildung zeigt den Input/Output-Dialog oder die Darstellung des schriftlichen Inhalts"]
 
 
 NOTE: Die Ressourcengruppe kann auch beim Erstellen eines Replikationsplans erstellt werden.
 
 Die Boot-Reihenfolge der VMs kann während der Erstellung von Ressourcengruppen mithilfe eines einfachen Drag-and-Drop-Mechanismus definiert oder geändert werden.
 
-image:dr-draas-vmfs-image10.png[""]
+image:dr-draas-vmfs-image10.png["Die Abbildung zeigt den Input/Output-Dialog oder die Darstellung des schriftlichen Inhalts"]
 
 Nach der Erstellung der Ressourcengruppen erstellen Sie im nächsten Schritt einen Ausführungsentwurf oder einen Plan für die Wiederherstellung von virtuellen Maschinen und Anwendungen bei einem Notfall. Wie in den Voraussetzungen erwähnt, kann die SnapMirror-Replikation vorab konfiguriert werden, oder DRaaS kann sie mithilfe der RPO und der Aufbewahrungszahl konfigurieren, die während der Erstellung des Replikationsplans angegeben wurde.
 
-image:dr-draas-vmfs-image11.png[""]
+image:dr-draas-vmfs-image11.png["Die Abbildung zeigt den Input/Output-Dialog oder die Darstellung des schriftlichen Inhalts"]
 
-image:dr-draas-vmfs-image12.png[""]
+image:dr-draas-vmfs-image12.png["Die Abbildung zeigt den Input/Output-Dialog oder die Darstellung des schriftlichen Inhalts"]
 
 Konfigurieren Sie den Replizierungsplan, indem Sie die Quell- und Ziel-vCenter-Plattformen aus dem Dropdown auswählen und die Ressourcengruppen auswählen, die in den Plan einbezogen werden sollen, sowie die Gruppierung der Art und Weise, wie Applikationen wiederhergestellt und eingeschaltet werden sollen, sowie die Zuordnung von Clustern und Netzwerken. Um den Wiederherstellungsplan zu definieren, navigieren Sie zur Registerkarte *Replikationsplan* und klicken Sie auf *Plan hinzufügen*.
 
 Wählen Sie zunächst das Quell-vCenter aus und dann das Ziel-vCenter aus.
 
-image:dr-draas-vmfs-image13.png[""]
+image:dr-draas-vmfs-image13.png["Die Abbildung zeigt den Input/Output-Dialog oder die Darstellung des schriftlichen Inhalts"]
 
 Im nächsten Schritt wählen Sie vorhandene Ressourcengruppen aus. Wenn keine Ressourcengruppen erstellt wurden, hilft der Assistent, die erforderlichen virtuellen Maschinen zu gruppieren (im Grunde erstellen Sie funktionale Ressourcengruppen) auf der Grundlage der Wiederherstellungsziele. Dies hilft auch dabei, die Reihenfolge der Wiederherstellung von virtuellen Maschinen der Anwendung festzulegen.
 
-image:dr-draas-vmfs-image14.png[""]
+image:dr-draas-vmfs-image14.png["Die Abbildung zeigt den Input/Output-Dialog oder die Darstellung des schriftlichen Inhalts"]
 
 
 NOTE: Ressourcengruppe ermöglicht das Festlegen der Startreihenfolge mithilfe der Drag-and-Drop-Funktion. Damit kann die Reihenfolge, in der die VMs während des Recovery-Prozesses eingeschaltet werden, leicht geändert werden.
@@ -154,38 +154,38 @@ NOTE: Jede virtuelle Maschine in einer Ressourcengruppe wird in der Reihenfolge 
 
 Der Screenshot unten zeigt die Option zum Filtern virtueller Maschinen oder spezieller Datastores nach Unternehmensanforderungen, wenn Ressourcengruppen nicht vorab erstellt werden.
 
-image:dr-draas-vmfs-image15.png[""]
+image:dr-draas-vmfs-image15.png["Die Abbildung zeigt den Input/Output-Dialog oder die Darstellung des schriftlichen Inhalts"]
 
 Sobald die Ressourcengruppen ausgewählt sind, erstellen Sie die Failover-Zuordnungen. Geben Sie in diesem Schritt an, wie die Ressourcen aus der Quellumgebung dem Ziel zugeordnet werden. Dazu gehören Rechenressourcen, virtuelle Netzwerke. IP-Anpassung, Pre- und Post-Skripte, Boot-Verzögerungen, Applikationskonsistenz usw. Weitere Informationen finden Sie unter link:https://docs.netapp.com/us-en/bluexp-disaster-recovery/use/drplan-create.html#map-source-resources-to-the-target["Erstellen Sie einen Replizierungsplan"].
 
-image:dr-draas-vmfs-image16.png[""]
+image:dr-draas-vmfs-image16.png["Die Abbildung zeigt den Input/Output-Dialog oder die Darstellung des schriftlichen Inhalts"]
 
 
 NOTE: Standardmäßig werden für Test- und Failover-Vorgänge dieselben Zuordnungsparameter verwendet. Um unterschiedliche Zuordnungen für die Testumgebung anzuwenden, aktivieren Sie die Option Testzuordnung, nachdem Sie das Kontrollkästchen wie unten gezeigt deaktiviert haben:
 
-image:dr-draas-vmfs-image17.png[""]
+image:dr-draas-vmfs-image17.png["Die Abbildung zeigt den Input/Output-Dialog oder die Darstellung des schriftlichen Inhalts"]
 
 Klicken Sie nach Abschluss der Ressourcenzuordnung auf Weiter.
 
-image:dr-draas-vmfs-image18.png[""]
+image:dr-draas-vmfs-image18.png["Die Abbildung zeigt den Input/Output-Dialog oder die Darstellung des schriftlichen Inhalts"]
 
 Wählen Sie den Wiederholungstyp aus. In einfachen Worten: Wählen Sie Migrate (einmalige Migration mit Failover) oder die Option wiederkehrende kontinuierliche Replikation aus. In dieser Übersicht ist die Option „Replikat“ ausgewählt.
 
-image:dr-draas-vmfs-image19.png[""]
+image:dr-draas-vmfs-image19.png["Die Abbildung zeigt den Input/Output-Dialog oder die Darstellung des schriftlichen Inhalts"]
 
 Überprüfen Sie anschließend die erstellten Zuordnungen und klicken Sie auf Plan hinzufügen.
 
-image:dr-draas-vmfs-image20.png[""]
+image:dr-draas-vmfs-image20.png["Die Abbildung zeigt den Input/Output-Dialog oder die Darstellung des schriftlichen Inhalts"]
 
-image:dr-draas-vmfs-image21.png[""]
+image:dr-draas-vmfs-image21.png["Die Abbildung zeigt den Input/Output-Dialog oder die Darstellung des schriftlichen Inhalts"]
 
 Sobald der Replizierungsplan erstellt wurde, kann ein Failover entsprechend den Anforderungen durchgeführt werden. Wählen Sie dazu die Failover-Option, die Test-Failover-Option oder die Option „Migrieren“. Die BlueXP  Disaster Recovery gewährleistet, dass der Replizierungsprozess alle 30 Minuten planmäßig ausgeführt wird. Während der Optionen für Failover und Test-Failover können Sie die neueste SnapMirror Snapshot Kopie verwenden oder eine bestimmte Snapshot Kopie aus einer zeitpunktgenauen Snapshot Kopie auswählen (gemäß der Aufbewahrungsrichtlinie von SnapMirror). Die Point-in-Time-Option kann sehr hilfreich sein, wenn es ein Korruptionsereignis wie Ransomware gibt, wo die neuesten Replikate bereits kompromittiert oder verschlüsselt sind. BlueXP  Disaster Recovery zeigt alle verfügbaren Recovery-Punkte an.
 
-image:dr-draas-vmfs-image22.png[""]
+image:dr-draas-vmfs-image22.png["Die Abbildung zeigt den Input/Output-Dialog oder die Darstellung des schriftlichen Inhalts"]
 
 Um Failover oder Test Failover mit der im Replikationsplan angegebenen Konfiguration auszulösen, klicken Sie auf *Failover* oder *Test Failover*.
 
-image:dr-draas-vmfs-image23.png[""]
+image:dr-draas-vmfs-image23.png["Die Abbildung zeigt den Input/Output-Dialog oder die Darstellung des schriftlichen Inhalts"]
 
 
 
@@ -199,13 +199,13 @@ NOTE: Ein Test-Failover-Vorgang erstellt ein geklontes Volume auf dem ONTAP Ziel
 
 NOTE: Das Ausführen einer Testwiederherstellung hat keine Auswirkungen auf die SnapMirror-Replikation.
 
-image:dr-draas-vmfs-image24.png[""]
+image:dr-draas-vmfs-image24.png["Die Abbildung zeigt den Input/Output-Dialog oder die Darstellung des schriftlichen Inhalts"]
 
 Während des Prozesses ordnet die Disaster Recovery von BlueXP  das ursprüngliche Ziel-Volume nicht zu. Stattdessen wird ein neues FlexClone-Volume aus dem ausgewählten Snapshot erstellt und ein temporärer Datastore, der das FlexClone-Volume sichert, den ESXi Hosts zugeordnet.
 
-image:dr-draas-vmfs-image25.png[""]
+image:dr-draas-vmfs-image25.png["Die Abbildung zeigt den Input/Output-Dialog oder die Darstellung des schriftlichen Inhalts"]
 
-image:dr-draas-vmfs-image26.png[""]
+image:dr-draas-vmfs-image26.png["Die Abbildung zeigt den Input/Output-Dialog oder die Darstellung des schriftlichen Inhalts"]
 
 Nach Abschluss des Test-Failovers kann der Bereinigungsvorgang mit * „Clean up Failover Test“* ausgelöst werden. Während dieses Vorgangs zerstört die BlueXP  Disaster Recovery das FlexClone Volume, das bei diesem Vorgang verwendet wurde.
 
@@ -217,17 +217,17 @@ Wenn ein echter Notfall eintritt, führt BlueXP  Disaster Recovery folgende Sch
 . Schalten Sie die VMs ein
 
 
-image:dr-draas-vmfs-image27.png[""]
+image:dr-draas-vmfs-image27.png["Die Abbildung zeigt den Input/Output-Dialog oder die Darstellung des schriftlichen Inhalts"]
 
 Sobald der primäre Standort in Betrieb ist, ermöglicht das BlueXP  Disaster Recovery die umgekehrte Resynchronisierung für SnapMirror und ermöglicht Failback, das auch hier mit nur einem Mausklick durchgeführt werden kann.
 
-image:dr-draas-vmfs-image28.png[""]
+image:dr-draas-vmfs-image28.png["Die Abbildung zeigt den Input/Output-Dialog oder die Darstellung des schriftlichen Inhalts"]
 
 Wenn die Option „Migration“ gewählt wird, wird dies als geplantes Failover-Ereignis angesehen. In diesem Fall wird ein zusätzlicher Schritt ausgelöst, der das Herunterfahren der virtuellen Maschinen am Quellstandort umfasst. Die restlichen Schritte bleiben dem Failover-Ereignis gleich.
 
 Über BlueXP  oder die ONTAP-CLI können Sie den Replikationsstatus für die entsprechenden Datenspeicher-Volumes überwachen und den Status eines Failover oder Test-Failovers über die Jobüberwachung nachverfolgen.
 
-image:dr-draas-vmfs-image29.png[""]
+image:dr-draas-vmfs-image29.png["Die Abbildung zeigt den Input/Output-Dialog oder die Darstellung des schriftlichen Inhalts"]
 
 Auf diese Weise erhalten Sie eine leistungsstarke Lösung, die einen individuellen Disaster-Recovery-Plan umsetzt. Failover lässt sich als geplanter Failover oder Failover mit einem Mausklick durchführen, wenn ein Notfall eintritt und die Entscheidung zur Aktivierung des DR-Standorts getroffen wird.
 

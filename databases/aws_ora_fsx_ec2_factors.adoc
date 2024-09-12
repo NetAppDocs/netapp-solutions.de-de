@@ -36,11 +36,11 @@ NetApp empfiehlt das folgende Storage Layout:
 
 * Für NFS-Storage besteht das empfohlene Volume-Layout aus drei Volumes: Eines für die Oracle-Binärdatei, eines für Oracle-Daten und einer doppelten Kontrolldatei und eines für das aktive Protokoll, archiviertes Protokoll und die Kontrolldatei von Oracle.
 +
-image::aws_ora_fsx_ec2_stor_12.PNG[aws ora fsx ec2 Stor 12]
+image:aws_ora_fsx_ec2_stor_12.png["Die Abbildung zeigt den Input/Output-Dialog oder die Darstellung des schriftlichen Inhalts"]
 
 * Für iSCSI-Storage empfiehlt sich das Volume-Layout aus drei Volumes: Eines für die Oracle-Binärdatei, eines für Oracle-Daten und einer doppelten Kontrolldatei und eines für das aktive Protokoll, Archivprotokoll und die Kontrolldatei von Oracle. Allerdings sollte jede Daten- und Protokoll-Volume idealerweise vier LUNs enthalten. Die LUNs sind idealerweise auf den HA Cluster Nodes ausgeglichen.
 +
-image::aws_ora_fsx_ec2_stor_13.PNG[aws ora fsx ec2 Stor 13]
+image:aws_ora_fsx_ec2_stor_13.png["Die Abbildung zeigt den Input/Output-Dialog oder die Darstellung des schriftlichen Inhalts"]
 
 * Für Storage-IOPS und -Durchsatz können Sie den Schwellenwert für bereitgestellte IOPS und Durchsatz für den FSX Storage-Cluster festlegen. Die Parameter können spontan angepasst werden, wann sich der Workload ändert.
 +
@@ -73,7 +73,7 @@ sysctl -a | grep tcp.*.slot_table
 ----
 * Die folgende Tabelle enthält die empfohlenen NFS-Mount-Optionen für Linux NFSv3 – Single-Instance.
 +
-image::aws_ora_fsx_ec2_nfs_01.PNG[aws ora fsx ec2 nfs 01]
+image:aws_ora_fsx_ec2_nfs_01.png["Die Abbildung zeigt den Input/Output-Dialog oder die Darstellung des schriftlichen Inhalts"]
 
 
 

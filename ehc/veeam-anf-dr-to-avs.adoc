@@ -38,7 +38,7 @@ Dieser Replizierungsmechanismus sorgt dafür, dass die Workloads bei einem Notfa
 
 Der Replizierungsprozess in Veeam Backup & Replication ist auftraggesteuert, d. h. die Replizierung wird durch Konfiguration von Replizierungsjobs durchgeführt. Bei einem Ausfall kann ein Failover zur Wiederherstellung der VMs durch einen Failover auf die Replikatkopie ausgelöst werden. Wenn ein Failover durchgeführt wird, übernimmt eine replizierte VM die Rolle der ursprünglichen VM. Ein Failover kann auf den neuesten Status eines Replikats oder auf einen der bekannten Wiederherstellungspunkte erfolgen. Dies ermöglicht bei Bedarf eine Wiederherstellung nach Ransomware-Angriffen oder isolierte Tests. Veeam Backup & Replication bietet mehrere Optionen für unterschiedliche Disaster-Recovery-Szenarien.
 
-image::dr-veeam-anf-image1.png[dr veeam anf image1]
+image:dr-veeam-anf-image1.png["Die Abbildung zeigt den Input/Output-Dialog oder die Darstellung des schriftlichen Inhalts"]
 
 
 
@@ -88,41 +88,41 @@ Gehen Sie wie folgt vor, um VMs zu replizieren:
 *Aktivieren Sie das Kontrollkästchen Network Remapping (für AVS SDDC-Standorte mit unterschiedlichen Netzwerken), wenn Segmente auf der Azure VMware-Lösung SDDC nicht mit denen auf lokalen Netzwerken übereinstimmen.
 ** Wenn sich das IP-Adressierungsschema am Produktionsstandort vor Ort vom Schema am Ziel-AVS-Standort unterscheidet, aktivieren Sie das Kontrollkästchen Replica RE-IP (für DR-Standorte mit unterschiedlichem IP-Adressierungsschema).
 +
-image::dr-veeam-anf-image2.png[dr veeam anf image2]
+image:dr-veeam-anf-image2.png["Die Abbildung zeigt den Input/Output-Dialog oder die Darstellung des schriftlichen Inhalts"]
 
 
 
 . Wählen Sie im Schritt *Virtuelle* Maschinen* die VMs aus, die auf einen Azure NetApp Files-Datastore repliziert werden sollen, der mit einem Azure VMware-Lösung SDDC verbunden ist. Die Virtual Machines können auf vSAN platziert werden, um die verfügbare vSAN Datastore-Kapazität zu füllen. In einem Pilotcluster wird die nutzbare Kapazität eines 3-Knoten-Clusters begrenzt. Die restlichen Daten lassen sich problemlos auf Azure NetApp Files Datenspeichern platzieren, um die VMs wiederherzustellen und das Cluster zu erweitern, um die CPU-/mem-Anforderungen zu erfüllen. Klicken Sie auf *Hinzufügen*, wählen Sie dann im Fenster *Objekt hinzufügen* die erforderlichen VMs oder VM-Container aus und klicken Sie auf *Hinzufügen*. Klicken Sie Auf *Weiter*.
 +
-image::dr-veeam-anf-image3.png[dr veeam anf image3]
+image:dr-veeam-anf-image3.png["Die Abbildung zeigt den Input/Output-Dialog oder die Darstellung des schriftlichen Inhalts"]
 
 . Wählen Sie anschließend das Ziel als Azure VMware Solution SDDC Cluster/Host und den entsprechenden Ressourcen-Pool, VM-Ordner und FSX for ONTAP Datastore für VM-Replikate aus. Klicken Sie anschließend auf *Weiter*.
 +
-image::dr-veeam-anf-image4.png[dr veeam anf image4]
+image:dr-veeam-anf-image4.png["Die Abbildung zeigt den Input/Output-Dialog oder die Darstellung des schriftlichen Inhalts"]
 
 . Erstellen Sie im nächsten Schritt die Zuordnung zwischen dem virtuellen Quell- und Zielnetzwerk nach Bedarf.
 +
-image::dr-veeam-anf-image5.png[dr veeam anf image5]
+image:dr-veeam-anf-image5.png["Die Abbildung zeigt den Input/Output-Dialog oder die Darstellung des schriftlichen Inhalts"]
 
 . Geben Sie im Schritt *Job-Einstellungen* das Backup-Repository an, in dem Metadaten für VM-Replikate, Aufbewahrungsrichtlinien usw. gespeichert werden.
 . Aktualisieren Sie die Proxy-Server *Source* und *Target* im Schritt *Data Transfer* und lassen Sie die Option *Automatic* (Standard) und halten Sie die Option *Direct* ausgewählt und klicken Sie auf *Next*.
 . Wählen Sie im Schritt *Gastverarbeitung* die Option *anwendungsorientierte Verarbeitung aktivieren* nach Bedarf aus. Klicken Sie Auf *Weiter*.
 +
-image::dr-veeam-anf-image6.png[dr veeam anf image6]
+image:dr-veeam-anf-image6.png["Die Abbildung zeigt den Input/Output-Dialog oder die Darstellung des schriftlichen Inhalts"]
 
 . Wählen Sie den Replikationszeitplan aus, um den Replikationsjob regelmäßig auszuführen.
 +
-image::dr-veeam-anf-image7.png[dr veeam anf image7]
+image:dr-veeam-anf-image7.png["Die Abbildung zeigt den Input/Output-Dialog oder die Darstellung des schriftlichen Inhalts"]
 
 . Überprüfen Sie im Schritt *Zusammenfassung* des Assistenten die Details des Replikationsjobs. Um den Job direkt nach dem Schließen des Assistenten zu starten, aktivieren Sie das Kontrollkästchen *Job ausführen, wenn ich auf Fertig stellen klicke*, andernfalls lassen Sie das Kontrollkästchen deaktiviert. Klicken Sie dann auf *Fertig stellen*, um den Assistenten zu schließen.
 +
-image::dr-veeam-anf-image8.png[dr veeam anf image8]
+image:dr-veeam-anf-image8.png["Die Abbildung zeigt den Input/Output-Dialog oder die Darstellung des schriftlichen Inhalts"]
 
 
 
 Sobald der Replikationsjob gestartet wurde, werden die VMs mit dem angegebenen Suffix auf dem Ziel-AVS SDDC-Cluster/Host aufgefüllt.
 
-image::dr-veeam-anf-image9.png[dr veeam anf image9]
+image:dr-veeam-anf-image9.png["Die Abbildung zeigt den Input/Output-Dialog oder die Darstellung des schriftlichen Inhalts"]
 
 Weitere Informationen zur Veeam-Replizierung finden Sie unter link:https://helpcenter.veeam.com/docs/backup/vsphere/replication_process.html?ver=120["Funktionsweise Der Replikation"]
 
@@ -147,15 +147,15 @@ Um den *Failover Plan* zu erstellen, gehen Sie wie folgt vor:
 
 . In der Home-Ansicht. Klicken Sie mit der rechten Maustaste auf den Knoten Replikate, und wählen Sie Failover Plans > Failover Plan > VMware vSphere.
 +
-image::dr-veeam-anf-image10.png[dr veeam anf image10]
+image:dr-veeam-anf-image10.png["Die Abbildung zeigt den Input/Output-Dialog oder die Darstellung des schriftlichen Inhalts"]
 
 . Geben Sie als nächstes einen Namen und eine Beschreibung für den Plan an. Pre- und Post-Failover-Skript können bei Bedarf hinzugefügt werden. Führen Sie beispielsweise ein Skript aus, um die VMs vor dem Starten der replizierten VMs herunterzufahren.
 +
-image::dr-veeam-anf-image11.png[dr veeam anf image11]
+image:dr-veeam-anf-image11.png["Die Abbildung zeigt den Input/Output-Dialog oder die Darstellung des schriftlichen Inhalts"]
 
 . Fügen Sie die VMs zum Plan hinzu und ändern Sie die VM-Startreihenfolge und die Boot-Verzögerungen, um die Applikationsabhängigkeiten zu erfüllen.
 +
-image::dr-veeam-anf-image12.png[dr veeam anf image12]
+image:dr-veeam-anf-image12.png["Die Abbildung zeigt den Input/Output-Dialog oder die Darstellung des schriftlichen Inhalts"]
 
 
 
@@ -172,17 +172,17 @@ NOTE: Stellen Sie sicher, dass die Netzwerksegmentierung vorhanden ist, um IP-Ko
 
 Um den Failover-Plan zu starten, klicken Sie einfach auf die Registerkarte *Failover Plans* und klicken Sie mit der rechten Maustaste auf Ihren Failover-Plan. Wählen Sie **Start*. Dabei wird ein Failover mit den neuesten Wiederherstellungspunkten der VM-Replikate durchgeführt. Um ein Failover zu bestimmten Wiederherstellungspunkten von VM-Replikaten durchzuführen, wählen Sie *Start to* aus.
 
-image::dr-veeam-anf-image13.png[dr veeam anf image13]
+image:dr-veeam-anf-image13.png["Die Abbildung zeigt den Input/Output-Dialog oder die Darstellung des schriftlichen Inhalts"]
 
-image::dr-veeam-anf-image14.png[dr veeam anf image14]
+image:dr-veeam-anf-image14.png["Die Abbildung zeigt den Input/Output-Dialog oder die Darstellung des schriftlichen Inhalts"]
 
 Der Status des VM-Replikats ändert sich von „bereit“ zu „Failover“, und die VMs werden auf dem Ziel-Cluster/Host des SDDC der Azure VMware-Lösung (AVS) gestartet.
 
-image::dr-veeam-anf-image15.png[dr veeam anf image15]
+image:dr-veeam-anf-image15.png["Die Abbildung zeigt den Input/Output-Dialog oder die Darstellung des schriftlichen Inhalts"]
 
 Sobald der Failover abgeschlossen ist, ändert sich der Status der VMs in „Failover“.
 
-image::dr-veeam-anf-image16.png[dr veeam anf image16]
+image:dr-veeam-anf-image16.png["Die Abbildung zeigt den Input/Output-Dialog oder die Darstellung des schriftlichen Inhalts"]
 
 
 NOTE: Veeam Backup & Replication hält alle Replikationsaktivitäten für die Quell-VM an, bis das Replikat in den Bereitschaftszustand zurückkehrt.
@@ -207,23 +207,23 @@ NOTE: Wenn Sie ein Failback durchführen, werden die Änderungen nur übertragen
 
 In dieser Demo wurde „Failback zur Produktion“ gewählt. Failback auf die ursprüngliche VM wurde während des Zielschritts des Assistenten ausgewählt und das Kontrollkästchen „VM nach der Wiederherstellung einschalten“ war aktiviert.
 
-image::dr-veeam-anf-image17.png[dr veeam anf image17]
+image:dr-veeam-anf-image17.png["Die Abbildung zeigt den Input/Output-Dialog oder die Darstellung des schriftlichen Inhalts"]
 
-image::dr-veeam-anf-image18.png[dr veeam anf image18]
+image:dr-veeam-anf-image18.png["Die Abbildung zeigt den Input/Output-Dialog oder die Darstellung des schriftlichen Inhalts"]
 
-image::dr-veeam-anf-image19.png[dr veeam anf image19]
+image:dr-veeam-anf-image19.png["Die Abbildung zeigt den Input/Output-Dialog oder die Darstellung des schriftlichen Inhalts"]
 
-image::dr-veeam-anf-image20.png[dr veeam anf image20]
+image:dr-veeam-anf-image20.png["Die Abbildung zeigt den Input/Output-Dialog oder die Darstellung des schriftlichen Inhalts"]
 
 Failback-Commit ist eine der Möglichkeiten, den Failback-Vorgang abzuschließen. Wenn Failback durchgeführt wird, wird bestätigt, dass die an die zurückgeschickte VM (die Produktions-VM) gesendeten Änderungen wie erwartet funktionieren. Nach dem Commit-Vorgang setzt Veeam Backup & Replication die Replizierungsaktivitäten für die Produktions-VM fort.
 
 Detaillierte Informationen zum Failback-Prozess finden Sie in der Veeam-Dokumentation für link:https://helpcenter.veeam.com/docs/backup/vsphere/failover_failback.html?ver=120["Failover und Failback für die Replikation"].
 
-image::dr-veeam-anf-image21.png[dr veeam anf image21]
+image:dr-veeam-anf-image21.png["Die Abbildung zeigt den Input/Output-Dialog oder die Darstellung des schriftlichen Inhalts"]
 
 Nach einem erfolgreichen Failback zur Produktion werden die VMs alle auf den ursprünglichen Produktionsstandort zurückgestellt.
 
-image::dr-veeam-anf-image22.png[dr veeam anf image22]
+image:dr-veeam-anf-image22.png["Die Abbildung zeigt den Input/Output-Dialog oder die Darstellung des schriftlichen Inhalts"]
 
 ====
 

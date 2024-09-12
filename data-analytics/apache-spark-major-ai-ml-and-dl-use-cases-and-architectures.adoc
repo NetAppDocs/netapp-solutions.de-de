@@ -42,7 +42,7 @@ Die zugrunde liegende Deep-Learning-Engine für Spark NLP ist TensorFlow, eine E
 
 == Horovod Distributed Training
 
-Die Kernvalidierung für MapReduce-bezogene Performance wird mit TeraGen, TeraSort, TeraValidate und DFSIO (Lese- und Schreibvorgänge) durchgeführt. Die Ergebnisse der TeraGen und TeraSort Validierung werden in vorgestellt http://www.netapp.com/us/media/tr-3969.pdf["TR-3969: NetApp Lösungen für Hadoop"^] Für E-Series und im Abschnitt „Storage Tiering“ (xref) für AFF.
+Die Kernvalidierung für MapReduce-bezogene Performance wird mit TeraGen, TeraSort, TeraValidate und DFSIO (Lese- und Schreibvorgänge) durchgeführt. Die Validierungsergebnisse von TeraGen und TeraSort finden http://www.netapp.com/us/media/tr-3969.pdf[] Sie in für die E-Series und im Abschnitt „Storage Tiering“ (xref) für AFF.
 
 Auf Kundenwünsche basieren verteilte Schulungen mit Spark auf einer der wichtigsten Nutzungsfälle. In diesem Dokument wurden von verwendet https://horovod.readthedocs.io/en/stable/spark_include.html["Hovorod auf Spark"^] Spark-Performance mit NetApp On-Premises-, Cloud-nativen und Hybrid-Cloud-Lösungen mit NetApp All Flash FAS (AFF) Storage-Controllern, Azure NetApp Files und StorageGRID validieren
 
@@ -95,4 +95,4 @@ Für diese Validierung haben wir vier Worker-Nodes und einen Master-Node mit ein
 
 Für diese Validierung der NetApp Spark-Lösungen haben wir drei verschiedene Storage-Controller verwendet: E5760, E5724 und AFF-A800. Die Storage-Controller der E-Series wurden mit fünf Daten-Nodes mit SAS-Verbindungen mit 12 Gbit/s verbunden. Der AFF HA-Paar-Storage Controller liefert exportierte NFS-Volumes über 10-GbE-Verbindungen zu Hadoop Worker-Nodes. Die Hadoop Cluster-Mitglieder wurden über 10-GbE-Verbindungen in den Hadoop Lösungen der E-Series, AFF und StorageGRID Hadoop verbunden.
 
-image::apache-spark-image10.png[Zur Validierung verwendete Architekturen.]
+image:apache-spark-image10.png["Zur Validierung verwendete Architekturen."]

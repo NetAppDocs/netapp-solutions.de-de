@@ -66,7 +66,7 @@ Vergewissern Sie sich, dass die erforderlichen logischen Schnittstellen für das
 
 . Navigieren Sie im ONTAP-Systemmanager im linken Menü zu *Speicher-VMs* und klicken Sie auf die SVM, die für den NFS-Datenverkehr verwendet werden soll. Klicken Sie auf der Registerkarte *Übersicht* unter *NETZWERK-IP-SCHNITTSTELLEN* auf den numerischen Wert rechts von *NFS*. Überprüfen Sie in der Liste, ob die erforderlichen LIF-IP-Adressen aufgeführt sind.
 +
-image::vmware-vcf-aff-image03.png[Verifizieren der LIFs für SVM]
+image:vmware-vcf-aff-image03.png["Verifizieren der LIFs für SVM"]
 
 
 
@@ -95,21 +95,21 @@ Eine Richtlinie für den Export in ONTAP System Manager erstellen, um die Zugrif
 . Klicken Sie im ONTAP System Manager im linken Menü auf *Speicher-VMs* und wählen Sie eine SVM aus der Liste aus.
 . Suchen Sie auf der Registerkarte *Settings* *Export Policies* und klicken Sie auf den Pfeil, um darauf zuzugreifen.
 +
-image::vmware-vcf-aff-image06.png[Greifen Sie Auf Exportrichtlinien Zu]
+image:vmware-vcf-aff-image06.png["Greifen Sie Auf Exportrichtlinien Zu"]
 
 +
 {Nbsp}
 
 . Fügen Sie im Fenster *Neue Exportrichtlinie* einen Namen für die Richtlinie hinzu, klicken Sie auf die Schaltfläche *Neue Regeln hinzufügen* und dann auf die Schaltfläche *+Hinzufügen*, um mit dem Hinzufügen einer neuen Regel zu beginnen.
 +
-image::vmware-vcf-aff-image07.png[Neue Exportrichtlinie]
+image:vmware-vcf-aff-image07.png["Neue Exportrichtlinie"]
 
 +
 {Nbsp}
 
 . Geben Sie die IP-Adressen, den IP-Adressbereich oder das Netzwerk ein, die Sie in die Regel aufnehmen möchten. Deaktivieren Sie die Kontrollkästchen *SMB/CIFS* und *FlexCache* und treffen Sie eine Auswahl für die unten stehenden Zugriffsdetails. Die Auswahl der UNIX-Felder ist für den ESXi-Hostzugriff ausreichend.
 +
-image::vmware-vcf-aff-image08.png[Neue Regel speichern]
+image:vmware-vcf-aff-image08.png["Neue Regel speichern"]
 
 +
 
@@ -132,21 +132,21 @@ Erstellen Sie ein NFS-Volume auf dem ONTAP-Speichersystem, das als Datastore in 
 
 . Navigieren Sie im ONTAP-Systemmanager im linken Menü zu *Speicher > Volumes* und klicken Sie auf *+Hinzufügen*, um ein neues Volume zu erstellen.
 +
-image::vmware-vcf-aff-image09.png[Neues Volume hinzufügen]
+image:vmware-vcf-aff-image09.png["Neues Volume hinzufügen"]
 
 +
 {Nbsp}
 
 . Fügen Sie einen Namen für das Volume hinzu, füllen Sie die gewünschte Kapazität aus und wählen Sie die Storage-VM aus, die das Volume hosten soll. Klicken Sie auf *Weitere Optionen*, um fortzufahren.
 +
-image::vmware-vcf-aff-image10.png[Fügen Sie Volume-Details hinzu]
+image:vmware-vcf-aff-image10.png["Fügen Sie Volume-Details hinzu"]
 
 +
 {Nbsp}
 
 . Wählen Sie unter Zugriffsberechtigungen die Exportrichtlinie aus, die das VCF-Verwaltungsnetzwerk oder die IP-Adresse und die NFS-Netzwerk-IP-Adressen umfasst, die sowohl für die Validierung des NFS-Servers als auch für den NFS-Datenverkehr verwendet werden.
 +
-image::vmware-vcf-aff-image11.png[Fügen Sie Volume-Details hinzu]
+image:vmware-vcf-aff-image11.png["Fügen Sie Volume-Details hinzu"]
 
 +
 +
@@ -167,14 +167,14 @@ Vor der Inbetriebnahme der ESXi-Hosts muss ein Arbeitspool im SDDC Manager erste
 
 . Navigieren Sie von der SDDC Manager-Weboberfläche aus im linken Menü zu *Netzwerkeinstellungen* und klicken Sie auf die Schaltfläche *+ Netzwerkpool erstellen*.
 +
-image::vmware-vcf-aff-image04.png[Erstellen Sie Einen Netzwerkpool]
+image:vmware-vcf-aff-image04.png["Erstellen Sie Einen Netzwerkpool"]
 
 +
 {Nbsp}
 
 . Geben Sie einen Namen für den Netzwerkpool ein, aktivieren Sie das Kontrollkästchen für NFS, und geben Sie alle Netzwerkdetails ein. Wiederholen Sie dies für die vMotion Netzwerkinformationen.
 +
-image::vmware-vcf-aff-image05.png[Netzwerk-Pool-Konfiguration]
+image:vmware-vcf-aff-image05.png["Netzwerk-Pool-Konfiguration"]
 
 +
 {Nbsp}
@@ -192,21 +192,21 @@ Weitere Informationen finden Sie unter link:https://docs.vmware.com/en/VMware-Cl
 
 . Navigieren Sie von der SDDC-Manager-Oberfläche aus im linken Menü zu *Hosts* und klicken Sie auf die Schaltfläche *Provision Hosts*.
 +
-image::vmware-vcf-aff-image16.png[Starten Sie provisions-Hosts]
+image:vmware-vcf-aff-image16.png["Starten Sie provisions-Hosts"]
 
 +
 {Nbsp}
 
 . Die erste Seite ist eine Checkliste für Voraussetzungen. Markieren Sie alle Voraussetzungen, und aktivieren Sie alle Kontrollkästchen, um fortzufahren.
 +
-image::vmware-vcf-aff-image17.png[Voraussetzungen bestätigen]
+image:vmware-vcf-aff-image17.png["Voraussetzungen bestätigen"]
 
 +
 {Nbsp}
 
 . Füllen Sie im Fenster *Host Addition and Validation* die Felder *Host FQDN*, *Storage Type*, *Network Pool* aus, die die für die Workload-Domain zu verwendenden vMotion- und NFS-Speicher-IP-Adressen sowie die Anmeldeinformationen für den Zugriff auf den ESXi-Host enthalten. Klicken Sie auf *Add*, um den Host zur Gruppe der zu validierenden Hosts hinzuzufügen.
 +
-image::vmware-vcf-aff-image18.png[Fenster „Host Addition and Validation“]
+image:vmware-vcf-aff-image18.png["Fenster „Host Addition and Validation“"]
 
 +
 {Nbsp}
@@ -214,14 +214,14 @@ image::vmware-vcf-aff-image18.png[Fenster „Host Addition and Validation“]
 . Wenn alle zu validierenden Hosts hinzugefügt wurden, klicken Sie auf die Schaltfläche *Alle validieren*, um fortzufahren.
 . Wenn alle Hosts validiert sind, klicken Sie auf *Weiter*, um fortzufahren.
 +
-image::vmware-vcf-aff-image19.png[Alle validieren und auf Weiter klicken]
+image:vmware-vcf-aff-image19.png["Alle validieren und auf Weiter klicken"]
 
 +
 {Nbsp}
 
 . Überprüfen Sie die Liste der Hosts, die beauftragt werden sollen, und klicken Sie auf die Schaltfläche *Provision*, um den Prozess zu starten. Überwachen Sie den Inbetriebnahmeprozess im SDDC-Manager im Aufgabenbereich.
 +
-image::vmware-vcf-aff-image20.png[Alle validieren und auf Weiter klicken]
+image:vmware-vcf-aff-image20.png["Alle validieren und auf Weiter klicken"]
 
 
 
@@ -235,7 +235,7 @@ Schritt-für-Schritt-Anweisungen zur Bereitstellung einer VI-Workload-Domäne fi
 
 . Klicken Sie im SDDC Manager Dashboard auf *+ Workload Domain* in der oberen rechten Ecke, um eine neue Workload Domain zu erstellen.
 +
-image::vmware-vcf-aff-image12.png[Neue Workload-Domäne erstellen]
+image:vmware-vcf-aff-image12.png["Neue Workload-Domäne erstellen"]
 
 +
 {Nbsp}
@@ -245,18 +245,18 @@ image::vmware-vcf-aff-image12.png[Neue Workload-Domäne erstellen]
 
 Informationen zum Ausfüllen der im VI-Konfigurationsassistenten erforderlichen Informationen finden Sie unter link:https://docs.vmware.com/en/VMware-Cloud-Foundation/5.1/vcf-admin/GUID-E64CEFDD-DCA2-4D19-B5C5-D8ABE66407B8.html#GUID-E64CEFDD-DCA2-4D19-B5C5-D8ABE66407B8["Stellen Sie eine VI-Workload-Domäne über die SDDC Manager-Benutzeroberfläche bereit"].
 
-+ Bild::vmware-vcf-aff-image13.png[VI Configuration Wizard]
++ image:vmware-vcf-aff-image13.png["VI-Konfigurationsassistent"]
 
 . Füllen Sie im Abschnitt NFS-Storage den Datenspeichernamen, den Ordner-Bereitstellungspunkt des NFS-Volume und die IP-Adresse der logischen Schnittstelle des ONTAP NFS-Storage VM aus.
 +
-image::vmware-vcf-aff-image14.png[NFS-Speicherinformationen hinzufügen]
+image:vmware-vcf-aff-image14.png["NFS-Speicherinformationen hinzufügen"]
 
 +
 {Nbsp}
 
 . Führen Sie im VI Configuration Wizard die Schritte Switch Configuration und License aus, und klicken Sie dann auf *Finish*, um die Erstellung der Workload Domain zu starten.
 +
-image::vmware-vcf-aff-image15.png[Schließen Sie den VI-Konfigurationsassistenten ab]
+image:vmware-vcf-aff-image15.png["Schließen Sie den VI-Konfigurationsassistenten ab"]
 
 +
 {Nbsp}

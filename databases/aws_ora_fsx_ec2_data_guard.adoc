@@ -54,7 +54,7 @@ Das Testen und Validieren dieser Lösung wurde in einer AWS FSX ONTAP und EC2 La
 
 === Der Netapp Architektur Sind
 
-image::aws_ora_fsx_data_guard_architecture.png[Dieses Bild zeigt ein detailliertes Bild der Oracle Data Guard-Implementierung in AWS mit FSxN.]
+image:aws_ora_fsx_data_guard_architecture.png["Dieses Bild zeigt ein detailliertes Bild der Oracle Data Guard-Implementierung in AWS mit FSxN."]
 
 
 
@@ -863,15 +863,15 @@ ip-172-30-15-45.ec2.internal
 ....
 . FSX Storage-Cluster hinzufügen zu `Storage Systems` In SnapCenter mit FSX Clustermanagement-IP und fsxadmin-Zugangsdaten.
 +
-image::aws_ora_fsx_data_guard_clone_01.png[Screenshot, der diesen Schritt in der GUI zeigt.]
+image:aws_ora_fsx_data_guard_clone_01.png["Screenshot, der diesen Schritt in der GUI zeigt."]
 
 . AWS ec2-User zu hinzufügen `Credential` In `Settings`.
 +
-image::aws_ora_fsx_data_guard_clone_02.png[Screenshot, der diesen Schritt in der GUI zeigt.]
+image:aws_ora_fsx_data_guard_clone_02.png["Screenshot, der diesen Schritt in der GUI zeigt."]
 
 . Fügen Sie Standby EC2 DB-Instanz hinzu und klonen Sie EC2 DB-Instanz zu `Hosts`.
 +
-image::aws_ora_fsx_data_guard_clone_03.png[Screenshot, der diesen Schritt in der GUI zeigt.]
+image:aws_ora_fsx_data_guard_clone_03.png["Screenshot, der diesen Schritt in der GUI zeigt."]
 
 +
 
@@ -879,51 +879,51 @@ NOTE: Für die EC2 DB-Kloninstanz sollten ähnliche Oracle-Software-Stacks insta
 
 . Erstellen einer Backup-Richtlinie, die auf das Offline-/Mounten eines vollständigen Datenbank-Backups zugeschnitten ist
 +
-image::aws_ora_fsx_data_guard_clone_04.png[Screenshot, der diesen Schritt in der GUI zeigt.]
+image:aws_ora_fsx_data_guard_clone_04.png["Screenshot, der diesen Schritt in der GUI zeigt."]
 
 . Wenden Sie die Sicherungsrichtlinie an, um die Standby-Datenbank in zu schützen `Resources` Registerkarte.
 +
-image::aws_ora_fsx_data_guard_clone_05.png[Screenshot, der diesen Schritt in der GUI zeigt.]
+image:aws_ora_fsx_data_guard_clone_05.png["Screenshot, der diesen Schritt in der GUI zeigt."]
 
 . Klicken Sie auf Datenbanknamen, um die Seite Datenbank-Backups zu öffnen. Wählen Sie ein Backup aus, das für den Datenbankklon verwendet werden soll, und klicken Sie auf `Clone` Um den Clone-Workflow zu starten.
 +
-image::aws_ora_fsx_data_guard_clone_06.png[Screenshot, der diesen Schritt in der GUI zeigt.]
+image:aws_ora_fsx_data_guard_clone_06.png["Screenshot, der diesen Schritt in der GUI zeigt."]
 
 . Wählen Sie `Complete Database Clone` Und benennen Sie die Clone-Instanz-SID.
 +
-image::aws_ora_fsx_data_guard_clone_07.png[Screenshot, der diesen Schritt in der GUI zeigt.]
+image:aws_ora_fsx_data_guard_clone_07.png["Screenshot, der diesen Schritt in der GUI zeigt."]
 
 . Wählen Sie den Clone-Host aus, der die geklonte Datenbank aus der Standby-DB hostet. Akzeptieren Sie die Standardeinstellung für Datendateien, Steuerdateien und Wiederherstellungsprotokolle. Auf dem Clone-Host werden zwei ASM-Laufwerksgruppen erstellt, die den Laufwerksgruppen in der Standby-Datenbank entsprechen.
 +
-image::aws_ora_fsx_data_guard_clone_08.png[Screenshot, der diesen Schritt in der GUI zeigt.]
+image:aws_ora_fsx_data_guard_clone_08.png["Screenshot, der diesen Schritt in der GUI zeigt."]
 
 . Für die OS-basierte Authentifizierung sind keine Datenbankanmeldeinformationen erforderlich. Stimmen Sie die Oracle Home-Einstellung mit den Einstellungen in der EC2 Clone-Datenbankinstanz ab.
 +
-image::aws_ora_fsx_data_guard_clone_09.png[Screenshot, der diesen Schritt in der GUI zeigt.]
+image:aws_ora_fsx_data_guard_clone_09.png["Screenshot, der diesen Schritt in der GUI zeigt."]
 
 . Ändern Sie ggf. die Parameter der Klondatenbank und geben Sie ggf. Skripte an, die vor dem Cloen ausgeführt werden sollen.
 +
-image::aws_ora_fsx_data_guard_clone_10.png[Screenshot, der diesen Schritt in der GUI zeigt.]
+image:aws_ora_fsx_data_guard_clone_10.png["Screenshot, der diesen Schritt in der GUI zeigt."]
 
 . Geben Sie SQL ein, um nach dem Klon auszuführen. In der Demo führten wir Befehle aus, um den Datenbank-Archivmodus für eine Entwicklungs-/Test-/Berichtsdatenbank zu deaktivieren.
 +
-image::aws_ora_fsx_data_guard_clone_11.png[Screenshot, der diesen Schritt in der GUI zeigt.]
+image:aws_ora_fsx_data_guard_clone_11.png["Screenshot, der diesen Schritt in der GUI zeigt."]
 
 . Konfigurieren Sie bei Bedarf die E-Mail-Benachrichtigung.
 +
-image::aws_ora_fsx_data_guard_clone_12.png[Screenshot, der diesen Schritt in der GUI zeigt.]
+image:aws_ora_fsx_data_guard_clone_12.png["Screenshot, der diesen Schritt in der GUI zeigt."]
 
 . Überprüfen Sie die Zusammenfassung, und klicken Sie auf `Finish` Um den Klon zu starten.
 +
-image::aws_ora_fsx_data_guard_clone_13.png[Screenshot, der diesen Schritt in der GUI zeigt.]
+image:aws_ora_fsx_data_guard_clone_13.png["Screenshot, der diesen Schritt in der GUI zeigt."]
 
 . Überwachen Sie den Klonjob in `Monitor` Registerkarte. Wir beobachteten, dass es etwa 8 Minuten dauerte, um eine Datenbank mit einer Größe von 300 GB an Datenbank-Volumes zu klonen.
 +
-image::aws_ora_fsx_data_guard_clone_14.png[Screenshot, der diesen Schritt in der GUI zeigt.]
+image:aws_ora_fsx_data_guard_clone_14.png["Screenshot, der diesen Schritt in der GUI zeigt."]
 
 . Validierung der Klondatenbank von SnapCenter, die sofort bei registriert wird `Resources` Nach dem Klonvorgang rechts abwählen.
 +
-image::aws_ora_fsx_data_guard_clone_15.png[Screenshot, der diesen Schritt in der GUI zeigt.]
+image:aws_ora_fsx_data_guard_clone_15.png["Screenshot, der diesen Schritt in der GUI zeigt."]
 
 . Abfrage der Klondatenbank von EC2-Instanz des Klons. Wir validierten, dass die Testtransaktion, die in der primären Datenbank auftrat, bis zur Klondatenbank durchläuft war.
 +

@@ -68,18 +68,18 @@ SMB 3.0-Dateifreigaben können als Shared Storage für Hyper-V verwendet werden 
 . Vergewissern Sie sich, dass die erforderlichen CIFS-Serveroptionen auf der SVM (Storage Virtual Machine) aktiviert sind.
 . Die folgenden Optionen sollten auf true gesetzt werden: smb2-fähige smb3-fähige Copy-Offload-aktivierte shadowcopy-enabled is-Multichannel-enabled is-large-mtu-enabled
 +
-image::hyperv-deploy-image03.png[Abbildung der SMB-Kolumneneinstellungen]
+image:hyperv-deploy-image03.png["Abbildung der SMB-Kolumneneinstellungen"]
 
 . Erstellen Sie NTFS-Datenvolumes auf der Storage Virtual Machine (SVM) und konfigurieren Sie dann kontinuierlich verfügbare Freigaben für die Verwendung mit Hyper-V
 +
-image::hyperv-deploy-image04.png[Abbildung der NTFS-Daten-Volume-Einstellungen]
+image:hyperv-deploy-image04.png["Abbildung der NTFS-Daten-Volume-Einstellungen"]
 
 +
 *Hinweis*: Der unterbrechungsfreie Betrieb für Hyper-V über SMB funktioniert nur dann korrekt, wenn die in der Konfiguration verwendeten Volumes als NTFS-Sicherheitsdatenträger erstellt werden.
 
 . Aktivieren Sie kontinuierlich verfügbar und konfigurieren Sie NTFS-Berechtigungen für die Freigabe, um Hyper-V-Knoten mit vollständiger Kontrolle einzubeziehen.
 +
-image::hyperv-deploy-image05.png[Abbildung der NTFS-Berechtigungseinstellungen]
+image:hyperv-deploy-image05.png["Abbildung der NTFS-Berechtigungseinstellungen"]
 
 
 
@@ -127,7 +127,7 @@ Stellen Sie sicher, dass die folgenden Voraussetzungen erfüllt sind, um ein ISC
 . Durchsuchen Sie die festgelegte SVM, in der die zu erstellenden LUNs erstellt werden, und wählen Sie sie aus. Der Assistent zum Erstellen von LUNs wird angezeigt.
 . Wählen Sie auf der Seite Allgemeine Eigenschaften Hyper-V für LUNs aus, die virtuelle Festplatten (VHDs) für virtuelle Hyper-V-Maschinen enthalten.
 +
-image::hyperv-deploy-image06.png[Image der Seite Allgemeine Eigenschaften für die Hyper-V-LUN-Erstellung]
+image:hyperv-deploy-image06.png["Image der Seite Allgemeine Eigenschaften für die Hyper-V-LUN-Erstellung"]
 
 . <Klicken Sie auf Weitere Optionen> Wählen Sie auf der Seite LUN Container ein vorhandenes FlexVol-Volume aus, da sonst ein neues Volume erstellt wird.
 . <Klicken Sie auf Mehr Optionen> auf der Seite Initiatoren-Zuordnung auf Initiatorgruppe hinzufügen, geben Sie die erforderlichen Informationen auf der Registerkarte Allgemein ein, und geben Sie dann auf der Registerkarte Initiatoren den iSCSI-Initiator-Node-Namen der Hosts ein.
@@ -146,7 +146,7 @@ Sobald die LUN erstellt wurde, wechseln Sie zum Failover Cluster Manager. Um ein
 . Die Festplatten sind jetzt der Gruppe „verfügbarer Speicher“ zugewiesen.
 . Wählen Sie anschließend das Laufwerk aus, das gerade dem verfügbaren Speicher zugewiesen wurde, klicken Sie mit der rechten Maustaste auf die Auswahl, und wählen Sie dann zu gemeinsam genutzten Cluster-Volumes hinzufügen aus.
 +
-image::hyperv-deploy-image07.png[Abbildung der Schnittstelle zu gemeinsam genutzten Cluster-Volumes hinzufügen]
+image:hyperv-deploy-image07.png["Abbildung der Schnittstelle zu gemeinsam genutzten Cluster-Volumes hinzufügen"]
 
 . Die Laufwerke sind jetzt der Cluster Shared Volume-Gruppe im Cluster zugewiesen. Die Laufwerke werden jedem Clusterknoten als nummerierte Volumes (Bereitstellungspunkte) im Ordner %SystemDrive%ClusterStorage angezeigt. Die Volumes werden im CSVFS-Dateisystem angezeigt.
 
