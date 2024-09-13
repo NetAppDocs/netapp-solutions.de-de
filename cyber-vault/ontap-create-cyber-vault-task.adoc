@@ -1,7 +1,7 @@
 ---
 sidebar: sidebar 
 keywords: Cyber vault, cybervault, cyber-vault, data protection, security, ransomware, ONTAP 
-permalink: /cyber-vault/ontap-create-cyber-vault-task.html 
+permalink: cyber-vault/ontap-create-cyber-vault-task.html 
 summary: Die auf dieser Seite enthaltenen Schritte helfen Ihnen, eine ONTAP-basierte Cyber-Vault-Lösung zu erstellen 
 ---
 = Mit ONTAP einen Cyber-Vault erstellen
@@ -19,7 +19,7 @@ Die folgenden Schritte unterstützen Sie bei der Erstellung eines Cyber-Vaults m
 .Bevor Sie beginnen
 * Auf dem Quell-Cluster muss ONTAP 9 oder höher ausgeführt werden.
 * Die Quell- und Zielaggregate müssen 64 Bit sein.
-* Die Quell- und Ziel-Volumes müssen in Peering-Clustern mit Peering SVMs erstellt werden. Weitere Informationen finden Sie unter link:../../ontap-sm-classic/peering/index.html["Cluster-Peering"^].
+* Die Quell- und Ziel-Volumes müssen in Peering-Clustern mit Peering SVMs erstellt werden. Weitere Informationen finden Sie unter link:https://docs.netapp.com/us-en/ontap/peering/index.html["Cluster-Peering"^].
 * Wenn Autogrow-Volume deaktiviert ist, muss der freie Speicherplatz auf dem Ziel-Volume mindestens fünf Prozent mehr als der verwendete Speicherplatz auf dem Quell-Volume sein.
 
 
@@ -30,7 +30,7 @@ image::ontap-cyber-vault-air-gap.png[Cyber-Vault mit Air-Gap-Technologie und Net
 
 .Schritte
 . Ermitteln Sie das Ziel-Array, das zum Cyber-Vault werden soll, um die luftgegriffenen Daten zu empfangen.
-. Auf dem Ziel-Array, um den Cyber-Vault vorzubereiten, link:../../ontap/system-admin/install-license-task.html["Installieren Sie die ONTAP One-Lizenz"^], link:../../ontap/snaplock/initialize-complianceclock-task.html["Initialisieren Sie die Compliance Clock"^]und, wenn Sie eine ONTAP-Version vor 9.10.1 verwenden, link:../../ontap/snaplock/create-snaplock-aggregate-task.html["Erstellung eines SnapLock Compliance Aggregats"^].
+. Auf dem Ziel-Array, um den Cyber-Vault vorzubereiten, link:https://docs.netapp.com/us-en/ontap/system-admin/install-license-task.html["Installieren Sie die ONTAP One-Lizenz"^], link:https://docs.netapp.com/us-en/ontap/snaplock/initialize-complianceclock-task.html["Initialisieren Sie die Compliance Clock"^]und, wenn Sie eine ONTAP-Version vor 9.10.1 verwenden, link:https://docs.netapp.com/us-en/ontap/snaplock/create-snaplock-aggregate-task.html["Erstellung eines SnapLock Compliance Aggregats"^].
 . Erstellen Sie auf dem Ziel-Array ein SnapLock Compliance-Ziel-Volume vom Typ DP:
 +
 `volume create -vserver SVM_name -volume volume_name -aggregate aggregate_name -snaplock-type compliance|enterprise -type DP -size size`
@@ -42,8 +42,8 @@ Mit dem folgenden Befehl wird ein 2GB SnapLock Compliance-Volume mit dem Namen `
 +
 `cluster2::> volume create -vserver SVM2 -volume dstvolB -aggregate node01_aggr -snaplock-type compliance -type DP -size 2GG`
 
-. Legen Sie auf dem Zielcluster zum Erstellen des AirGAP den Standardaufbewahrungszeitraum fest, wie unter beschriebenlink:../../ontap/snaplock/set-default-retention-period-task.html["Legen Sie den Standardaufbewahrungszeitraum fest"^]. Einem SnapLock-Volume, das ein Vault-Ziel ist, ist ein Standardaufbewahrungszeitraum zugewiesen. Der Wert für diesen Zeitraum wird zunächst für SnapLock Compliance Volumes auf ein Minimum von 0 Jahren und maximal 30 Jahren festgelegt. Jede NetApp Snapshot-Kopie wird zunächst mit diesem standardmäßigen Aufbewahrungszeitraum festgelegt. Die Standard-Aufbewahrungsfrist muss geändert werden. Die Aufbewahrungsfrist kann bei Bedarf später verlängert, aber nie verkürzt werden. Weitere Informationen finden Sie unter link:../../ontap/snaplock/set-retention-period-task.html["Aufbewahrungszeit einstellen"^].
-. link:../../ontap/data-protection/create-replication-relationship-task.html["Erstellen einer neuen Replikationsbeziehung"^] Zwischen der nicht-SnapLock-Quelle und dem neuen SnapLock-Ziel, das Sie in Schritt 3 erstellt haben.
+. Legen Sie auf dem Zielcluster zum Erstellen des AirGAP den Standardaufbewahrungszeitraum fest, wie unter beschriebenlink:https://docs.netapp.com/us-en/ontap/snaplock/set-default-retention-period-task.html["Legen Sie den Standardaufbewahrungszeitraum fest"^]. Einem SnapLock-Volume, das ein Vault-Ziel ist, ist ein Standardaufbewahrungszeitraum zugewiesen. Der Wert für diesen Zeitraum wird zunächst für SnapLock Compliance Volumes auf ein Minimum von 0 Jahren und maximal 30 Jahren festgelegt. Jede NetApp Snapshot-Kopie wird zunächst mit diesem standardmäßigen Aufbewahrungszeitraum festgelegt. Die Standard-Aufbewahrungsfrist muss geändert werden. Die Aufbewahrungsfrist kann bei Bedarf später verlängert, aber nie verkürzt werden. Weitere Informationen finden Sie unter link:https://docs.netapp.com/us-en/ontap/snaplock/set-retention-period-task.html["Aufbewahrungszeit einstellen"^].
+. link:https://docs.netapp.com/us-en/ontap/data-protection/create-replication-relationship-task.html["Erstellen einer neuen Replikationsbeziehung"^] Zwischen der nicht-SnapLock-Quelle und dem neuen SnapLock-Ziel, das Sie in Schritt 3 erstellt haben.
 +
 Dieses Beispiel erstellt eine neue SnapMirror-Beziehung zum SnapLock Ziel-Volume dstvolB mithilfe einer XDPDefault-Richtlinie, um täglich und wöchentlich gekennzeichnete Snapshot-Kopien nach einem stündlichen Zeitplan zu archivieren:
 
@@ -51,7 +51,7 @@ Dieses Beispiel erstellt eine neue SnapMirror-Beziehung zum SnapLock Ziel-Volume
 `cluster2::> snapmirror create -source-path SVM1:srcvolA -destination-path SVM2:dstvolB -vserver SVM2 -policy XDPDefault -schedule hourly`
 
 +
-link:../../ontap/data-protection/create-custom-replication-policy-concept.html["Erstellen Sie eine benutzerdefinierte Replikationsrichtlinie"^] Oder einlink:../../ontap/data-protection/create-replication-job-schedule-task.html["Benutzerdefinierter Zeitplan"^], wenn die verfügbaren Standardeinstellungen nicht geeignet sind.
+link:https://docs.netapp.com/us-en/ontap/data-protection/create-custom-replication-policy-concept.html["Erstellen Sie eine benutzerdefinierte Replikationsrichtlinie"^] Oder einlink:https://docs.netapp.com/us-en/ontap/data-protection/create-replication-job-schedule-task.html["Benutzerdefinierter Zeitplan"^], wenn die verfügbaren Standardeinstellungen nicht geeignet sind.
 
 . Initialisieren Sie auf der Ziel-SVM die SnapVault-Beziehung, die in Schritt 5 erstellt wurde:
 +
