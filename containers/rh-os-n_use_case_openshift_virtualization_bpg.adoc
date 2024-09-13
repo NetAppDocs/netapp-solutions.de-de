@@ -1,0 +1,202 @@
+---
+sidebar: sidebar 
+permalink: containers/rh-os-n_use_case_openshift_virtualization_bpg.html 
+keywords: OpenShift, OCP, Trident, NetApp ONTAP, Red Hat OpenShift, OpenShift Virtualization, CNV, Container Native Virtualization, Red Hat OpenShift Virtualization 
+summary: Best Practices-Empfehlungen für VMs in Red hat OpenShift Virtualization 
+---
+= Best Practices-Empfehlungen für VMs in Red hat OpenShift Virtualization
+:hardbreaks:
+:allow-uri-read: 
+:nofooter: 
+:icons: font
+:linkattrs: 
+:imagesdir: ../media/
+
+
+Autor: Banu Sundhar, NetApp
+
+[role="lead"]
+In diesem Abschnitt werden die verschiedenen Faktoren beschrieben, die Sie beim Bereitstellen neuer VMs oder beim Importieren vorhandener VMs aus einer VMware-Umgebung in OpenShift Virtualization auf der OpenShift Container Platform berücksichtigen sollten.
+
+
+
+== VM-Performance
+
+Beim Erstellen einer neuen VM in OpenShift Virtualization müssen Sie das Zugriffsmuster sowie die Performance-Anforderungen (IOPS und Durchsatz) des Workloads berücksichtigen, der auf der VM ausgeführt wird. Dies beeinflusst die Anzahl der VMs, die Sie auf der OpenShift Virtualization in einer OpenShift-Container-Plattform ausführen müssen, sowie den Speichertyp, den Sie für die VM-Festplatten verwenden müssen.
+
+Der Storage-Typ, den Sie für Ihre VM-Festplatten auswählen möchten, wird von folgenden Faktoren beeinflusst:
+
+* Das Protokoll, das Sie für den Datenzugriff Ihrer Workloads benötigen
+* Die benötigten Zugriffsmodi (RWO vs RWX)
+* Performance-Merkmale, die Sie für Ihre Workloads benötigen
+
+
+Weitere Informationen finden Sie im Abschnitt Speicherkonfiguration.
+
+
+
+== Hochverfügbarkeit von VM-Workloads
+
+OpenShift Virtualization unterstützt Live-Migrationen einer VM. Bei der Live-Migration kann eine laufende VM-Instanz (VMI) auf einen anderen Node verschoben werden, ohne den Workload zu unterbrechen. Die Migration kann besonders hilfreich sein für einen reibungslosen Übergang während eines Upgrades eines Clusters oder jedes Mal, wenn ein Node aufgrund von Wartungs- oder Konfigurationsänderungen nicht mehr benötigt wird. Für die Live-Migration ist die Verwendung einer gemeinsamen Speicherlösung erforderlich, die den Zugriffsmodus ReadWriteMany (RWX) bietet. Die VM-Festplatten sollten über eine Speicheroption gesichert werden, die den RWX-Zugriffsmodus bietet. OpenShift Virtualization überprüft, ob eine VMI ** live migrierbar ist** und wenn ja, wird die **elvictionStrategy** auf **LiveMigrate** gesetzt. Weitere Informationen finden Sie unter link:https://docs.openshift.com/container-platform/latest/virt/live_migration/virt-about-live-migration.html["Informationen zum Abschnitt Live Migration in der Red hat Dokumentation"] .
+
+Es ist wichtig, dass Sie einen Treiber verwenden, der **RWX**-Zugriffsmodus unterstützt. Im Abschnitt Speicherkonfiguration finden Sie weitere Informationen darüber, welche Treiber den RWX-Zugriffsmodus unterstützen.
+
+
+
+== Storage-Konfiguration
+
+die CSI-bereitstellung von Trident bietet verschiedene Treiber (nas, nas-Economy, nas-FlexGroup, san und san-Economy) für die Provisionierung von Storage mit NetApp Storage-Optionen. **Verwendete Protokolle:** * nas-Treiber verwenden NAS-Protokolle (NFS und SMB) * san-Treiber verwenden das iSCSI- oder NVMe/TCP-Protokoll
+
+Die folgende Seite hilft Ihnen bei der Entscheidung, wie die Storage-Konfiguration auf der Basis der Workload-Anforderungen und der Storage-Auslastung konfiguriert werden soll.
+
+* nas-Treiber erstellt ein persistentes Volume (PV) auf einem FlexVolume.
+* nas-Economy-Treiber erstellt ein PV auf einem qtree auf einem freigegebenen FlexVolume. (Ein FlexVolume für je 200 PVS, konfigurierbar zwischen 50 und 300)
+* der nas-FlexGroup-Treiber erstellt auf einem PV auf einem FlexGroup
+* san Driver erstellt ein PV auf einer LUN auf einem dedizierten FlexVolume
+* san-Economy-Treiber erstellt ein PV auf LUN auf Shared FlexVolume (ein FlexVolume für je 100 PVs, konfigurierbar zwischen 50 und 200)
+
+
+Das folgende Diagramm veranschaulicht dies.
+
+image::redhat_openshift_bpg_image1.png[Treiber]
+
+Außerdem unterscheiden sich die von den Treibern unterstützten Zugriffsmodi.
+
+Unterstützung von ONTAP nas-Treibern
+
+* Zugriff auf das Dateisystem und Zugriffsmodi RWO, ROX, RWX, RWOP.
+
+
+ONTAP-san-Treiber unterstützen sowohl den RAW-Block- als auch den Dateisystemmodus.
+
+* Im RAW-Block-Modus unterstützt er die Zugriffsmodi RWO, ROX, RWX, RWOP.
+* Im Dateisystem-Modus sind nur RWO-, RWOP-Zugriffsmodi erlaubt.
+
+
+Bei der Live-Migration von OpenShift Virtualization-VMs müssen die Festplatten über RWX-Zugriffsmodi verfügen. Daher ist es wichtig, dass Sie im reinen Block-Volume-Modus nas-Treiber oder san-Treiber auswählen, um VES und VES zu erstellen, die von ONTAP unterstützt werden.
+
+
+
+== **Best Practices Für Die Speicherkonfiguration**
+
+
+
+=== **Dedicated Storage Virtual Machines (SVMs)**
+
+Storage Virtual Machines (SVMs) sorgen für die Trennung von Mandanten auf einem ONTAP System. Die Zuweisung einer SVM für OpenShift-Container und OpenShift-Virtualisierungs-VMs ermöglicht die Delegierung von Privileges und die Anwendung von Best Practices zur Begrenzung des Ressourcenverbrauchs.
+
+
+
+=== **Begrenzung der maximalen Volumenanzahl auf der SVM**
+
+Damit Trident nicht alle verfügbaren Volumes im Storage-System verbraucht, sollten Sie ein Limit für die SVM festlegen. Dies können Sie über die Befehlszeile ausführen:
+
+[source, cli]
+----
+vserver modify -vserver <svm_name> -max-volumes <num_of_volumes>
+----
+Der Wert für max-Volumes ist die Gesamtzahl der Volumes, die über alle Nodes im ONTAP Cluster bereitgestellt werden, nicht aber über einen einzelnen ONTAP Node. Aus diesem Grund treten möglicherweise einige Bedingungen auf, bei denen auf einem ONTAP Cluster-Node mehr oder weniger mit Trident bereitgestellte Volumes als ein anderer Node vorhanden sind. Um dies zu vermeiden, stellen Sie sicher, dass der von Trident verwendeten SVM dieselbe Anzahl von Aggregaten von jedem Node im Cluster zugewiesen wird.
+
+
+
+=== **Begrenzung der maximalen Größe der von Trident erstellten Volumes**
+
+Eine maximale Volume-Größe pro SVM kann in ONTAP festgelegt werden:
+
+. SVM mit dem Befehl vserver create erstellen und Storage-Grenze festlegen:
+
+
+[source, cli]
+----
+vserver create -vserver vserver_name -aggregate aggregate_name -rootvolume root_volume_name -rootvolume-security-style {unix|ntfs|mixed} -storage-limit value
+----
+. So ändern Sie die Speichergrenze für eine vorhandene SVM:
++
+[source, cli]
+----
+vserver modify -vserver vserver_name -storage-limit value -storage-limit-threshold-alert percentage
+----
+
+
+
+NOTE: Storage-Limits können nicht für SVMs konfiguriert werden, die Datensicherungs-Volumes, Volumes in einer SnapMirror Beziehung oder in einer MetroCluster Konfiguration enthalten.
+
+Neben der Kontrolle der Volume-Größe im Storage-Array sollten auch Kubernetes-Funktionen genutzt werden.
+
+. Um die maximale Größe für Volumes zu konfigurieren, die von Trident erstellt werden können, verwenden Sie den Parameter **limitVolumeSize** in Ihrer Backend.json-Definition.
+. Um die maximale Größe für FlexVols zu konfigurieren, die als Pools für ONTAP-san-Economy und ONTAP-nas-Economy-Treiber verwendet werden, verwenden Sie den Parameter **limitVolumePoolSize** in Ihrer Backend.json-Definition.
+
+
+
+
+=== **SVM QOS Policy verwenden**
+
+Wenden Sie die QoS-Richtlinie (Quality of Service) auf die SVM an, um die Anzahl der von den Trident bereitgestellten Volumes verbrauchbaren IOPS zu begrenzen. Dadurch wird verhindert, dass Workloads, die über Trident bereitgestellten Storage verwenden, Workloads außerhalb der Trident SVM beeinträchtigen.
+
+ONTAP QoS-Richtliniengruppen bieten QoS-Optionen für Volumes und ermöglichen es Benutzern, die Durchsatzobergrenze für eine oder mehrere Workloads zu definieren. Weitere Informationen zu QoS-Richtliniengruppen finden Sie unter link:https://docs.netapp.com/us-en/ontap-cli/index.html["ONTAP 9.15 QoS-Befehle"]
+
+
+
+=== **Zugriff auf Storage-Ressourcen auf Kubernetes-Cluster-Mitglieder einschränken**
+
+**Namespaces verwenden** die Beschränkung des Zugriffs auf die von Trident erstellten NFS Volumes und iSCSI LUNs ist eine wichtige Komponente bei der Sicherheit Ihrer Kubernetes-Implementierung. Auf diese Weise wird verhindert, dass Hosts, die nicht zum Kubernetes Cluster gehören, auf die Volumes zugreifen und Daten unerwartet ändern können.
+
+Außerdem kann ein Prozess in einem Container auf Speicher zugreifen, der auf den Host gemountet ist, aber nicht für den Container vorgesehen ist. Dieses Problem kann durch die Verwendung von Namespaces als logische Grenze für Ressourcen vermieden werden. Jedoch
+
+Es ist wichtig zu wissen, dass Namespaces die logische Grenze für Ressourcen in Kubernetes sind. Daher ist es wichtig, sicherzustellen, dass Namespaces bei Bedarf zur Trennung verwendet werden. Privilegierte Container werden jedoch mit wesentlich mehr Berechtigungen auf Hostebene ausgeführt als normal. Deaktivieren Sie diese Funktion mit link:https://kubernetes.io/docs/concepts/policy/pod-security-policy/["Pod-Sicherheitsrichtlinien"].
+
+**Verwenden Sie eine dedizierte Exportrichtlinie** für OpenShift-Bereitstellungen mit dedizierten Infrastrukturknoten oder anderen Knoten, die keine Benutzeranwendungen planen können, sollten separate Exportrichtlinien verwendet werden, um den Zugriff auf Speicherressourcen weiter zu beschränken. Dies umfasst die Erstellung einer Exportrichtlinie für Services, die auf diesen Infrastruktur-Nodes bereitgestellt werden (z. B. OpenShift Metrics and Logging Services), sowie Standardanwendungen, die auf nicht-Infrastruktur-Nodes bereitgestellt werden.
+
+Trident kann Richtlinien für den Export automatisch erstellen und managen. So beschränkt Trident den Zugriff auf die Volumes, die ihm im Kubernetes Cluster zur Verfügung stehen, und vereinfacht das Hinzufügen/Löschen von Nodes.
+
+Wenn Sie jedoch eine Exportrichtlinie manuell erstellen, füllen Sie sie mit einer oder mehreren Exportrichtlinien aus, die jede Knotenzugriffsanforderung verarbeiten.
+
+**Disable showmount for the Application SVM** Ein auf den Kubernetes-Cluster bereitgestellter Pod kann den showmount -e-Befehl gegen die Daten-LIF ausgeben und eine Liste der verfügbaren Mounts erhalten, einschließlich derjenigen, auf die er keinen Zugriff hat. Um dies zu verhindern, deaktivieren Sie die showmount-Funktion mithilfe der folgenden CLI:
+
+[source, cli]
+----
+vserver nfs modify -vserver <svm_name> -showmount disabled
+----
+
+NOTE: Weitere Informationen zu Best Practices für die Storage-Konfiguration und die Trident-Verwendung finden Sie im Artikel link:https://docs.netapp.com/us-en/trident/["Trident Dokumentation"]
+
+
+
+== **OpenShift Virtualization - Tuning & Scaling Guide**
+
+Red hat dokumentiert link:https://docs.openshift.com/container-platform/latest/scalability_and_performance/recommended-performance-scale-practices/recommended-control-plane-practices.html["OpenShift Cluster Scaling – Empfehlungen und Einschränkungen"].
+
+Darüber hinaus haben sie auch dokumentiert link:https://access.redhat.com/articles/6994974]["OpenShift Virtualization Tuning Guide"] und link:https://access.redhat.com/articles/6571671["Unterstützte Grenzwerte für OpenShift Virtualization 4.x"].
+
+
+NOTE: Für den Zugriff auf die oben genannten Inhalte ist eine aktive Red hat Subskription erforderlich.
+
+Der Tuning-Leitfaden enthält Informationen zu vielen Tuning-Parametern, darunter:
+
+* Tuning-Parameter zur Erstellung mehrerer VMs auf einmal oder in großen Stapeln
+* Live-Migration von VMs
+* link:https://docs.openshift.com/container-platform/latest/virt/vm_networking/virt-dedicated-network-live-migration.htm["Konfigurieren eines dedizierten Netzwerks für die Live-Migration"]
+* Anpassung einer VM-Vorlage unter Berücksichtigung eines Workload-Typs
+
+
+Die unterstützten Grenzwerte dokumentieren die Höchstwerte der getesteten Objekte, wenn VMs auf OpenShift ausgeführt werden
+
+**Höchstwerte für virtuelle Maschinen einschließlich**
+
+* Max. Virtuelle CPUs pro VM
+* Max. Und Min. Des Arbeitsspeichers pro VM
+* Max. Größe einer einzelnen Festplatte pro VM
+* Maximale Anzahl der Hot-Plug-fähigen Festplatten pro VM
+
+
+**Host-Maximalwerte einschließlich** * gleichzeitige Live-Migrationen (pro Node und Cluster)
+
+**Cluster-Maximalwerte einschließlich** * maximale Anzahl definierter VMs
+
+
+
+=== **VMs von VMware Umgebung migrieren**
+
+Weitere Informationen zur Migration von VMs aus einer VMware Umgebung finden Sie unter link:https://docs.netapp.com/us-en/netapp-solutions/containers/rh-os-n_use_case_openshift_virtualization_workflow_vm_migration_using_mtv.html["Workflows > Red hat OpenShift Virtualization with NetApp ONTAP"]
+
+Wenn Sie mehr als 10 VMs von einem ESXi-Host im selben Migrationsplan migrieren, müssen Sie den NFC-Dienstspeicher des Hosts erhöhen. Andernfalls schlägt die Migration fehl, da der Speicher des NFC-Dienstes auf 10 parallele Verbindungen beschränkt ist. Weitere Details finden Sie in der Red hat Dokumentation: Link: https://docs.redhat.com/en/documentation/migration_toolkit_for_virtualization/2.6/html/installing_and_using_the_migration_toolkit_for_virtualization/prerequisites_mtv#increasing-nfc-memory-vmware-host_mtv[Increasing der NFC-Dienst Speicher eines ESXi Hosts]
