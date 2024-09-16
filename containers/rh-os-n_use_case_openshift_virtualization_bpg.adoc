@@ -16,7 +16,7 @@ summary: Best Practices-Empfehlungen für VMs in Red hat OpenShift Virtualizatio
 Autor: Banu Sundhar, NetApp
 
 [role="lead"]
-In diesem Abschnitt werden die verschiedenen Faktoren beschrieben, die Sie beim Bereitstellen neuer VMs oder beim Importieren vorhandener VMs aus einer VMware-Umgebung in OpenShift Virtualization auf der OpenShift Container Platform berücksichtigen sollten.
+In diesem Abschnitt werden die verschiedenen Faktoren beschrieben, die Sie beim Bereitstellen neuer VMs oder beim Importieren vorhandener VMs aus VMware vSphere in OpenShift Virtualization auf der OpenShift Container Platform berücksichtigen sollten.
 
 
 
@@ -31,7 +31,7 @@ Der Storage-Typ, den Sie für Ihre VM-Festplatten auswählen möchten, wird von 
 * Performance-Merkmale, die Sie für Ihre Workloads benötigen
 
 
-Weitere Informationen finden Sie im Abschnitt Speicherkonfiguration.
+Weitere Informationen finden Sie im Abschnitt Speicherkonfiguration weiter unten.
 
 
 
@@ -39,21 +39,23 @@ Weitere Informationen finden Sie im Abschnitt Speicherkonfiguration.
 
 OpenShift Virtualization unterstützt Live-Migrationen einer VM. Bei der Live-Migration kann eine laufende VM-Instanz (VMI) auf einen anderen Node verschoben werden, ohne den Workload zu unterbrechen. Die Migration kann besonders hilfreich sein für einen reibungslosen Übergang während eines Upgrades eines Clusters oder jedes Mal, wenn ein Node aufgrund von Wartungs- oder Konfigurationsänderungen nicht mehr benötigt wird. Für die Live-Migration ist die Verwendung einer gemeinsamen Speicherlösung erforderlich, die den Zugriffsmodus ReadWriteMany (RWX) bietet. Die VM-Festplatten sollten über eine Speicheroption gesichert werden, die den RWX-Zugriffsmodus bietet. OpenShift Virtualization überprüft, ob eine VMI ** live migrierbar ist** und wenn ja, wird die **elvictionStrategy** auf **LiveMigrate** gesetzt. Weitere Informationen finden Sie unter link:https://docs.openshift.com/container-platform/latest/virt/live_migration/virt-about-live-migration.html["Informationen zum Abschnitt Live Migration in der Red hat Dokumentation"] .
 
-Es ist wichtig, dass Sie einen Treiber verwenden, der **RWX**-Zugriffsmodus unterstützt. Im Abschnitt Speicherkonfiguration finden Sie weitere Informationen darüber, welche Treiber den RWX-Zugriffsmodus unterstützen.
+Es ist wichtig, dass Sie einen Treiber verwenden, der **RWX**-Zugriffsmodus unterstützt. Im Abschnitt Speicherkonfiguration unten finden Sie weitere Informationen darüber, welche ONTAP-Treiber den RWX-Zugriffsmodus unterstützen.
 
 
 
 == Storage-Konfiguration
 
-die CSI-bereitstellung von Trident bietet verschiedene Treiber (nas, nas-Economy, nas-FlexGroup, san und san-Economy) für die Provisionierung von Storage mit NetApp Storage-Optionen. **Verwendete Protokolle:** * nas-Treiber verwenden NAS-Protokolle (NFS und SMB) * san-Treiber verwenden das iSCSI- oder NVMe/TCP-Protokoll
+die CSI-bereitstellung von Trident bietet verschiedene Treiber (nas, nas-Economy, nas-FlexGroup, san und san-Economy) für die Provisionierung von Storage mit NetApp Storage-Optionen.
+
+**Verwendete Protokolle:** * nas-Treiber verwenden NAS-Protokolle (NFS und SMB) * san-Treiber verwenden das iSCSI- oder NVMe/TCP-Protokoll
 
 Die folgende Seite hilft Ihnen bei der Entscheidung, wie die Storage-Konfiguration auf der Basis der Workload-Anforderungen und der Storage-Auslastung konfiguriert werden soll.
 
-* nas-Treiber erstellt ein persistentes Volume (PV) auf einem FlexVolume.
-* nas-Economy-Treiber erstellt ein PV auf einem qtree auf einem freigegebenen FlexVolume. (Ein FlexVolume für je 200 PVS, konfigurierbar zwischen 50 und 300)
-* der nas-FlexGroup-Treiber erstellt auf einem PV auf einem FlexGroup
+* **nas**-Treiber erstellt ein persistentes Volume (PV) auf einem FlexVolume.
+* **nas-Economy** Treiber erstellt ein PV auf einem qtree auf einem gemeinsamen FlexVolume. (Ein FlexVolume für je 200 PVS, konfigurierbar zwischen 50 und 300)
+* **nas-FlexGroup** Treiber erstellt auf einem PV auf einem FlexGroup
 * san Driver erstellt ein PV auf einer LUN auf einem dedizierten FlexVolume
-* san-Economy-Treiber erstellt ein PV auf LUN auf Shared FlexVolume (ein FlexVolume für je 100 PVs, konfigurierbar zwischen 50 und 200)
+* **san-Economy** Treiber erstellt ein PV auf LUN auf Shared FlexVolume (ein FlexVolume für alle 100 PVs, konfigurierbar zwischen 50 und 200)
 
 
 Das folgende Diagramm veranschaulicht dies.
@@ -62,12 +64,12 @@ image::redhat_openshift_bpg_image1.png[Treiber]
 
 Außerdem unterscheiden sich die von den Treibern unterstützten Zugriffsmodi.
 
-Unterstützung von ONTAP nas-Treibern
+**Unterstützung von ONTAP nas-Treibern**
 
 * Zugriff auf das Dateisystem und Zugriffsmodi RWO, ROX, RWX, RWOP.
 
 
-ONTAP-san-Treiber unterstützen sowohl den RAW-Block- als auch den Dateisystemmodus.
+**ONTAP san-Treiber unterstützen sowohl RAW-Block- als auch Dateisystemmodi**
 
 * Im RAW-Block-Modus unterstützt er die Zugriffsmodi RWO, ROX, RWX, RWOP.
 * Im Dateisystem-Modus sind nur RWO-, RWOP-Zugriffsmodi erlaubt.
@@ -197,6 +199,37 @@ Die unterstützten Grenzwerte dokumentieren die Höchstwerte der getesteten Obje
 
 === **VMs von VMware Umgebung migrieren**
 
-Weitere Informationen zur Migration von VMs aus einer VMware Umgebung finden Sie unter link:https://docs.netapp.com/us-en/netapp-solutions/containers/rh-os-n_use_case_openshift_virtualization_workflow_vm_migration_using_mtv.html["Workflows > Red hat OpenShift Virtualization with NetApp ONTAP"]
+Migration Toolkit for OpenShift Virtualization ist ein von Red hat bereitgestellter Betreiber, der über den OperatorHub der OpenShift Container Platform verfügbar ist. Dieses Tool kann zur Migration von VMs von vSphere, Red hat Virtualization, OpenStack und OpenShift Virtualization verwendet werden.
 
-Wenn Sie mehr als 10 VMs von einem ESXi-Host im selben Migrationsplan migrieren, müssen Sie den NFC-Dienstspeicher des Hosts erhöhen. Andernfalls schlägt die Migration fehl, da der Speicher des NFC-Dienstes auf 10 parallele Verbindungen beschränkt ist. Weitere Details finden Sie in der Red hat Dokumentation: Link: https://docs.redhat.com/en/documentation/migration_toolkit_for_virtualization/2.6/html/installing_and_using_the_migration_toolkit_for_virtualization/prerequisites_mtv#increasing-nfc-memory-vmware-host_mtv[Increasing der NFC-Dienst Speicher eines ESXi Hosts]
+Weitere Informationen zur Migration von VMs von vSphere finden Sie unter link:https://docs.netapp.com/us-en/netapp-solutions/containers/rh-os-n_use_case_openshift_virtualization_workflow_vm_migration_using_mtv.html["Workflows > Red hat OpenShift Virtualization with NetApp ONTAP"]
+
+Sie können Grenzwerte für verschiedene Parameter entweder über die CLI oder über die Migrationswebkonsole konfigurieren. Einige Beispiele sind unten angegeben
+
+. Durch die maximale Anzahl gleichzeitiger Migrationen virtueller Maschinen wird die maximale Anzahl gleichzeitig migrierter VMs festgelegt. Der Standardwert ist 20 virtuelle Maschinen.
+. PreCopy-Intervall (Minuten) steuert das Intervall, in dem ein neuer Snapshot angefordert wird, bevor eine warme Migration gestartet wird. Der Standardwert ist 60 Minuten.
+. Das Snapshot-Polling-Intervall (Sekunden) bestimmt, mit welcher Häufigkeit das System den Status der Snapshot-Erstellung bzw. -Entfernung während der oVirt Warmmigration überprüft. Der Standardwert ist 10 Sekunden.
+
+
+Wenn Sie mehr als 10 VMs von einem ESXi-Host im selben Migrationsplan migrieren, müssen Sie den NFC-Dienstspeicher des Hosts erhöhen. Andernfalls schlägt die Migration fehl, da der Speicher des NFC-Dienstes auf 10 parallele Verbindungen beschränkt ist. Weitere Informationen finden Sie in der Red hat Dokumentation: link:https://docs.redhat.com/en/documentation/migration_toolkit_for_virtualization/2.6/html/installing_and_using_the_migration_toolkit_for_virtualization/prerequisites_mtv#increasing-nfc-memory-vmware-host_mtv["Erhöhen des NFC-Dienstspeichers eines ESXi-Hosts"]
+
+Hier finden Sie eine erfolgreiche parallele Migration von 10 VMs vom selben Host in vSphere zu OpenShift Virtualization mit dem Migration Toolkit für Virtualisierung.
+
+**VMs auf demselben ESXi-Host **
+
+image::redhat_openshift_bpg_image2-a.png[vms auf demselben Host]
+
+**Zunächst wird Ein Plan für die Migration von 10 VMs von VMware erstellt**
+
+image::redhat_openshift_bpg_image2.png[Migrationsplan]
+
+**Migrationsplan hat mit der Ausführung begonnen**
+
+image::redhat_openshift_bpg_image3.png[Migrationsplan wird ausgeführt]
+
+**Alle 10 VMs wurden erfolgreich migriert**
+
+image::redhat_openshift_bpg_image4.png[Migrationsplan – erfolgreich]
+
+**Alle 10 VMs befinden sich in einem laufenden Zustand in OpenShift Virtualization**
+
+image::redhat_openshift_bpg_image5.png[Migrierte-vms werden ausgeführt]
