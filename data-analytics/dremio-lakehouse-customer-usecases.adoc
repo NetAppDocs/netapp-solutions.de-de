@@ -1,0 +1,40 @@
+---
+sidebar: sidebar 
+permalink: data-analytics/dremio-lakehouse-customer-usecases.html 
+keywords: customer use case details 
+summary: In diesem Abschnitt werden die Anwendungsfalldetails von Dremio mit NetApp Objektspeicher behandelt. 
+---
+= Anwendungsfälle Von Kunden
+:hardbreaks:
+:allow-uri-read: 
+:nofooter: 
+:icons: font
+:linkattrs: 
+:imagesdir: ../media/
+
+
+
+
+== Anwendungsfall für NetApp ActiveIQ
+
+image:activeIQold.png["Alte ActiveIQ Architektur"]
+
+*Herausforderung*: Die eigene interne Active IQ-Lösung von NetApp, die ursprünglich für die Unterstützung zahlreicher Anwendungsfälle konzipiert wurde, hat sich zu einem umfassenden Angebot sowohl für interne Benutzer als auch für Kunden entwickelt. Die zugrunde liegende Hadoop/MapR-basierte Back-End-Infrastruktur stellte jedoch aufgrund des schnellen Datenwachstums und der Notwendigkeit eines effizienten Datenzugriffs vor Herausforderungen im Hinblick auf die Kosten und die Performance. Die Storage-Skalierung erforderte das Hinzufügen unnötiger Computing-Ressourcen und führte zu höheren Kosten.
+
+Außerdem war das Management des Hadoop Clusters zeitaufwändig und erforderte spezielle Fachkenntnisse. Probleme mit der Daten-Performance und dem Datenmanagement verkomplizieren die Situation noch weiter: Abfragen benötigen durchschnittlich 45 Minuten und aufgrund von Fehlkonfigurationen Hungersnöte. Um diese Herausforderungen zu bewältigen, suchte NetApp nach einer Alternative zur vorhandenen alten Hadoop Umgebung und stellte fest, dass eine neue moderne Lösung auf Basis von Dremio die Kosten senken, Storage und Computing voneinander entkoppeln, die Performance verbessern, das Datenmanagement vereinfachen, feingranulare Kontrollen bieten und Disaster Recovery-Funktionen bereitstellen würde.
+
+*Lösung*: image:activeIQnew.png["ActiveIQ neue Architektur mit dremio"]Mit Dremio konnte NetApp seine Hadoop-basierte Dateninfrastruktur in mehreren Phasen modernisieren und so eine Roadmap für einheitliche Analysen bereitstellen. Im Gegensatz zu anderen Anbietern, die erhebliche Änderungen an Data Processing erforderten, konnte Dremio nahtlos in vorhandene Pipelines integriert werden, was Zeit und Kosten während der Migration einspart. Durch den Umstieg auf eine vollständig containerisierte Umgebung senkt NetApp den Management-Overhead, erhöht die Sicherheit und erhöht die Ausfallsicherheit. Die Einführung offener Ökosysteme wie Apache Iceberg und Arrow von Dremio sorgte für Zukunftssicherheit, Transparenz und Erweiterbarkeit.
+
+Als Ersatz für die Hadoop/Hive Infrastruktur bot Dremio Funktionalität für sekundäre Anwendungsfälle über die semantische Schicht an. Während die bestehenden Spark-basierten ETL- und Datenaufnahmemechanismen blieben, bot Dremio eine einheitliche Zugriffsebene für eine einfachere Datenerkennung und -Exploration ohne Duplizierung. Bei diesem Ansatz wurden die Datenreplizierungsfaktoren deutlich reduziert und der Storage und das Computing wurden voneinander getrennt.
+
+*Vorteile*: Mit Dremio erzielte NetApp deutliche Kosteneinsparungen, indem der Compute-Verbrauch und der Festplattenspeicherbedarf in seinen Datenumgebungen minimiert wurden. Der neue Active IQ Data Lake besteht aus 8,900 Tabellen mit 3 Petabyte Daten, verglichen mit der bisherigen Infrastruktur mit über 7 Petabyte. Bei der Migration zu Dremio war außerdem der Wechsel von 33 Mini-Clustern und 4,000 Kernen zu 16 Executor-Nodes auf Kubernetes-Clustern erforderlich. Selbst bei deutlich geringeren Computing-Ressourcen konnte NetApp eine bemerkenswerte Performance-Steigerung verzeichnen. Durch den direkten Datenzugriff über Dremio sank die Abfragezeit von 45 Minuten auf 2 Minuten. Dadurch wurden 95 % schnellere Erkenntnisse für die vorausschauende Wartung und Optimierung erzielt. Die Migration führte außerdem zu einer Senkung der Compute-Kosten um mehr als 60 %, mehr als 20-mal schnelleren Abfragen und mehr als 30 % Einsparungen bei den Gesamtbetriebskosten (TCO).
+
+
+
+== Auto Parts Sales – Anwendungsfall Für Kunden.
+
+*Herausforderungen*: Innerhalb dieses globalen Autoteile-Vertriebsunternehmens konnten die Geschäfts- und Unternehmensfinanzplanungs- und -Analysegruppen keine konsolidierte Ansicht der Umsatzberichte erhalten und waren gezwungen, die einzelnen Geschäftsabsatzkennzahlen-Berichte zu lesen und zu konsolidieren. Daher treffen Kunden Entscheidungen auf der Grundlage von Daten, die mindestens einen Tag alt waren. Die Vorlaufzeiten für neue Erkenntnisse aus Big-Data-Analysen dauern in der Regel länger als vier Wochen. Die Fehlerbehebung bei Daten-Pipelines würde noch länger dauern und die bereits lange Zeitachse um zusätzliche drei Tage oder länger erweitern. Der langsame Entwicklungsprozess von Berichten und die hohe Berichtsleistung zwangen die Analysten, kontinuierlich auf die Verarbeitung oder das Laden von Daten zu warten, anstatt neue geschäftliche Erkenntnisse zu gewinnen und neues Geschäftsverhalten voranzutreiben. Diese problematischen Umgebungen bestanden aus zahlreichen unterschiedlichen Datenbanken für verschiedene Geschäftsbereiche, woraus sich zahlreiche Datensilos ergaben. Die langsame und fragmentierte Umgebung kompliziert die Data Governance, da es zu viele Möglichkeiten für Analysten gab, ihre eigene Version der Wahrheit gegen eine einzige Quelle der Wahrheit zu finden. Die Kosten für die Datenplattform betragen über 1,9 Millionen US-Dollar, und die Personalkosten. Für die Wartung der alten Plattform und das Ausfüllen von Datenanfragen waren sieben Außendiensttechniker (Field Technical Engineers, FTEs) pro Jahr erforderlich. Angesichts der wachsenden Datenanforderungen war das Data Intelligence-Team nicht in der Lage, die ältere Umgebung an künftige Anforderungen anzupassen
+
+*Lösung*: Kostengünstige Speicherung und Verwaltung großer Iceberg-Tabellen im NetApp-Objektspeicher. Erstellen Sie Datendomänen mithilfe der semantischen Ebene von Dremio, sodass Geschäftsanwender problemlos Datenprodukte erstellen, suchen und gemeinsam nutzen können.
+
+*Vorteile für den Kunden*: • Verbesserte und optimierte vorhandene Datenarchitektur und reduzierte die Zeit für Einblicke von vier Wochen auf wenige Stunden • reduzierte die Fehlerbehebungszeit von drei Tagen auf nur wenige Stunden • reduzierte die Kosten für die Datenplattform und das Management um mehr als 380.000 US-Dollar • (2) jährliche Einsparungen durch die FTEs of Data Intelligence

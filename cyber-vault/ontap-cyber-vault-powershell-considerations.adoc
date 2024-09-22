@@ -1,0 +1,80 @@
+---
+sidebar: sidebar 
+permalink: cyber-vault/ontap-cyber-vault-powershell-considerations.html 
+keywords: Cyber vault, powershell, script, configuration, validation, hardening 
+summary: Hierbei handelt es sich um die NetApp ONTAP-Lösung zur Konfiguration, Härtung und Validierung eines ONTAP-basierten Cyber-Vault 
+---
+= Weitere Überlegungen
+:hardbreaks:
+:allow-uri-read: 
+:nofooter: 
+:icons: font
+:linkattrs: 
+:imagesdir: ../media
+
+
+[role="lead"]
+Beim Design und der Implementierung einer ONTAP-basierten Cyber-Vault müssen noch weitere Überlegungen angestellt werden.
+
+
+
+== Überlegungen zum Kapazitätsdimensionieren
+
+Die Menge an Speicherplatz, die für ein ONTAP Cyber Vault-Ziel-Volume benötigt wird, hängt von verschiedenen Faktoren ab. Am wichtigsten ist dabei die Änderungsrate der Daten im Quell-Volume. Der Backup-Zeitplan und der Snapshot-Zeitplan auf dem Ziel-Volume wirken sich sowohl auf die Festplattennutzung auf dem Ziel-Volume aus als auch auf die Änderungsrate auf dem Quell-Volume ist wahrscheinlich nicht konstant. Es empfiehlt sich, darüber hinaus einen Puffer an zusätzlicher Storage-Kapazität bereitzustellen, der erforderlich ist, um künftige Änderungen im Verhalten von Endbenutzern oder Applikationen zu berücksichtigen.
+
+Für die Dimensionierung eines Verhältnisses für 1 Monat Aufbewahrung in ONTAP müssen die Storage-Anforderungen auf Grundlage verschiedener Faktoren berechnet werden, darunter die Größe des primären Datensatzes, die Änderungsrate der Daten (tägliche Änderungsrate) sowie die Einsparungen durch Deduplizierung und Komprimierung (falls zutreffend).
+
+Hier ist der Schritt-für-Schritt-Ansatz:
+
+Der erste Schritt besteht darin, die Größe der Quell-Volumes zu kennen, die Sie mit dem Cyber-Vault schützen. Dies ist die Grundmenge der Daten, die zunächst auf das Cyber-Vault-Ziel repliziert werden. Schätzen Sie als Nächstes die tägliche Änderungsrate für den Datensatz ab. Dies ist der Prozentsatz der Daten, die sich jeden Tag ändern. Dabei ist es entscheidend, die Dynamik der Daten genau zu kennen.
+
+Beispiel:
+
+* Größe des primären Datensatzes = 5 TB
+* Tägliche Änderungsrate = 5% (0.05)
+* Deduplizierungs- und Komprimierungs-Effizienz = 50 % (0.50)
+
+
+Lassen Sie uns nun die Berechnung durchgehen:
+
+* Berechnung der täglichen Datenänderungsrate:
++
+`Changed data per day = 5000 * 5% = 250GB`
+
+* Berechnen der geänderten Gesamtdaten für 30 Tage:
++
+`Total changed data in 30 days = 250 GB * 14 = 3.5TB`
+
+* Berechnen Sie den insgesamt erforderlichen Storage:
++
+`TOTAL = 5TB + 3.5TB = 8.5TB`
+
+* Einsparungen bei Deduplizierung und Komprimierung:
++
+`EFFECTIVE = 8.5TB * 50% = 4.25TB`
+
+
+
+*Zusammenfassung der Speicheranforderungen*
+
+* Ohne Effizienz würde *8,5 TB* erforderlich sein, um 30 Tage Cyber-Vault-Daten zu speichern.
+* Bei einer Effizienz von 50 % würde nach Deduplizierung und Komprimierung *4,25 TB* Storage benötigt.
+
+
+
+NOTE: Snapshot-Kopien können durch Metadaten zusätzlichen Overhead haben, dieser Vorgang ist jedoch in der Regel geringfügig.
+
+
+NOTE: Wenn pro Tag mehrere Backups erstellt werden, passen Sie die Berechnung an die Anzahl der täglich erstellten Snapshot Kopien an.
+
+
+NOTE: Berücksichtigen Sie das Datenwachstum im Laufe der Zeit, um sicherzustellen, dass das Sizing zukunftssicher ist.
+
+
+
+== Performance-Auswirkungen auf Primär-/Quelle
+
+Da es sich bei dem Datentransfer um einen Pull-Vorgang handelt, können die Auswirkungen auf die Performance des primären Storage je nach Workload, Datenvolumen und Häufigkeit von Backups variieren. Die Auswirkungen auf die Performance des primären Systems insgesamt sind jedoch im Allgemeinen moderat und managebar, da der Datentransfer darauf ausgelegt ist, die Datensicherung und Backup-Aufgaben ins Cyber Vault-Storage-System zu verlagern. Beim ersten Beziehungs-Setup und beim ersten kompletten Backup wird eine beträchtliche Menge an Daten vom primären System auf das Cyber Vault-System (das SnapLock Compliance Volume) übertragen. Dies kann zu einem erhöhten Netzwerk-Traffic und einer höheren I/O-Last auf dem primären System führen. Nach Abschluss des ersten vollständigen Backups muss ONTAP nur noch die seit dem letzten Backup geänderten Blöcke nachverfolgen und übertragen. Dies führt zu einer wesentlich geringeren I/O-Last als bei der ersten Replizierung. Inkrementelle Updates sind effizient und haben nur minimale Auswirkungen auf die Performance des primären Storage. Der Vault-Prozess wird im Hintergrund ausgeführt, wodurch das Risiko von Beeinträchtigungen der Produktions-Workloads des primären Systems verringert wird.
+
+* Wenn sichergestellt wird, dass das Storage-System über genügend Ressourcen (CPU, Arbeitsspeicher und IOPS) verfügt, um die zusätzliche Last bewältigen zu können, werden die Auswirkungen auf die Performance verringert.
+

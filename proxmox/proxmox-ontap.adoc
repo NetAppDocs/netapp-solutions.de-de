@@ -1,0 +1,408 @@
+---
+sidebar: sidebar 
+permalink: proxmox/proxmox-ontap.html 
+keywords: netapp, proxmox, proxmox ve, all-flash, nfs, iscsi, ontap, storage, aff 
+summary: 'Gemeinsam genutzter Speicher in Proxmox Virtual Environment (VE) reduziert die Zeit für die VM-Live-Migration und sorgt für ein besseres Ziel für Backups und konsistente Vorlagen in der gesamten Umgebung. ONTAP-Speicher kann die Anforderungen von Proxmox VE-Host-Umgebungen sowie von Gast-File-, Block- und Objekt-Storage erfüllen.' 
+---
+= Proxmox VE mit ONTAP
+:hardbreaks:
+:allow-uri-read: 
+:nofooter: 
+:icons: font
+:linkattrs: 
+:imagesdir: ../media/
+
+
+[role="lead"]
+Gemeinsam genutzter Speicher in Proxmox Virtual Environment (VE) reduziert die Zeit für die VM-Live-Migration und sorgt für ein besseres Ziel für Backups und konsistente Vorlagen in der gesamten Umgebung. ONTAP-Speicher kann die Anforderungen von Proxmox VE-Host-Umgebungen sowie von Gast-File-, Block- und Objekt-Storage erfüllen.
+
+Proxmox VE-Hosts müssen über FC-, Ethernet- oder andere unterstützte Schnittstellen verfügen, die mit Switches verkabelt sind und über die Kommunikation mit logischen ONTAP-Schnittstellen verfügen.
+
+
+
+== Grundlegende ONTAP-Funktionen
+
+*Allgemeine Merkmale*
+
+* Scale-out-Cluster
+* Unterstützung für sichere Authentifizierung und RBAC
+* Zero-Trust-Multi-Admin-Unterstützung
+* Sichere Mandantenfähigkeit
+* Datenreplizierung mit SnapMirror.
+* Zeitpunktgenaue Kopien mit Snapshots.
+* Platzsparende Klone:
+* Storage-Effizienzfunktionen wie Deduplizierung, Komprimierung usw.
+* Trident CSI-Unterstützung für Kubernetes
+* SnapLock
+* Manipulationssichere Snapshot Kopie Sperrung
+* Unterstützung von Verschlüsselung
+* Tiering selten genutzter Daten mit FabricPool in Objektspeicher:
+* BlueXP  und CloudInsights Integration.
+* Microsoft Offloaded Data Transfer (ODX)
+
+
+*NAS*
+
+* FlexGroup Volumes sind ein Scale-out-NAS-Container, der hohe Performance bei Lastverteilung und Skalierbarkeit bietet.
+* FlexCache ermöglicht eine weltweite Verteilung der Daten und bietet weiterhin lokalen Lese- und Schreibzugriff auf die Daten.
+* Durch die Multi-Protokoll-Unterstützung können über SMB und NFS auf dieselben Daten zugegriffen werden.
+* NFS nConnect ermöglicht mehrere TCP-Sitzungen pro TCP-Verbindung, wodurch der Netzwerkdurchsatz steigt. Dies erhöht die Nutzung von Hochgeschwindigkeits-nics, die auf modernen Servern verfügbar sind.
+* Das NFS Session Trunking bietet höhere Datenübertragungsgeschwindigkeiten, hohe Verfügbarkeit und Fehlertoleranz.
+* SMB Multichannel bietet höhere Datentransfergeschwindigkeit, hohe Verfügbarkeit und Fehlertoleranz.
+* Integration mit Active Directory/LDAP für Dateiberechtigungen.
+* Sichere Verbindung mit NFS über TLS.
+* Unterstützung von NFS Kerberos:
+* NFS über RDMA:
+* Namenszuordnung zwischen Windows- und Unix-Identitäten.
+* Autonomer Ransomware-Schutz.
+* Dateisystemanalyse:
+
+
+*SAN*
+
+* Erweitern des Clusters über Fehlerdomänen mit SnapMirror Active Sync
+* ASA Modelle bieten aktiv/aktiv-Multipathing und schnellen Pfad-Failover.
+* Unterstützung der Protokolle FC, iSCSI und NVMe-of
+* Unterstützung für gegenseitige iSCSI-CHAP-Authentifizierung
+* Selektive LUN-Zuordnung und Portset.
+
+
+
+
+== Proxmox VE-Speichertypen, die von ONTAP unterstützt werden
+
+NAS-Protokolle (NFS/SMB) unterstützen alle Inhaltstypen von Proxmox VE und werden in der Regel einmal auf Rechenzentrumsebene konfiguriert. Gast-VMs können Festplatten des Typs RAW, qcow2 oder VMDK auf NAS Storage verwenden. ONTAP Snapshots können sichtbar gemacht werden, um auf zeitpunktbezogene Kopien von Daten vom Client zuzugreifen. Block-Speicher mit SAN-Protokollen (FC/iSCSI/NVMe-of) werden normalerweise pro Host konfiguriert und sind auf die von Proxmox VE unterstützten Content-Typen VM-Festplatte und Container-Image beschränkt. Gast-VMs und Container nutzen Block-Storage als Rohgeräte.
+
+[cols="25% 15% 15% 15% 15% 15%"]
+|===
+| Inhaltstyp | NFS | SMB/CIFS | FC | ISCSI | NVMe-of 
+
+
+| Backups | Ja. | Ja.  a| 
+Nein^1^
+ a| 
+Nein^1^
+ a| 
+Nein^1^
+
+
+
+| VM-Festplatten | Ja. | Ja.  a| 
+Ja^2^
+ a| 
+Ja^2^
+ a| 
+Ja^2^
+
+
+
+| CT-Volumen | Ja. | Ja.  a| 
+Ja^2^
+ a| 
+Ja^2^
+ a| 
+Ja^2^
+
+
+
+| ISO-Images | Ja. | Ja.  a| 
+Nein^1^
+ a| 
+Nein^1^
+ a| 
+Nein^1^
+
+
+
+| CT-Vorlagen | Ja. | Ja.  a| 
+Nein^1^
+ a| 
+Nein^1^
+ a| 
+Nein^1^
+
+
+
+| Ausschnitte | Ja. | Ja.  a| 
+Nein^1^
+ a| 
+Nein^1^
+ a| 
+Nein^1^
+
+|===
+*Hinweise:* 1 - erfordert Clusterdateisystem, um den freigegebenen Ordner zu erstellen und den Verzeichnisspeichertyp zu verwenden. 2 - LVM-Speichertyp verwenden.
+
+
+
+== SMB/CIFS-Storage
+
+Zur Nutzung von SMB/CIFS-Dateifreigaben müssen bestimmte Aufgaben vom Speicheradministrator ausgeführt werden, und der Virtualisierungsadministrator kann die Freigabe über die Proxmox VE UI oder über die Shell bereitstellen. SMB Multichannel bietet Fehlertoleranz und steigert die Performance. Weitere Informationen finden Sie unter link:https://www.netapp.com/pdf.html?item=/media/17136-tr4740.pdf["TR4740 - SMB 3.0 Multichannel"]
+
+
+NOTE: Das Kennwort wird in einer Klartextdatei gespeichert und ist nur für den Root-Benutzer zugänglich. Siehe link:https://pve.proxmox.com/pve-docs/chapter-pvesm.html#storage_cifs["Proxmox VE-Dokumentation"].
+
+.<strong>-Abfragestellen-</strong>
+[%collapsible]
+====
+Wenn Sie neu bei ONTAP sind, führen Sie die folgenden Aufgaben über die Benutzeroberfläche von System Manager aus, um die Benutzerfreundlichkeit zu erhöhen.
+
+. Stellen Sie sicher, dass SVM für SMB aktiviert ist. Folgen Sie link:https://docs.netapp.com/us-en/ontap/smb-config/configure-access-svm-task.html["ONTAP 9-Dokumentation"] für weitere Informationen.
+. Haben Sie mindestens zwei Leben pro Controller. Folgen Sie den Schritten über den obigen Link. Als Referenz hier ist ein Screenshot der in dieser Lösung verwendeten Lifs.
++
+image:proxmox-ontap-image01.png["Details zur nas-Schnittstelle"]
+
+. Verwenden Sie die Active Directory- oder arbeitsgruppenbasierte Authentifizierung. Folgen Sie den Schritten über den obigen Link.
++
+image:proxmox-ontap-image02.png["Domäneninformationen beitreten"]
+
+. Erstellen Sie ein Volume. Aktivieren Sie die Option zur Verteilung von Daten über das Cluster hinweg, um FlexGroup zu verwenden.
++
+image:proxmox-ontap-image23.png["FlexGroup-Option"]
+
+. Erstellen Sie eine SMB-Freigabe und passen Sie die Berechtigungen an. Folgen Sie link:https://docs.netapp.com/us-en/ontap/smb-config/configure-client-access-shared-storage-concept.html["ONTAP 9-Dokumentation"] für weitere Informationen.
++
+image:proxmox-ontap-image03.png["SMB-Share-Info"]
+
+. Geben Sie dem Virtualisierungsadministrator den SMB-Server, den Freigabenamen und die Anmeldeinformationen an, damit er die Aufgabe abschließen kann.
+
+
+====
+.<strong>-Abfragestellen-</strong>
+[%collapsible]
+====
+. Sammeln Sie den SMB-Server, den Freigabenamen und die Anmeldeinformationen, die für die Freigabeauthentifizierung verwendet werden sollen.
+. Stellen Sie sicher, dass mindestens zwei Schnittstellen in verschiedenen VLANs (für Fehlertoleranz) konfiguriert sind und NIC RSS unterstützt.
+. Wenn Sie die Management-Benutzeroberfläche verwenden `https:<proxmox-node>:8006`, klicken Sie auf Datacenter, wählen Sie Speicher aus, klicken Sie auf Hinzufügen, und wählen Sie SMB/CIFS aus.
++
+image:proxmox-ontap-image04.png["Navigation KMU Storage"]
+
+. Geben Sie die Details ein, und der Freigabename sollte automatisch ausgefüllt werden. Stellen Sie sicher, dass der gesamte Inhalt ausgewählt ist. Klicken Sie Auf Hinzufügen.
++
+image:proxmox-ontap-image05.png["Ergänzung zu SMB Storage"]
+
+. Um die Multichannel-Option zu aktivieren, gehen Sie zu Shell auf einem der Knoten im Cluster und geben Sie pvesm set pvesmb01 --options multichannel,max_channels=4 ein
++
+image:proxmox-ontap-image06.png["Einrichtung mehrerer Kanäle"]
+
+. Hier ist der Inhalt in /etc/pve/storage.cfg für die oben genannten Aufgaben.
++
+image:proxmox-ontap-image07.png["Storage-Konfigurationsdatei für SMB"]
+
+
+
+====
+
+
+== NFS-Speicher
+
+ONTAP unterstützt alle von Proxmox VE unterstützten NFS-Versionen. Um Fehlertoleranz und Performance-Verbesserungen zu gewährleisten, muss sichergestellt link:https://docs.netapp.com/us-en/ontap/nfs-trunking/index.html["Session-Trunking"] werden, dass  es verwendet wird. Für die Verwendung von Session-Trunking ist mindestens NFS v4.1 erforderlich.
+
+Wenn Sie neu bei ONTAP sind, führen Sie die folgenden Aufgaben über die Benutzeroberfläche von System Manager aus, um die Benutzerfreundlichkeit zu erhöhen.
+
+.<strong>-Abfragestellen-</strong>
+[%collapsible]
+====
+. Stellen Sie sicher, dass SVM für NFS aktiviert ist. Siehe link:https://docs.netapp.com/us-en/ontap/nfs-config/verify-protocol-enabled-svm-task.html["ONTAP 9-Dokumentation"]
+. Haben Sie mindestens zwei Leben pro Controller. Folgen Sie den Schritten über den obigen Link. Als Referenz hier ist der Screenshot der Leben, die wir in unserem Labor verwenden.
++
+image:proxmox-ontap-image01.png["Details zur nas-Schnittstelle"]
+
+. Erstellen oder aktualisieren Sie die NFS-Exportrichtlinie, die Zugriff auf Proxmox VE-Host-IP-Adressen oder Subnetz bietet. Siehe link:https://docs.netapp.com/us-en/ontap/nfs-config/create-export-policy-task.html["Erstellen von Exportrichtlinien"] und link:https://docs.netapp.com/us-en/ontap/nfs-config/add-rule-export-policy-task.html["Regel zu einer Exportrichtlinie hinzufügen"].
+. link:https://docs.netapp.com/us-en/ontap/nfs-config/create-volume-task.html["Erstellen eines Volumes"]. Aktivieren Sie die Option zur Verteilung von Daten über das Cluster hinweg, um FlexGroup zu verwenden.
++
+image:proxmox-ontap-image23.png["FlexGroup-Option"]
+
+. link:https://docs.netapp.com/us-en/ontap/nfs-config/associate-export-policy-flexvol-task.html["Weisen Sie der Richtlinie für den Export einem Volume zu"]
++
+image:proxmox-ontap-image08.png["NFS-Volume-Informationen"]
+
+. Benachrichtigen Sie den Virtualisierungsadministrator, dass das NFS-Volume bereit ist.
+
+
+====
+.<strong>-Abfragestellen-</strong>
+[%collapsible]
+====
+. Stellen Sie sicher, dass mindestens zwei Schnittstellen in verschiedenen VLANs konfiguriert sind (für Fehlertoleranz). Verwenden Sie NIC-Bonding.
+. Wenn Sie die Verwaltungsoberfläche verwenden `https:<proxmox-node>:8006`, klicken Sie auf Rechenzentrum, wählen Sie Speicher aus, klicken Sie auf Hinzufügen und wählen Sie NFS aus.
++
+image:proxmox-ontap-image09.png["NFS-Storage-Navigation"]
+
+. Geben Sie die Details ein, nachdem Sie die Serverinformationen bereitgestellt haben, sollten die NFS-Exporte in die Liste eingetragen und aus der Liste ausgewählt werden. Denken Sie daran, die Inhaltsoptionen auszuwählen.
++
+image:proxmox-ontap-image10.png["NFS Storage zusätzlich"]
+
+. Aktualisieren Sie für das Session-Trunking auf jedem Proxmox VE-Host die Datei /etc/fstab, um denselben NFS-Export unter Verwendung einer anderen LIF-Adresse zusammen mit der Option max_connect und NFS-Version zu mounten.
++
+image:proxmox-ontap-image11.png["Fstab-Einträge für Session-Trunk"]
+
+. Hier ist der Inhalt in /etc/pve/storage.cfg für NFS.
++
+image:proxmox-ontap-image12.png["Storage-Konfigurationsdatei für NFS"]
+
+
+
+====
+
+
+== LVM mit iSCSI
+
+Führen Sie die folgenden Aufgaben aus, um Logical Volume Manager für gemeinsamen Speicher auf Proxmox-Hosts zu konfigurieren:
+
+.<strong>-Abfragestellen-</strong>
+[%collapsible]
+====
+. Stellen Sie sicher, dass zwei linux-Bridges auf jeder eigenen ethernet-nic konfiguriert sind (idealerweise auf verschiedenen VLANs).
+. Stellen Sie sicher, dass Multipath-Tools auf allen Proxmox VE-Hosts installiert sind. Stellen Sie sicher, dass er beim Booten gestartet wird.
++
+[source, shell]
+----
+apt list | grep multipath-tools
+# If need to install, execute the following line.
+apt-get install multipath-tools
+systemctl enable multipathd
+----
+. Sammeln Sie den iscsi-Host-iqn für alle Proxmox VE-Hosts und stellen Sie ihn dem Speicheradministrator zur Verfügung.
++
+[source, shell]
+----
+cat /etc/iscsi/initiator.name
+----
+
+
+====
+.<strong>-Abfragestellen-</strong>
+[%collapsible]
+====
+Wenn ONTAP neu ist, bieten Sie System Manager zur besseren Benutzerfreundlichkeit an.
+
+. Stellen Sie sicher, dass SVM mit aktiviertem iSCSI-Protokoll verfügbar ist. Folgen link:https://docs.netapp.com/us-en/ontap/san-admin/provision-storage.html["ONTAP 9-Dokumentation"]
+. Verfügen über zwei Lifs pro Controller, der für iSCSI dediziert ist.
++
+image:proxmox-ontap-image13.png["Details zur iscsi-Schnittstelle"]
+
+. Erstellen Sie die Initiatorgruppe und füllen Sie die Host-iscsi-Initiatoren aus.
+. LUN mit der gewünschten Größe auf der SVM erstellen und der in obigem Schritt erstellten Initiatorgruppe präsentieren.
++
+image:proxmox-ontap-image14.png["iscsi-lun-Details"]
+
+. Benachrichtigen Sie den Virtualisierungsadministrator, dass die lun erstellt wird.
+
+
+====
+.<strong>-Abfragestellen-</strong>
+[%collapsible]
+====
+. Gehen Sie zur Management-UI `https:<proxmox node>:8006`, klicken Sie auf Rechenzentrum, wählen Sie Speicher aus, klicken Sie auf Hinzufügen und wählen Sie iSCSI aus.
++
+image:proxmox-ontap-image15.png["iscsi-Speichernavigation"]
+
+. Geben Sie den Namen der Speicher-id an. Die iSCSI-LIF-Adresse von ONTAP sollte das Ziel auswählen können, wenn kein Kommunikationsproblem vorliegt. Da wir nicht direkt LUN-Zugriff auf die Gast-vm gewähren möchten, deaktivieren Sie das.
++
+image:proxmox-ontap-image16.png["Erstellen von iscsi-Speichertypen"]
+
+. Klicken Sie nun auf Hinzufügen, und wählen Sie LVM aus.
++
+image:proxmox-ontap-image17.png["lvm-Speichernavigation"]
+
+. Geben Sie den Namen der Speicher-id an, wählen Sie den Basisspeicher aus, der mit dem iSCSI-Speicher übereinstimmen soll, den wir im obigen Schritt erstellt haben. Wählen Sie die LUN für das Basis-Volume aus. Geben Sie den Namen der Volume-Gruppe an. Vergewissern Sie sich, dass gemeinsam genutzt ausgewählt ist.
++
+image:proxmox-ontap-image18.png["Erstellung des lvm-Speichers"]
+
+. Hier ist die Beispieldatei zur Speicherkonfiguration für LVM mit iSCSI-Volume.
++
+image:proxmox-ontap-image19.png["lvm iscsi-Konfiguration"]
+
+
+
+====
+
+
+=== LVM mit NVMe/TCP
+
+Führen Sie die folgenden Aufgaben aus, um Logical Volume Manager für gemeinsam genutzten Speicher auf Proxmox-Hosts zu konfigurieren:
+
+.<strong>-Abfragestellen-</strong>
+[%collapsible]
+====
+. Stellen Sie sicher, dass zwei linux-Bridges mit jeweils eigenem ethernet-Gerät konfiguriert sind (idealerweise in verschiedenen VLANs).
+. Führen Sie auf jedem Proxmox-Host im Cluster den folgenden Befehl aus, um die Host-Initiator-Info zu sammeln.
++
+[source, shell]
+----
+nvme show-hostnqn
+----
+. Stellt dem Storage-Administrator erfasste Host-Nqn-Informationen zur Verfügung und fordert einen nvme-Namespace mit der erforderlichen Größe an.
+
+
+====
+.<strong>-Abfragestellen-</strong>
+[%collapsible]
+====
+Wenn ONTAP neu ist, bieten Sie System Manager zur Verbesserung der Benutzerfreundlichkeit an.
+
+. Stellen Sie sicher, dass SVM mit aktiviertem NVMe-Protokoll verfügbar ist. Siehe link:https://docs.netapp.com/us-en/ontap/san-admin/create-nvme-namespace-subsystem-task.html["NVMe Tasks in der ONTAP 9 Dokumentation"].
+. Erstellung des NVMe Namespace
++
+image:proxmox-ontap-image20.png["Erstellung eines nvme Namespace"]
+
+. Subsystem erstellen und Host-Nqns zuweisen (bei Verwendung von CLI). Folgen Sie dem obigen Referenz-Link.
+. Benachrichtigen Sie den Virtualisierungs-Administrator, dass der nvme-Namespace erstellt wird.
+
+
+====
+.<strong>-Abfragestellen-</strong>
+[%collapsible]
+====
+. Navigieren Sie zu Shell auf jedem Proxmox VE-Host im Cluster, erstellen Sie die Datei /etc/nvme/Discovery.conf und aktualisieren Sie den für Ihre Umgebung spezifischen Inhalt.
++
+[source, shell]
+----
+root@pxmox01:~# cat /etc/nvme/discovery.conf
+# Used for extracting default parameters for discovery
+#
+# Example:
+# --transport=<trtype> --traddr=<traddr> --trsvcid=<trsvcid> --host-traddr=<host-traddr> --host-iface=<host-iface>
+
+-t tcp -l 1800 -a 172.21.118.153
+-t tcp -l 1800 -a 172.21.118.154
+-t tcp -l 1800 -a 172.21.119.153
+-t tcp -l 1800 -a 172.21.119.154
+----
+. Beim NVMe-Subsystem anmelden
++
+[source, shell]
+----
+nvme connect-all
+----
+. Überprüfen und sammeln Sie Gerätedetails.
++
+[source, shell]
+----
+nvme list
+nvme netapp ontapdevices
+nvme list-subsys
+lsblk -l
+----
+. Volume-Gruppe erstellen
++
+[source, shell]
+----
+vgcreate pvens02 /dev/mapper/<device id>
+----
+. Gehen Sie zu Management UI `https:<proxmox node>:8006`, klicken Sie auf Rechenzentrum, wählen Sie Speicher, klicken Sie auf Hinzufügen und wählen Sie LVM.
++
+image:proxmox-ontap-image17.png["lvm-Speichernavigation"]
+
+. Geben Sie den Namen der Speicher-id an, wählen Sie die vorhandene Volume-Gruppe aus und wählen Sie die Volume-Gruppe aus, die gerade mit cli erstellt wurde. Denken Sie daran, die freigegebene Option zu aktivieren.
++
+image:proxmox-ontap-image21.png["lvm auf vorhandener vg"]
+
+. Hier finden Sie eine Beispiel-Storage-Konfigurationsdatei für LVM mithilfe von NVMe/TCP
++
+image:proxmox-ontap-image22.png["lvm auf nvme tcp-Konfiguration"]
+
+
+
+====

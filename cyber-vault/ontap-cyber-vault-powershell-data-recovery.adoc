@@ -1,0 +1,29 @@
+---
+sidebar: sidebar 
+permalink: cyber-vault/ontap-cyber-vault-powershell-data-recovery.html 
+keywords: Cyber vault, powershell, script, configuration, validation, hardening 
+summary: Hierbei handelt es sich um die NetApp ONTAP-Lösung zur Konfiguration, Härtung und Validierung eines ONTAP-basierten Cyber-Vault 
+---
+= Cyber-Vault-Datenwiederherstellung bei ONTAP
+:hardbreaks:
+:allow-uri-read: 
+:nofooter: 
+:icons: font
+:linkattrs: 
+:imagesdir: ../media
+
+
+[role="lead"]
+Wenn Daten im Produktions-Datacenter zerstört werden, können die Daten aus dem Cyber-Vault sicher in der gewählten Umgebung wiederhergestellt werden. Im Gegensatz zu einer physisch gezapften Lösung basiert der ONTAP-Cyber-Vault auf nativen ONTAP-Funktionen wie SnapLock Compliance und SnapMirror. Das Ergebnis ist ein Recovery-Prozess, der sowohl schnell als auch einfach auszuführen ist.
+
+Im Falle eines Ransomware-Angriffs und der Notwendigkeit einer Wiederherstellung aus dem Cyber-Vault ist der Recovery-Prozess einfach und einfach, da die in der Cyber-Vault gespeicherten Snapshot-Kopien zur Wiederherstellung der verschlüsselten Daten verwendet werden.
+
+image:ontap-cyber-vault-data-recovery.png["Beziehung wiederherstellen"]
+
+Wenn es darum geht, bei Bedarf eine schnellere Methode zur Wiederherstellung der Daten bereitzustellen, um die Daten schnell zu validieren, zu isolieren und zu analysieren. Dies kann leicht erreicht werden, indem mit FlexClone die Option SnapLock-type auf nicht-SnapLock-Typ eingestellt wird.
+
+
+NOTE: Ab ONTAP 9.13.1 kann die Wiederherstellung einer gesperrten Snapshot Kopie auf dem SnapLock Ziel-Volume in einer SnapLock Vault-Beziehung sofort wiederhergestellt werden, indem eine FlexClone erstellt wird, bei der die Option „nicht-SnapLock“ für den SnapLock-Typ eingestellt ist. Wenn Sie die Klonerstellung des Volumes durchführen, geben Sie die Snapshot Kopie als „Parent-Snapshot“ an. Weitere Informationen zur Erstellung eines FlexClone Volumes mit einem SnapLock-Typ link:https://docs.netapp.com/us-en/ontap/volumes/create-flexclone-task.html?q=volume+clone["Hier."]
+
+
+NOTE: Das Üben von Recovery-Verfahren aus dem Cyber-Vault wird sicherstellen, dass die richtigen Schritte für die Verbindung mit dem Cyber-Vault und Abrufen von Daten eingerichtet werden. Die Planung und das Testen des Verfahrens ist für jede Wiederherstellung während eines Cyber-Angriffs unerlässlich.

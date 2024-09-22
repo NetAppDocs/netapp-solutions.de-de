@@ -1,0 +1,57 @@
+= Überlegungen zum Kapazitätsdimensionieren
+:allow-uri-read: 
+
+
+
+
+== Überlegungen zum Kapazitätsdimensionieren
+
+Die Menge an Speicherplatz, die für ein ONTAP Cyber Vault-Ziel-Volume benötigt wird, hängt von verschiedenen Faktoren ab. Am wichtigsten ist dabei die Änderungsrate der Daten im Quell-Volume. Der Backup-Zeitplan und der Snapshot-Zeitplan auf dem Ziel-Volume wirken sich sowohl auf die Festplattennutzung auf dem Ziel-Volume aus als auch auf die Änderungsrate auf dem Quell-Volume ist wahrscheinlich nicht konstant. Es empfiehlt sich, darüber hinaus einen Puffer an zusätzlicher Storage-Kapazität bereitzustellen, der erforderlich ist, um künftige Änderungen im Verhalten von Endbenutzern oder Applikationen zu berücksichtigen.
+
+Für die Dimensionierung eines Verhältnisses für 1 Monat Aufbewahrung in ONTAP müssen die Storage-Anforderungen auf Grundlage verschiedener Faktoren berechnet werden, darunter die Größe des primären Datensatzes, die Änderungsrate der Daten (tägliche Änderungsrate) sowie die Einsparungen durch Deduplizierung und Komprimierung (falls zutreffend).
+
+Hier ist der Schritt-für-Schritt-Ansatz:
+
+Der erste Schritt besteht darin, die Größe der Quell-Volumes zu kennen, die Sie mit dem Cyber-Vault schützen. Dies ist die Grundmenge der Daten, die zunächst auf das Cyber-Vault-Ziel repliziert werden. Schätzen Sie als Nächstes die tägliche Änderungsrate für den Datensatz ab. Dies ist der Prozentsatz der Daten, die sich jeden Tag ändern. Dabei ist es entscheidend, die Dynamik der Daten genau zu kennen.
+
+Beispiel:
+
+* Größe des primären Datensatzes = 5 TB
+* Tägliche Änderungsrate = 5% (0.05)
+* Deduplizierungs- und Komprimierungs-Effizienz = 50 % (0.50)
+
+
+Lassen Sie uns nun die Berechnung durchgehen:
+
+* Berechnung der täglichen Datenänderungsrate:
++
+`Changed data per day = 5000 * 5% = 250GB`
+
+* Berechnen der geänderten Gesamtdaten für 30 Tage:
++
+`Total changed data in 30 days = 250 GB * 14 = 3.5TB`
+
+* Berechnen Sie den insgesamt erforderlichen Storage:
++
+`TOTAL = 5TB + 3.5TB = 8.5TB`
+
+* Einsparungen bei Deduplizierung und Komprimierung:
++
+`EFFECTIVE = 8.5TB * 50% = 4.25TB`
+
+
+
+*Zusammenfassung der Speicheranforderungen*
+
+* Ohne Effizienz würde *8,5 TB* erforderlich sein, um 30 Tage Cyber-Vault-Daten zu speichern.
+* Bei einer Effizienz von 50 % würde nach Deduplizierung und Komprimierung *4,25 TB* Storage benötigt.
+
+
+
+NOTE: Snapshot-Kopien können durch Metadaten zusätzlichen Overhead haben, dieser Vorgang ist jedoch in der Regel geringfügig.
+
+
+NOTE: Wenn pro Tag mehrere Backups erstellt werden, passen Sie die Berechnung an die Anzahl der täglich erstellten Snapshot Kopien an.
+
+
+NOTE: Berücksichtigen Sie das Datenwachstum im Laufe der Zeit, um sicherzustellen, dass das Sizing zukunftssicher ist.

@@ -1,0 +1,63 @@
+---
+sidebar: sidebar 
+permalink: ai/aicp_example_notebooks_and_pipelines.html 
+keywords: Jupyter Notebook, MLFlow, NetApp DataOps Toolkit, LLM, 
+summary: Feinabstimmung eines großen Sprachmodells mit MLFlow auf Jupyter Hub 
+---
+= Voraussetzungen
+:hardbreaks:
+:allow-uri-read: 
+:nofooter: 
+:icons: font
+:linkattrs: 
+:imagesdir: ../media/
+
+
+[role="lead"]
+In diesem Abschnitt werden die Schritte zur Feinabstimmung eines LLM (Large Language Model) mit MLFlow unter Verwendung von Jupyter Hub beschrieben. Dies soll als Beispiel dienen, um einen Trainingsjob zu zeigen, der NetApp Storage und die intelligente NetApp Dateninfrastruktur für Kundennutzungsfälle wie Retrieval Augmented Generation (RAG) integriert.
+
+
+
+== Voraussetzungen
+
+In diesem Abschnitt werden die Voraussetzungen für die Feinabstimmung eines Sprachmodells mit jupyter Hub erläutert. Dazu wird angenommen, dass Sie bereits die entsprechenden Bibliotheken und Pakete installiert haben, die für das Training oder die Feinabstimmung des Modells notwendig sind. Einige der in diesem Beispiel verwendeten Bibliotheken sind, aber nicht beschränkt auf: - Transformers - peft (Parameter Efficient Fine Tuning) - Accelerate Dies sind Bibliotheken, die zu HuggingFace gehören. Weitere Bibliotheken sind unter anderem matplotlib, SciPy, Einops.
+
+Es wird auch angenommen, dass Sie Zugriff auf das Basismodell und seine Gewichte durch HuggingFace haben. Eine Liste der verfügbaren Modelle finden Sie auf https://huggingface.co/models["HuggingFace"].
+
+Außerdem benötigen Sie Zugriff auf ein Jupyter Hub-Konto mit entsprechender Speicherung. Es wird empfohlen, Zugang zu einem GPU-Server zu haben (für höhere Compute-Anforderungen).
+
+Dieses Feintuning-Beispiel ist von einer Sammlung von Notebook-Leitfäden und Beispielen inspiriert, die von der entwickelt https://github.com/brevdev/notebooks["Brevdev-Team"] wurden.
+
+
+
+== Laden von Daten und Experimenteinrichtung
+
+Speichern Sie alle Daten (Dokumente und Text) im gleichen freigegebenen Ordner wie das Notebook, um sie einfach abzurufen. Konvertieren Sie die Dokumente in das .json-Format für Data Processing und Schulungen.
+
+Stellen Sie nach der Verarbeitung der Daten sicher, dass Ihre GPU(s) über ausreichend RAM verfügt, um das Modell zusammen mit den Daten laden zu können. In diesem Beispiel verwenden wir eine NVIDIA TESLA T4 GPU mit 16 GB RAM für die Feinabstimmung https://huggingface.co/microsoft/phi-2["phi-2"] der Microsoft Größe 2.7 Milliarden Parameter. Je nach verwendetem Modell und Datenmenge benötigen Sie möglicherweise mehr RAM/zusätzliche GPUs, falls Sie ein verteiltes Training-Setup erstellen möchten.
+
+image:tesla-t4.png["In diesem Beispiel werden die GPU-Spezifikationen verwendet"]
+
+In diesem Beispiel https://huggingface.co/docs/diffusers/main/en/training/lora["LoRa"] wird verwendet, um sicherzustellen, dass das Modell den Ressourcenbeschränkungen entspricht. Wenn die Berechnung keine Einschränkung darstellt, kann eine vollständige Feinabstimmung durchgeführt werden.
+
+
+
+== Ergebnisse und zukünftige Arbeit
+
+Die folgende Tabelle zeigt den Trainingsverlust und den entsprechenden Validierungsverlust für phi-2, die auf den Datensatz von NetApp Lösungen geschult sind (interne Blogs/Artikel für die Entwicklung von Lösungen). Wie beobachtet, nimmt der Validierungsverlust neben dem Trainingsverlust ab, wenn die Anzahl der Epochen steigt.
+
+image:phi2-results.png["Verlust von Schulungsschäden und Validierungsverlust für Phi-2"]
+
+Einige Beispielansagen, die zur Auswertung des fein abgestimmten Sprachmodells verwendet werden, sind wie folgt: *1. Beschreiben Sie die Vorteile von NetApp FlexGroup Volumes für KI-Trainingdatensätze.*
+
+Die Antwort auf diese Aufforderung lautet: "NetApp FlexGroup Volumes bieten mehrere Vorteile, wenn sie für KI-Trainingdatensätze verwendet werden, darunter: - *Skalierbarkeit*: FlexGroup Volumes können horizontal skaliert werden, um große Mengen an Daten und Computing-Ressourcen aufzunehmen, die für das KI-Training erforderlich sind. Dadurch können Unternehmen Modelle auf größeren Datensätzen trainieren, ohne sich um Ressourcenbeschränkungen sorgen zu müssen. - *Datenkonsistenz*: FlexGroup-Volumes sorgen für Datenkonsistenz über mehrere Knoten in einem Cluster, indem sie einen einzelnen Namespace für alle Daten zur Verfügung stellen. So wird sichergestellt, dass die Daten über verschiedene Nodes hinweg stets verfügbar und konsistent sind. Dies ist entscheidend für KI-Applikationen, die Zugriff auf Daten aus diversen Quellen benötigen. - *Performance*: FlexGroup Volumes sind für Hochleistungs-Storage optimiert und eignen sich daher ideal für die Speicherung großer Datensätze, die für das KI-Training erforderlich sind. Zu den Performance-Merkmalen des Volumes gehören eine niedrige Latenz, ein hoher Durchsatz und eine hohe Verfügbarkeit, die dafür sorgt, dass während des Trainings schnell und zuverlässig auf die Daten zugegriffen wird. - *Sicherheit*: FlexGroup Volumes bieten integrierte Sicherheitsfunktionen wie Verschlüsselung, Zugriffssteuerung und Datenschutz, die sicherstellen, dass sensible Daten während ihres gesamten Lebenszyklus geschützt sind. Dies ist insbesondere für KI-Applikationen wichtig, die mit sensiblen Daten, wie beispielsweise persönlichen Daten oder Finanzdaten, umgehen. NetApp FlexGroup Volumes bieten insgesamt eine skalierbare, sichere und hochperformante Lösung zum Speichern und Managen von KI-Trainingsdatensätzen.“
+
+*2. Welche Vorteile und Funktionen bietet ONTAP 9? Geben Sie bestimmte Instanzen von ihnen.*
+
+Die Antwort auf diese Aufforderung lautet: "ONTAP 9 bietet folgende Vorteile und Funktionen: - *Hohe Leistung*, mit einem Durchsatz von bis zu 1 TB/s pro Knoten für den Datentransfer zwischen Knoten und Speichervolumes. - *Hohe Verfügbarkeit*, mit 99.999% Betriebszeit und hoher Verfügbarkeit über mehrere Knoten. - *Skalierbarkeit*, mit der Möglichkeit, horizontal zu skalieren, indem mehr Knoten hinzugefügt oder die Anzahl der Festplatten auf jedem Knoten erhöht wird. - *Flexibilität*, mit der Möglichkeit, verschiedene Arten von Storage-Volumes, wie SSDs, HDDs oder NVMe-Laufwerke, je nach Workload-Anforderungen zu verwenden. - *Sicherheit*, mit der Möglichkeit, verschiedene Sicherheitsrichtlinien, wie Verschlüsselung, Zugriffssteuerung und Auditing, zu implementieren, um die Daten und Ressourcen im Cluster zu schützen. - Unterstützung für erweiterte Funktionen wie *Datendeduplizierung, Komprimierung und Replikation*, um die Performance zu optimieren und die Kosten für das Speichern und Übertragen großer Datenmengen zu senken."
+
+Die Antworten zeigen, dass das fein abgestimmte Modell einen umfassenderen Kontext aus dem Datensatz hat, auf dem es trainiert wurde, im Vergleich zum Basismodell und eine relevantere Ausgabe ausgibt.
+
+Dieses Beispiel soll zeigen, dass das Training eines Sprachmodells auf benutzerdefinierte/proprietäre Daten mit einer geringen Menge an Computerressourcen noch möglich ist. Zukünftige Arbeiten beinhalten das Training eines größeren Sprachmodells (Reihenfolge >10B Parameter) auf organisationsweiten Daten unter Nutzung eines viel größeren GPU-Setups (verteiltes System-Netzwerk von GPUs).
+
+link:mlrun_configure_working_environment.adoc["Weiter: ML Run Working Environment"]
