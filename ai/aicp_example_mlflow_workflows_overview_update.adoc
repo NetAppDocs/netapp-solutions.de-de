@@ -1,6 +1,6 @@
 ---
 sidebar: sidebar 
-permalink: ai/aicp_example_mlflow_workflows_overview.html 
+permalink: ai/aicp_example_mlflow_workflows_overview_update.html 
 keywords: AI, control plane, MLOps, MLflow 
 summary: Open Source MLOPS mit NetApp - Rückverfolgbarkeit von Datensätzen zu Modellen mit NetApp und MLflow 
 ---
@@ -113,7 +113,7 @@ mlflow.set_tracking_uri("<your_tracking_server_uri>>:<port>>")
 ----
 Der oben genannte Codeschnipsel protokolliert die Snapshot-IDs an den MLflow Experiment Tracking Server, der verwendet werden kann, um zurück zu dem spezifischen Datensatz und Modell, die für das Training des Modells verwendet wurden zurückverfolgen. Dies ermöglicht es Ihnen, zurück zu den spezifischen Datensatz und Modell, die für das Training des Modells verwendet wurden, sowie den spezifischen Code, der verwendet wurde, um die Daten vorverarbeiten, tokenize die Eingabedatei, laden Sie den Tokenizer und Modell, kodieren, generieren und dekodieren link:https://www.nltk.org/api/nltk.lm.api.html["NLTK"^]Sie den Text, speichern Sie das Modell, finetune das Modell, bewerten Sie das Modell mit  Perplexity Scores, und protokollieren Sie die Hyperparameter und Metriken zu MLflow. Die folgende Abbildung zeigt zum Beispiel den mittleren quadratischen Fehler (MSE) eines scikit-Lernmodells für verschiedene Versuchsläufe:
 
-image::aicp_mlrun-mlflow_sklearn-MLmodels_MSEs.png[aicp mlrun mlflow sklearn MLmodels MSE]
+image::aicp_mlrun-mlflow_sklearn-MLmodels_MSEs.png[Die Abbildung zeigt den Input/Output-Dialog oder die Darstellung des schriftlichen Inhalts]
 
 Für Datenanalysen, Geschäftsbereichsleiter und Führungskräfte ist es einfach zu verstehen, welches Modell unter Ihren besonderen Einschränkungen, Einstellungen, Zeiträumen und anderen Umständen am besten funktioniert. Weitere Informationen zum Vorverarbeiten, Tokenisieren, Laden, Kodieren, Generieren, Dekodieren, Speichern, Finetunen und Evaluieren des Modells `dotk-mlflow` `netapp_dataops.k8s` finden Sie im Beispiel für verpackte Python im Repository.
 
@@ -132,7 +132,7 @@ In Bezug auf die trainierten Modelle wurden im dotk-mlflow Notebook folgende Mod
 
 Das Ergebnis link:https://mlflow.org/docs/latest/model-registry.html#deploy-and-organize-models["Modellregistrierung in MLflow"^]enthält die folgenden zufälligen Forest-Modelle, Versionen und Tags:
 
-image::aicp_mlrun-mlflow_sklearn_modelRegistry_sk-learn-random-forest-reg-model_versions.png[aicp mlrun mlflow sklearn modelRegistry sk lernen zufällige Wald reg Modell Versionen]
+image::aicp_mlrun-mlflow_sklearn_modelRegistry_sk-learn-random-forest-reg-model_versions.png[Die Abbildung zeigt den Input/Output-Dialog oder die Darstellung des schriftlichen Inhalts]
 
 Um das Modell über Kubernetes auf einem Inferenzserver bereitzustellen, führen Sie einfach das folgende Jupyter Notebook aus. Beachten Sie, dass `dotk-mlflow` wir in diesem Beispiel anstelle des Pakets die Architektur des zufälligen Forest Regression-Modells ändern, um den mittleren quadratischen Fehler (MSE) im Anfangsmodell zu minimieren und daher mehrere Versionen dieses Modells in unserer Modellregistrierung zu erstellen.
 
@@ -194,22 +194,22 @@ Created version '3' of model 'sk-learn-random-forest-reg-model'.
 ....
 In der Modellregistrierung ist es möglich, nach dem Speichern der gewünschten Modelle, Versionen und Tags auf den spezifischen Datensatz, das Modell und den Code zurückzugreifen, der zum Trainieren des Modells verwendet wurde, sowie auf den spezifischen Code, der zum Verarbeiten der Daten verwendet wurde, den Tokenizer und das Modell zu laden, den Text zu kodieren, zu generieren und zu dekodieren, das Modell zu speichern, das Modell mit NLTK Perplexity Scores oder anderen geeigneten Hypertab-Parametern auszuwerten `snapshot_id`'s and your chosen metrics to MLflow by choosing the corerct experiment under `mlrun`.
 
-image::aicp_jhub_mlrun-experiments.png[aicp jhub mlrun Experimente]
+image::aicp_jhub_mlrun-experiments.png[Die Abbildung zeigt den Input/Output-Dialog oder die Darstellung des schriftlichen Inhalts]
 
 In ähnlicher Weise `phi-2_finetuned_model` `torch` können wir für unsere, deren quantifizierte Gewichte über GPU oder vGPU mithilfe der Bibliothek berechnet wurden, die folgenden Zwischenartefakte prüfen, die die Performance-Optimierung, Skalierbarkeit (Durchsatz/SLA-Garantie) und Kostensenkung des gesamten Workflows ermöglichen:
 
-image::aicp_jhub_mlrun-torch_artifacts.png[Artefakte der aicp jhub mlrun-Taschenlampe]
+image::aicp_jhub_mlrun-torch_artifacts.png[Die Abbildung zeigt den Input/Output-Dialog oder die Darstellung des schriftlichen Inhalts]
 
 Bei einem einzelnen Experiment mit Scikit-learn und MLflow zeigt die folgende Abbildung die generierten Artefakte, `conda` Umgebung, `MLmodel` Datei und `MLmodel` Verzeichnis an:
 
-image::aicp_jhub_mlrun-mlflow_sklearn-MLmodel.png[aicp jhub mlrun mlflow sklearn MLmodel]
+image::aicp_jhub_mlrun-mlflow_sklearn-MLmodel.png[Die Abbildung zeigt den Input/Output-Dialog oder die Darstellung des schriftlichen Inhalts]
 
 Kunden können Tags angeben, z. B. „Standard“, „Phase“, „Prozess“, „Engpass“, um verschiedene Eigenschaften ihrer AI-Workflow-Durchläufe `contributors` zu organisieren, die neuesten Ergebnisse zu notieren oder den Entwicklerfortschritt des Data Science-Teams zu verfolgen. Wenn für das Standard-Tag " ", Ihre gespeicherten `mlflow.log-model.history`, , `mlflow.runName`, `mlflow.source.type` `mlflow.source.name` und `mlflow.user` unter JupyterHub aktuell aktiven Datei Navigator Registerkarte:
 
-image::aicp_jhub_mlrun-mlflow-tags.png[aicp jhub mlrun mlflow Tags]
+image::aicp_jhub_mlrun-mlflow-tags.png[Die Abbildung zeigt den Input/Output-Dialog oder die Darstellung des schriftlichen Inhalts]
 
 Schließlich haben die Benutzer ihren eigenen angegebenen Jupyter Workspace, der versioniert und in einer Persistent Volume Claim (PVC) im Kubernetes-Cluster gespeichert wird. Die folgende Abbildung zeigt den Jupyter Workspace, der das `netapp_dataops.k8s` Python-Paket enthält, und die Ergebnisse eines erfolgreich erstellten `VolumeSnapshot`:
 
-image::aicp_jhub_dotk_nb_cvs_usrWsVol.png[aicp jhub dotk nb cvs usrWsVol]
+image::aicp_jhub_dotk_nb_cvs_usrWsVol.png[Die Abbildung zeigt den Input/Output-Dialog oder die Darstellung des schriftlichen Inhalts]
 
 Unsere branchenweit bewährten Snapshot® und andere Technologien wurden für Datensicherung, Verschiebung und effiziente Komprimierung der Enterprise-Klasse eingesetzt. Weitere KI-Anwendungsfälle finden Sie in der link:https://docs.netapp.com/us-en/netapp-solutions/ai/aipod_nv_intro.html["NetApp AIPod"^] Dokumentation.
