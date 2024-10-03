@@ -382,7 +382,7 @@ image:vmfs-deploy-image37.png["Die Abbildung zeigt den Input/Output-Dialog oder 
 
 Zusammenfassend lässt sich sagen, dass Sie beim Einsatz von ONTAP ASA Storage zur Optimierung der TCO für eine VMware Implementierung das SnapCenter Plug-in für VMware als einfache und effiziente Methode für Backups von VMs verwenden. Sie ermöglicht es, VMs nahtlos und schnell zu sichern und wiederherzustellen, da Snapshot-Backups in nur wenigen Sekunden abgeschlossen sind.
 
-Sehen Sie sich dies link:https://docs.netapp.com/us-en/netapp-solutions/ehc/bxp-scv-hybrid-solution.html#restoring-virtual-machines-in-the-case-of-data-loss["Lösungsleitfaden"] an und link:https://docs.netapp.com/us-en/sc-plugin-vmware-vsphere/scpivs44_get_started_overview.html["Produktdokumentation"]erfahren Sie mehr über SnapCenter Konfigurationen, Backups und Restores vom primären oder sekundären Storage-System oder sogar von Backups, die auf Objekt-Storage zur langfristigen Aufbewahrung gespeichert sind.
+Sehen Sie sich dies link:../ehc/bxp-scv-hybrid-solution.html#restoring-virtual-machines-in-the-case-of-data-loss["Lösungsleitfaden"] an und link:https://docs.netapp.com/us-en/sc-plugin-vmware-vsphere/scpivs44_get_started_overview.html["Produktdokumentation"]erfahren Sie mehr über SnapCenter Konfigurationen, Backups und Restores vom primären oder sekundären Storage-System oder sogar von Backups, die auf Objekt-Storage zur langfristigen Aufbewahrung gespeichert sind.
 
 Um Storage-Kosten zu senken, kann FabricPool Volume Tiering aktiviert werden, um Daten für Snapshot Kopien automatisch auf eine kostengünstigere Storage Tier zu verschieben. Snapshot-Kopien nutzen in der Regel mehr als 10 % des zugewiesenen Storage. Obwohl sie für Datensicherung und Disaster Recovery wichtig sind, werden diese zeitpunktgenauen Kopien nur selten verwendet und können keinen effizienten High-Performance Storage verwenden. Durch die „nur Snapshots“-Richtlinie für FabricPool wird auf einfache Weise Speicherplatz auf hochperformantem Storage freigesetzt. Wenn diese Richtlinie aktiviert ist, werden inaktive Blöcke von Snapshot-Kopien des Volume, die nicht vom aktiven Filesystem verwendet werden, in die Objektebene verschoben. Nach dem Lesen wird die Snapshot-Kopie auf die lokale Tier verschoben, um eine VM oder einen gesamten Datastore wiederherzustellen. Diese Objekt-Tier kann in Form einer Private Cloud (z. B. NetApp StorageGRID) oder einer Public Cloud (z. B. AWS oder Azure) vorliegen.
 
@@ -412,9 +412,9 @@ Viele IT-Abteilungen setzen im Zuge einer Transformationsphase auf den Hybrid-Cl
 
 Durch die Integration in 1P-Services, die von NetApp bei jedem Hyperscaler unterstützt werden, können Unternehmen eine auf vSphere basierende Cloud-Lösung mit einem einfachen Migrationsansatz realisieren – ohne erneute Plattform, ohne IP-Änderungen oder ohne Änderungen an der Architektur. Zudem ermöglicht diese Optimierung eine Skalierung des Storage-Platzbedarfs, während die Host-Anzahl auf die geringste Menge in vSphere beschränkt wird, jedoch keine Änderung der Storage-Hierarchie, der Sicherheit oder der verfügbaren Dateien vorgenommen werden muss.
 
-* Ausführliche Anleitungen anzeigen für link:https://docs.netapp.com/us-en/netapp-solutions/ehc/aws-migrate-vmware-hcx.html["Migrieren Sie Workloads zu FSX für ONTAP-Datastore"].
-* Ausführliche Anleitungen anzeigen für link:https://docs.netapp.com/us-en/netapp-solutions/ehc/azure-migrate-vmware-hcx.html["Migrieren Sie Workloads in den Azure NetApp Files Datastore"].
-* Ausführliche Anleitungen anzeigen für link:https://docs.netapp.com/us-en/netapp-solutions/ehc/gcp-migrate-vmware-hcx.html["Migrieren Sie Workloads in den Google Cloud NetApp Volumes Datastore"].
+* Ausführliche Anleitungen anzeigen für link:../ehc/aws-migrate-vmware-hcx.html["Migrieren Sie Workloads zu FSX für ONTAP-Datastore"].
+* Ausführliche Anleitungen anzeigen für link:../ehc/azure-migrate-vmware-hcx.html["Migrieren Sie Workloads in den Azure NetApp Files Datastore"].
+* Ausführliche Anleitungen anzeigen für link:../ehc/gcp-migrate-vmware-hcx.html["Migrieren Sie Workloads in den Google Cloud NetApp Volumes Datastore"].
 
 
 
@@ -433,9 +433,9 @@ Weitere Informationen finden Sie unter link:../ehc/dr-draas-vmfs.html["DR, die B
 
 Für Kunden, die VMware Cloud bei jedem Hyperscaler als Disaster-Recovery-Ziel verwenden möchten, können Datastores mit ONTAP Storage-Unterstützung (Azure NetApp Files, FSX für ONTAP, Google Cloud NetApp Volumes) verwendet werden, um Daten aus der On-Premises-Umgebung mit einer validierten Drittanbieterlösung zu replizieren, die eine VM-Replizierungsfunktion bietet. Durch das Hinzufügen von Datastores, die über ONTAP Storage bereitgestellt werden, wird eine kostenoptimierte Disaster Recovery auf dem Ziel mit einer geringeren Anzahl an ESXi Hosts ermöglicht. Auf diese Weise können sekundäre Standorte in der On-Premises-Umgebung außer Betrieb gesetzt werden und dadurch erhebliche Kosteneinsparungen erzielt werden.
 
-* Ausführliche Anleitungen anzeigen für link:https://docs.netapp.com/us-en/netapp-solutions/ehc/veeam-fsxn-dr-to-vmc.html["Disaster Recovery zu FSX für ONTAP Datastore"].
-* Ausführliche Anleitungen anzeigen für link:https://docs.netapp.com/us-en/netapp-solutions/ehc/azure-native-dr-jetstream.html["Disaster Recovery für Azure NetApp Files Datastore"].
-* Ausführliche Anleitungen anzeigen für link:https://docs.netapp.com/us-en/netapp-solutions/ehc/gcp-app-dr-sc-cvs-veeam.html["Disaster Recovery für Google Cloud NetApp Volumes Datastore"].
+* Ausführliche Anleitungen anzeigen für link:../ehc/veeam-fsxn-dr-to-vmc.html["Disaster Recovery zu FSX für ONTAP Datastore"].
+* Ausführliche Anleitungen anzeigen für link:../ehc/azure-native-dr-jetstream.html["Disaster Recovery für Azure NetApp Files Datastore"].
+* Ausführliche Anleitungen anzeigen für link:../ehc/gcp-app-dr-sc-cvs-veeam.html["Disaster Recovery für Google Cloud NetApp Volumes Datastore"].
 
 
 

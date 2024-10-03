@@ -24,7 +24,7 @@ Die Lösung bietet einen Überblick und Details zur Oracle-Bereitstellung und -S
 
 VMware vSphere Virtual Volumes (VVols) ist ein SAN/NAS-Management- und Integrations-Framework, das virtuelle Festplatten als native Storage-Objekte offenlegt und Array-basierte Vorgänge auf der Ebene der virtuellen Festplatten ermöglicht. Mit anderen Worten: VVols ermöglichen die VM- und SAN-/NAS-Geräte die Nutzung Array-basierter Datenservices mit VM-zentriertem Ansatz in der Granularität einer einzelnen virtuellen Festplatte. Mit VVols können Kunden die einzigartigen Funktionen ihrer aktuellen Storage-Investitionen nutzen und unterbrechungsfrei auf ein einfacheres und effizienteres Betriebsmodell umsteigen, das für virtuelle Umgebungen optimiert ist, die über alle Storage-Typen hinweg eingesetzt werden können.
 
-In link:https://docs.netapp.com/us-en/netapp-solutions/databases/vcf_ora_si_vvol.html["TR-4996"^]haben wir die Implementierung und Sicherung einer Oracle-Datenbank mit einer Instanz in VCF mit VVols demonstriert. In dieser Dokumentation wird die Implementierung und Sicherung einer Oracle RAC Datenbank in einer VMware Cloud Foundation-Umgebung mit VVols als primärer Datenbank-Storage in einem NetApp ONTAP Storage-Cluster demonstriert. Die Oracle RAC-Datenbank wird so konfiguriert, als ob sie in lokalen Dateisystemen auf einem lokalen Speichersystem bereitgestellt wird. Dieser technische Bericht erläutert die Schritte zum Erstellen von VVols in VCF für die Oracle RAC-Implementierung. Zudem demonstrieren wir die Implementierung der Oracle RAC Datenbank in VCF auf VVols mit einem NetApp Automatisierungs-Toolkit und der RAC Datenbanksicherung mit dem NetApp SnapCenter UI Tool.
+In link:vcf_ora_si_vvol.html["TR-4996"^]haben wir die Implementierung und Sicherung einer Oracle-Datenbank mit einer Instanz in VCF mit VVols demonstriert. In dieser Dokumentation wird die Implementierung und Sicherung einer Oracle RAC Datenbank in einer VMware Cloud Foundation-Umgebung mit VVols als primärer Datenbank-Storage in einem NetApp ONTAP Storage-Cluster demonstriert. Die Oracle RAC-Datenbank wird so konfiguriert, als ob sie in lokalen Dateisystemen auf einem lokalen Speichersystem bereitgestellt wird. Dieser technische Bericht erläutert die Schritte zum Erstellen von VVols in VCF für die Oracle RAC-Implementierung. Zudem demonstrieren wir die Implementierung der Oracle RAC Datenbank in VCF auf VVols mit einem NetApp Automatisierungs-Toolkit und der RAC Datenbanksicherung mit dem NetApp SnapCenter UI Tool.
 
 Diese Lösung eignet sich für folgende Anwendungsfälle:
 
@@ -151,7 +151,7 @@ In den folgenden Abschnitten werden Schritt-für-Schritt-Verfahren zur Implement
 Die Bereitstellung erfordert die folgenden Voraussetzungen.
 
 . Ein VMware VCF wurde eingerichtet. Informationen oder Anweisungen zum Erstellen eines VCF finden Sie in der VMware-Dokumentation link:https://docs.vmware.com/en/VMware-Cloud-Foundation/index.html["Dokumentation zu VMware Cloud Foundation"^].
-. Stellen Sie drei Linux VMs, zwei VMs für den Oracle RAC Datenbank-Cluster und eine VM für den Ansible-Controller innerhalb der VCF Workload-Domäne bereit. Stellen Sie eine Windows Server VM für das Ausführen von NetApp SnapCenter Server bereit. Informationen zum Einrichten des Ansible-Controllers für die automatisierte Oracle-Datenbankbereitstellung finden Sie in den folgenden Ressourcen link:https://docs.netapp.com/us-en/netapp-solutions/automation/getting-started.html["Erste Schritte mit der Automatisierung von NetApp Lösungen"^].
+. Stellen Sie drei Linux VMs, zwei VMs für den Oracle RAC Datenbank-Cluster und eine VM für den Ansible-Controller innerhalb der VCF Workload-Domäne bereit. Stellen Sie eine Windows Server VM für das Ausführen von NetApp SnapCenter Server bereit. Informationen zum Einrichten des Ansible-Controllers für die automatisierte Oracle-Datenbankbereitstellung finden Sie in den folgenden Ressourcen link:../automation/getting-started.html["Erste Schritte mit der Automatisierung von NetApp Lösungen"^].
 . Für Oracle RAC Datenbank-VMs sollten mindestens zwei Netzwerkschnittstellen bereitgestellt sein – eine für den privaten Oracle RAC Interconnect und eine für Apps oder öffentlichen Datenverkehr.
 . Das SnapCenter Plug-in Version 6.0 für VMware vSphere wurde im VCF implementiert. Weitere Informationen zur Plug-in-Bereitstellung finden Sie in den folgenden Ressourcen: link:https://docs.netapp.com/us-en/sc-plugin-vmware-vsphere/["Dokumentation zum SnapCenter Plug-in für VMware vSphere"^].
 . Das ONTAP Tool für VMware vSphere wurde in VCF implementiert. In den folgenden Ressourcen finden Sie Informationen zum ONTAP Tool zur Implementierung von VMware vSphere: link:https://docs.netapp.com/us-en/ontap-tools-vmware-vsphere/index.html["Dokumentation zu ONTAP Tools für VMware vSphere"^]
@@ -1203,20 +1203,8 @@ Hiermit ist die Demonstration von SnapCenter Backup, Wiederherstellung und Recov
 
 Weitere Informationen zu den in diesem Dokument beschriebenen Daten finden Sie in den folgenden Dokumenten bzw. auf den folgenden Websites:
 
-* VMware Cloud Foundation
-+
-link:https://www.vmware.com/products/cloud-infrastructure/vmware-cloud-foundation["https://www.vmware.com/products/cloud-infrastructure/vmware-cloud-foundation"^]
-
-* NetApp Lösungen für Enterprise Database
-+
-link:https://docs.netapp.com/us-en/netapp-solutions/databases/index.html["https://docs.netapp.com/us-en/netapp-solutions/databases/index.html"^]
-
-* SnapCenter Software 6.0
-+
-link:https://docs.netapp.com/us-en/snapcenter/concept/concept_snapcenter_overview.html["https://docs.netapp.com/us-en/snapcenter/concept/concept_snapcenter_overview.html"^]
-
-* Dokumentation zu ONTAP Tools für VMware vSphere
-+
-link:https://docs.netapp.com/us-en/ontap-tools-vmware-vsphere/index.html["https://docs.netapp.com/us-en/ontap-tools-vmware-vsphere/index.html"^]
-
+* link:https://www.vmware.com/products/cloud-infrastructure/vmware-cloud-foundation["VMware Cloud Foundation"^]
+* link:index.html["NetApp Lösungen für Enterprise Database"^]
+* link:https://docs.netapp.com/us-en/snapcenter/concept/concept_snapcenter_overview.html["SnapCenter Software 6.0"^]
+* link:https://docs.netapp.com/us-en/ontap-tools-vmware-vsphere/index.html["Dokumentation zu ONTAP Tools für VMware vSphere"^]
 

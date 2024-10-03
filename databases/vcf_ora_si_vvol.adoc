@@ -148,7 +148,7 @@ In den folgenden Abschnitten werden Schritt-für-Schritt-Anleitungen für die Im
 Die Bereitstellung erfordert die folgenden Voraussetzungen.
 
 . Ein VMware VCF wurde eingerichtet. Informationen oder Anweisungen zum Erstellen eines VCF finden Sie in der VMware-Dokumentation link:https://docs.vmware.com/en/VMware-Cloud-Foundation/index.html["Dokumentation zu VMware Cloud Foundation"^].
-. Stellen Sie drei Linux VMs, zwei VMs für die Oracle-Datenbank und eine VM für Ansible-Controller innerhalb der VCF-Workload-Domäne bereit. Stellen Sie eine Windows Server VM für das Ausführen von NetApp SnapCenter Server bereit. Informationen zum Einrichten des Ansible-Controllers für die automatisierte Oracle-Datenbankbereitstellung finden Sie in den folgenden Ressourcen link:https://docs.netapp.com/us-en/netapp-solutions/automation/getting-started.html["Erste Schritte mit der Automatisierung von NetApp Lösungen"^].
+. Stellen Sie drei Linux VMs, zwei VMs für die Oracle-Datenbank und eine VM für Ansible-Controller innerhalb der VCF-Workload-Domäne bereit. Stellen Sie eine Windows Server VM für das Ausführen von NetApp SnapCenter Server bereit. Informationen zum Einrichten des Ansible-Controllers für die automatisierte Oracle-Datenbankbereitstellung finden Sie in den folgenden Ressourcen link:../automation/getting-started.html["Erste Schritte mit der Automatisierung von NetApp Lösungen"^].
 . Das SnapCenter Plug-in Version 6.0 für VMware vSphere wurde im VCF implementiert. Weitere Informationen zur Plug-in-Bereitstellung finden Sie in den folgenden Ressourcen: link:https://docs.netapp.com/us-en/sc-plugin-vmware-vsphere/["Dokumentation zum SnapCenter Plug-in für VMware vSphere"^].
 . Das ONTAP Tool für VMware vSphere wurde in VCF implementiert. In den folgenden Ressourcen finden Sie Informationen zum ONTAP Tool zur Implementierung von VMware vSphere: link:https://docs.netapp.com/us-en/ontap-tools-vmware-vsphere/index.html["Dokumentation zu ONTAP Tools für VMware vSphere"^]
 
@@ -434,7 +434,7 @@ UUID=aff942c4-b224-4b62-807d-6a5c22f7b623 /boot                   xfs     defaul
 
 [%collapsible]
 ====
-Es wird empfohlen, das NetApp Automatisierungs-Toolkit für die Implementierung von Oracle in VCF mit VVols zu nutzen. Detaillierte Informationen zur Ausführung der automatisierten Oracle-Bereitstellung auf xfs-Dateisystemen finden Sie in TR-4992: link:https://docs.netapp.com/us-en/netapp-solutions/databases/automation_ora_c-series_nfs.html["Vereinfachte, automatisierte Oracle-Implementierung auf NetApp C-Series mit NFS"^]. TR-4992 deckt zwar die automatisierte Implementierung von Oracle auf der NetApp C-Series mit NFS ab, ist jedoch mit der Implementierung von Oracle in VCF mit VVols identisch, wenn das Mounten von NFS-Filesystemen in Datenbank-VM umgangen wird. Wir würden das einfach mit bestimmten Tags überspringen. Im Folgenden werden die einzelnen Schritte beschrieben.
+Es wird empfohlen, das NetApp Automatisierungs-Toolkit für die Implementierung von Oracle in VCF mit VVols zu nutzen. Detaillierte Informationen zur Ausführung der automatisierten Oracle-Bereitstellung auf xfs-Dateisystemen finden Sie in TR-4992: link:automation_ora_c-series_nfs.html["Vereinfachte, automatisierte Oracle-Implementierung auf NetApp C-Series mit NFS"^]. TR-4992 deckt zwar die automatisierte Implementierung von Oracle auf der NetApp C-Series mit NFS ab, ist jedoch mit der Implementierung von Oracle in VCF mit VVols identisch, wenn das Mounten von NFS-Filesystemen in Datenbank-VM umgangen wird. Wir würden das einfach mit bestimmten Tags überspringen. Im Folgenden werden die einzelnen Schritte beschrieben.
 
 . Melden Sie sich bei der Ansible Controller-VM als Admin-Benutzer über ssh an und klonen Sie eine Kopie des Automatisierungs-Toolkits für Oracle auf NFS.
 +
@@ -449,7 +449,7 @@ LINUX.X64_193000_db_home.zip
 p34765931_190000_Linux-x86-64.zip
 p6880880_190000_Linux-x86-64.zip
 ....
-. Konfigurieren Sie die Bereitstellungszieldatei - Hosts, die globale Variablendatei - vars/vars.yml und die lokale DatenbankVM-Variablendatei - Host_vars/Host_Name.yml gemäß den Anweisungen in diesem Abschnitt von TR-4992: link:https://docs.netapp.com/us-en/netapp-solutions/databases/automation_ora_c-series_nfs.html#parameter-files-configuration["Konfiguration von Parameterdateien"^]. Kommentieren Sie die Variable nfs_lif aus der lokalen VM-Variable der DB aus.
+. Konfigurieren Sie die Bereitstellungszieldatei - Hosts, die globale Variablendatei - vars/vars.yml und die lokale DatenbankVM-Variablendatei - Host_vars/Host_Name.yml gemäß den Anweisungen in diesem Abschnitt von TR-4992: link:automation_ora_c-series_nfs.html#parameter-files-configuration["Konfiguration von Parameterdateien"^]. Kommentieren Sie die Variable nfs_lif aus der lokalen VM-Variable der DB aus.
 . Richten Sie die Authentifizierung ohne SSH-Schlüssel zwischen dem Ansible-Controller und den Datenbank-VMs ein, die ein SSH-Schlüsselpaar erzeugen und den öffentlichen Schlüssel in die Datenbank-VMs admin-Benutzer-Stammverzeichnis .ssh-Ordner Authorized_keys-Datei kopieren muss.
 +
 [source, cli]
@@ -852,16 +852,7 @@ Hiermit ist die Demonstration von SnapCenter Backup, Wiederherstellung und Klone
 
 Weitere Informationen zu den in diesem Dokument beschriebenen Daten finden Sie in den folgenden Dokumenten bzw. auf den folgenden Websites:
 
-* VMware Cloud Foundation
-+
-link:https://www.vmware.com/products/cloud-infrastructure/vmware-cloud-foundation["https://www.vmware.com/products/cloud-infrastructure/vmware-cloud-foundation"^]
-
-* NetApp Lösungen für Enterprise Database
-+
-link:https://docs.netapp.com/us-en/netapp-solutions/databases/index.html["https://docs.netapp.com/us-en/netapp-solutions/databases/index.html"^]
-
-* SnapCenter Software 6.0
-+
-link:https://docs.netapp.com/us-en/snapcenter/concept/concept_snapcenter_overview.html["https://docs.netapp.com/us-en/snapcenter/concept/concept_snapcenter_overview.html"^]
-
+* link:https://www.vmware.com/products/cloud-infrastructure/vmware-cloud-foundation["VMware Cloud Foundation"^]
+* link:index.html["NetApp Lösungen für Enterprise Database"^]
+* link:https://docs.netapp.com/us-en/snapcenter/concept/concept_snapcenter_overview.html["SnapCenter Software 6.0"^]
 
