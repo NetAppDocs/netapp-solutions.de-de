@@ -30,9 +30,9 @@ Der Einsatz von NetApp Volumes in Verbindung mit Domino bietet folgende Vorteile
 
 
 
-== Vorhandene NFS-Volumes, die nicht von Astra Trident bereitgestellt wurden, können offengelegt werden
+== Legen Sie vorhandene NFS-Volumes offen, die nicht von Trident bereitgestellt wurden
 
-Wenn Ihr vorhandenes NetApp ONTAP-NFS-Volume nicht mit Astra Trident bereitgestellt wurde, befolgen Sie die in diesem Unterabschnitt beschriebenen Schritte.
+Wenn Ihr vorhandenes NetApp ONTAP-NFS-Volume nicht durch Trident bereitgestellt wurde, befolgen Sie die in diesem Unterabschnitt beschriebenen Schritte.
 
 
 
@@ -53,15 +53,15 @@ image:ddlnexus_image3.png["Die Abbildung zeigt den Input/Output-Dialog oder die 
 
 
 
-== Legen Sie vorhandene Volumes offen, die von Astra Trident bereitgestellt wurden
+== Bereitstellung vorhandener Volumes, die über Trident bereitgestellt wurden
 
-Wenn Ihr vorhandenes Volume durch Astra Trident bereitgestellt wurde, befolgen Sie die in diesem Unterabschnitt beschriebenen Schritte.
+Wenn Ihr vorhandenes Volume durch Trident bereitgestellt wurde, befolgen Sie die in diesem Unterabschnitt beschriebenen Schritte.
 
 
 
 === Vorhandene PVC bearbeiten
 
-Wenn Ihr Volume durch Astra Trident bereitgestellt wurde, verfügen Sie bereits über eine Persistent Volume Claim (PVC), die Ihrem Volume entspricht. Um dieses Volume Domino zur Verfügung zu stellen, müssen Sie die PVC bearbeiten und der Liste der Etiketten in die folgende Beschriftung hinzufügen `metadata.labels` Feld:
+Wenn das Volume von Trident bereitgestellt wurde, verfügen Sie bereits über eine Forderung (Persistent Volume Claim, PVC), die Ihrem Volume entspricht. Um dieses Volume Domino zur Verfügung zu stellen, müssen Sie die PVC bearbeiten und der Liste der Beschriftungen im Feld die folgende Beschriftung hinzufügen `metadata.labels`:
 
 ....
 "dominodatalab.com/external-data-volume": "Generic"

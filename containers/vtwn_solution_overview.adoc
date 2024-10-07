@@ -1,7 +1,7 @@
 ---
 sidebar: sidebar 
 permalink: containers/vtwn_solution_overview.html 
-keywords: VMware Tanzu, Tanzu, DevOps, Netapp, Astra Trident, Astra Control, Astra 
+keywords: VMware Tanzu, Tanzu, DevOps, Netapp, Trident, Astra Control, Astra 
 summary: 'Dieses Referenzdokument unterstützt bei der Implementierung verschiedene Varianten von VMware Tanzu Kubernetes Lösungen. Diese werden entweder als Tanzu Kubernetes Grid (TKG), Tanzu Kubernetes Grid Service (TKGS) oder Tanzu Kubernetes Grid Integrated (TKGI) in verschiedenen Datacenter-Umgebungen eingesetzt, wie von NetApp validiert.' 
 ---
 = NVA-1166: VMware Tanzu mit NetApp
@@ -16,7 +16,7 @@ summary: 'Dieses Referenzdokument unterstützt bei der Implementierung verschied
 Alan Cowles und Nikhil M Kulkarni, NetApp
 
 [role="lead"]
-Dieses Referenzdokument unterstützt bei der Implementierung verschiedene Varianten von VMware Tanzu Kubernetes Lösungen. Diese werden entweder als Tanzu Kubernetes Grid (TKG), Tanzu Kubernetes Grid Service (TKGS) oder Tanzu Kubernetes Grid Integrated (TKGI) in verschiedenen Datacenter-Umgebungen eingesetzt, wie von NetApp validiert. Sie beschreibt auch die Storage-Integration mit NetApp Storage-Systemen und den Astra Trident Storage-Orchestrator für das Management von persistentem Storage. Astra Control Center unterstützt Sie beim Backup und Klonen der statusorientierten Applikationen mit diesem persistenten Storage. Zu guter Letzt bietet das Dokument Video-Demos der Integration und Validierungen der Lösung.
+Dieses Referenzdokument unterstützt bei der Implementierung verschiedene Varianten von VMware Tanzu Kubernetes Lösungen. Diese werden entweder als Tanzu Kubernetes Grid (TKG), Tanzu Kubernetes Grid Service (TKGS) oder Tanzu Kubernetes Grid Integrated (TKGI) in verschiedenen Datacenter-Umgebungen eingesetzt, wie von NetApp validiert. Das Produkt beschreibt zudem die Storage-Integration in NetApp Storage-Systeme, den Trident Storage Orchestrator für das Management von persistentem Storage und Astra Control Center für das Backup und das Klonen zustandsbehafteter Applikationen, die diesen persistenten Storage verwenden. Zu guter Letzt bietet das Dokument Video-Demos der Integration und Validierungen der Lösung.
 
 
 
@@ -69,7 +69,7 @@ VMware Tanzu kommt in verschiedenen Ausführungen, die das Solutions Engineering
 * Ermöglicht die Verwendung von Windows- oder Linux-Worker-Nodes (Ubuntu/Photon).
 * Für die Kontrollebene können NSX-T, HA Proxy, AVI-Networking oder Load Balancer eingesetzt werden.
 * TKG unterstützt die MetalLB für die Anwendungs-/Datenebene.
-* Zudem können vSphere CSI ebenso wie CSI von Drittanbietern wie NetApp Astra Trident genutzt werden.
+* Kann vSphere CSI sowie CSIs von Drittanbietern wie NetApp Trident verwenden.
 
 
 *VMware Tanzu Kubernetes Grid Service (TKGS)*
@@ -80,7 +80,7 @@ VMware Tanzu kommt in verschiedenen Ausführungen, die das Solutions Engineering
 * Ermöglicht die Verwendung von Windows- oder Linux-Worker-Nodes (Ubuntu/Photon).
 * Für die Kontrollebene können NSX-T, HA Proxy, AVI-Networking oder Load Balancer eingesetzt werden.
 * TKGS unterstützt MetalLB für Applikations-/Datenebene.
-* Zudem können vSphere CSI ebenso wie CSI von Drittanbietern wie NetApp Astra Trident genutzt werden.
+* Kann vSphere CSI sowie CSIs von Drittanbietern wie NetApp Trident verwenden.
 * Bietet Unterstützung für vSphere Pods mit Tanzu und ermöglicht so die direkte Ausführung von Pods auf aktivierten ESXi Hosts in der Umgebung.
 
 
@@ -91,7 +91,7 @@ VMware Tanzu kommt in verschiedenen Ausführungen, die das Solutions Engineering
 * Unterstützung ab vSphere 6.7U3 sowie AWS, Azure und GCP.
 * Einrichtung über Assistenten zur Vereinfachung der Implementierung
 * Führt Tanzu in kontrollierten, unveränderlichen VMs aus, die von BOSH gemanagt werden.
-* Kann vSphere CSI ebenso wie CSI von Drittanbietern wie NetApp Astra Trident verwenden (es gelten einige Bedingungen).
+* Kann vSphere CSI sowie CSIs von Drittanbietern wie NetApp Trident verwenden (es gelten einige Bedingungen).
 
 
 *VSphere mit Tanzu (vSphere Pods)*
@@ -120,9 +120,9 @@ Das NetApp Astra Control Center bietet eine umfassende Auswahl an Storage- und a
 
 Weitere Informationen finden Sie auf der NetApp Astra Website https://cloud.netapp.com/astra["Hier"].
 
-Astra Trident ist ein vollständig unterstützter Open-Source-Orchestrator für Container und Kubernetes-Distributionen, einschließlich VMware Tanzu.
+Trident ist ein vollständig unterstützter Open-Source-Storage-Orchestrator für Container und Kubernetes-Distributionen, einschließlich VMware Tanzu.
 
-Weitere Informationen finden Sie auf der Astra Trident Website https://docs.netapp.com/us-en/trident/index.html["Hier"].
+Weitere Informationen finden Sie auf der Trident-Website https://docs.netapp.com/us-en/trident/index.html["Hier"].
 
 
 
@@ -140,7 +140,7 @@ Weitere Informationen finden Sie auf der Astra Trident Website https://docs.neta
 | NetApp Astra Control Center | Applikationsspezifisches Datenmanagement | 22.04 
 
 
-| NetApp Astra Trident | Storage-Orchestrierung | 22.04.0 
+| NetApp Trident | Storage-Orchestrierung | 22.04.0 
 
 
 | VMware Tanzu Kubernetes Grid | Container-Orchestrierung | 1.4 und höher 

@@ -1,7 +1,7 @@
 ---
 sidebar: sidebar 
 permalink: containers/rh-os-n_use_case_openshift_virtualization_workflow_vm_live_migration.html 
-keywords: OpenShift, OCP, Astra Trident, NetApp ONTAP, Red Hat OpenShift, OpenShift Virtualization, CNV, Container Native Virtualization, Red Hat OpenShift Virtualization 
+keywords: OpenShift, OCP, Trident, NetApp ONTAP, Red Hat OpenShift, OpenShift Virtualization, CNV, Container Native Virtualization, Red Hat OpenShift Virtualization 
 summary: Red hat OpenShift Virtualisierung mit NetApp ONTAP 
 ---
 = Workflows: Red hat OpenShift Virtualisierung mit NetApp ONTAP
@@ -20,7 +20,7 @@ Dieser Abschnitt zeigt, wie eine virtuelle Maschine in OpenShift Virtualization 
 
 == VM-Live-Migration
 
-Live Migration ist ein Prozess, bei dem eine VM-Instanz in einem OpenShift-Cluster ohne Ausfallzeit von einem Node zu einem anderen migriert wird. Damit die Live-Migration in einem OpenShift-Cluster funktioniert, müssen VMs mit Shared ReadWriteManche-Zugriffsmodus an PVCs gebunden sein. Astra Trident Back-Ends, die mit ontap-nas-Treibern konfiguriert sind, unterstützen den RWX-Zugriffsmodus für Dateisystemprotokolle nfs und smb. Siehe Dokumentation link:https://docs.netapp.com/us-en/trident/trident-use/ontap-nas.html["Hier"]. Astra Trident Back-Ends, die mit ontap-san-Treibern konfiguriert sind, unterstützen den RWX Zugriffsmodus für Block-Volume-Modus für iSCSI- und NVMe/TCP-Protokolle. Siehe Dokumentation link:https://docs.netapp.com/us-en/trident/trident-use/ontap-san.html["Hier"].
+Live Migration ist ein Prozess, bei dem eine VM-Instanz in einem OpenShift-Cluster ohne Ausfallzeit von einem Node zu einem anderen migriert wird. Damit die Live-Migration in einem OpenShift-Cluster funktioniert, müssen VMs mit Shared ReadWriteManche-Zugriffsmodus an PVCs gebunden sein. Trident-Back-Ends, die mit ONTAP-nas-Treibern konfiguriert sind, unterstützen den RWX-Zugriffsmodus für die Dateisystemprotokolle nfs und smb. Siehe Dokumentation link:https://docs.netapp.com/us-en/trident/trident-use/ontap-nas.html["Hier"]. Trident-Back-Ends, die mit ONTAP-san-Treibern konfiguriert sind, unterstützen den RWX Zugriffsmodus für Block-Volume-Modus für iSCSI- und NVMe/TCP-Protokolle. Siehe Dokumentation link:https://docs.netapp.com/us-en/trident/trident-use/ontap-san.html["Hier"].
 
 Damit die Live-Migration erfolgreich sein kann, müssen die VMs mithilfe von ontap-nas oder Storage-Klassen von ontap-san (VolumeMode: Block) mit PVCs mit Festplatten (Boot-Disks und zusätzliche Hot-Plug-Disks) bereitgestellt werden. Bei der Erstellung der PVCs erstellt Trident ONTAP Volumes in einer SVM, die NFS-aktiviert oder iSCSI aktiviert ist.
 

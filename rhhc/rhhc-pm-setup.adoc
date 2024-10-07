@@ -14,14 +14,14 @@ summary:
 
 
 [role="lead"]
-In diesem Abschnitt wird ein High-Level-Workflow zur Einrichtung der verwalteten Red hat OpenShift-Cluster auf AWS(ROSA) beschrieben. Es zeigt die Nutzung von Managed FSX for NetApp ONTAP (FSxN) als Storage-Backend von Astra Trident zur Bereitstellung persistenter Volumes. Es werden Details zur Implementierung von FSxN auf AWS mithilfe von BlueXP bereitgestellt. Außerdem werden Einzelheiten zur Verwendung von BlueXP und OpenShift GitOps (Argo CD) bereitgestellt, um Datensicherungs- und Migrationsaktivitäten für die zustandsbehafteten Applikationen auf ROSA Clustern durchzuführen.
+In diesem Abschnitt wird ein High-Level-Workflow zur Einrichtung der verwalteten Red hat OpenShift-Cluster auf AWS(ROSA) beschrieben. Es zeigt die Nutzung von Managed FSX for NetApp ONTAP (FSxN) als Storage-Backend durch Trident zur Bereitstellung persistenter Volumes. Es werden Details zur Implementierung von FSxN auf AWS mithilfe von BlueXP bereitgestellt. Außerdem werden Einzelheiten zur Verwendung von BlueXP und OpenShift GitOps (Argo CD) bereitgestellt, um Datensicherungs- und Migrationsaktivitäten für die zustandsbehafteten Applikationen auf ROSA Clustern durchzuführen.
 
 Das folgende Diagramm zeigt die AUF AWS implementierten ROSA-Cluster, die FSxN als Back-End-Storage verwenden.
 
 image:rhhc-rosa-with-fsxn.png["Die Abbildung zeigt den Input/Output-Dialog oder die Darstellung des schriftlichen Inhalts"]
 
 
-NOTE: Diese Lösung wurde mit zwei ROSA-Clustern in zwei VPCs in AWS verifiziert. Jeder ROSA Cluster wurde mithilfe von Astra Trident in FSxN integriert. ES gibt mehrere Möglichkeiten, ROSA-Cluster und FSxN in AWS bereitzustellen. Diese allgemeine Beschreibung des Setups enthält Dokumentations-Links für die spezifische verwendete Methode. Sie können sich auf die anderen Methoden in den entsprechenden Links in der link:rhhc-resources.html["Ressourcen"].
+NOTE: Diese Lösung wurde mit zwei ROSA-Clustern in zwei VPCs in AWS verifiziert. Jeder ROSA-Cluster wurde mithilfe von Trident in FSxN integriert. ES gibt mehrere Möglichkeiten, ROSA-Cluster und FSxN in AWS bereitzustellen. Diese allgemeine Beschreibung des Setups enthält Dokumentations-Links für die spezifische verwendete Methode. Sie können sich auf die anderen Methoden in den entsprechenden Links in der link:rhhc-resources.html["Ressourcen"].
 
 Der Einrichtungsvorgang kann in die folgenden Schritte unterteilt werden:
 
@@ -47,10 +47,10 @@ Der Einrichtungsvorgang kann in die folgenden Schritte unterteilt werden:
 * Verwenden Sie Helm-Diagramm, um Trident auf ROSA Clustern zu installieren. url für das Helm-Diagramm: https://netapp.github.io/trident-helm-chart[]
 
 
-.Integration von FSxN mit Astra Trident für ROSA Cluster
+.Integration von FSxN mit Trident für ROSA-Cluster
 video::621ae20d-7567-4bbf-809d-b01200fa7a68[panopto]
 
-NOTE: OpenShift GitOps kann zur Implementierung von Astra Trident CSI für alle gemanagten Cluster verwendet werden, wenn sie über ApplicationSet auf ArgoCD registriert werden.
+NOTE: OpenShift GitOps kann verwendet werden, um Trident CSI für alle verwalteten Cluster bereitzustellen, wenn sie über ApplicationSet auf ArgoCD registriert werden.
 
 image:rhhc-trident-helm.png["Die Abbildung zeigt den Input/Output-Dialog oder die Darstellung des schriftlichen Inhalts"]
 

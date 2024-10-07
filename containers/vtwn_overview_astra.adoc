@@ -1,7 +1,7 @@
 ---
 sidebar: sidebar 
 permalink: containers/vtwn_overview_astra.html 
-keywords: NetApp Astra Control, Astra Control Center, Application, Trident, Astra Trident, Helm, Operator, ONTAP, Tanzu, Kubernetes, VMware Tanzu 
+keywords: NetApp Astra Control, Astra Control Center, Application, Trident, Trident, Helm, Operator, ONTAP, Tanzu, Kubernetes, VMware Tanzu 
 summary: Das NetApp Astra Control Center bietet eine umfassende Auswahl an Storage- und applikationsspezifischen Datenmanagement-Services für statusorientierte Kubernetes Workloads in einer On-Premises-Umgebung mit einer zuverlässigen Datensicherungstechnologie von NetApp. 
 ---
 = Übersicht über NetApp Astra Control
@@ -23,9 +23,9 @@ Das NetApp Astra Control Center bietet umfassende Storage- und applikationsorien
 
 image:redhat_openshift_image44.png["Die Abbildung zeigt den Input/Output-Dialog oder die Darstellung des schriftlichen Inhalts"]
 
-NetApp Astra Control Center kann auf einem {k8s_Distribution_Name} Cluster installiert werden. Mit dem Astra Trident Storage-Orchestrator wurde der Server mit Storage-Klassen und Storage-Back-Ends für NetApp ONTAP Storage-Systeme implementiert und konfiguriert.
+NetApp Astra Control Center kann auf einem {k8s_Distribution_Name} Cluster installiert werden, dessen Storage-Orchestrator Trident implementiert und mit Storage-Klassen und Storage-Back-Ends auf NetApp ONTAP Storage-Systemen konfiguriert wurde.
 
-Weitere Informationen zu Astra Trident finden Sie unter link:dwn_overview_trident.html["Dieses Dokument hier einfügen"^].
+Weitere Informationen zu Trident finden Sie unter link:dwn_overview_trident.html["Dieses Dokument hier einfügen"^].
 
 In einer Umgebung mit Cloud-Anbindung sorgt Astra Control Center mithilfe von Cloud Insights für erweitertes Monitoring und Telemetrie. Liegt keine Cloud Insights-Verbindung vor, ist eingeschränktes Monitoring und Telemetrie (sieben Tage mit Kennzahlen) verfügbar und über offene metrische Endpunkte in die nativen Kubernetes-Monitoring-Tools (Prometheus und Grafana) exportiert.
 
@@ -52,14 +52,14 @@ Wenn die Programmierung in Ihrer Situation nicht geeignet ist und Sie ein Konfig
 Die Installation von Astra Control Center erfordert die folgenden Voraussetzungen:
 
 * Ein oder mehrere Tanzu Kubernetes Cluster, die entweder von einem Management-Cluster oder TKGS oder TKGI gemanagt werden. TKG Workload Cluster 1.4+ und TKGI User Cluster 1.12.2+ werden unterstützt.
-* Astra Trident muss bereits auf jedem Tanzu Kubernetes Cluster installiert und konfiguriert sein.
+* Trident muss bereits auf jedem Tanzu Kubernetes-Cluster installiert und konfiguriert sein.
 * Mindestens ein NetApp ONTAP Storage-System mit ONTAP 9.5 oder höher
 +
 
 NOTE: Eine Best Practice für jede Tanzu Kubernetes-Installation an einem Standort ist es, über eine dedizierte SVM für persistenten Storage zu verfügen. Implementierungen an mehreren Standorten erfordern zusätzliche Storage-Systeme.
 
 * Ein Trident Storage-Back-End muss für jeden Tanzu Kubernetes-Cluster mit einer SVM konfiguriert werden, die durch einen ONTAP-Cluster gesichert wird.
-* Eine Standard-StorageClass-Konfiguration auf jedem Tanzu Kubernetes Cluster mit Astra Trident als Storage-provisionierung.
+* Eine Standard-StorageClass, die für jedes Tanzu Kubernetes-Cluster mit Trident als Storage-bereitstellung konfiguriert ist.
 * Für jeden Tanzu Kubernetes Cluster muss auf jedem Tanzu Kubernetes ein Load Balancer installiert und konfiguriert werden, um den Lastausgleich zu ermöglichen und Astra Control Center auszusetzen, wenn Sie ingressType verwenden `AccTraefik`.
 * Ein Ingress-Controller muss auf jedem Tanzu Kubernetes Cluster installiert und konfiguriert werden, damit Astra Control Center verfügbar ist, wenn Sie ingressType verwenden `Generic`.
 * Eine private Image-Registrierung muss konfiguriert sein, um die NetApp Astra Control Center Images zu hosten.

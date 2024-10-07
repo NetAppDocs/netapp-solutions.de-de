@@ -1,7 +1,7 @@
 ---
 sidebar: sidebar 
 permalink: containers/rh-os-n_use_case_multitenancy_architecture.html 
-keywords: OpenShift, OCP, Astra Trident, NetApp ONTAP, Red Hat OpenShift, Multitenancy, Multi-tenancy 
+keywords: OpenShift, OCP, Trident, NetApp ONTAP, Red Hat OpenShift, Multitenancy, Multi-tenancy 
 summary: Konfiguration der Mandantenfähigkeit auf Red hat OpenShift mit NetApp 
 ---
 = Der Netapp Architektur Sind
@@ -14,13 +14,13 @@ summary: Konfiguration der Mandantenfähigkeit auf Red hat OpenShift mit NetApp
 
 
 [role="lead"]
-Auch wenn die von NetApp ONTAP unterstützten Red hat OpenShift und Astra Trident standardmäßig keine Isolierung zwischen Workloads bieten, bieten sie zahlreiche Funktionen für die Konfiguration der Mandantenfähigkeit. Wenn wir uns ein besseres Bild davon machen möchten, wie eine mandantenfähige Lösung auf einem Red hat OpenShift-Cluster mit Astra Trident von NetApp ONTAP entworfen wird, können wir uns ein Beispiel mit einer Reihe von Anforderungen nehmen und die damit zu berücksichtigende Konfiguration beschreiben.
+Obwohl Red hat OpenShift und Trident, die von NetApp ONTAP unterstützt werden, standardmäßig keine Isolierung zwischen Workloads bieten, bieten sie eine breite Palette von Funktionen, die für die Konfiguration von Mandantenfähigkeit verwendet werden können. Um ein besseres Verständnis für das Design einer mandantenfähigen Lösung auf einem Red hat OpenShift-Cluster mit Trident, das von NetApp ONTAP unterstützt wird, zu erhalten, betrachten wir ein Beispiel mit einer Reihe von Anforderungen und skizzieren die entsprechende Konfiguration.
 
-Nehmen wir einmal an, dass ein Unternehmen zwei seiner Workloads auf einem Red hat OpenShift-Cluster ausführt. Dies ist Teil von zwei Projekten, an denen zwei verschiedene Teams arbeiten. Die Daten für diese Workloads liegen auf PVCs, die durch Astra Trident dynamisch auf einem NetApp ONTAP NAS-Back-End bereitgestellt werden. Das Unternehmen muss für diese beiden Workloads eine mandantenfähige Lösung entwerfen und die Ressourcen für diese Projekte isolieren, um sicherzustellen, dass Sicherheit und Performance erhalten bleiben. Dabei geht es vor allem um die Daten, die die Applikationen unterstützen.
+Nehmen wir einmal an, dass ein Unternehmen zwei seiner Workloads auf einem Red hat OpenShift-Cluster ausführt. Dies ist Teil von zwei Projekten, an denen zwei verschiedene Teams arbeiten. Die Daten für diese Workloads befinden sich in PVCs, die von Trident auf einem NetApp ONTAP NAS-Backend dynamisch bereitgestellt werden. Das Unternehmen muss für diese beiden Workloads eine mandantenfähige Lösung entwerfen und die Ressourcen für diese Projekte isolieren, um sicherzustellen, dass Sicherheit und Performance erhalten bleiben. Dabei geht es vor allem um die Daten, die die Applikationen unterstützen.
 
-Die folgende Abbildung zeigt die mandantenfähige Lösung auf einem Red hat OpenShift-Cluster mit Astra Trident, der durch NetApp ONTAP unterstützt wird.
+Die folgende Abbildung zeigt die mandantenfähige Lösung auf einem Red hat OpenShift-Cluster mit Trident, der von NetApp ONTAP unterstützt wird.
 
-image:redhat_openshift_image40.jpg["Mandantenfähigkeit auf Red hat OpenShift-Cluster mit Astra Trident durch NetApp ONTAP unterstützt"]
+image:redhat_openshift_image40.jpg["Mandantenfähigkeit auf Red hat OpenShift Cluster mit Trident, unterstützt von NetApp ONTAP"]
 
 
 
@@ -28,7 +28,7 @@ image:redhat_openshift_image40.jpg["Mandantenfähigkeit auf Red hat OpenShift-Cl
 
 . NetApp ONTAP Storage-Cluster
 . Red hat OpenShift-Cluster
-. Astra Trident
+. Trident
 
 
 
@@ -47,7 +47,7 @@ Es ist wichtig, den gemeinsam genutzten Speicher zu isolieren, der als persisten
 
 
 
-== Astra Trident
+== Trident
 
 Nachdem Sie für verschiedene Projekte, die auf NetApp ONTAP erstellt wurden, unterschiedliche SVMs vorhanden sind, müssen Sie jede SVM einem anderen Trident-Back-End zuordnen. Die Back-End-Konfiguration auf Trident treibt die Zuweisung von persistentem Storage zu OpenShift-Cluster-Ressourcen an. Außerdem sind Details der SVM zu zugeordnet. Dies sollte mindestens der Protokolltreiber für das Backend sein. Optional können Sie damit definieren, wie die Volumes im Storage bereitgestellt werden, und Grenzen für die Größe von Volumes oder die Nutzung von Aggregaten festlegen. Details zur Definition der Trident Back-Ends finden sich https://docs.netapp.com/us-en/trident/trident-use/backends.html["Hier"^].
 

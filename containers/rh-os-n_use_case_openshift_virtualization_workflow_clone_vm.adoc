@@ -1,7 +1,7 @@
 ---
 sidebar: sidebar 
 permalink: containers/rh-os-n_use_case_openshift_virtualization_workflow_clone_vm.html 
-keywords: OpenShift, OCP, Astra Trident, NetApp ONTAP, Red Hat OpenShift, OpenShift Virtualization, CNV, Container Native Virtualization, Red Hat OpenShift Virtualization 
+keywords: OpenShift, OCP, Trident, NetApp ONTAP, Red Hat OpenShift, OpenShift Virtualization, CNV, Container Native Virtualization, Red Hat OpenShift Virtualization 
 summary: Red hat OpenShift Virtualisierung mit NetApp ONTAP 
 ---
 = Workflows: Red hat OpenShift Virtualisierung mit NetApp ONTAP
@@ -20,7 +20,7 @@ In diesem Abschnitt wird das Klonen einer virtuellen Maschine mit Red hat OpenSh
 
 == Klonen von VMs
 
-Das Klonen einer vorhandenen VM in OpenShift wird durch die Unterstützung der Funktion „Volume CSI“ von Astra Trident ermöglicht. Das Klonen von CSI-Volumes ermöglicht die Erstellung eines neuen PVC mithilfe einer vorhandenen PVC als Datenquelle durch die Duplizierung des PV. Nach der Erstellung des neuen PVC funktioniert es als separate Einheit und ohne Verbindung zur PVC-Quelle oder Abhängigkeit.
+Das Klonen einer vorhandenen VM in OpenShift wird durch die Volume-CSI-Klonfunktion von Trident erreicht. Das Klonen von CSI-Volumes ermöglicht die Erstellung eines neuen PVC mithilfe einer vorhandenen PVC als Datenquelle durch die Duplizierung des PV. Nach der Erstellung des neuen PVC funktioniert es als separate Einheit und ohne Verbindung zur PVC-Quelle oder Abhängigkeit.
 
 image:redhat_openshift_image57.png["Architektur zum Klonen von VMs"]
 
@@ -41,7 +41,7 @@ VMs in einem OpenShift-Cluster können auf zwei Arten geklont werden:
 
 === Durch Herunterfahren der Quell-VM
 
-Das Klonen einer vorhandenen VM durch das Herunterfahren der VM ist eine native OpenShift-Funktion, die mit Unterstützung von Astra Trident implementiert wird. Führen Sie folgende Schritte durch, um eine VM zu klonen.
+Das Klonen einer vorhandenen VM durch Herunterfahren der VM ist eine native OpenShift-Funktion, die mit Unterstützung von Trident implementiert wird. Führen Sie folgende Schritte durch, um eine VM zu klonen.
 
 . Navigieren Sie zu Workloads > Virtualisierung > Virtual Machines und klicken Sie neben der zu klonenden virtuellen Maschine auf die Auslassungspunkte.
 . Klicken Sie auf Virtual Machine klonen, und geben Sie die Details für die neue VM ein.

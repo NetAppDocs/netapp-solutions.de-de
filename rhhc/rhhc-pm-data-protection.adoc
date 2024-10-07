@@ -16,13 +16,13 @@ summary:
 [role="lead"]
 Auf dieser Seite werden die Datensicherungsoptionen für gemanagte Red hat OpenShift auf AWS (ROSA) Clustern unter Verwendung des Astra Control Service angezeigt. Astra Control Service (ACS) bietet eine intuitive grafische Benutzeroberfläche, mit der Sie Cluster hinzufügen, darauf laufende Applikationen definieren und applikationsorientierte Datenmanagement-Aktivitäten durchführen können. ACS-Funktionen können auch über eine API aufgerufen werden, die die Automatisierung von Workflows ermöglicht.
 
-Astra Control (ACS oder ACC) wird von NetApp Astra Trident angetrieben. Astra Trident integriert mehrere Arten von Kubernetes Clustern wie Red hat OpenShift, EKS, AKS, SUSE Rancher, Anthos usw. mit verschiedenen Ausführungen von NetApp ONTAP-Storage wie FAS/All Flash FAS, ONTAP Select, CVO, Google Cloud Volumes Service, Azure NetApp Files und Amazon FSX for NetApp ONTAP.
+Die Astra-Steuerung (ACS oder ACC) wird von NetApp Trident angetrieben. Trident integriert mehrere Arten von Kubernetes Clustern wie Red hat OpenShift, EKS, AKS, SUSE Rancher, Anthos usw. mit verschiedenen NetApp ONTAP Storage-Varianten wie FAS/AFF, ONTAP Select, CVO, Google Cloud Volumes Service, Azure NetApp Files und Amazon FSX for NetApp ONTAP.
 
 Dieser Abschnitt enthält Details zu den folgenden Datenschutzoptionen, die ACS verwenden:
 
 * Ein Video, das Backup und Restore einer ROSA-Anwendung zeigt, die in einer Region ausgeführt wird und in einer anderen Region wiederhergestellt wird.
 * Ein Video, das Snapshot und Wiederherstellung einer ROSA-Anwendung zeigt.
-* Schritt-für-Schritt-Details zur Installation eines ROSA-Clusters, Amazon FSX for NetApp ONTAP, Verwendung von NetApp Astra Trident zur Integration mit Storage-Backend, Installation einer postgresql-Anwendung auf ROSA-Cluster, Verwendung von ACS zur Erstellung eines Snapshot der Anwendung und Wiederherstellung der Anwendung von ihm.
+* Schritt-für-Schritt-Details zur Installation eines ROSA-Clusters, Amazon FSX for NetApp ONTAP, Verwendung von NetApp Trident zur Integration mit dem Speicher-Backend, Installation einer postgresql-Anwendung auf ROSA-Cluster, Verwendung von ACS, um einen Snapshot der Anwendung zu erstellen und die Anwendung von ihr wiederherzustellen.
 * Ein Blog, der Schritt-für-Schritt-Details des Erstellens und Wiederherstellen aus einem Snapshot für eine mysql-Anwendung auf einem ROSA-Cluster mit FSX für ONTAP unter Verwendung von ACS zeigt.
 
 
@@ -75,7 +75,7 @@ video::36ecf505-5d1d-4e99-a6f8-b11c00341793[panopto]
 
 . Erstellen Sie einen Admin-Benutzer und melden Sie sich beim Cluster an.
 . Erstellen Sie eine kubeconfig-Datei für den Cluster.
-. Installieren Sie Astra Trident auf dem Cluster.
+. Installieren Sie Trident auf dem Cluster.
 . Mit der CSI-provisionierung von Trident können Sie eine Back-End-, Storage-Klasse- und Snapshot-Klassenkonfiguration erstellen.
 . Implementieren Sie eine postgresql-Anwendung auf dem Cluster.
 . Erstellen Sie eine Datenbank und fügen Sie einen Datensatz hinzu.
@@ -110,9 +110,9 @@ Befolgen Sie die Anweisungen link:https://docs.netapp.com/us-en/astra-control-se
 
 
 
-==== **3. Installieren Sie Astra Trident auf dem Cluster**
+==== **3. Installieren Sie Trident auf dem Cluster**
 
-Installieren Sie Astra Trident (neueste Version) im ROSA Cluster. Um dies zu tun, können Sie eine der angegebenen Verfahren befolgen link:https://docs.netapp.com/us-en/trident/trident-get-started/kubernetes-deploy.html["Hier"]. Um Trident über das Helm von der Cluster-Konsole zu installieren, erstellen Sie zuerst ein Projekt mit dem Namen Trident.
+Installieren Sie Trident (neueste Version) auf dem ROSA-Cluster. Um dies zu tun, können Sie eine der angegebenen Verfahren befolgenlink:https://docs.netapp.com/us-en/trident/trident-get-started/kubernetes-deploy.html["Hier"]. Um Trident über das Helm von der Cluster-Konsole zu installieren, erstellen Sie zuerst ein Projekt mit dem Namen Trident.
 
 image:rhhc-trident-project-create.png["Die Abbildung zeigt den Input/Output-Dialog oder die Darstellung des schriftlichen Inhalts"]
 

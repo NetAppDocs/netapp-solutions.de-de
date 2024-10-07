@@ -13,7 +13,7 @@ summary:
 == Bereitstellung und Konfiguration der Container-Plattform Red hat OpenShift auf GCP
 
 [role="lead"]
-Dieser Abschnitt beschreibt einen allgemeinen Workflow zur Einrichtung und Verwaltung von OpenShift-Clustern in GCP und zur Bereitstellung zustandsbehafteter Anwendungen. Es zeigt die Nutzung von NetApp Cloud Volumes ONTAP Storage mit Hilfe von Astra Trident zur Bereitstellung persistenter Volumes. Einzelheiten zur Nutzung von Astra Control Center für die Durchführung von Datensicherungs- und Migrationsaktivitäten für die zustandsbehafteten Applikationen werden bereitgestellt.
+In diesem Abschnitt wird ein High-Level-Workflow beschrieben, in dem Sie OpenShift-Cluster in GCP einrichten und managen und zustandsbehaftete Anwendungen darauf implementieren. Es zeigt die Nutzung von NetApp Cloud Volumes ONTAP Storage mit Hilfe von Trident, um persistente Volumes bereitzustellen. Einzelheiten zur Nutzung von Astra Control Center für die Durchführung von Datensicherungs- und Migrationsaktivitäten für die zustandsbehafteten Applikationen werden bereitgestellt.
 
 Das folgende Diagramm zeigt die auf GCP bereitgestellten und über ein VPN mit dem Datacenter verbundenen Cluster.
 
@@ -58,11 +58,11 @@ Der Einrichtungsvorgang kann in die folgenden Schritte unterteilt werden:
 
 
 ====
-.Astra Trident im OCP-Cluster in GCP installieren
+.Installieren Sie Trident im OCP-Cluster in GCP
 [%collapsible]
 ====
-* Wie in der Abbildung dargestellt, gibt es viele Methoden für die Implementierung von Astra Trident https://docs.netapp.com/us-en/trident/trident-get-started/kubernetes-deploy.html["Hier"].
-* Für dieses Projekt wurde Astra Trident mithilfe der Anweisungen manuell implementiert, indem der Astra Trident Operator installiert wurde https://docs.netapp.com/us-en/trident/trident-get-started/kubernetes-deploy-operator.html["Hier"].
+* Es gibt viele Methoden, um Trident zu implementieren, wie gezeigt https://docs.netapp.com/us-en/trident/trident-get-started/kubernetes-deploy.html["Hier"].
+* Für dieses Projekt wurde Trident durch die manuelle Bereitstellung des Trident-Bedieners mithilfe der Anweisungen installiert https://docs.netapp.com/us-en/trident/trident-get-started/kubernetes-deploy-operator.html["Hier"].
 * Back-End- und Storage-Klassen erstellen Siehe Anweisungen link:https://docs.netapp.com/us-en/trident/trident-get-started/kubernetes-postdeployment.html["Hier"].
 
 
@@ -78,10 +78,10 @@ link:https://docs.netapp.com/us-en/astra-control-center/get-started/setup_overvi
 
 ====
 .Verwendung der CSI-Topology-Funktion von Trident für Multi-Zone-Architekturen
-Heute können Cloud-Provider Kubernetes/OpenShift-Cluster-Administratoren Nodes der zonbasierten Cluster erstellen. Die Nodes können sich in verschiedenen Verfügbarkeitszonen innerhalb einer Region oder über verschiedene Regionen hinweg befinden. Astra Trident verwendet CSI Topology, um die Provisionierung von Volumes für Workloads in einer Multi-Zone-Architektur zu vereinfachen. Mithilfe der CSI Topology-Funktion kann der Zugriff auf Volumes auf einen Teil von Nodes basierend auf Regionen und Verfügbarkeitszonen begrenzt werden. Siehe link:https://docs.netapp.com/us-en/trident/trident-use/csi-topology.html["Hier"] Entnehmen.
+Heute können Cloud-Provider Kubernetes/OpenShift-Cluster-Administratoren Nodes der zonbasierten Cluster erstellen. Die Nodes können sich in verschiedenen Verfügbarkeitszonen innerhalb einer Region oder über verschiedene Regionen hinweg befinden. Um die Bereitstellung von Volumes für Workloads in einer Architektur mit mehreren Zonen zu vereinfachen, verwendet Trident die CSI-Topologie. Mithilfe der CSI Topology-Funktion kann der Zugriff auf Volumes auf einen Teil von Nodes basierend auf Regionen und Verfügbarkeitszonen begrenzt werden. Weitere Einzelheiten finden Sie unterlink:https://docs.netapp.com/us-en/trident/trident-use/csi-topology.html["Hier"].
 
 
-NOTE: Kubernetes unterstützt zwei Volume-Bindungsmodi: - Wenn **_VolumeBindingMode_ auf _Immediate_** (Standard) eingestellt ist, erstellt Astra Trident das Volume ohne Topologieorientierung. Persistente Volumes werden erstellt, ohne dass sie von den Planungsanforderungen des anfragenden Pods abhängig sind. - Wenn **_VolumeBindingMode_ auf _WaitForFirstConsumer_** gesetzt wird, wird die Erstellung und Bindung eines Persistent Volume für eine PVC verzögert, bis ein Pod, der die PVC verwendet, geplant und erstellt wird. Auf diese Weise werden Volumes erstellt, um Planungseinschränkungen zu erfüllen, die durch Topologieanforderungen durchgesetzt werden. Astra Trident Storage-Back-Ends können für die selektive Bereitstellung von Volumes basierend auf Verfügbarkeitszonen entwickelt werden (Topologieorientiertes Back-End). Bei StorageClasses, die ein solches Backend nutzen, wird ein Volume nur erstellt, wenn es von einer Applikation angefordert wird, die in einer unterstützten Region/Zone geplant ist. (Topologieorientierte StorageClass) link:https://docs.netapp.com/us-en/trident/trident-use/csi-topology.html["Hier"] Entnehmen.
+NOTE: Kubernetes unterstützt zwei Volume-Bindungsmodi: - Wenn **_VolumeBindingMode_ auf _Immediate_** (Standard) eingestellt ist, erstellt Trident das Volume ohne Topologieorientierung. Persistente Volumes werden erstellt, ohne dass sie von den Planungsanforderungen des anfragenden Pods abhängig sind. - Wenn **_VolumeBindingMode_ auf _WaitForFirstConsumer_** gesetzt wird, wird die Erstellung und Bindung eines Persistent Volume für eine PVC verzögert, bis ein Pod, der die PVC verwendet, geplant und erstellt wird. Auf diese Weise werden Volumes erstellt, um Planungseinschränkungen zu erfüllen, die durch Topologieanforderungen durchgesetzt werden. Trident Storage Back-Ends können so entworfen werden, dass sie Volumes selektiv basierend auf Verfügbarkeitszonen bereitstellen (Topologieorientiertes Back-End). Bei StorageClasses, die ein solches Backend nutzen, wird ein Volume nur erstellt, wenn es von einer Applikation angefordert wird, die in einer unterstützten Region/Zone geplant ist. (Topologieorientierte StorageClass) Weitere Details finden Sie unterlink:https://docs.netapp.com/us-en/trident/trident-use/csi-topology.html["Hier"].
 
 [Underline]#*Demonstrationsvideo*#
 

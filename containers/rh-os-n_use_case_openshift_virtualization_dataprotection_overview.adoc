@@ -1,7 +1,7 @@
 ---
 sidebar: sidebar 
 permalink: containers/rh-os-n_use_case_openshift_virtualization_dataprotection_overview.html 
-keywords: OpenShift, OCP, Astra Trident, NetApp ONTAP, Red Hat OpenShift, OpenShift Virtualization, CNV, Container Native Virtualization, Red Hat OpenShift Virtualization, OADP operator, Openshift Data Protection Application operator, velero 
+keywords: OpenShift, OCP, Trident, NetApp ONTAP, Red Hat OpenShift, OpenShift Virtualization, CNV, Container Native Virtualization, Red Hat OpenShift Virtualization, OADP operator, Openshift Data Protection Application operator, velero 
 summary: Red hat OpenShift Virtualization Data Protection mit NetApp ONTAP 
 ---
 = Datensicherung für VMs in OpenShift-Virtualisierung mit OpenShift-API für Data Protection (OADP)
@@ -16,11 +16,11 @@ summary: Red hat OpenShift Virtualization Data Protection mit NetApp ONTAP
 Autor: Banu Sundhar, NetApp
 
 [role="lead"]
-Dieser Abschnitt des Referenzdokuments enthält Details zum Erstellen von Backups von VMs mithilfe der OpenShift API for Data Protection (OADP) mit Velero unter NetApp ONTAP S3 oder NetApp StorageGRID S3. Die Backups von Persistent Volumes(PVs) der VM-Festplatten werden mit CSI Astra Trident Snapshots erstellt.
+Dieser Abschnitt des Referenzdokuments enthält Details zum Erstellen von Backups von VMs mithilfe der OpenShift API for Data Protection (OADP) mit Velero unter NetApp ONTAP S3 oder NetApp StorageGRID S3. Die Backups von persistenten Volumes (PVs) der VM-Festplatten werden mithilfe von CSI-Trident-Snapshots erstellt.
 
 Virtuelle Maschinen in der OpenShift-Virtualisierungsumgebung sind Container-Anwendungen, die in den Workerknoten der OpenShift-Container-Plattform ausgeführt werden. Es ist wichtig, die VM-Metadaten sowie die persistenten Festplatten der VMs zu schützen, damit Sie sie bei Verlust oder Beschädigung wiederherstellen können.
 
-Die persistenten Festplatten der OpenShift-Virtualisierungs-VMs können mithilfe von ONTAP-Speicher gesichert werden, der in den OpenShift-Cluster integriert ist link:https://docs.netapp.com/us-en/trident/["Astra Trident CSI"]. In diesem Abschnitt verwenden wir link:https://docs.openshift.com/container-platform/4.14/backup_and_restore/application_backup_and_restore/installing/installing-oadp-ocs.html["OpenShift API for Data Protection (OADP)"] Um das Backup von VMs einschließlich seiner Daten-Volumes auf durchzuführen
+Die persistenten Festplatten der OpenShift-Virtualisierungs-VMs können mithilfe von ONTAP-Speicher gesichert werden, der in den OpenShift-Cluster integriert link:https://docs.netapp.com/us-en/trident/["Trident-CSI"]ist. In diesem Abschnitt führen wir link:https://docs.openshift.com/container-platform/4.14/backup_and_restore/application_backup_and_restore/installing/installing-oadp-ocs.html["OpenShift API for Data Protection (OADP)"]ein Backup von VMs durch, einschließlich der Daten-Volumes in
 
 * ONTAP Objekt-Storage
 * StorageGRID
@@ -44,10 +44,8 @@ OADP 1.3 ist über den Operator Hub von OpenShift Cluster 4.12 und höher verfü
 * OpenShift Virtualization wird über OperatorOpenShift Virtualization Operator von Red hat installiert
 * OADP Operator 1.13 von Red hat bereitgestellt
 * Velero CLI 1.13 für Linux
-* Astra Trident 24.02
+* Trident 24.02
 * ONTAP 9.12
 
 
-link:https://docs.netapp.com/us-en/trident/["Astra Trident CSI"]
-link:https://docs.openshift.com/container-platform/4.14/backup_and_restore/application_backup_and_restore/installing/installing-oadp-ocs.html["OpenShift API for Data Protection (OADP)"]
-link:https://velero.io/["Velero"]
+link:https://docs.netapp.com/us-en/trident/["Trident-CSI"] link:https://docs.openshift.com/container-platform/4.14/backup_and_restore/application_backup_and_restore/installing/installing-oadp-ocs.html["OpenShift API for Data Protection (OADP)"] link:https://velero.io/["Velero"]

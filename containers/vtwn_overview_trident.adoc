@@ -1,10 +1,10 @@
 ---
 sidebar: sidebar 
 permalink: containers/vtwn_overview_trident.html 
-keywords: Trident, Astra Trident, Helm, Operator, iSCSI, NFS, Tanzu, VMware Tanzu with NetApp Trident 
-summary: Astra Trident ist ein Open-Source- und vollständig unterstützter Storage-Orchestrator für Container und Kubernetes-Distributionen, einschließlich VMware Tanzu. 
+keywords: Trident, Trident, Helm, Operator, iSCSI, NFS, Tanzu, VMware Tanzu with NetApp Trident 
+summary: Trident ist ein Open-Source und vollständig unterstützter Storage-Orchestrator für Container und Kubernetes-Distributionen, einschließlich VMware Tanzu. 
 ---
-= Astra Trident – Überblick
+= Übersicht über Trident
 :hardbreaks:
 :allow-uri-read: 
 :nofooter: 
@@ -15,18 +15,18 @@ summary: Astra Trident ist ein Open-Source- und vollständig unterstützter Stor
 
 
 [role="lead"]
-Astra Trident ist ein Open-Source- und vollständig unterstützter Storage-Orchestrator für Container und Kubernetes-Distributionen, einschließlich VMware Tanzu.
+Trident ist ein Open-Source und vollständig unterstützter Storage-Orchestrator für Container und Kubernetes-Distributionen, einschließlich VMware Tanzu.
 
 [role="normal"]
-Astra Trident ist ein vollständig unterstützter Open-Source-Storage-Orchestrator für Container und Kubernetes-Distributionen wie {k8s_Distribution_Name}. Trident kann mit dem gesamten NetApp Storage-Portfolio eingesetzt werden, einschließlich NetApp ONTAP und Element Storage-Systeme. Es unterstützt auch NFS- und iSCSI-Verbindungen. Trident beschleunigt den DevOps-Workflow, da Endbenutzer Storage über ihre NetApp Storage-Systeme bereitstellen und managen können, ohne dass ein Storage-Administrator eingreifen muss.
+Trident ist ein vollständig unterstützter Open-Source-Storage-Orchestrator für Container und Kubernetes-Distributionen wie {k8s_Distribution_Name}. Trident kann mit dem gesamten NetApp Storage-Portfolio eingesetzt werden, einschließlich NetApp ONTAP und Element Storage-Systeme. Es unterstützt auch NFS- und iSCSI-Verbindungen. Trident beschleunigt den DevOps-Workflow, da Endbenutzer Storage über ihre NetApp Storage-Systeme bereitstellen und managen können, ohne dass ein Storage-Administrator eingreifen muss.
 
 Ein Administrator kann verschiedene Storage-Back-Ends basierend auf den Projektanforderungen und Storage-Systemmodellen konfigurieren, die erweiterte Storage-Funktionen wie Komprimierung, bestimmte Festplattentypen oder QoS-Level ermöglichen, die eine bestimmte Performance garantieren. Nach ihrer Definition können diese Back-Ends von Entwicklern in ihren Projekten verwendet werden, um persistente Volume Claims (PVCs) zu erstellen und persistenten Storage nach Bedarf an ihre Container anzubinden.
 
 image:redhat_openshift_image2.png["Die Abbildung zeigt den Input/Output-Dialog oder die Darstellung des schriftlichen Inhalts"]
 
-Astra Trident führt einen schnellen Entwicklungszyklus durch, und, wie Kubernetes, wird viermal im Jahr veröffentlicht.
+Trident hat einen schnellen Entwicklungszyklus, und wird, wie Kubernetes, viermal pro Jahr veröffentlicht.
 
-Die neueste Version von Astra Trident ist 22.04. April 2022. Eine Support-Matrix, in der die Version von Trident getestet wurde, mit der Kubernetes Distribution zu finden ist https://docs.netapp.com/us-en/trident/trident-get-started/requirements.html#supported-frontends-orchestrators["Hier"].
+Die neueste Version von Trident ist 22.04, die im April 2022 veröffentlicht wurde. Eine Support-Matrix für welche Version von Trident getestet wurde, mit der sich die Kubernetes-Distribution befindet https://docs.netapp.com/us-en/trident/trident-get-started/requirements.html#supported-frontends-orchestrators["Hier"].
 
 Ab Version 20.04 wird die Trident-Einrichtung vom Trident Operator durchgeführt. Der Operator vereinfacht umfangreiche Implementierungen und bietet zusätzlichen Support. Durch die Selbstreparatur für Pods, die im Rahmen der Trident-Installation implementiert werden, wird damit das Selbstreparaturverfahren ermöglicht.
 
@@ -42,7 +42,7 @@ In der Version 21.01 wurde ein Helm Chart zur Erleichterung der Installation des
 ----
 [netapp-user@rhel7]$ export KUBECONFIG=~/tanzu-install/auth/kubeconfig
 ----
-. Fügen Sie das NetApp Astra Trident Helm Repository hinzu.
+. Fügen Sie das NetApp Trident Helm Repository hinzu.
 +
 [listing]
 ----
@@ -65,13 +65,13 @@ Update Complete. ⎈Happy Helming!⎈
 ----
 [netapp-user@rhel7]$ kubetcl create ns trident
 ----
-. Erstellen Sie ein Geheimnis mit den DockerHub-Anmeldeinformationen, um die Astra Trident-Bilder herunterzuladen.
+. Erstellen Sie ein Geheimnis mit DockerHub-Anmeldeinformationen, um die Trident-Bilder herunterzuladen.
 +
 [listing]
 ----
 [netapp-user@rhel7]$ kubectl create secret docker-registry docker-registry-cred --docker-server=docker.io --docker-username=netapp-solutions-tme --docker-password=xxxxxx -n trident
 ----
-. Für Benutzer- oder Workload-Cluster, die von TKGS (vSphere mit Tanzu) oder TKG mit Management-Cluster-Implementierungen verwaltet werden, gehen Sie zur Installation von Astra Trident wie folgt vor:
+. Führen Sie für Benutzer- oder Workload-Cluster, die von TKGS (vSphere mit Tanzu) oder TKG mit Management-Cluster-Bereitstellungen verwaltet werden, folgende Schritte durch, um Trident zu installieren:
 +
 .. Stellen Sie sicher, dass der angemeldete Benutzer über die Berechtigungen zum Erstellen von Dienstkonten im Dreizack-Namespace verfügt und dass die Dienstkonten im Dreizack-Namespace über die Berechtigung zum Erstellen von Pods verfügen.
 .. Führen Sie den folgenden Helm-Befehl aus, um den Trident Operator im erstellten Namespace zu installieren.
@@ -113,7 +113,7 @@ trident-operator-67c94c4768-xw978   1/1     Running   0               14m
 
 == Erstellen von Storage-System-Back-Ends
 
-Nach Abschluss der Installation des Astra Trident Operator müssen Sie das Backend für die spezifische NetApp Storage-Plattform konfigurieren, die Sie verwenden. Folgen Sie den Links unten, um mit der Einrichtung und Konfiguration von Astra Trident fortzufahren.
+Nach Abschluss der Installation des Trident-Bedieners müssen Sie das Backend für die spezifische verwendete NetApp-Speicherplattform konfigurieren. Folgen Sie den Links unten, um mit der Einrichtung und Konfiguration von Trident fortzufahren.
 
 * link:vtwn_trident_ontap_nfs.html["NetApp ONTAP NFS"]
 * link:vtwn_trident_ontap_iscsi.html["NetApp ONTAP iSCSI"]

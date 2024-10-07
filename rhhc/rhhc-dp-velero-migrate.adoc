@@ -1,7 +1,7 @@
 ---
 sidebar: sidebar 
 permalink: rhhc/rhhc-dp-velero-migrate.html 
-keywords: OpenShift, OCP, Astra Trident, NetApp ONTAP, Red Hat OpenShift, OADP operator, Openshift Data Protection Application operator, Velero 
+keywords: OpenShift, OCP, Trident, NetApp ONTAP, Red Hat OpenShift, OADP operator, Openshift Data Protection Application operator, Velero 
 summary: Red hat OpenShift Container Application Data Protection mit NetApp ONTAP 
 ---
 = Migrieren einer App von einem Cluster zu einem anderen
@@ -21,7 +21,7 @@ Die Backup- und Restore-Funktionen von Velero machen es zu einem wertvollen Tool
 ====
 **Voraussetzungen für Cluster 1**
 
-* Astra Trident muss auf dem Cluster installiert sein.
+* Trident muss auf dem Cluster installiert sein.
 * Es müssen ein dreigestelltes Backend und eine Storage-Klasse erstellt werden.
 * Der OADP-Operator muss auf dem Cluster installiert sein.
 * Die DataProtectionApplication sollte konfiguriert werden.
@@ -90,7 +90,7 @@ Eine Sicherung der Ressourcen im Namespace postgresql wird im Objektspeicherort 
 ====
 **Voraussetzungen für Cluster 2**
 
-* Astra Trident muss auf Cluster 2 installiert sein.
+* Trident muss auf Cluster 2 installiert sein.
 * Die postgresql-App darf NICHT bereits im postgresql-Namespace installiert sein.
 * Der OADP-Operator muss auf Cluster 2 installiert sein, und der BackupStorage-Speicherort muss auf denselben Objektspeicherort verweisen, an dem das Backup vom ersten Cluster aus gespeichert wurde.
 * Die Backup-CR muss vom zweiten Cluster aus sichtbar sein.
