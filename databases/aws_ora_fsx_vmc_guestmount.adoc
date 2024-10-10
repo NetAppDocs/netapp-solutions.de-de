@@ -132,10 +132,10 @@ image:aws_ora_fsx_vmc_architecture.png["Dieses Bild zeigt ein detailliertes Bild
 
 === Wichtige Faktoren für die Implementierung
 
-* *FSX zu VMC-Konnektivität.* Wenn Sie Ihr SDDC auf VMware Cloud auf AWS bereitstellen, wird es innerhalb eines AWS-Kontos und einer VPC erstellt, die Ihrer Organisation zugewiesen ist und von VMware verwaltet wird. Sie müssen das SDDC auch mit einem AWS-Konto, dem AWS-Kundenkonto, verbinden. Über diese Verbindung kann Ihr SDDC auf die AWS-Services zugreifen, die zu Ihrem Kundenkonto gehören. FSX for ONTAP ist ein in Ihrem Kundenkonto bereitgestellter AWS-Service. Sobald das VMC SDDC mit Ihrem Kundenkonto verbunden ist, ist FSX Storage für die VMs im VMC SDDC für direkte Gastmontage verfügbar.
-* *FSX Storage HA Cluster Single- oder Multi-Zone-Implementierung.* bei diesen Tests und Validierungen haben wir einen FSX HA-Cluster in einer einzelnen AWS Verfügbarkeitszone implementiert. NetApp empfiehlt außerdem die Implementierung von FSX für NetApp ONTAP und VMware Cloud on AWS in derselben Verfügbarkeitszone, um eine bessere Performance zu erzielen und Datentransfergebühren zwischen Verfügbarkeitszonen zu vermeiden.
-* *FSX Storage-Cluster-Sizing.* ein Amazon FSX for ONTAP Storage-Dateisystem bietet bis zu 160,000 RAW SSD IOPS, einen Durchsatz von bis zu 4 Gbit/s und eine maximale Kapazität von 192 tib. Sie können das Cluster jedoch in Bezug auf die bereitgestellten IOPS, den Durchsatz und die Storage-Grenze (mindestens 1,024 gib) dimensionieren, basierend auf Ihren tatsächlichen Anforderungen zum Zeitpunkt der Implementierung. Die Kapazität lässt sich spontan dynamisch anpassen, ohne dass die Applikationsverfügbarkeit beeinträchtigt wird.
-* *Oracle Daten- und Protokolllayout.* in unseren Tests und Validierungen haben wir jeweils zwei ASM-Datenträgergruppen für Daten und Logs eingesetzt. Innerhalb der +DATA asm-Festplattengruppe haben wir vier LUNs in einem Daten-Volume bereitgestellt. Innerhalb der +LOGS asm-Datenträgergruppe haben wir zwei LUNs in einem Logvolumen bereitgestellt. Im Allgemeinen bieten mehrere in einem Amazon FSX für ONTAP Volume bereitgestellte LUNs eine bessere Performance.
+* * FSX zu VMC-Konnektivität.* Wenn Sie Ihr SDDC auf VMware Cloud auf AWS implementieren, wird es in einem AWS-Konto und einer für Ihr Unternehmen dedizierten und von VMware gemanagten VPC erstellt. Sie müssen das SDDC auch mit einem AWS-Konto, dem AWS-Kundenkonto, verbinden. Über diese Verbindung kann Ihr SDDC auf die AWS-Services zugreifen, die zu Ihrem Kundenkonto gehören. FSX ONTAP ist ein AWS-Service, der in Ihrem Kundenkonto bereitgestellt wird. Sobald das VMC SDDC mit Ihrem Kundenkonto verbunden ist, ist FSX Storage für die VMs im VMC SDDC für direkte Gastmontage verfügbar.
+* *FSX Storage HA Cluster Single- oder Multi-Zone Bereitstellung.* Bei diesen Tests und Validierungen haben wir ein FSX HA-Cluster in einer einzigen AWS-Verfügbarkeitszone implementiert. NetApp empfiehlt außerdem die Implementierung von FSX ONTAP und VMware Cloud on AWS in derselben Verfügbarkeitszone, um eine bessere Performance zu erzielen und Datentransfergebühren zwischen Verfügbarkeitszonen zu vermeiden.
+* *Größe des FSX Storage-Clusters.* Ein Amazon FSX ONTAP Storage-Filesystem bietet bis zu 160,000 Brutto-SSD-IOPS, einen Durchsatz von bis zu 4 GB/s und eine maximale Kapazität von 192 tib. Sie können das Cluster jedoch in Bezug auf die bereitgestellten IOPS, den Durchsatz und die Storage-Grenze (mindestens 1,024 gib) dimensionieren, basierend auf Ihren tatsächlichen Anforderungen zum Zeitpunkt der Implementierung. Die Kapazität lässt sich spontan dynamisch anpassen, ohne dass die Applikationsverfügbarkeit beeinträchtigt wird.
+* *Oracle Daten- und Protokolllayout.* In unseren Tests und Validierungen wurden zwei ASM-Festplattengruppen für Daten und Logs eingesetzt. Innerhalb der +DATA asm-Festplattengruppe haben wir vier LUNs in einem Daten-Volume bereitgestellt. Innerhalb der +LOGS asm-Datenträgergruppe haben wir zwei LUNs in einem Logvolumen bereitgestellt. Im Allgemeinen bieten mehrere LUNs in einem Amazon FSX ONTAP Volume eine bessere Performance.
 * *ISCSI-Konfiguration.* die Datenbank-VMs im VMC SDDC verbinden sich mit FSX Speicher mit dem iSCSI-Protokoll. Es ist wichtig, die höchste I/O-Durchsatzanforderung der Oracle-Datenbank zu ermitteln, indem der Oracle AWR-Bericht sorgfältig analysiert wird, um die Anforderungen an den Anwendungs- und iSCSI-Datenverkehr und den Durchsatz zu ermitteln. NetApp empfiehlt außerdem, beiden FSX iSCSI-Endpunkten vier iSCSI-Verbindungen mit einer ordnungsgemäß konfigurierten Multipath-Konfiguration zuzuweisen.
 * *Oracle ASM-Redundanzebene, die für jede von Ihnen erstellte Oracle ASM-Datenträgergruppe verwendet werden kann.* Da FSX ONTAP den Speicher bereits auf der FSX-Clusterebene spiegelt, sollten Sie externe Redundanz verwenden, was bedeutet, dass die Option Oracle ASM nicht erlaubt, den Inhalt der Datenträgergruppe zu spiegeln.
 * *Datenbanksicherung.* NetApp bietet eine SnapCenter Software Suite für Datenbank-Backup, -Wiederherstellung und -Klonen mit einer benutzerfreundlichen Benutzeroberfläche. NetApp empfiehlt die Implementierung eines solchen Management Tools, damit Snapshot Backups (unter einer Minute), schnelle Datenbank-Restores (in Minuten) und Datenbankklone möglich sind.
@@ -157,7 +157,7 @@ Die Bereitstellung erfordert die folgenden Voraussetzungen.
 
 . Es wurde ein softwaredefiniertes Datacenter (SDDC) erstellt, das VMware Cloud auf AWS nutzt. Eine detaillierte Anleitung zum Erstellen eines SDDC in VMC finden Sie in der VMware-Dokumentation link:https://docs.vmware.com/en/VMware-Cloud-on-AWS/services/com.vmware.vmc-aws.getting-started/GUID-3D741363-F66A-4CF9-80EA-AA2866D1834E.html["Erste Schritte mit VMware Cloud on AWS"^]
 . Es wurde ein AWS Konto eingerichtet, und die erforderlichen VPC und Netzwerksegmente wurden in Ihrem AWS Konto erstellt. Das AWS Konto ist mit Ihrem VMC SDDC verknüpft.
-. Implementieren Sie über die AWS EC2 Konsole einen Amazon FSX for ONTAP Storage HA-Cluster, um die Oracle Database Volumes zu hosten. Wenn Sie mit der Bereitstellung von FSX-Speicher nicht vertraut sind, lesen Sie die Dokumentation link:https://docs.aws.amazon.com/fsx/latest/ONTAPGuide/creating-file-systems.html["Erstellen von FSX für ONTAP-Dateisysteme"^] Schritt-für-Schritt-Anleitungen.
+. Implementieren Sie über die AWS EC2-Konsole einen Amazon FSX ONTAP Storage HA-Cluster, um die Oracle Database Volumes zu hosten. Wenn Sie mit der Implementierung von FSX Storage nicht vertraut sind, finden Sie in der Dokumentation link:https://docs.aws.amazon.com/fsx/latest/ONTAPGuide/creating-file-systems.html["Erstellen von FSX ONTAP-Dateisystemen"^]eine Schritt-für-Schritt-Anleitung.
 . Der oben genannte Schritt kann mit dem folgenden Terraform Automatisierungs-Toolkit durchgeführt werden, das eine EC2-Instanz als Jump-Host für SDDC beim VMC-Zugriff über SSH und ein FSX Filesystem erstellt. Lesen Sie die Anweisungen sorgfältig durch, und ändern Sie die Variablen vor der Ausführung entsprechend Ihrer Umgebung.
 +
 ....
@@ -1464,7 +1464,7 @@ alter database open;
 ----
 
 
-Damit ist die Neustartbereitstellung auf einem Amazon FSX für ONTAP-Speicher und einer VMC DB-VM für Oracle 19c Version 19.18 abgeschlossen. Falls gewünscht, empfiehlt NetApp, die Oracle Steuerdatei und die Online-Protokolldateien in die +LOGS-Datenträgergruppe zu verschieben.
+Damit ist die Neustartbereitstellung auf einem Amazon FSX ONTAP-Speicher und einer VMC DB-VM für Oracle 19c Version 19.18 abgeschlossen. Falls gewünscht, empfiehlt NetApp, die Oracle Steuerdatei und die Online-Protokolldateien in die +LOGS-Datenträgergruppe zu verschieben.
 
 ====
 
@@ -1907,7 +1907,7 @@ link:https://docs.oracle.com/en/database/oracle/oracle-database/19/ladbi/install
 +
 link:https://docs.oracle.com/en/database/oracle/oracle-database/19/ladbi/installing-and-configuring-oracle-database-using-response-files.html#GUID-D53355E9-E901-4224-9A2A-B882070EDDF7["https://docs.oracle.com/en/database/oracle/oracle-database/19/ladbi/installing-and-configuring-oracle-database-using-response-files.html#GUID-D53355E9-E901-4224-9A2A-B882070EDDF7"^]
 
-* Amazon FSX für NetApp ONTAP
+* Amazon FSX ONTAP
 +
 link:https://aws.amazon.com/fsx/netapp-ontap/["https://aws.amazon.com/fsx/netapp-ontap/"^]
 

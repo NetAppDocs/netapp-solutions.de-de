@@ -28,7 +28,7 @@ Der Einrichtungsvorgang kann in die folgenden Schritte unterteilt werden:
 ====
 link:https://www.vmware.com/products/vmc-on-aws.html["VMware Cloud auf AWS"] Für VMware-basierte Workloads im AWS Ecosystem bietet es ein Cloud-natives Arbeiten. Jedes softwaredefinierte VMware Datacenter (SDDC) wird in einer Amazon Virtual Private Cloud (VPC) ausgeführt und bietet einen vollständigen VMware Stack (einschließlich vCenter Server), softwaredefiniertes NSX-T Networking, softwaredefinierten vSAN Storage sowie einen oder mehrere ESXi Hosts, die Computing- und Storage-Ressourcen für Ihre Workloads bereitstellen.
 
-In diesem Abschnitt wird beschrieben, wie Sie VMware Cloud auf AWS einrichten und managen und in Kombination mit Amazon FSX für NetApp ONTAP und/oder Cloud Volumes ONTAP auf AWS mit in-Guest Storage verwenden.
+In diesem Abschnitt wird beschrieben, wie Sie VMware Cloud on AWS einrichten und managen und diese in Kombination mit Amazon FSX ONTAP und/oder Cloud Volumes ONTAP on AWS mit in-Guest Storage verwenden.
 
 
 NOTE: Im-Gast-Storage ist derzeit die einzige unterstützte Methode zur Verbindung von Cloud Volumes ONTAP (CVO) mit AWS VMC.
@@ -105,11 +105,11 @@ Einen Schritt-für-Schritt-Leitfaden zur SDDC-Implementierung finden Sie unter l
 ====
 So verbinden Sie VMware Cloud mit FSX ONTAP:
 
-. Wenn die VMware Cloud Implementierung abgeschlossen und mit AWS VPC verbunden ist, müssen Sie Amazon FSX für NetApp ONTAP in ein neues VPC anstatt in der mit der Integration verbundenen VPC implementieren (siehe Abbildung unten). FSX (NFS- und SMB-fließende IPs) ist nicht zugänglich, wenn sie in der verbundenen VPC implementiert werden. ISCSI-Endpunkte wie Cloud Volumes ONTAP funktionieren genauso gut wie die verbundene VPC.
+. Wenn die VMware Cloud-Implementierung abgeschlossen und mit der AWS VPC verbunden ist, müssen Sie Amazon FSX ONTAP in eine neue VPC und nicht in die ursprünglich verbundene VPC implementieren (siehe Screenshot unten). FSX (NFS- und SMB-fließende IPs) ist nicht zugänglich, wenn sie in der verbundenen VPC implementiert werden. ISCSI-Endpunkte wie Cloud Volumes ONTAP funktionieren genauso gut wie die verbundene VPC.
 +
 image:aws-connect-fsx-1.png["Die Abbildung zeigt den Input/Output-Dialog oder die Darstellung des schriftlichen Inhalts"]
 
-. Eine zusätzliche VPC in derselben Region implementieren und dann Amazon FSX für NetApp ONTAP in die neue VPC implementieren.
+. Implementierung einer zusätzlichen VPC in derselben Region und anschließende Implementierung von Amazon FSX ONTAP in der neuen VPC
 +
 Die Konfiguration einer SDDC-Gruppe in der VMware Cloud Konsole ermöglicht die erforderlichen Netzwerkkonfigurationsoptionen für die Verbindung zur neuen VPC, bei der FSX implementiert wird. Überprüfen Sie in Schritt 3, ob „VMware Transit Connect für Ihre Gruppe konfigurieren“ Gebühren pro Anlage und Datenübertragung anfällt und wählen Sie „Gruppe erstellen“. Dieser Vorgang kann einige Minuten dauern.
 
@@ -134,7 +134,7 @@ image:aws-connect-fsx-10.png["Die Abbildung zeigt den Input/Output-Dialog oder d
 
 . Klicken Sie auf der Registerkarte External VPC auf das Bearbeiten-Symbol in der Spalte Routen und fügen Sie die folgenden erforderlichen Routen hinzu:
 +
-** Eine Route für den unverankerten IP-Bereich für Amazon FSX für NetApp ONTAP link:https://docs.aws.amazon.com/fsx/latest/ONTAPGuide/supported-fsx-clients.html["Fließende IPs"].
+** Eine Route für den fließenden IP-Bereich für Amazon FSX ONTAP link:https://docs.aws.amazon.com/fsx/latest/ONTAPGuide/supported-fsx-clients.html["Fließende IPs"].
 ** Eine Route für den unverankerten IP-Bereich für Cloud Volumes ONTAP (falls zutreffend).
 ** Eine Route für den neu erstellten externen VPC-Adressraum.
 +

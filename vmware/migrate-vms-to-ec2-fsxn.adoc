@@ -2,9 +2,9 @@
 sidebar: sidebar 
 permalink: vmware/migrate-vms-to-ec2-fsxn.html 
 keywords: netapp, vmware, amazon, ec2, fsxn, migration, iscsi, 
-summary: 'Dieser technische Bericht erläutert, wie lokale VMware vSphere VMs zu einer Amazon EC2 Instanz mit Datendisks migriert werden, die auf FSX für ONTAP iSCSI LUNs platziert werden. Dazu wird die MigrateOps „Data-Mobility-as-Code“-Funktion von Cirrus Migrate Cloud (CMC) verwendet.' 
+summary: 'Dieser technische Bericht erläutert, wie lokale VMware vSphere VMs zu einer Amazon EC2 Instanz migriert werden, wobei Festplatten auf FSX ONTAP iSCSI LUNs mithilfe der MigrateOps „Data-Mobility-as-Code“-Funktion der Cirrus Migrate Cloud (CMC) platziert werden.' 
 ---
-= Migrieren Sie VMs mithilfe von FSxN zu Amazon EC2: Überblick
+= Migration von VMs zu Amazon EC2 mit Amaxon FSX for ONTAP: Überblick
 :hardbreaks:
 :allow-uri-read: 
 :nofooter: 
@@ -14,7 +14,7 @@ summary: 'Dieser technische Bericht erläutert, wie lokale VMware vSphere VMs zu
 
 
 [role="lead"]
-Unternehmen beschleunigen ihre Migrationen zu Cloud-Computing-Lösungen auf AWS und profitieren von Services wie Amazon Elastic Compute Cloud (Amazon EC2) Instanzen und Amazon FSX for NetApp ONTAP (FSX for ONTAP), um ihre IT-Infrastruktur zu modernisieren, Kosteneinsparungen zu erzielen und die betriebliche Effizienz zu verbessern. Diese Angebote von AWS ermöglichen Migrationen, die die Gesamtbetriebskosten (TCO) durch nutzungsbasierte Preismodelle und Storage-Funktionen der Enterprise-Klasse optimieren. Dadurch erhalten Unternehmen die Flexibilität und Skalierbarkeit, die sie an neue globale Geschäftsanforderungen anpassen können.
+Unternehmen beschleunigen ihre Migrationen zu Cloud-Computing-Lösungen auf AWS und profitieren von Services wie Amazon Elastic Compute Cloud (Amazon EC2) Instanzen und Amazon FSX for NetApp ONTAP (FSX ONTAP), um ihre IT-Infrastruktur zu modernisieren, Kosteneinsparungen zu erzielen und die betriebliche Effizienz zu verbessern. Diese Angebote von AWS ermöglichen Migrationen, die die Gesamtbetriebskosten (TCO) durch nutzungsbasierte Preismodelle und Storage-Funktionen der Enterprise-Klasse optimieren. Dadurch erhalten Unternehmen die Flexibilität und Skalierbarkeit, die sie an neue globale Geschäftsanforderungen anpassen können.
 
 
 
@@ -24,9 +24,9 @@ Für Unternehmen, die tief in VMware vSphere investiert haben, ist die Migration
 
 Im Zusammenhang mit dem Wechsel zu AWS versuchen diese Unternehmen, die Flexibilität und Kostenvorteile der Cloud zu nutzen und gleichzeitig vertraute Funktionen zu erhalten, insbesondere bei Storage. Der lückenlose Betrieb bekannter Storage-Protokolle, insbesondere iSCSI, Prozesse, Tools und das Know-how ist für die Migration von Workloads und die Einrichtung von Disaster Recovery-Lösungen von entscheidender Bedeutung.
 
-Mit dem AWS Managed Storage Service FSX for ONTAP werden die Funktionen von Enterprise-Storage weiterhin genutzt, sodass Unternehmen auch bei On-Premises-Storage von Drittanbietern das Potenzial von AWS voll ausschöpfen können. Dies minimiert Unterbrechungen und maximiert zukünftige Investitionen.
+Mit dem AWS Managed Storage Service FSX ONTAP können Unternehmen die Vorteile von AWS ausschöpfen, während sie gleichzeitig die Funktionen für Enterprise-Storage beibehalten, die auch bei On-Premises-Storage von Drittanbietern gegeben sind. So minimieren sie Unterbrechungen und maximieren ihre zukünftigen Investitionen.
 
-Dieser technische Bericht erläutert, wie lokale VMware vSphere VMs zu einer Amazon EC2 Instanz mit Datendisks migriert werden, die auf FSX für ONTAP iSCSI-LUNs platziert werden. Verwenden Sie dazu die MigrateOps „Data-Mobility-as-Code“-Funktion der Cirrus Migrate Cloud (CMC).
+Dieser technische Bericht erläutert, wie lokale VMware vSphere VMs zu einer Amazon EC2 Instanz migriert werden, wobei Festplatten auf FSX ONTAP iSCSI LUNs mithilfe der MigrateOps „Data-Mobility-as-Code“-Funktion der Cirrus Migrate Cloud (CMC) platziert werden.
 
 
 
@@ -35,8 +35,8 @@ Dieser technische Bericht erläutert, wie lokale VMware vSphere VMs zu einer Ama
 VMware Kunden suchen derzeit nach Lösungen für eine Reihe von Herausforderungen. Diese Unternehmen möchten:
 
 . Nutzen Sie Enterprise-Storage-Funktionen wie Thin Provisioning, Storage-Effizienztechnologien, Klone ohne zusätzlichen Platzbedarf, integrierte Backups, Replizierung auf Block-Ebene, und Tiering. Dies hilft bei der Optimierung der Migration und der zukunftssicheren Implementierung auf AWS ab Tag 1.
-. Optimieren Sie Storage-Implementierungen derzeit auf AWS, die Amazon EC2 Instanzen verwenden, indem Sie FSX for ONTAP und die damit bereitgestellten Kostenoptimierungsfunktionen integrieren.
-. Reduzieren Sie die Gesamtbetriebskosten (TCO) bei der Verwendung von Amazon EC2 Instanzen mit Block-Storage-Lösungen, indem Sie Amazon EC2 Instanzen entsprechend dimensionieren, um die erforderlichen IOPS und Durchsatzparameter zu erfüllen. Bei Block-Storage werden die Bandbreiten- und I/O-Raten von Amazon EC2 Festplattenoperationen Obergrenze erreicht. File-Storage mit FSX für ONTAP nutzt Netzwerkbandbreite. Anders ausgedrückt: FSX für ONTAP besitzt keine I/O-Limits auf VM-Ebene.
+. Optimieren Sie Storage-Implementierungen derzeit auf AWS, die Amazon EC2 Instanzen verwenden, indem Sie FSX ONTAP und die damit bereitgestellten Kostenoptimierungsfunktionen integrieren.
+. Reduzieren Sie die Gesamtbetriebskosten (TCO) bei der Verwendung von Amazon EC2 Instanzen mit Block-Storage-Lösungen, indem Sie Amazon EC2 Instanzen entsprechend dimensionieren, um die erforderlichen IOPS und Durchsatzparameter zu erfüllen. Bei Block-Storage werden die Bandbreiten- und I/O-Raten von Amazon EC2 Festplattenoperationen Obergrenze erreicht. File-Storage mit FSX ONTAP nutzt Netzwerkbandbreite. Mit anderen Worten: FSX ONTAP besitzt keine I/O-Limits auf VM-Ebene.
 
 
 
@@ -45,21 +45,19 @@ VMware Kunden suchen derzeit nach Lösungen für eine Reihe von Herausforderunge
 
 
 
-=== FSX für ONTAP-Konzepte
+=== FSX ONTAP-Konzepte
 
-Amazon FSX for NetApp ONTAP ist ein vollständig gemanagter AWS-Storage-Service, der NetApp® ONTAP®-Dateisysteme mit allen bekannten ONTAP-Datenmanagementfunktionen, Performance und APIs auf AWS bereitstellt. Der hochperformante Storage unterstützt mehrere Protokolle (NFS, SMB, iSCSI) und bietet damit einen einzelnen Service für Workloads mit EC2 Instanzen von Windows, Linux und macOS.
+Amazon FSX ONTAP ist ein vollständig gemanagter AWS-Storage-Service, der NetApp® ONTAP®-Dateisysteme mit allen bekannten ONTAP-Datenmanagementfunktionen, Performance und APIs auf AWS bereitstellt. Der hochperformante Storage unterstützt mehrere Protokolle (NFS, SMB, iSCSI) und bietet damit einen einzelnen Service für Workloads mit EC2 Instanzen von Windows, Linux und macOS.
 
-Da FSX for ONTAP ein ONTAP-Dateisystem ist, bietet es eine Vielzahl vertrauter NetApp-Funktionen und -Dienste, einschließlich SnapMirror® Datenreplizierungstechnologie, Thin Clones und NetApp Snapshot™ Kopien. FSX für ONTAP nutzt eine kostengünstige Kapazitäts-Tier über Daten-Tiering, ist elastisch und kann praktisch unbegrenzt skalieren. Dank der charakteristischen Storage-Effizienztechnologie von NetApp lassen sich die Storage-Kosten auf AWS noch weiter senken. Weitere Informationen finden Sie unter link:https://docs.aws.amazon.com/fsx/latest/ONTAPGuide/getting-started.html["Erste Schritte mit Amazon FSX for ONTAP"].
+Da FSX ONTAP ein ONTAP-Dateisystem ist, bietet es eine Vielzahl vertrauter NetApp-Funktionen und -Dienste, einschließlich SnapMirror®-Datenreplikationstechnologie, Thin Clones und NetApp Snapshot™ Kopien. FSX ONTAP nutzt eine kostengünstige Kapazitäts-Tier über Daten-Tiering, ist flexibel und kann eine nahezu unbegrenzte Skalierbarkeit erreichen. Dank der charakteristischen Storage-Effizienztechnologie von NetApp lassen sich die Storage-Kosten auf AWS noch weiter senken. Weitere Informationen finden Sie unter link:https://docs.aws.amazon.com/fsx/latest/ONTAPGuide/getting-started.html["Erste Schritte mit Amazon FSX ONTAP"].
 
 
 
 ==== File-System
 
-Die zentrale Ressource von FSX für ONTAP ist sein Filesystem, das auf SSD-Storage (Solid-State Drive) basiert. Bei der Bereitstellung von FSX für ONTAP-Filesystem gibt der Benutzer den gewünschten Durchsatz und die gewünschte Storage-Kapazität ein und wählt eine Amazon VPC aus, auf der sich das Filesystem befinden soll.
+Die zentrale Ressource von FSX ONTAP ist sein Filesystem, das auf SSD-Storage (Solid-State Drive) basiert. Bei der Bereitstellung eines FSX ONTAP-Dateisystems gibt der Benutzer den gewünschten Durchsatz und die gewünschte Speicherkapazität ein und wählt eine Amazon VPC aus, auf der sich das Filesystem befinden soll.
 
-Die Anwender haben außerdem die Wahl zwischen zwei integrierten Hochverfügbarkeitsimplementierungsmodellen für das Filesystem: Multi-Availability Zone (AZ) oder Single-AZ-Implementierung. Jede dieser Optionen bietet ein eigenes Maß an Langlebigkeit und Verfügbarkeit, das Kunden je nach Business Continuity-Anforderungen ihres Anwendungsfalls auswählen können. Implementierungen mit mehreren Verfügbarkeitszonen bestehen aus Dual-Nodes, die nahtlos über zwei Verfügbarkeitszonen repliziert werden. Mit der kostenoptimierten Single-AZ-Implementierungsoption wird das Filesystem in zwei Nodes strukturiert, die auf zwei separate Fehlerdomänen aufgeteilt sind, die sich beide in einer einzigen Verfügbarkeitszone befinden.
-Storage Virtual Machines
-Auf die Daten im Filesystem FSX für ONTAP wird über eine logische Storage-Partition zugegriffen, die als Storage Virtual Machine (SVM) bezeichnet wird. Eine SVM ist tatsächlich ein eigener Fileserver, der mit eigenen Daten- und Admin-Zugriffspunkten ausgestattet ist. Beim Zugriff auf iSCSI-LUNs in einem FSX für ONTAP Filesystem wird die Amazon EC2 Instanz mithilfe der iSCSI-Endpunkt-IP-Adresse der SVM direkt mit der SVM verbunden.
+Die Anwender haben außerdem die Wahl zwischen zwei integrierten Hochverfügbarkeitsimplementierungsmodellen für das Filesystem: Multi-Availability Zone (AZ) oder Single-AZ-Implementierung. Jede dieser Optionen bietet ein eigenes Maß an Langlebigkeit und Verfügbarkeit, das Kunden je nach Business Continuity-Anforderungen ihres Anwendungsfalls auswählen können. Implementierungen mit mehreren Verfügbarkeitszonen bestehen aus Dual-Nodes, die nahtlos über zwei Verfügbarkeitszonen repliziert werden. Mit der kostenoptimierten Single-AZ-Implementierungsoption wird das Filesystem in zwei Nodes strukturiert, die auf zwei separate Fehlerdomänen aufgeteilt sind, die sich beide in einer einzigen Verfügbarkeitszone befinden. Der Zugriff auf Storage Virtual Machines auf die Daten im FSX ONTAP Filesystem erfolgt über eine logische Storage-Partition, die als Storage Virtual Machine (SVM) bezeichnet wird. Eine SVM ist tatsächlich ein eigener Fileserver, der mit eigenen Daten- und Admin-Zugriffspunkten ausgestattet ist. Beim Zugriff auf iSCSI-LUNs auf einem FSX ONTAP-Filesystem wird über eine direkte Schnittstelle zwischen der Amazon EC2 Instanz und der SVM unter Verwendung der iSCSI-Endpunkt-IP-Adresse kommuniziert.
 
 Es ist zwar möglich, eine einzelne SVM in einem Cluster beizubehalten, aber die Option, mehrere SVMs in einem Cluster auszuführen, weist zahlreiche Nutzungen und Vorteile auf. Kunden können die optimale Anzahl an SVMs zu konfigurieren, indem sie ihre geschäftlichen Anforderungen einschließlich der Anforderungen zur Workload-Isolierung berücksichtigen.
 
@@ -67,7 +65,7 @@ Es ist zwar möglich, eine einzelne SVM in einem Cluster beizubehalten, aber die
 
 ==== Volumes
 
-Die Daten in einem FSX für ONTAP SVM werden in Strukturen, sogenannten Volumes, gespeichert und organisiert, die als virtuelle Container fungieren. Ein einzelnes Volume kann mit einer oder mehreren LUNs konfiguriert werden. Die in den einzelnen Volumes gespeicherten Daten belegen die Storage-Kapazität im File-System. Da FSX for ONTAP jedoch über Thin Provisioning das Volume bereitstellt, nimmt das Volume nur Storage-Kapazität für die zu speichernde Datenmenge in Anspruch.
+Die Daten innerhalb einer FSX ONTAP SVM werden in Strukturen, sogenannten Volumes, gespeichert und organisiert, die als virtuelle Container fungieren. Ein einzelnes Volume kann mit einer oder mehreren LUNs konfiguriert werden. Die in den einzelnen Volumes gespeicherten Daten belegen die Storage-Kapazität im File-System. Da FSX ONTAP jedoch das Volume über Thin Provisioning bereitstellt, nimmt das Volume nur Storage-Kapazität für die zu speichernde Datenmenge in Anspruch.
 
 
 
@@ -88,15 +86,15 @@ MigrateOps verfolgt einen Ansatz, bei dem die Automatisierung an erster Stelle s
 
 Da die oben genannten Aufgaben vollständig automatisiert sind, sind alle mühsamen Schritte bei der Vorbereitung der lokalen Quell-VM (wie das Hinzufügen von AWS-Agenten und -Tools), der Erstellung von Ziel-FSX-LUNs, der Einrichtung von iSCSI und Multipath/MPIO in der AWS Ziel-Instanz, und alle Aufgaben des Stopps/Startens von Anwendungsdiensten entfallen, indem einfach Parameter in einer YAML-Datei angegeben werden.
 
-FSX for ONTAP wird verwendet, um die Daten-LUNs und die Größenanpassung des Amazon EC2 Instanztyps bereitzustellen und gleichzeitig alle Funktionen zu bieten, die Unternehmen zuvor in ihren On-Premises-Umgebungen hatten. Die MigrateOps-Funktion des CMC wird verwendet, um alle erforderlichen Schritte zu automatisieren, einschließlich der Bereitstellung von zugeordneten iSCSI-LUNs, wodurch dies in einen vorhersagbaren, deklarativen Vorgang umgewandelt wird.
+FSX ONTAP wird verwendet, um die Daten-LUNs und die Größenanpassung des Amazon EC2 Instanztyps bereitzustellen und gleichzeitig alle Funktionen zu bieten, die Unternehmen zuvor in ihren On-Premises-Umgebungen hatten. Die MigrateOps-Funktion des CMC wird verwendet, um alle erforderlichen Schritte zu automatisieren, einschließlich der Bereitstellung von zugeordneten iSCSI-LUNs, wodurch dies in einen vorhersagbaren, deklarativen Vorgang umgewandelt wird.
 
-*Hinweis*: Der CMC benötigt einen sehr dünnen Agenten, der auf den virtuellen Quell- und Zielmaschineninstanzen installiert werden muss, um eine sichere Datenübertragung vom Speicher der Speicherquelle zu FSX für ONTAP zu gewährleisten.
+*Hinweis*: Der CMC benötigt einen sehr dünnen Agenten, der auf den virtuellen Quell- und Zielmaschineninstanzen installiert werden muss, um eine sichere Datenübertragung vom Speicher der Speicherquelle zu FSX ONTAP zu gewährleisten.
 
 
 
-== Vorteile der Verwendung von Amazon FSX for NetApp ONTAP mit EC2 Instanzen
+== Vorteile der Verwendung von Amazon FSX ONTAP mit EC2 Instanzen
 
-FSX for ONTAP Storage für Amazon EC2 Instanzen bietet mehrere Vorteile:
+FSX ONTAP Storage für Amazon EC2 Instanzen bietet mehrere Vorteile:
 
 * Hoher Durchsatz und Storage mit niedriger Latenz, die eine konsistent hohe Performance für anspruchsvollste Workloads bieten
 * Intelligentes NVMe-Caching verbessert die Performance
@@ -111,9 +109,8 @@ FSX for ONTAP Storage für Amazon EC2 Instanzen bietet mehrere Vorteile:
 
 Die Implementierung von Amazon EC2 Instanzen mit FSX ONTAP als iSCSI-basierte Storage-Ebene bietet hochperformante, geschäftskritische Datenmanagement-Funktionen und kostengünstige Storage-Effizienzfunktionen, die Ihre Implementierung auf AWS transformieren können.
 
-Durch einen Flash Cache, mehrere iSCSI-Sitzungen und die Nutzung einer Arbeitsgröße von 5 % ist es für FSX for ONTAP möglich, IOPS von ~350.000 zu liefern, sodass selbst die intensivsten Workloads mit einer Performance-Stufe erfüllt werden können.
+Durch einen Flash Cache, mehrere iSCSI-Sitzungen und die Nutzung einer Arbeitsmenge von 5 % ist es möglich, dass FSX ONTAP IOPS von ~350.000 bietet, sodass Performance-Level verfügbar sind, um selbst die intensivsten Workloads zu erfüllen.
 
-Da FSX for ONTAP nur Limits für Netzwerkbandbreite und nicht für Block-Storage-Bandbreiten angewendet werden, können Benutzer kleine Amazon EC2 Instanztypen nutzen und gleichzeitig dieselben Performance-Raten wie bei wesentlich größeren Instanztypen erzielen. Die Verwendung solcher kleinen Instanztypen sorgt zudem für niedrige Compute-Kosten und optimiert so die TCO.
+Da gegen FSX ONTAP nur Limits für die Netzwerkbandbreite und nicht für Block-Storage angewendet werden, können Benutzer kleine Amazon EC2 Instanztypen nutzen und gleichzeitig dieselben Performance-Raten wie bei wesentlich größeren Instanztypen erzielen. Die Verwendung solcher kleinen Instanztypen sorgt zudem für niedrige Compute-Kosten und optimiert so die TCO.
 
-Ein weiterer Vorteil ist, dass FSX for ONTAP mehrere Protokolle unterstützen kann. Damit lässt sich ein einziger AWS-Storage-Service für eine Vielzahl vorhandener Daten- und Fileservices-Anforderungen standardisieren.
-Für Unternehmen, die tief in VMware vSphere investiert haben, ist die Migration zu AWS angesichts der aktuellen Marktbedingungen eine kostengünstige Option, die einzigartige Chance bietet.
+Ein weiterer Vorteil ist, dass FSX ONTAP mehrere Protokolle unterstützen kann. Damit lässt sich ein einziger AWS Storage-Service für eine Vielzahl vorhandener Daten- und Fileservices-Anforderungen standardisieren. Für Unternehmen, die tief in VMware vSphere investiert haben, ist die Migration zu AWS angesichts der aktuellen Marktbedingungen eine kostengünstige Option, die einzigartige Chance bietet.

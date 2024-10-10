@@ -1,7 +1,7 @@
 ---
 sidebar: sidebar 
 permalink: ai/ddlnexus_expose_netapp_vols.html 
-keywords: NetApp AI, AI, Artificial Intelligence, ML, Machine Learning, NVIDIA, Hybrid, Hybrid Cloud, Hybrid Multicloud, Cloud, AWS, Amazon, Amazon Web Services, FSx for NetApp ONTAP, FSx, NetApp ONTAP, FlexCache, SnapMirror, BlueXP 
+keywords: NetApp AI, AI, Artificial Intelligence, ML, Machine Learning, NVIDIA, Hybrid, Hybrid Cloud, Hybrid Multicloud, Cloud, AWS, Amazon, Amazon Web Services, FSx ONTAP, FSx, NetApp ONTAP, FlexCache, SnapMirror, BlueXP 
 summary: Hybrid-Multi-Cloud-MLOps mit Domino Data Lab und NetApp – Expose Existing NetApp Volumes to Domino 
 ---
 = Offenlegung vorhandener NetApp Volumes für Domino
@@ -39,7 +39,7 @@ Wenn Ihr vorhandenes NetApp ONTAP-NFS-Volume nicht durch Trident bereitgestellt 
 === Erstellen Sie PV und PVC in Kubernetes
 
 
-NOTE: Erstellen Sie für lokale Volumes das PV und die PVC in Ihrem lokalen Kubernetes-Cluster. Erstellen Sie für Amazon FSX for NetApp ONTAP Volumes das PV und die PVC in Amazon EKS.
+NOTE: Erstellen Sie für lokale Volumes das PV und die PVC in Ihrem lokalen Kubernetes-Cluster. Erstellen Sie für Amazon FSX ONTAP Volumes das PV und die PVC in Amazon EKS.
 
 Zuerst müssen Sie ein Persistent Volume (PV) und eine Persistent Volume Claim (PVC) in Ihrem Kubernetes-Cluster erstellen. Um das PV und die PVC zu erstellen, verwenden Sie die link:https://docs.dominodatalab.com/en/latest/admin_guide/4cdae9/set-up-kubernetes-pv-and-pvc/#_nfs_pvpvc_example["BEISPIEL FÜR NFS PV/PVC"] Aus dem Domino Admin Guide und aktualisieren Sie die Werte, um Ihre Umgebung zu reflektieren. Stellen Sie sicher, dass Sie die richtigen Werte für das angeben `namespace`, `nfs.path`, und `nfs.server` Felder. Darüber hinaus empfehlen wir, Ihren PV- und PVC-eindeutigen Namen anzugeben, die die Art der Daten darstellen, die auf dem entsprechenden ONTAP-NFS-Volume gespeichert sind. Wenn das Volumen beispielsweise Bilder von Herstellungsfehlern enthält, können Sie das PV nennen, `pv-mfg-defect-images`, Und die PVC, `pvc-mfg-defect-images`.
 

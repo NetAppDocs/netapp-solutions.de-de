@@ -24,11 +24,11 @@ Diese Lösung bietet einen Überblick und Details zur Implementierung und zum Sc
 
 ASM (Automatic Storage Management) ist ein beliebter Oracle Storage Volume Manager, der in vielen Oracle-Installationen eingesetzt wird. Es ist außerdem die von Oracle empfohlene Storage-Managementlösung. Sie stellt eine Alternative zu herkömmlichen Volume Managern und Filesystemen dar. Seit Oracle Version 11g ist ASM nicht mehr eine Datenbank, sondern eine Grid-Infrastruktur. Um Oracle ASM für das Storage-Management ohne RAC zu nutzen, müssen Sie daher die Oracle Grid-Infrastruktur auf einem eigenständigen Server installieren, der auch als Oracle Restart bezeichnet wird. Dies führt zweifellos zu einer größeren Komplexität bei der Implementierung von Oracle-Datenbanken. Wie der Name jedoch andeutet, werden ausgefallene Oracle-Dienste, wenn Oracle im Neustart-Modus bereitgestellt wird, automatisch von der Grid-Infrastruktur oder nach einem Host-Neustart ohne Benutzereingriff neu gestartet, was ein gewisses Maß an Hochverfügbarkeit oder HA-Funktionalität bietet.
 
-In dieser Dokumentation zeigen wir, wie eine Oracle Datenbank mit dem iSCSI-Protokoll und Oracle ASM in einer Amazon FSX für ONTAP Storage-Umgebung mit EC2 Computing-Instanzen implementiert wird. Wir zeigen Ihnen auch, wie Sie den NetApp SnapCenter-Service über die NetApp BlueXP Konsole nutzen können, um Ihre Oracle Datenbank für Entwicklung/Tests zu sichern, wiederherzustellen und zu klonen. Andere Anwendungsfälle für den Storage-effizienten Datenbankbetrieb in der AWS Public Cloud zeigen wir Ihnen auch, wie.
+In dieser Dokumentation zeigen wir, wie eine Oracle Datenbank mit dem iSCSI-Protokoll und Oracle ASM in einer Amazon FSX ONTAP Storage-Umgebung mit EC2 Computing-Instanzen implementiert wird. Wir zeigen Ihnen auch, wie Sie den NetApp SnapCenter-Service über die NetApp BlueXP Konsole nutzen können, um Ihre Oracle Datenbank für Entwicklung/Tests zu sichern, wiederherzustellen und zu klonen. Andere Anwendungsfälle für den Storage-effizienten Datenbankbetrieb in der AWS Public Cloud zeigen wir Ihnen auch, wie.
 
 Diese Lösung eignet sich für folgende Anwendungsfälle:
 
-* Oracle Database-Implementierung in Amazon FSX for ONTAP Storage und EC2-Computing-Instanzen mit iSCSI/ASM
+* Oracle Database-Implementierung in Amazon FSX ONTAP Storage und EC2 Computing-Instanzen mit iSCSI/ASM
 * Testen und Validieren eines Oracle-Workloads in der Public AWS Cloud mit iSCSI/ASM
 * Testen und Validieren der in AWS bereitgestellten Funktionen zum Neustart von Oracle-Datenbanken
 
@@ -97,8 +97,8 @@ image:aws_ora_fsx_ec2_iscsi_asm_architecture.png["Dieses Bild zeigt ein detailli
 
 * *EC2 Compute-Instanzen.* in diesen Tests und Validierungen haben wir einen Instanztyp AWS EC2 t2.xlarge für die Compute-Instanz der Oracle-Datenbank verwendet. NetApp empfiehlt, in der Produktionsumgebung eine EC2-Instanz vom Typ M5 als Computing-Instanz für Oracle zu verwenden, da sie für Datenbank-Workloads optimiert ist. Sie müssen die Größe der EC2-Instanz entsprechend der Anzahl der vCPUs und der Menge des RAM anpassen, basierend auf den tatsächlichen Workload-Anforderungen.
 * *FSX Storage HA Cluster Single- oder Multi-Zone-Implementierung.* bei diesen Tests und Validierungen haben wir einen FSX HA-Cluster in einer einzelnen AWS Verfügbarkeitszone implementiert. Für die Implementierung in der Produktion empfiehlt NetApp die Implementierung eines FSX HA-Paars in zwei verschiedenen Verfügbarkeitszonen. Ein FSX HA-Cluster wird in einem HA-Paar bereitgestellt, das in einem Paar aktiv/Passiv-Filesysteme gespiegelt wird, um Redundanz auf Storage-Ebene bereitzustellen. Die Implementierung mit mehreren Zonen verbessert die Hochverfügbarkeit bei einem Ausfall in einer einzelnen AWS Zone noch weiter.
-* *FSX Storage-Cluster-Sizing.* ein Amazon FSX for ONTAP Storage-Dateisystem bietet bis zu 160,000 RAW SSD IOPS, einen Durchsatz von bis zu 4 Gbit/s und eine maximale Kapazität von 192 tib. Sie können das Cluster jedoch in Bezug auf die bereitgestellten IOPS, den Durchsatz und die Storage-Grenze (mindestens 1,024 gib) anpassen, basierend auf Ihren tatsächlichen Anforderungen zum Zeitpunkt der Implementierung. Die Kapazität lässt sich spontan dynamisch anpassen, ohne dass die Applikationsverfügbarkeit beeinträchtigt wird.
-* *Oracle Daten- und Protokolllayout.* in unseren Tests und Validierungen haben wir jeweils zwei ASM-Datenträgergruppen für Daten und Logs eingesetzt. Innerhalb der +DATA asm-Festplattengruppe haben wir vier LUNs in einem Daten-Volume bereitgestellt. Innerhalb der +LOGS asm-Datenträgergruppe haben wir zwei LUNs in einem logs Volumen bereitgestellt. Im Allgemeinen bieten mehrere in einem Amazon FSX für ONTAP Volume bereitgestellte LUNs eine bessere Performance.
+* *Größe des FSX Storage-Clusters.* Ein Amazon FSX ONTAP Storage-Filesystem bietet bis zu 160,000 Brutto-SSD-IOPS, einen Durchsatz von bis zu 4 GB/s und eine maximale Kapazität von 192 tib. Sie können das Cluster jedoch in Bezug auf die bereitgestellten IOPS, den Durchsatz und die Storage-Grenze (mindestens 1,024 gib) anpassen, basierend auf Ihren tatsächlichen Anforderungen zum Zeitpunkt der Implementierung. Die Kapazität lässt sich spontan dynamisch anpassen, ohne dass die Applikationsverfügbarkeit beeinträchtigt wird.
+* *Oracle Daten- und Protokolllayout.* In unseren Tests und Validierungen wurden zwei ASM-Festplattengruppen für Daten und Logs eingesetzt. Innerhalb der +DATA asm-Festplattengruppe haben wir vier LUNs in einem Daten-Volume bereitgestellt. Innerhalb der +LOGS asm-Datenträgergruppe haben wir zwei LUNs in einem logs Volumen bereitgestellt. Im Allgemeinen bieten mehrere LUNs in einem Amazon FSX ONTAP-Volume eine bessere Performance.
 * *ISCSI Konfiguration.* der EC2 Instance Datenbank Server verbindet sich mit FSX Speicher mit dem iSCSI Protokoll. EC2-Instanzen werden normalerweise mit einer einzelnen Netzwerkschnittstelle oder ENI implementiert. Die einzelne NIC-Schnittstelle überträgt sowohl den iSCSI- als auch den Anwendungsdatenverkehr. Es ist wichtig, die Spitzenanforderungen für den I/O-Durchsatz der Oracle-Datenbank abzuschätzen, indem der Oracle AWR-Bericht sorgfältig analysiert wird, um eine geeignete EC2-Compute-Instanz zu wählen, die sowohl die Anforderungen an den Anwendungs- als auch den iSCSI-Datendurchsatz erfüllt. NetApp empfiehlt außerdem, beiden FSX iSCSI-Endpunkten vier iSCSI-Verbindungen mit einer ordnungsgemäß konfigurierten Multipath-Konfiguration zuzuweisen.
 * *Oracle ASM-Redundanzebene, die für jede von Ihnen erstellte Oracle ASM-Laufwerksgruppe verwendet wird.* Da FSX den Speicher bereits auf der FSX-Clusterebene spiegelt, sollten Sie External Redundancy verwenden, was bedeutet, dass die Option Oracle ASM nicht erlaubt, den Inhalt der Laufwerksgruppe zu spiegeln.
 * *Datenbank-Backup.* NetApp bietet eine SaaS-Version des SnapCenter Softwareservice zum Sichern, Wiederherstellen und Klonen von Datenbanken in der Cloud, die über die NetApp BlueXP Konsolen-UI verfügbar ist. NetApp empfiehlt die Implementierung eines solchen Service, um schnelle Snapshot Backups (unter einer Minute), schnelle Datenbank-Restores (wenige Minuten) und Datenbankklone zu erreichen.
@@ -120,7 +120,7 @@ Die Bereitstellung erfordert die folgenden Voraussetzungen.
 
 . Es wurde ein AWS Konto eingerichtet, und die erforderlichen VPC und Netzwerksegmente wurden in Ihrem AWS Konto erstellt.
 . Über die AWS EC2-Konsole müssen Sie zwei EC2 Linux-Instanzen implementieren, eine als primärer Oracle DB Server und einen optionalen alternativen Clone-Ziel-DB-Server. Im Architekturdiagramm im vorherigen Abschnitt finden Sie weitere Details zum Umgebungs-Setup. Sehen Sie sich auch die an link:https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/concepts.html["Benutzerhandbuch für Linux-Instanzen"^] Finden Sie weitere Informationen.
-. Über die AWS EC2-Konsole implementieren Sie Amazon FSX for ONTAP Storage HA-Cluster, um die Oracle Database Volumes zu hosten. Wenn Sie mit der Bereitstellung von FSX-Speicher nicht vertraut sind, lesen Sie die Dokumentation link:https://docs.aws.amazon.com/fsx/latest/ONTAPGuide/creating-file-systems.html["Erstellen von FSX für ONTAP-Dateisysteme"^] Schritt-für-Schritt-Anleitungen.
+. Über die AWS EC2-Konsole implementieren Sie Amazon FSX ONTAP Storage HA-Cluster, um die Oracle-Datenbank-Volumes zu hosten. Wenn Sie mit der Implementierung von FSX Storage nicht vertraut sind, finden Sie in der Dokumentation link:https://docs.aws.amazon.com/fsx/latest/ONTAPGuide/creating-file-systems.html["Erstellen von FSX ONTAP-Dateisystemen"^]eine Schritt-für-Schritt-Anleitung.
 . Die Schritte 2 und 3 können mit dem folgenden Terraform Automatisierungs-Toolkit durchgeführt werden, das eine EC2-Instanz mit dem Namen erstellt `ora_01` Und ein FSX Dateisystem mit dem Namen `fsx_01`. Überprüfen Sie die Anweisung sorgfältig, und ändern Sie die Variablen vor der Ausführung entsprechend Ihrer Umgebung.
 +
 ....
@@ -1055,7 +1055,7 @@ alter database open;
 ....
 
 
-Damit ist die Neustartbereitstellung von Oracle 19c Version 19.18 auf einer Amazon FSX for ONTAP- und EC2-Compute-Instanz abgeschlossen. Falls gewünscht, empfiehlt NetApp, die Oracle Steuerdatei und die Online-Protokolldateien in die +LOGS-Datenträgergruppe zu verschieben.
+Damit ist die Neustartbereitstellung von Oracle 19c Version 19.18 auf einer Amazon FSX ONTAP- und EC2-Compute-Instanz abgeschlossen. Falls gewünscht, empfiehlt NetApp, die Oracle Steuerdatei und die Online-Protokolldateien in die +LOGS-Datenträgergruppe zu verschieben.
 
 ====
 
@@ -1084,7 +1084,7 @@ link:https://docs.oracle.com/en/database/oracle/oracle-database/19/ladbi/install
 +
 link:https://docs.oracle.com/en/database/oracle/oracle-database/19/ladbi/installing-and-configuring-oracle-database-using-response-files.html#GUID-D53355E9-E901-4224-9A2A-B882070EDDF7["https://docs.oracle.com/en/database/oracle/oracle-database/19/ladbi/installing-and-configuring-oracle-database-using-response-files.html#GUID-D53355E9-E901-4224-9A2A-B882070EDDF7"^]
 
-* Amazon FSX für NetApp ONTAP
+* Amazon FSX ONTAP
 +
 link:https://aws.amazon.com/fsx/netapp-ontap/["https://aws.amazon.com/fsx/netapp-ontap/"^]
 

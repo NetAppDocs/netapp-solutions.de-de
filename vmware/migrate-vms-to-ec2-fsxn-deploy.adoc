@@ -2,9 +2,9 @@
 sidebar: sidebar 
 permalink: vmware/migrate-vms-to-ec2-fsxn-deploy.html 
 keywords: netapp, vmware, amazon, ec2, fsxn, migration, iscsi, deploy 
-summary: 'Dieser technische Bericht erläutert, wie lokale VMware vSphere VMs zu einer Amazon EC2 Instanz mit Datendisks migriert werden, die auf FSX für ONTAP iSCSI LUNs platziert werden. Dazu wird die MigrateOps „Data-Mobility-as-Code“-Funktion von Cirrus Migrate Cloud (CMC) verwendet.' 
+summary: 'Dieser technische Bericht erläutert, wie lokale VMware vSphere VMs zu einer Amazon EC2 Instanz migriert werden, wobei Festplatten auf FSX ONTAP iSCSI LUNs mithilfe der MigrateOps „Data-Mobility-as-Code“-Funktion der Cirrus Migrate Cloud (CMC) platziert werden.' 
 ---
-= Migrieren Sie VMs mithilfe des FSxN – Implementierungsleitfaden zu Amazon EC2
+= Migrieren Sie VMs zu Amazon EC2 mithilfe von Amazon FSX for ONTAP – Implementierungsleitfaden
 :hardbreaks:
 :allow-uri-read: 
 :nofooter: 
@@ -18,26 +18,26 @@ In diesem Artikel wird das Bereitstellungsverfahren für diese Migrationslösung
 
 
 
-== FSX für ONTAP- und Cirrus-Daten für Migrationsvorgänge konfigurieren
+== FSX ONTAP und Cirrus-Daten für Migrationsvorgänge konfigurieren
 
-Das https://docs.aws.amazon.com/fsx/latest/ONTAPGuide/getting-started-step1.html["Schrittweiser Implementierungsleitfaden"] Zeigt, wie FSX für ONTAP-Volume zu einer VPC hinzugefügt wird Da diese Schritte sequentiell sind, stellen Sie sicher, dass sie in der Reihenfolge abgedeckt sind.
+ https://docs.aws.amazon.com/fsx/latest/ONTAPGuide/getting-started-step1.html["Schrittweiser Implementierungsleitfaden"]So fügen Sie ein FSX ONTAP-Volume zu einer VPC hinzu. Da diese Schritte sequentiell sind, stellen Sie sicher, dass sie in der Reihenfolge abgedeckt sind.
 
 Für die Zwecke dieser Demonstration ist „DRaaSDemo“ der Name des erstellten Dateisystems.
 
 image:migrate-ec2-fsxn-image02.png["Abbildung der Benutzeroberfläche des Demo-Dateisystems"]
 
-Sobald die AWS VPC konfiguriert und FSX for ONTAP bereitgestellt wurde, basierend auf Ihren Performance-Anforderungen, loggen Sie sich bei ein link:http://cloud.cirrusdata.com/["cloud.cirrusdata.com"] Und link:https://customer.cirrusdata.com/cdc/kb/articles/get-started-with-cirrus-data-cloud-4eDqjIxQpg["Erstellen Sie ein neues Projekt"] Oder auf ein vorhandenes Projekt zugreifen.
+Sobald die AWS VPC konfiguriert ist und FSX ONTAP basierend auf Ihren Performance-Anforderungen bereitgestellt wird, melden Sie sich bei  link:https://customer.cirrusdata.com/cdc/kb/articles/get-started-with-cirrus-data-cloud-4eDqjIxQpg["Erstellen Sie ein neues Projekt"]einem vorhandenen Projekt an link:http://cloud.cirrusdata.com/["cloud.cirrusdata.com"]oder greifen Sie auf dieses zu.
 
 image:migrate-ec2-fsxn-image03.png["Bild der Benutzeroberfläche von Cirrus Data Projects"]
 
-Bevor Sie das Rezept für MigrationOps entwickeln, sollte AWS Cloud als Integration hinzugefügt werden. CMC bietet integrierte Integration mit FSX für ONTAP und AWS. Die Integration von FSX for ONTAP bietet folgende automatisierte Funktionen:
+Bevor Sie das Rezept für MigrationOps entwickeln, sollte AWS Cloud als Integration hinzugefügt werden. CMC bietet integrierte Integration mit FSX ONTAP und AWS. Die Integration für FSX ONTAP bietet folgende automatisierte Funktionen:
 
-* Vorbereiten Sie Ihr FSX für ONTAP Dateisystem:*
+* Bereiten Sie Ihr FSX ONTAP Dateisystem vor:*
 
 * Erstellen Sie neue Volumes und LUNs, die den Quell-Volumes entsprechen
 
 
-*Hinweis*: Eine Zielfestplatte im FSX für ONTAP FS-Modell ist eine „LUN“, die auf einem „Volumen“ erstellt wird, das genug Kapazität hat, um die LUN zu enthalten plus eine angemessene Menge an Overhead für die Erleichterung von Snapshots und Metadaten. Die CMC-Automatisierung kümmert sich um all diese Details, um das entsprechende Volume und die LUN mit optionalen benutzerdefinierten Parametern zu erstellen.
+*Hinweis*: Eine Zielfestplatte im FSX ONTAP FS-Modell ist eine „LUN“, die auf einem „Volumen“ erstellt wird, das genug Kapazität hat, um die LUN zu enthalten plus eine angemessene Menge an Overhead für die Erleichterung von Snapshots und Metadaten. Die CMC-Automatisierung kümmert sich um all diese Details, um das entsprechende Volume und die LUN mit optionalen benutzerdefinierten Parametern zu erstellen.
 
 * Erstellen Sie mit dem Host-Initiator-IQN Host-Entity (iGroups in FSX genannt)
 * Ordnen Sie neu erstellte Volumes über Zuordnungen den entsprechenden Host-Einheiten zu
@@ -52,12 +52,12 @@ Bevor Sie das Rezept für MigrationOps entwickeln, sollte AWS Cloud als Integrat
 * Erstellen und verwalten Sie iSCSI-Verbindungen, z. B. persistente/bevorzugte iSCSI-Ziele unter Windows.
 
 
-So konfigurieren Sie die CMC-Integration für FSX für ONTAP und AWS:
+So konfigurieren Sie die CMC-Integration für FSX ONTAP und AWS:
 
 . Melden Sie sich beim Cirrus Daten-Cloud-Portal an.
 . Öffnen Sie das Projekt, für das Sie die Integration aktivieren möchten.
 . Navigieren Sie zu Integrationen -> Goodies.
-. Blättern Sie zu FSX für NetApp ONTAP, und klicken Sie auf INTEGRATION HINZUFÜGEN.
+. Blättern Sie zu FSX ONTAP und klicken Sie auf INTEGRATION HINZUFÜGEN.
 +
 image:migrate-ec2-fsxn-image04.png["Abbildung der Benutzeroberfläche von Cirrus Data „Integration hinzufügen“"]
 
@@ -65,7 +65,7 @@ image:migrate-ec2-fsxn-image04.png["Abbildung der Benutzeroberfläche von Cirrus
 +
 image:migrate-ec2-fsxn-image05.png["Abbildung der Benutzeroberfläche von Cirrus Data „Integration hinzufügen“"]
 
-. Sobald die Integration erstellt wurde, wählen Sie während der Erstellung einer neuen Migrationssitzung die Option Zielvolumen automatisch zuweisen aus, um automatisch neue Volumes auf FSX für ONTAP zuzuweisen.
+. Sobald die Integration erstellt wurde, wählen Sie während der Erstellung einer neuen Migrationssitzung die Option Zielvolumen automatisch zuweisen aus, um automatisch neue Volumes auf FSX ONTAP zuzuweisen.
 +
 *Hinweis*: Neue LUNs werden mit der Größe des Quell-Volumes erstellt, es sei denn, für die Migration ist „in kleinere Volumes migrieren“ aktiviert.
 
@@ -80,7 +80,7 @@ image:migrate-ec2-fsxn-image05.png["Abbildung der Benutzeroberfläche von Cirrus
 image:migrate-ec2-fsxn-image06.png["Abbildung der Benutzeroberfläche von Cirrus Data „Integration hinzufügen“"]
 
 +
-*Hinweis*: Diese Integration wird bei der Migration von Virtual Machines vom lokalen Storage zu AWS zusammen mit der Integration von FSX for ONTAP verwendet.
+*Hinweis*: Diese Integration wird bei der Migration von Virtual Machines vom lokalen Storage zu AWS zusammen mit der FSX ONTAP-Integration verwendet.
 
 +
 *Hinweis*: Verwenden Sie Managementrelais, um mit Cirrus Data Cloud zu kommunizieren, wenn keine direkte ausgehende Verbindung für die zu migrierenden Produktionsinstanzen besteht.
@@ -104,7 +104,7 @@ VMware Gast-VMs in vCenter im lokalen Datacenter:
 
 image:migrate-ec2-fsxn-image07.png["Image der virtuellen VMware-Maschinen, die migriert werden"]
 
-Bei dieser Demonstration werden die Applikations-VMDKs von jeder VM auf ein automatisch bereitgestelltes und zugeordnetes iSCSI-Volume von FSX für ONTAP migriert. Die OS VMDK wird in diesem Fall zu einem Amazon EBS Volume migriert, da Amazon EC2 Instanzen diesen Amazon EBS nur als Boot-Disk unterstützen.
+Bei dieser Demonstration werden die Applikations-VMDKs von jeder VM auf ein automatisch bereitgestelltes und zugeordnetes iSCSI-Volume von FSX ONTAP migriert. Die OS VMDK wird in diesem Fall zu einem Amazon EBS Volume migriert, da Amazon EC2 Instanzen diesen Amazon EBS nur als Boot-Disk unterstützen.
 
 *Hinweis*: Der Skalierungsfaktor bei diesem Migrationsansatz ist die Netzwerkbandbreite und die Leitung, die On-Premises mit der AWS VPC verbindet. Da jede VM 1:1 Hostsitzungen konfiguriert hat, hängt die Gesamtmigrations-Performance von zwei Faktoren ab:
 
@@ -139,7 +139,7 @@ Die YAML liefert den Operationsnamen, Notizen (Beschreibung) zusammen mit dem Re
 ----
 operations:
     -   name: Win2016 SQL server to AWS
-        notes: Migrate OS to AWS with EBS and Data to FSx for ONTAP
+        notes: Migrate OS to AWS with EBS and Data to FSx ONTAP
         recipe: MIGRATEOPS_AWS_COMPUTE
         config:
             system_name: Win2016-123
@@ -163,7 +163,7 @@ operations:
                             netapp:
                                 qos_policy_name: ""
                 migration:
-                    session_description: Migrate OS to AWS with EBS and Data to FSx for ONTAP
+                    session_description: Migrate OS to AWS with EBS and Data to FSx ONTAP
                     qos_level: MODERATE
                 cutover:
                     stop_applications:
@@ -243,7 +243,7 @@ Sehen wir uns die migrierte Amazon EC2 Instanz an, auf der das Windows Server-Be
 . Der alte Speicher ist jetzt offline.
 
 
-*Hinweis*: Mit nur einem Klick, um den Datenmobilitätsvorgang als Code zu übermitteln, und einem Klick, um die Umstellung zu genehmigen, wurde die VM erfolgreich von lokalen VMware-Systemen auf eine Amazon EC2-Instanz mithilfe von FSX for ONTAP und seinen iSCSI-Funktionen migriert.
+*Hinweis*: Mit nur einem Klick, um den Datenmobilitätsvorgang als Code zu übermitteln, und einem Klick, um die Umstellung zu genehmigen, hat die VM erfolgreich von lokalen VMware-Systemen auf eine Amazon EC2-Instanz mithilfe von FSX ONTAP und seinen iSCSI-Funktionen migriert.
 
 *Hinweis*: Aufgrund der AWS API Beschränkung würden die konvertierten VMs als „Ubuntu“ angezeigt. Dies ist streng ein Anzeigeproblem und hat keinen Einfluss auf die Funktionalität der migrierten Instanz. In einer kommenden Version wird dieses Problem behoben.
 

@@ -4,7 +4,7 @@ permalink: databases/sqlsb-backup-restore-aws-fsxn.html
 keywords: SQL server, SQL, backup, recover, AWS, aws, sql 
 summary:  
 ---
-= TR-4951: Backup und Recovery for Microsoft SQL Server on AWS FSX for ONTAP
+= TR-4951: Backup und Recovery for Microsoft SQL Server on AWS FSX ONTAP
 :hardbreaks:
 :allow-uri-read: 
 :nofooter: 
@@ -16,7 +16,7 @@ summary:
 Autor(en): Niyaz Mohammed, Carine Ngwekwe - NetApp Solutions Engineering
 
 [role="lead"]
-Dieses Dokument enthält die erforderlichen Schritte für das Backup und Recovery für Microsoft SQL Server auf AWS FSX für ONTAP mit SnapCenter. Dazu gehören folgende Informationen:
+Dieses Dokument enthält die erforderlichen Schritte für das Backup und die Recovery für Microsoft SQL Server auf AWS FSX ONTAP mit SnapCenter. Dazu gehören folgende Informationen:
 
 * Konfiguration von NetApp SnapCenter
 * SnapCenter-Backup-Vorgänge
@@ -32,7 +32,7 @@ Dieses Dokument enthält die erforderlichen Schritte für das Backup und Recover
 Die folgenden Schritte müssen für die SnapCenter-Konfiguration und den Schutz von Microsoft SQL Server-Ressourcen durchgeführt werden. Jeder der folgenden Schritte wird in den folgenden Abschnitten beschrieben.
 
 . Konfigurieren Sie die Sysadmin-Anmeldeinformationen für den Benutzer „SQL Server Backup and Restore“.
-. Speichereinstellungen konfigurieren. Geben Sie die AWS (Amazon Web Services) Management-Zugangsdaten für den Zugriff auf die Storage Virtual Machines (SVMs) von SnapCenter in Amazon FSX for NetApp ONTAP an.
+. Speichereinstellungen konfigurieren. Bereitstellen der Zugangsdaten für das AWS (Amazon Web Services) Management für den Zugriff auf die Amazon FSX ONTAP Storage Virtual Machines (SVMs) von SnapCenter
 . Fügen Sie einen SQL Server-Host zu SnapCenter hinzu. Implementieren und installieren Sie die erforderlichen SnapCenter-Plug-ins.
 . Richtlinien konfigurieren. Definieren Sie den Backup-Vorgang, die Aufbewahrung und die optionale Snapshot-Backup-Replizierung.
 . Konfigurieren und schützen Sie die Microsoft SQL Server-Datenbank.
@@ -72,7 +72,7 @@ Gehen Sie wie folgt vor, um Speicher in SnapCenter zu konfigurieren:
 +
 image:sqlsb-aws-image4.png["Die Abbildung zeigt den Input/Output-Dialog oder die Darstellung des schriftlichen Inhalts"]
 
-. Stellen Sie den * FSX für ONTAP-Management*-Endpunkt bereit.
+. Stellen Sie den * FSX ONTAP-Management*-Endpunkt bereit.
 +
 image:sqlsb-aws-image5.png["Die Abbildung zeigt den Input/Output-Dialog oder die Darstellung des schriftlichen Inhalts"]
 
@@ -107,7 +107,7 @@ Die SQL Server-Pakete werden installiert.
 
 image:sqlsb-aws-image9.png["Die Abbildung zeigt den Input/Output-Dialog oder die Darstellung des schriftlichen Inhalts"]
 
-. Nachdem die Installation abgeschlossen ist, gehen Sie auf die Registerkarte *Ressource*, um zu überprüfen, ob alle FSX für ONTAP iSCSI-Volumes vorhanden sind.
+. Nachdem die Installation abgeschlossen ist, gehen Sie auf die Registerkarte *Ressource*, um zu überprüfen, ob alle FSX ONTAP iSCSI-Volumes vorhanden sind.
 +
 image:sqlsb-aws-image10.png["Die Abbildung zeigt den Input/Output-Dialog oder die Darstellung des schriftlichen Inhalts"]
 

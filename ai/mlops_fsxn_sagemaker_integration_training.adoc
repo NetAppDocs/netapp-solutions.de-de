@@ -1,10 +1,10 @@
 ---
 sidebar: sidebar 
 permalink: ai/mlops_fsxn_sagemaker_integration_training.html 
-keywords: FSxN, MLOps, NetApp ONTAP, SageMaker, AWS S3, Computer Vision, PyTorch 
-summary: 'Der Artikel ist ein Tutorial zur Verwendung von AWS FSX für NetApp ONTAP (FSxN) für das Training PyTorch-Modelle in SageMaker, speziell für ein Reifenqualitätsklassifizierungsprojekt.' 
+keywords: FSx ONTAP, MLOps, NetApp ONTAP, SageMaker, AWS S3, Computer Vision, PyTorch 
+summary: 'Der Artikel ist ein Tutorial zur Verwendung von Amazon FSX for NetApp ONTAP (FSX ONTAP) für das Training von PyTorch-Modellen in SageMaker, speziell für ein Reifenqualitätsklassifizierungsprojekt.' 
 ---
-= Teil 2 – Nutzung von AWS FSX for NetApp ONTAP (FSxN) als Datenquelle für das Modelltraining in SageMaker
+= Teil 2 – Nutzung von AWS Amazon FSX for NetApp ONTAP (FSX ONTAP) als Datenquelle für das Modelltraining in SageMaker
 :hardbreaks:
 :allow-uri-read: 
 :nofooter: 
@@ -14,7 +14,7 @@ summary: 'Der Artikel ist ein Tutorial zur Verwendung von AWS FSX für NetApp ON
 
 
 [role="lead"]
-Dieser Artikel ist ein Tutorial zur Verwendung von AWS FSX für NetApp ONTAP (FSxN) für das Training PyTorch-Modelle in SageMaker, speziell für ein Reifenqualitätsklassifizierungsprojekt.
+Dieser Artikel ist ein Tutorial zur Verwendung von Amazon FSX for NetApp ONTAP (FSX ONTAP) für das Training von PyTorch-Modellen in SageMaker, speziell für ein Reifenqualitätsklassifizierungsprojekt.
 
 *Autor(en):*
 Jian Jian (Ken), Senior Data & Applied Scientist, NetApp
@@ -23,13 +23,13 @@ Jian Jian (Ken), Senior Data & Applied Scientist, NetApp
 
 == Einführung
 
-Dieses Tutorial bietet ein praktisches Beispiel für ein Computer-Vision-Klassifizierungsprojekt und bietet praktische Erfahrungen beim Aufbau von ML-Modellen, die FSxN als Datenquelle in der SageMaker-Umgebung verwenden. Der Schwerpunkt des Projekts liegt auf der Verwendung von PyTorch, einem Deep-Learning-Framework, um die Reifenqualität anhand von Reifenbildern zu klassifizieren. Er betont die Entwicklung von Machine-Learning-Modellen, die FSxN als Datenquelle in Amazon SageMaker verwenden.
+Dieses Tutorial bietet ein praktisches Beispiel für ein Computer-Vision-Klassifizierungsprojekt und bietet praktische Erfahrung beim Aufbau von ML-Modellen, die FSX ONTAP als Datenquelle innerhalb der SageMaker-Umgebung verwenden. Der Schwerpunkt des Projekts liegt auf der Verwendung von PyTorch, einem Deep-Learning-Framework, um die Reifenqualität anhand von Reifenbildern zu klassifizieren. Er betont die Entwicklung von Machine-Learning-Modellen, die FSX ONTAP als Datenquelle in Amazon SageMaker verwenden.
 
 
 
-== Was ist FSxN
+== Was ist FSX ONTAP
 
-Amazon FSX for NetApp ONTAP ist eine wirklich vollständig gemanagte Storage-Lösung von AWS. Es nutzt das ONTAP Filesystem von NetApp, um zuverlässigen und hochperformanten Storage bereitzustellen. Durch die Unterstützung von Protokollen wie NFS, SMB und iSCSI ermöglicht sie einen nahtlosen Zugriff von verschiedenen Computing-Instanzen und Containern. Der Service bietet eine außergewöhnliche Performance, die schnelle und effiziente Datenvorgänge ermöglicht. Es bietet zudem eine hohe Verfügbarkeit und Langlebigkeit, wodurch sichergestellt wird, dass die Daten zugänglich und geschützt bleiben. Darüber hinaus ist die Storage-Kapazität von Amazon FSX for NetApp ONTAP skalierbar, sodass Sie sie einfach an Ihre Anforderungen anpassen können.
+Amazon FSX ONTAP ist tatsächlich eine von AWS angebotene vollständig gemanagte Storage-Lösung. Es nutzt das ONTAP Filesystem von NetApp, um zuverlässigen und hochperformanten Storage bereitzustellen. Durch die Unterstützung von Protokollen wie NFS, SMB und iSCSI ermöglicht sie einen nahtlosen Zugriff von verschiedenen Computing-Instanzen und Containern. Der Service bietet eine außergewöhnliche Performance, die schnelle und effiziente Datenvorgänge ermöglicht. Es bietet zudem eine hohe Verfügbarkeit und Langlebigkeit, wodurch sichergestellt wird, dass die Daten zugänglich und geschützt bleiben. Darüber hinaus ist die Speicherkapazität von Amazon FSX ONTAP skalierbar, so dass Sie sie einfach an Ihre Anforderungen anpassen können.
 
 
 
@@ -41,15 +41,15 @@ Amazon FSX for NetApp ONTAP ist eine wirklich vollständig gemanagte Storage-Lö
 
 image:mlops_fsxn_sagemaker_integration_training_0.png["Netzwerkumgebung zu optimieren"]
 
-FSxN (Amazon FSX for NetApp ONTAP) ist ein AWS Storage-Service. Sie umfasst ein Filesystem, das auf dem NetApp ONTAP System ausgeführt wird, und eine AWS-gemanagte System Virtual Machine (SVM), die eine Verbindung mit ihr herstellt. Im angegebenen Diagramm befindet sich der von AWS gemanagte NetApp ONTAP-Server außerhalb der VPC. Die SVM dient als Vermittler zwischen SageMaker und dem NetApp ONTAP-System, empfängt Betriebsanforderungen von SageMaker und leitet sie an den zugrunde liegenden Speicher weiter. Für den Zugriff auf FSxN muss SageMaker innerhalb derselben VPC wie die FSxN-Bereitstellung platziert werden. Diese Konfiguration gewährleistet die Kommunikation und den Datenzugriff zwischen SageMaker und FSxN.
+FSX ONTAP (Amazon FSX ONTAP) ist ein AWS-Storage-Service. Sie umfasst ein Filesystem, das auf dem NetApp ONTAP System ausgeführt wird, und eine AWS-gemanagte System Virtual Machine (SVM), die eine Verbindung mit ihr herstellt. Im angegebenen Diagramm befindet sich der von AWS gemanagte NetApp ONTAP-Server außerhalb der VPC. Die SVM dient als Vermittler zwischen SageMaker und dem NetApp ONTAP-System, empfängt Betriebsanforderungen von SageMaker und leitet sie an den zugrunde liegenden Speicher weiter. Für den Zugriff auf FSX ONTAP muss SageMaker in demselben VPC wie die FSX ONTAP-Implementierung platziert werden. Diese Konfiguration gewährleistet die Kommunikation und den Datenzugriff zwischen SageMaker und FSX ONTAP.
 
 
 
 === Datenzugriff
 
-In realen Szenarien verwenden Data Scientists in der Regel die in FSxN gespeicherten Daten, um ihre Modelle für maschinelles Lernen zu erstellen. Da das FSxN-Dateisystem nach der Erstellung jedoch zunächst leer ist, müssen die Trainingsdaten für Demonstrationszwecke manuell hochgeladen werden. Dies kann erreicht werden, indem FSxN als Volumen auf SageMaker montiert wird. Nachdem das Dateisystem erfolgreich gemountet wurde, können Sie den Datensatz an den gemounteten Speicherort hochladen, sodass er für das Training Ihrer Modelle in der SageMaker-Umgebung verfügbar ist. Dieser Ansatz ermöglicht es Ihnen, die Speicherkapazität und Funktionen von FSxN zu nutzen, während Sie mit SageMaker für die Modellentwicklung und das Training arbeiten.
+In realen Szenarien nutzen Data Scientists in der Regel die in FSX ONTAP gespeicherten Daten, um ihre Machine-Learning-Modelle zu erstellen. Da das FSX ONTAP-Dateisystem jedoch nach der Erstellung zunächst leer ist, müssen die Trainingsdaten manuell hochgeladen werden. Dies kann durch die Montage FSX ONTAP als Volumen zu SageMaker erreicht werden. Nachdem das Dateisystem erfolgreich gemountet wurde, können Sie den Datensatz an den gemounteten Speicherort hochladen, sodass er für das Training Ihrer Modelle in der SageMaker-Umgebung verfügbar ist. Dieser Ansatz ermöglicht es Ihnen, die Speicherkapazität und Funktionen von FSX ONTAP zu nutzen, während Sie mit SageMaker für die Modellentwicklung und das Training arbeiten.
 
-Beim Lesen von Daten wird FSxN als privater S3-Bucket konfiguriert. Weitere Informationen zur Konfiguration finden Sie unter link:./mlops_fsxn_s3_integration.html["Teil 1 – Integration von AWS FSX for NetApp ONTAP (FSxN) als privater S3-Bucket in AWS SageMaker"]
+Beim Lesen von Daten wird FSX ONTAP als privater S3-Bucket konfiguriert. Weitere Informationen zur Konfiguration finden Sie unter link:./mlops_fsxn_s3_integration.html["Teil 1 – Integration von Amazon FSX for NetApp ONTAP (FSX ONTAP) als privaten S3-Bucket in AWS SageMaker"]
 
 
 
@@ -57,7 +57,7 @@ Beim Lesen von Daten wird FSxN als privater S3-Bucket konfiguriert. Weitere Info
 
 image:mlops_fsxn_sagemaker_integration_training_1.png["Schulungsworkflow"]
 
-Der Workflow, in dem Trainingsdaten in FSxN für den Aufbau eines Deep-Learning-Modells in SageMaker verwendet werden, lässt sich in drei Hauptschritte zusammenfassen: Definition des Datenladers, Modelltraining und Bereitstellung. Auf hoher Ebene bilden diese Schritte die Grundlage einer MLOPS-Pipeline. Jeder Schritt umfasst jedoch mehrere detaillierte Teilschritte für eine umfassende Implementierung. Diese Teilschritte umfassen verschiedene Aufgaben wie Datenvorverarbeitung, Dataset-Splitting, Modellkonfiguration, Hyperparameter-Tuning, Modellbewertung, und Modellimplementierung. Diese Schritte gewährleisten einen gründlichen und effektiven Prozess für die Erstellung und Implementierung von Deep-Learning-Modellen unter Verwendung von Trainingsdaten von FSxN in der SageMaker-Umgebung.
+Der Workflow, der Trainingsdaten in FSX ONTAP für den Aufbau eines Deep-Learning-Modells in SageMaker verwendet, kann in drei Hauptschritte zusammengefasst werden: Data-Loader-Definition, Modelltraining und Implementierung. Auf hoher Ebene bilden diese Schritte die Grundlage einer MLOPS-Pipeline. Jeder Schritt umfasst jedoch mehrere detaillierte Teilschritte für eine umfassende Implementierung. Diese Teilschritte umfassen verschiedene Aufgaben wie Datenvorverarbeitung, Dataset-Splitting, Modellkonfiguration, Hyperparameter-Tuning, Modellbewertung, und Modellimplementierung. Diese Schritte gewährleisten einen gründlichen und effektiven Prozess für den Aufbau und die Bereitstellung von Deep-Learning-Modellen unter Verwendung von Trainingsdaten von FSX ONTAP in der SageMaker-Umgebung.
 
 
 
@@ -127,11 +127,11 @@ class FSxNImageDataset(torch.utils.data.Dataset):
             image = self.preprocess(image)
         return image, label
 ----
-Diese Klasse bietet Funktionen zum Abrufen der Gesamtzahl der Datensätze im Datensatz und definiert die Methode zum Lesen von Daten für jeden Datensatz. Innerhalb der Funktion *__getitem__* verwendet der Code das Bucket-Objekt boto3 S3, um die Binärdaten aus FSxN abzurufen. Der Code-Stil für den Zugriff auf Daten aus FSxN ähnelt dem Lesen von Daten aus Amazon S3. Die nachfolgende Erklärung geht auf den Erstellungsprozess des privaten S3-Objekts *bucket* ein.
+Diese Klasse bietet Funktionen zum Abrufen der Gesamtzahl der Datensätze im Datensatz und definiert die Methode zum Lesen von Daten für jeden Datensatz. Innerhalb der Funktion *__getitem__* verwendet der Code das Bucket-Objekt boto3 S3, um die Binärdaten aus FSX ONTAP abzurufen. Der Code-Stil für den Zugriff auf Daten aus FSX ONTAP ähnelt dem Lesen von Daten aus Amazon S3. Die nachfolgende Erklärung geht auf den Erstellungsprozess des privaten S3-Objekts *bucket* ein.
 
 
 
-==== FSxN als privates S3-Repository
+==== FSX ONTAP als privates S3-Repository
 
 [source, python]
 ----
@@ -139,7 +139,7 @@ seed = 77                                                   # Random seed
 bucket_name = '<Your ONTAP bucket name>'                    # The bucket name in ONTAP
 aws_access_key_id = '<Your ONTAP bucket key id>'            # Please get this credential from ONTAP
 aws_secret_access_key = '<Your ONTAP bucket access key>'    # Please get this credential from ONTAP
-fsx_endpoint_ip = '<Your FSxN IP address>'                  # Please get this IP address from FSXN
+fsx_endpoint_ip = '<Your FSx ONTAP IP address>'                  # Please get this IP address from FSXN
 ----
 [source, python]
 ----
@@ -167,7 +167,7 @@ s3_client: boto3.client = boto3.resource(
 bucket = s3_client.Bucket(bucket_name)
 # --- End integrating SageMaker with FSXN ---
 ----
-Um Daten aus FSxN in SageMaker zu lesen, wird ein Handler erstellt, der auf den FSxN-Speicher mit dem S3-Protokoll verweist. Auf diese Weise kann FSxN als privater S3-Bucket behandelt werden. Die Handler-Konfiguration umfasst die Angabe der IP-Adresse der FSxN SVM, des Bucket-Namens und der erforderlichen Anmeldedaten. Eine umfassende Erklärung zum Bezug dieser Konfigurationselemente finden Sie in dem Dokument unter link:mlops_fsxn_s3_integration.html["Teil 1 – Integration von AWS FSX for NetApp ONTAP (FSxN) als privater S3-Bucket in AWS SageMaker"].
+Um Daten aus FSX ONTAP in SageMaker zu lesen, wird ein Handler erstellt, der auf den FSX ONTAP-Storage mit dem S3-Protokoll verweist. Dadurch kann FSX ONTAP als privater S3-Bucket behandelt werden. Die Handler-Konfiguration umfasst die Angabe der IP-Adresse der FSX ONTAP SVM, des Bucket-Namens und der erforderlichen Anmeldedaten. Eine umfassende Erklärung zum Erhalt dieser Konfigurationselemente finden Sie im Dokument unter link:mlops_fsxn_s3_integration.html["Teil 1 – Integration von Amazon FSX for NetApp ONTAP (FSX ONTAP) als privaten S3-Bucket in AWS SageMaker"].
 
 In dem oben genannten Beispiel wird das Bucket-Objekt verwendet, um das PyTorch-Datensatzobjekt zu instanziieren. Das Datensatzobjekt wird im nachfolgenden Abschnitt näher erläutert.
 

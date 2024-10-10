@@ -129,7 +129,7 @@ Die Bereitstellung erfordert die folgenden Voraussetzungen.
 
 . Es wurde ein AWS Konto eingerichtet, und die erforderlichen VPC und Netzwerksegmente wurden in Ihrem AWS Konto erstellt.
 . Über die AWS EC2-Konsole müssen Sie zwei EC2 Linux-Instanzen bereitstellen, eine als primärer PostgreSQL DB-Server auf dem primären und eine am Standby-DR-Standort. Um Rechenredundanz auf dem primären und Standby-DR-Standort zu erreichen, sollten zwei zusätzliche EC2 Linux Instanzen als Standby PostgreSQL DB Server implementiert werden. Im Architekturdiagramm im vorherigen Abschnitt finden Sie weitere Details zum Umgebungs-Setup. Sehen Sie sich auch die an link:https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/concepts.html["Benutzerhandbuch für Linux-Instanzen"] Finden Sie weitere Informationen.
-. Implementieren Sie über die AWS EC2 Konsole zwei FSX ONTAP Storage HA-Cluster, um die PostgreSQL Datenbank-Volumes zu hosten. Wenn Sie mit der Bereitstellung von FSX-Speicher nicht vertraut sind, lesen Sie die Dokumentation link:https://docs.aws.amazon.com/fsx/latest/ONTAPGuide/creating-file-systems.html["Erstellen von FSX für ONTAP-Dateisysteme"] Schritt-für-Schritt-Anleitungen.
+. Implementieren Sie über die AWS EC2 Konsole zwei FSX ONTAP Storage HA-Cluster, um die PostgreSQL Datenbank-Volumes zu hosten. Wenn Sie mit der Implementierung von FSX Storage nicht vertraut sind, finden Sie in der Dokumentation link:https://docs.aws.amazon.com/fsx/latest/ONTAPGuide/creating-file-systems.html["Erstellen von FSX ONTAP-Dateisystemen"]eine Schritt-für-Schritt-Anleitung.
 . Eine CentOS Linux VM aufbauen, um den Ansible-Controller zu hosten. Der Ansible-Controller kann sich entweder vor Ort oder in der AWS Cloud befinden. Falls die Daten lokal gespeichert sind, müssen SSH-Konnektivität mit der VPC, EC2 Linux Instanzen und FSX Storage-Cluster vorhanden sein.
 . Richten Sie den Ansible-Controller wie in dem Abschnitt „Ansible-Steuerungsknoten für CLI-Bereitstellungen auf RHEL/CentOS einrichten“ von der Ressource aus ein link:../automation/getting-started.html["Erste Schritte mit der Automatisierung von NetApp Lösungen"].
 . Klonen einer Kopie des Automatisierungs-Toolkit auf der öffentlichen NetApp GitHub Website.
@@ -376,7 +376,7 @@ NetApp empfiehlt, manuelle Failover-Vorgänge auszuführen oder bewährte Betrie
 
 Sehen Sie sich die folgenden Dokumente und/oder Websites an, um mehr über die in diesem Dokument beschriebenen Informationen zu erfahren:
 
-* Amazon FSX für NetApp ONTAP
+* Amazon FSX ONTAP
 
 
 link:https://aws.amazon.com/fsx/netapp-ontap/["https://aws.amazon.com/fsx/netapp-ontap/"^]

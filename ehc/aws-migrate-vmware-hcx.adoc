@@ -14,7 +14,7 @@ summary:
 
 
 [role="lead"]
-Als typischer Anwendungsfall für VMware Cloud (VMC) auf Amazon Web Services (AWS) mit seinem zusätzlichen NFS-Datastore auf Amazon FSX für NetApp ONTAP ist die Migration von VMware Workloads zu verwenden. VMware HCX ist eine bevorzugte Option und bietet verschiedene Migrationsmethoden zum Verschieben von On-Premises-Virtual Machines (VMs) und deren Daten, die auf beliebigen von VMware unterstützten Datastores ausgeführt werden, in VMC-Datastores, darunter zusätzliche NFS-Datastores auf FSX für ONTAP.
+Ein gängiger Anwendungsfall für VMware Cloud (VMC) auf Amazon Web Services (AWS) mit dem ergänzenden NFS-Datastore auf Amazon FSX ONTAP ist die Migration von VMware-Workloads. VMware HCX ist eine bevorzugte Option und bietet verschiedene Migrationsmethoden zum Verschieben von lokalen Virtual Machines (VMs) und ihrer Daten, die auf beliebigen von VMware unterstützten Datastores ausgeführt werden, in VMC-Datastores, einschließlich ergänzender NFS-Datastores auf FSX ONTAP.
 
 Autor(en): NetApp Solutions Engineering
 
@@ -54,7 +54,7 @@ Die folgenden Installationsschritte müssen ausgeführt werden, bevor Sie mit de
 . Verwenden Sie ein vorhandenes VMC SDDC oder erstellen Sie nach diesem Vorgang ein neues SDDC link:aws-setup.html["Link von NetApp"^] Oder hier https://docs.vmware.com/en/VMware-Cloud-on-AWS/services/com.vmware.vmc-aws.getting-started/GUID-EF198D55-03E3-44D1-AC48-6E2ABA31FF02.html["Link zu VMware"^].
 . Der Netzwerkpfad von der lokalen vCenter Umgebung zu VMC SDDC muss die Migration von VMs über vMotion unterstützen.
 . Stellen Sie sicher, dass die erforderlichen https://docs.vmware.com/en/VMware-HCX/4.4/hcx-user-guide/GUID-A631101E-8564-4173-8442-1D294B731CEB.html["Firewall-Regeln und -Ports"^] Sind für vMotion Traffic zwischen dem lokalen vCenter Server und dem SDDC vCenter zulässig.
-. Das FSX für ONTAP-NFS-Volume sollte als zusätzlicher Datastore im VMC SDDC gemountet werden.  Befolgen Sie die in diesem Schritt beschriebenen Schritte, um die NFS-Datenspeicher an den entsprechenden Cluster anzuhängen link:aws-native-overview.html["Link von NetApp"^] Oder hier https://docs.vmware.com/en/VMware-Cloud-on-AWS/services/com.vmware.vmc-aws-operations/GUID-D55294A3-7C40-4AD8-80AA-B33A25769CCA.html["Link zu VMware"^].
+. Das FSX ONTAP NFS-Volume sollte als ergänzender Datastore im VMC SDDC gemountet werden. Um die NFS-Datastores mit dem entsprechenden Cluster zu verbinden, führen Sie die in diesem  oder diesem https://docs.vmware.com/en/VMware-Cloud-on-AWS/services/com.vmware.vmc-aws-operations/GUID-D55294A3-7C40-4AD8-80AA-B33A25769CCA.html["Link zu VMware"^] beschriebenen Schritte link:aws-native-overview.html["Link von NetApp"^]aus.
 
 
 ====
@@ -315,14 +315,14 @@ Weitere Informationen zu den HCX-Migrationsoptionen und zur Migration von Worklo
 NOTE: VMware HCX vMotion erfordert eine Durchsatzfunktion von 100 MB/s oder mehr.
 
 
-NOTE: Die FSX für das Ziel-VMC für ONTAP-Datenspeicher muss über ausreichend Speicherplatz für die Migration verfügen.
+NOTE: Der Ziel-VMC FSX ONTAP-Datastore muss über genügend Speicherplatz für die Migration verfügen.
 
 ====
 
 
 == Schlussfolgerung
 
-Ganz gleich, ob Sie nur auf All-Cloud- oder Hybrid Cloud-Umgebungen abzielen und Daten in On-Premises-Storage eines beliebigen Typs oder Anbieters speichern: Amazon FSX für NetApp ONTAP bietet in Kombination mit HCX hervorragende Optionen für Implementierung und Migration der Workloads, während Sie gleichzeitig die TCO senken, indem die Datenanforderungen nahtlos auf die Applikationsebene reduziert werden. Unabhängig vom Anwendungsfall entscheiden Sie sich für VMC und FSX für ONTAP Datastore, um schnell von den Vorteilen der Cloud zu profitieren. Sie profitieren von konsistenter Infrastruktur und On-Premises- und diversen Clouds, bidirektionaler Portabilität von Workloads sowie Kapazität und Performance der Enterprise-Klasse. Es handelt sich dabei um denselben bekannten Prozess und dieselben Verfahren, die zum Verbinden des Storage und zur Migration von VMs mithilfe der VMware vSphere Replizierung, VMware vMotion oder sogar einer NFC-Kopie verwendet werden.
+Ganz gleich, ob es um All-Cloud- oder Hybrid-Cloud-Umgebungen geht und Daten auf Storage beliebiger Anbieter lokal gespeichert sind – Amazon FSX ONTAP bietet zusammen mit HCX hervorragende Optionen für die Implementierung und Migration von Workloads. Gleichzeitig werden die Gesamtbetriebskosten gesenkt, da die Datenanforderungen nahtlos in die Applikationsebene integriert werden können. Ganz gleich, wie der Anwendungsfall aussehen sollte, wählen Sie VMC zusammen mit FSX ONTAP Datastore, um die Vorteile der Cloud, eine konsistente Infrastruktur und den Betrieb vor Ort und in diversen Clouds, bidirektionale Portabilität von Workloads sowie Kapazität und Performance der Enterprise-Klasse schnell zu realisieren. Es handelt sich dabei um denselben bekannten Prozess und dieselben Verfahren, die zum Verbinden des Storage und zur Migration von VMs mithilfe der VMware vSphere Replizierung, VMware vMotion oder sogar einer NFC-Kopie verwendet werden.
 
 
 
@@ -331,7 +331,7 @@ Ganz gleich, ob Sie nur auf All-Cloud- oder Hybrid Cloud-Umgebungen abzielen und
 Zu den wichtigsten Punkten dieses Dokuments gehören:
 
 * Sie können nun Amazon FSX ONTAP als Datastore mit VMC SDDC nutzen.
-* Daten lassen sich problemlos von lokalen Datacentern zu VMC migrieren, die mit FSX für ONTAP Datastores ausgeführt werden
+* Sie können Daten problemlos von jedem lokalen Datacenter zu VMC migrieren, das mit FSX ONTAP-Datastore ausgeführt wird
 * Erweitern und reduzieren Sie den FSX ONTAP Datastore ganz einfach, um die Kapazitäts- und Performance-Anforderungen während der Migration zu erfüllen.
 
 
@@ -345,7 +345,7 @@ Weitere Informationen zu den in diesem Dokument beschriebenen Daten finden Sie u
 +
 https://docs.vmware.com/en/VMware-Cloud-on-AWS/["https://docs.vmware.com/en/VMware-Cloud-on-AWS/"^]
 
-* Dokumentation zu Amazon FSX für NetApp ONTAP
+* Amazon FSX ONTAP-Dokumentation
 +
 https://docs.aws.amazon.com/fsx/latest/ONTAPGuide["https://docs.aws.amazon.com/fsx/latest/ONTAPGuide"^]
 
