@@ -1,0 +1,63 @@
+---
+sidebar: sidebar 
+permalink: databases/customer_usecase_mssql_fsx1.html 
+keywords: SQL Server, WSFC, AWS, FSx ONTAP, EC2, SnapCenter 
+summary: Dieses reale Kundenbeispiel zeigt die Herausforderungen, Lösungen und Ergebnisse der Migration von SQL-Server-Workloads von On-Premises-Systemen zu Amazon FSX ONTAP, um Kosten zu senken. 
+---
+= Die Firma für Medizinprodukte migriert On-Premises-SQL-Workloads auf Amazon FSX ONTAP, um Kosten zu senken
+:hardbreaks:
+:allow-uri-read: 
+:nofooter: 
+:icons: font
+:linkattrs: 
+:imagesdir: ../media/
+
+
+NetApp Solutions Engineering Team
+
+[role="lead"]
+Dieses reale Kundenbeispiel zeigt die Herausforderungen, Lösungen und Ergebnisse der Migration von SQL-Server-Workloads von On-Premises-Systemen zu Amazon FSX ONTAP, um Kosten zu senken.
+
+
+
+== Die Herausforderung
+
+* Der Kunde hatte SQL Server-Workloads in einem privaten Datacenter ausgeführt, das von einem Drittanbieter gehostet wurde. Die steigenden Hosting-Kosten waren zum Thema geworden.
+* Aufgrund von Outsourcing und Mitarbeiterfluktuation fehlte es an Stammkenntnissen in Bezug auf Anwendungsarchitektur und bestehende Infrastruktur.
+* Er hatte kaum bis gar keine Erfahrung mit NetApp ONTAP Management.
+* Der Ablauf ist eng geplant, bevor die Entscheidung für eine Verlängerung der vorhandenen Infrastruktur getroffen wird.
+* Die SQL-Server-Umgebung ist groß (100TB) und komplex mit HA zwischen zwei Rechenzentren über SQL Always-on. Drei transiente Umgebungen wurden mit AppSync aus sekundären Datenkopien erstellt und täglich/wöchentlich aktualisiert. Dedizierte Datenmarkierungsänderungen, die nach jeder Aktualisierung der Produktionsdaten über sql-Skripte erforderlich sind.
+
+
+image:customer_usecase_mssql_fsx1_before.png["Dieses Image bietet ein detailliertes Bild der Kundenkonfiguration vor der Migration."]
+
+
+
+== Die Lösung
+
+* Migration von On-Prepains, gehosteten Dell Unity SAN- und AppSync-Umgebung zu AWS Amazon FSX ONTAP mit NetApp SnapCenter
+* Die Thin-Clone-Funktion von Amazon FSX ONTAP senkt die Storage-Kosten, während das vollständig automatisierte Lifecycle Management von SnapCenter Klonen alle anderen Anforderungen für transiente Umgebungen erfüllt.
+* Primäre SQL Server-DB, implementiert auf AWS EBS und replizierte sekundäre Kopie auf Amazon FSX ONTAP mit einzelnem Verfügbarkeitszonen
+* POC hat bewiesen, dass SnapCenter ein geeigneter Ersatz für AppSync ist.
+* Zuverlässige und erfahrene Partner für die Einrichtung, Migration und den fortlaufenden Support Detaillierte Leitfäden zur Lösungsimplementierung halfen erstmaligen und unerfahrenen Benutzern von Amazon FSX ONTAP und SnapCenter.
+
+
+image:customer_usecase_mssql_fsx1_after.png["Dieses Image bietet ein detailliertes Bild der Konfiguration der Kundenumgebung nach der Migration."]
+
+
+
+== Das Ergebnis
+
+* Bis zu 40 % weniger Kosten als ein fortgeführt Hosting in einem privaten Datacenter.
+* Vollständig gemanagter Amazon FSX ONTAP Service mit SnapCenter für 300 Kunden.
+* Möglichkeit zur Automatisierung von nahezu sofortigen, über Thin Provisioning bereitgestellten Klonen für PreProd-, UAT- und QA-Umgebungen
+* Terminliche Migration, Vermeidung von Kosten für Verlängerungen, Wechsel von einer unzufriedenen Anbieterbeziehung zu einer lohnenden Erfahrung in der Public Cloud.
+* SQL Server auf Amazon FSX erreichte eine zusätzliche Datenredundanz, während die Performance erhalten wurde.
+* Regionsübergreifende DR kann auch in Zukunft problemlos aktiviert werden.
+
+
+
+
+== Wo Sie weitere Informationen finden
+
+Weitere Informationen zu den NetApp Enterprise-Datenbanklösungen finden Sie auf der folgenden Website link:https://docs.netapp.com/us-en/netapp-solutions/databases/index.html["NetApp Lösungen für Enterprise Database"^]
