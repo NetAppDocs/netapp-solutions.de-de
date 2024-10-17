@@ -58,7 +58,7 @@ image:rhhc-trident-helm.png["Die Abbildung zeigt den Input/Output-Dialog oder di
 .Back-End- und Storage-Klassen mit Trident (für FSX ONTAP) erstellen
 [%collapsible]
 ====
-* Siehe link:https://docs.netapp.com/us-en/trident/trident-get-started/kubernetes-postdeployment.html["Hier"] Für Details zum Erstellen von Back-End und Storage-Klasse.
+* Weitere Informationen zum Erstellen von Back-End- und Storage-Klasse finden Sie unterlink:https://docs.netapp.com/us-en/trident/trident-use/backends.html["Hier"].
 * Erstellen Sie die für FsxN erstellte Storage-Klasse mit Trident CSI standardmäßig aus der OpenShift-Konsole. Siehe Abbildung unten:
 
 
@@ -72,7 +72,7 @@ image:rhhc-default-storage-class.png["Die Abbildung zeigt den Input/Output-Dialo
 * Richten Sie eine neue Argo-CD-Instanz für den Cluster ein. Siehe Anweisungen link:https://docs.openshift.com/container-platform/4.10/cicd/gitops/setting-up-argocd-instance.html["Hier"].
 
 
-Öffnen Sie die Konsole von Argo CD und stellen Sie eine App bereit. Als Beispiel können Sie eine Jenkins-App mithilfe einer Argo-CD mit einem Helm-Diagramm bereitstellen. Beim Erstellen der Anwendung wurden folgende Details angegeben: Projekt: Standardcluster: https://kubernetes.default.svc[]Namensraum: Jenkins die url für das Helm-Diagramm: https://charts.bitnami.com/bitnami[]
+Öffnen Sie die Konsole von Argo CD und stellen Sie eine App bereit. Als Beispiel können Sie eine Jenkins-App mithilfe einer Argo-CD mit einem Helm-Diagramm bereitstellen. Beim Erstellen der Anwendung wurden folgende Details angegeben: Projekt: Default Cluster: 'https://kubernetes.default.svc'[] (Ohne die Anführungszeichen) Namespace: Jenkins die url für das Helm Chart: 'https://charts.bitnami.com/bitnami'[] (Ohne Anführungszeichen)
 
 Helm-Parameter: Global.storageClass: Fsxn-nas
 
