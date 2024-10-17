@@ -26,7 +26,9 @@ Die Beziehung zwischen Storageclass und Backend ist unten dargestellt.
 
 image:rhhc-storage-options-sc2ontap.png["Beziehung zwischen Storage-Klasse und ONTAP"]
 
-Applikationseigentümer fordert persistentes Volume mithilfe von Storage-Klassen an. Die Storage-Klasse filtert den Back-End Storage. Die Beziehung zwischen dem Pod und dem Back-End Storage wird unten dargestellt.
+Applikationseigentümer fordert persistentes Volume mithilfe von Storage-Klassen an. Die Storage-Klasse filtert den Back-End Storage.
+
+Die Beziehung zwischen dem Pod und dem Back-End Storage wird unten dargestellt.
 
 image:rhhc_storage_opt_pod2vol.png["Pod-ONTAP-Volume-Beziehung"]
 
@@ -34,7 +36,9 @@ image:rhhc_storage_opt_pod2vol.png["Pod-ONTAP-Volume-Beziehung"]
 
 == CSI-Optionen (Container Storage Interface)
 
-In vSphere-Umgebungen können Kunden zur Integration mit ONTAP VMware CSI-Treiber und/oder Trident CSI wählen. Mit VMware CSI werden die persistenten Volumes als lokale SCSI-Festplatten verwendet, mit Trident dagegen über ein Netzwerk. Da VMware CSI keine RWX-Zugriffsmodi mit ONTAP unterstützt, müssen Applikationen Trident CSI verwenden, wenn der RWX-Modus erforderlich ist. FC-basierte Implementierungen bevorzugen VMware CSI und SnapMirror Business Continuity (SMBC) bietet Hochverfügbarkeit auf Zonenebene.
+In vSphere-Umgebungen können Kunden zur Integration mit ONTAP VMware CSI-Treiber und/oder Trident CSI wählen. Mit VMware CSI werden die persistenten Volumes als lokale SCSI-Festplatten verwendet, mit Trident dagegen über ein Netzwerk.
+
+Da VMware CSI keine RWX-Zugriffsmodi mit ONTAP unterstützt, müssen Applikationen Trident CSI verwenden, wenn der RWX-Modus erforderlich ist. FC-basierte Implementierungen bevorzugen VMware CSI und SnapMirror Business Continuity (SMBC) bietet Hochverfügbarkeit auf Zonenebene.
 
 
 
@@ -58,6 +62,8 @@ In vSphere-Umgebungen können Kunden zur Integration mit ONTAP VMware CSI-Treibe
 
 Sowohl für VMware CSI als auch für Trident CSI unterstützt ONTAP nconnect, Session-Trunking, kerberos usw. für NFS und Multipathing, CHAP-Authentifizierung usw. für Blockprotokolle.
 
-In AWS kann Amazon FSX for NetApp ONTAP (FSX ONTAP) in einer einzelnen Verfügbarkeitszone (AZ) oder in Multi-AZ implementiert werden. Für Produktions-Workloads, die Hochverfügbarkeit erfordern, bietet eine Multi-AZ-Fehlertoleranz auf zonaler Ebene und einen besseren NVMe-Lese-Cache als eine einzelne AZ. Weitere Informationen finden Sie unter link:https://docs.aws.amazon.com/fsx/latest/ONTAPGuide/performance.html["AWS Performance-Richtlinien"]. Um Kosten für den Disaster Recovery-Standort zu sparen, kann ein einzelner AZ FSX ONTAP genutzt werden. image:rhhc_storage_options_fsxn_options.png["Replizierung zwischen Multi-AZ und Single-AZ"]
+In AWS kann Amazon FSX for NetApp ONTAP (FSX ONTAP) in einer einzelnen Verfügbarkeitszone (AZ) oder in Multi-AZ implementiert werden. Für Produktions-Workloads, die Hochverfügbarkeit erfordern, bietet eine Multi-AZ-Fehlertoleranz auf zonaler Ebene und einen besseren NVMe-Lese-Cache als eine einzelne AZ. Weitere Informationen finden Sie unter link:https://docs.aws.amazon.com/fsx/latest/ONTAPGuide/performance.html["AWS Performance-Richtlinien"].
+
+Um Kosten für den Disaster Recovery-Standort zu sparen, kann ein einzelner AZ FSX ONTAP genutzt werden. image:rhhc_storage_options_fsxn_options.png["Replizierung zwischen Multi-AZ und Single-AZ"]
 
 Weitere Informationen zur Anzahl der von FSX ONTAP unterstützten SVMs finden Sie unter link:https://docs.aws.amazon.com/fsx/latest/ONTAPGuide/managing-svms.html#max-svms["Management der FSX ONTAP-Storage-Virtual Machine"]

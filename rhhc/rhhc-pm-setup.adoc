@@ -26,24 +26,16 @@ NOTE: Diese Lösung wurde mit zwei ROSA-Clustern in zwei VPCs in AWS verifiziert
 Der Einrichtungsvorgang kann in die folgenden Schritte unterteilt werden:
 
 .INSTALLIEREN SIE ROSA Cluster
-[%collapsible]
-====
 * Erstellung von zwei VPCs und Einrichtung der VPC-Peering-Konnektivität zwischen den VPCs.
 * Siehe link:https://docs.openshift.com/rosa/welcome/index.html["Hier"] Für Anweisungen zur Installation VON ROSA Clustern.
 
 
-====
 .FSX ONTAP installieren
-[%collapsible]
-====
 * Installieren Sie FSX ONTAP auf den VPCs von BlueXP . Weitere link:https://docs.netapp.com/us-en/cloud-manager-setup-admin/index.html["Hier"]Informationen zur Erstellung eines BlueXP  Accounts und erste Schritte finden Sie hier. Informationen zur Installation von FSX ONTAP finden Sie unterlink:https://docs.netapp.com/us-en/cloud-manager-fsx-ontap/index.html["Hier"]. Informationen zum Erstellen eines Konnektors in AWS zum Verwalten des FSX ONTAP finden Sie unterlink:https://docs.netapp.com/us-en/cloud-manager-setup-admin/index.html["Hier"].
 * FSX ONTAP mit AWS implementieren Beziehen link:https://docs.aws.amazon.com/fsx/latest/ONTAPGuide/getting-started-step1.html["Hier"] Sie sich auf die Implementierung mit der AWS-Konsole.
 
 
-====
 .Trident auf ROSA Clustern installieren (mit Helm-Diagramm)
-[%collapsible]
-====
 * Verwenden Sie Helm-Diagramm, um Trident auf ROSA Clustern zu installieren. Informationen hierzu finden Sie unter dem Link zur Dokumentation: https://docs.NetApp.com/US-en/Trident/Trident-get-started/kubernetes-deploy-Helm.HTML[hier].
 
 
@@ -54,20 +46,14 @@ NOTE: OpenShift GitOps kann verwendet werden, um Trident CSI für alle verwaltet
 
 image:rhhc-trident-helm.png["Die Abbildung zeigt den Input/Output-Dialog oder die Darstellung des schriftlichen Inhalts"]
 
-====
 .Back-End- und Storage-Klassen mit Trident (für FSX ONTAP) erstellen
-[%collapsible]
-====
 * Weitere Informationen zum Erstellen von Back-End- und Storage-Klasse finden Sie unterlink:https://docs.netapp.com/us-en/trident/trident-use/backends.html["Hier"].
 * Erstellen Sie die für FsxN erstellte Storage-Klasse mit Trident CSI standardmäßig aus der OpenShift-Konsole. Siehe Abbildung unten:
 
 
 image:rhhc-default-storage-class.png["Die Abbildung zeigt den Input/Output-Dialog oder die Darstellung des schriftlichen Inhalts"]
 
-====
 .Anwendung mit OpenShift GitOps (Argo CD) bereitstellen
-[%collapsible]
-====
 * Installieren Sie den OpenShift GitOps Operator auf dem Cluster. Siehe Anweisungen link:https://docs.openshift.com/container-platform/4.10/cicd/gitops/installing-openshift-gitops.html["Hier"].
 * Richten Sie eine neue Argo-CD-Instanz für den Cluster ein. Siehe Anweisungen link:https://docs.openshift.com/container-platform/4.10/cicd/gitops/setting-up-argocd-instance.html["Hier"].
 
@@ -75,5 +61,3 @@ image:rhhc-default-storage-class.png["Die Abbildung zeigt den Input/Output-Dialo
 Öffnen Sie die Konsole von Argo CD und stellen Sie eine App bereit. Als Beispiel können Sie eine Jenkins-App mithilfe einer Argo-CD mit einem Helm-Diagramm bereitstellen. Beim Erstellen der Anwendung wurden folgende Details angegeben: Projekt: Default Cluster: 'https://kubernetes.default.svc'[] (Ohne die Anführungszeichen) Namespace: Jenkins die url für das Helm Chart: 'https://charts.bitnami.com/bitnami'[] (Ohne Anführungszeichen)
 
 Helm-Parameter: Global.storageClass: Fsxn-nas
-
-====
