@@ -48,7 +48,7 @@ NOTE: Cyber-Vault-Cluster können sich im gleichen oder anderen Datacenter wie d
 
 
 
-NOTE: Die standardmäßige Aufbewahrung ist „auf Minimum gesetzt“. Einem SnapLock-Volume, das ein Vault-Ziel ist, ist ein Standardaufbewahrungszeitraum zugewiesen. Der Wert für diesen Zeitraum wird zunächst für SnapLock Compliance Volumes auf ein Minimum von 0 Jahren und maximal 30 Jahren festgelegt. Jede NetApp Snapshot-Kopie wird zunächst mit diesem standardmäßigen Aufbewahrungszeitraum festgelegt. Die Aufbewahrungsfrist kann bei Bedarf später verlängert, aber nie verkürzt werden.
+NOTE: Die standardmäßige Aufbewahrung ist „auf Minimum gesetzt“. Einem SnapLock-Volume, das ein Vault-Ziel ist, ist ein Standardaufbewahrungszeitraum zugewiesen. Der Wert für diesen Zeitraum wird zunächst auf mindestens 0 Jahre und maximal 100 Jahre (beginnend mit ONTAP 9.10.1) festgelegt. Bei älteren ONTAP Versionen beträgt der Wert 0 - 70.) für SnapLock Compliance Volumes. Jede NetApp Snapshot-Kopie wird zunächst mit diesem standardmäßigen Aufbewahrungszeitraum festgelegt. Die Aufbewahrungsfrist kann bei Bedarf später verlängert, aber nie verkürzt werden. Weitere Informationen finden Sie unter link:https://docs.netapp.com/us-en/ontap/snaplock/set-retention-period-task.html["Aufbewahrungszeit einstellen"^].
 
 Die oben genannten Schritte umfassen manuelle Schritte. Sicherheitsexperten raten, den Prozess zu automatisieren, um ein manuelles Management zu vermeiden, was zu einer großen Fehlerspanne führt. Unten ist der Code-Snippet, der die Voraussetzungen und die Konfiguration von SnapLock Compliance und die Initialisierung der Uhr vollständig automatisiert.
 
