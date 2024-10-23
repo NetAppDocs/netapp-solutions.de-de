@@ -1,0 +1,57 @@
+---
+sidebar: sidebar 
+permalink: containers/rh-os-n_use_case_rosa_solution_snapshot_app.html 
+keywords: OpenShift, OCP, Trident, NetApp ONTAP, Red Hat OpenShift Service on AWS, 
+summary: Red hat OpenShift Service auf AWS mit NetApp ONTAP 
+---
+= Red hat OpenShift Service auf AWS mit NetApp ONTAP
+:hardbreaks:
+:allow-uri-read: 
+:nofooter: 
+:icons: font
+:linkattrs: 
+:imagesdir: ../media/
+
+
+[role="lead"]
+**1. Erstellen Sie einen Snapshot des App-Volumes** in diesem Abschnitt wird gezeigt, wie Sie einen Trident-Snapshot des mit der App verknüpften Volumes erstellen.Dies ist eine Point-in-Time-Kopie der App-Daten. Falls die Applikationsdaten verloren gehen, können wir die Daten von dieser zeitpunktgenaue Kopie wiederherstellen. HINWEIS: Dieser Snapshot wird im selben Aggregat wie das ursprüngliche Volume in ONTAP gespeichert (On-Premises oder in der Cloud). Wenn also das ONTAP Storage-Aggregat verloren geht, können wir die Applikationsdaten nicht aus dem Snapshot wiederherstellen.
+
+**A. Erstellen einer VolumeSnapshotClass Speichern Sie das folgende Manifest in einer Datei namens Volume-Snapshot-class.yaml
+
+[source]
+----
+apiVersion: snapshot.storage.k8s.io/v1
+kind: VolumeSnapshotClass
+metadata:
+ name: fsx-snapclass
+driver: csi.trident.netapp.io
+deletionPolicy: Delete
+----
+Erstellen Sie mithilfe des oben genannten Manifests einen Snapshot.
+
+image:redhat_openshift_container_rosa_image20.png["Snapshot-Klasse"]
+
+**B. Erstellen Sie anschließend einen Snapshot** Erstellen Sie einen Snapshot der vorhandenen PVC, indem Sie VolumeSnapshot erstellen, um eine Point-in-Time-Kopie Ihrer PostgreSQL-Daten zu erstellen. Dies erzeugt einen FSX Snapshot, der fast keinen Platz im Dateisystem-Backend beansprucht. Speichern Sie das folgende Manifest in einer Datei namens Volume-Snapshot.yaml:
+
+[source]
+----
+apiVersion: snapshot.storage.k8s.io/v1
+kind: VolumeSnapshot
+metadata:
+ name: postgresql-volume-snap-01
+spec:
+ volumeSnapshotClassName: fsx-snapclass
+ source:
+   persistentVolumeClaimName: data-postgresql-0
+----
+**c. Erstellen Sie den Volume-Snapshot und bestätigen Sie, dass er erstellt wurde**
+
+Löschen Sie die Datenbank, um den Verlust von Daten zu simulieren (Datenverlust kann aus einer Vielzahl von Gründen passieren, hier simulieren wir es einfach durch Löschen der Datenbank)
+
+image:redhat_openshift_container_rosa_image21.png["Volume-Snapshot"]
+
+**D. Löschen Sie die Datenbank, um den Verlust von Daten zu simulieren (Datenverlust kann aus verschiedenen Gründen passieren, hier simulieren wir sie einfach durch Löschen der Datenbank)**
+
+image:redhat_openshift_container_rosa_image22.png["Datenbankverbindung"]
+
+image:redhat_openshift_container_rosa_image23.png["Drop der Datenbank"]

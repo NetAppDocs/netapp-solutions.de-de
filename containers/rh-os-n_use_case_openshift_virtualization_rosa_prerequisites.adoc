@@ -1,0 +1,33 @@
+---
+sidebar: sidebar 
+permalink: containers/rh-os-n_use_case_openshift_virtualization_rosa_prerequisites.html 
+keywords: OpenShift, OCP, Trident, NetApp ONTAP, Red Hat OpenShift, OpenShift Virtualization, ROSA, CNV, Container Native Virtualization, Red Hat OpenShift Virtualization 
+summary: Red hat OpenShift Virtualization auf ROSA 
+---
+= Bereitstellung von Red hat OpenShift Virtualization mit FSxN auf ROSA
+:hardbreaks:
+:allow-uri-read: 
+:nofooter: 
+:icons: font
+:linkattrs: 
+:imagesdir: ../media/
+
+
+[role="lead"]
+Dieser Abschnitt enthält Details zum Einrichten von FSX für NetApp ONTAP als Standardspeicherklasse für den ROSA-Cluster und Erstellen einer virtuellen Maschine, die FSX ONTAP-Speicher für seine Volumes nutzt. Wir werden auch prüfen, wie eine Verbindung zur Virtual Machine mit den Gastanmeldeinformationen hergestellt wird, und die VM neu starten. Und schließlich führen wir eine Live-Migration der virtuellen Maschine vom aktuellen Knoten zu einem neuen Knoten durch. Nach einem VM-Neustart und der Live-Migration werden wir den Inhalt des Plattenspeichers untersuchen.
+
+
+
+== Voraussetzungen
+
+* link:https://signin.aws.amazon.com/signin?redirect_uri=https://portal.aws.amazon.com/billing/signup/resume&client_id=signup["AWS Konto"]
+* link:https://console.redhat.com/["Ein Red hat Konto"]
+* IAM-Benutzer link:https://www.rosaworkshop.io/rosa/1-account_setup/["Mit entsprechenden Berechtigungen"] zum Erstellen und Zugreifen auf ROSA-Cluster
+* link:https://aws.amazon.com/cli/["AWS CLI"]
+* link:https://console.redhat.com/openshift/downloads["ROSA CLI"]
+* link:https://console.redhat.com/openshift/downloads["OpenShift -Befehlszeilenschnittstelle"] (oc)
+* link:https://docs.aws.amazon.com/eks/latest/userguide/helm.html["Helm 3-Dokumentation"]
+* link:https://docs.openshift.com/rosa/rosa_hcp/rosa-hcp-sts-creating-a-cluster-quickly.html["EIN HCP-ROSA-CLUSTER"] (Mit mindestens 3 Bare-Metal-Worker-Nodes)
+* link:https://docs.redhat.com/en/documentation/openshift_container_platform/4.17/html/virtualization/installing#virt-aws-bm_preparing-cluster-for-virt["OpenShift Virtualization ist auf ROSA Cluster installiert"]
+* link:https://console.redhat.com/openshift/overview["Zugriff auf die Red hat OpenShift -Webkonsole"]
+

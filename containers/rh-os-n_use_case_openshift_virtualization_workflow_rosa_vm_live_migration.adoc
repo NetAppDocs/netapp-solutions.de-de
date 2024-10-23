@@ -1,0 +1,33 @@
+---
+sidebar: sidebar 
+permalink: containers/rh-os-n_use_case_openshift_virtualization_workflow_rosa_vm_live_migration.html 
+keywords: OpenShift, OCP, Trident, NetApp ONTAP, Red Hat OpenShift, OpenShift Virtualization, ROSA, CNV, Container Native Virtualization, Red Hat OpenShift Virtualization 
+summary: Red hat OpenShift Virtualization auf ROSA 
+---
+= VM-Live-Migration
+:hardbreaks:
+:allow-uri-read: 
+:nofooter: 
+:icons: font
+:linkattrs: 
+:imagesdir: ../media/
+
+
+[role="lead"]
+In diesen Abschnitten führen wir eine VM-Live-Migration durch und untersuchen dann den Inhalt der Festplatten. Live-Migration bezieht sich auf das Verschieben einer laufenden Virtual Machine (VM) von einem physischen Host auf einen anderen, ohne den normalen Betrieb zu unterbrechen oder Ausfallzeiten oder andere negative Auswirkungen für den Endbenutzer zu verursachen. Live-Migration ist ein wichtiger Schritt in der Virtualisierung. Damit kann eine gesamte VM mit einem laufenden Betriebssystem (OS), Arbeitsspeicher, Storage und Netzwerk-Konnektivität von ihrem aktuellen Node zum Ziel verschoben werden. Nachfolgend sehen Sie, wie eine Live Migration der VM vom aktuellen Knoten zu einem neuen Knoten durchgeführt wird.
+
+Notieren Sie den Node, auf dem die VM ausgeführt wird image:redhat_openshift_ocpv_rosa_image24.png["Aktueller OCP-V VM-Node"]
+
+Klicken Sie auf die 3 Punkte und wählen Sie Migrate image:redhat_openshift_ocpv_rosa_image25.png["Live-Migration der OCP-V VM"]
+
+Auf der Seite Übersicht sehen Sie, dass die Migration erfolgreich war und der Status in erfolgreich geändert wurde. image:redhat_openshift_ocpv_rosa_image26.png["Erfolgreiche Migration der OCP-V VM"]
+
+Nach Abschluss der Live-Migration befindet sich die VM nun auf einem anderen Node. image:redhat_openshift_ocpv_rosa_image27.png["OCP-V VM auf verschiedenen Node"]
+
+Öffnen Sie die Webkonsole, und zeigen Sie den Inhalt der Festplatten an. Es enthält immer noch die gleichen 2 Dateien, die wir vor der Live-Migration erstellt haben. image:redhat_openshift_ocpv_rosa_image28.png["OCP-V VM: Dieselben Dateien nach der Live-Migration1"] image:redhat_openshift_ocpv_rosa_image29.png["OCP-V VM: Dieselben Dateien nach der Live-Migration2"]
+
+Der Speicher für die VM auf dem neuen Knoten zeigt noch immer die gleichen Festplatten image:redhat_openshift_ocpv_rosa_image30.png["OCP-V VM: Gleiche Festplatten nach der Live-Migration"]
+
+Außerdem sind die VES die gleichen. image:redhat_openshift_ocpv_rosa_image31.png["OCP-V VM: Gleiche PVCs nach Live-Migration"]
+
+Die Volumes, die dem VM-Pod zugeordnet sind, sind ebenfalls die gleichen (2 PVCs) wie zuvor. image:redhat_openshift_ocpv_rosa_image32.png["OCP-V VM: Gleiche PVCs nach Live-Migration"]
