@@ -2,7 +2,7 @@
 sidebar: sidebar 
 permalink: ehc/ncvs-gc-service-operation.html 
 keywords: physical security, operations team, customer responsibilities, malicious sre protection, certifications, gdpr 
-summary: Das Cloud Volumes Service-Team verwaltet die Backend-Services in Google Cloud und nutzt verschiedene Strategien, um die Plattform zu sichern und unerwünschte Zugriffe zu vermeiden. 
+summary: Das Google Cloud NetApp Volumes Team managt die Back-End-Services in Google Cloud und verwendet mehrere Strategien, um die Plattform zu sichern und unerwünschten Zugriff zu verhindern. 
 ---
 = Service-Betrieb
 :hardbreaks:
@@ -14,9 +14,9 @@ summary: Das Cloud Volumes Service-Team verwaltet die Backend-Services in Google
 
 
 [role="lead"]
-Das Cloud Volumes Service-Team verwaltet die Backend-Services in Google Cloud und nutzt verschiedene Strategien, um die Plattform zu sichern und unerwünschte Zugriffe zu vermeiden.
+Das Google Cloud NetApp Volumes Team managt die Back-End-Services in Google Cloud und verwendet mehrere Strategien, um die Plattform zu sichern und unerwünschten Zugriff zu verhindern.
 
-Jeder Kunde erhält sein eigenes Subnetz, mit dem standardmäßig Zugriff von anderen Kunden isoliert ist. Jeder Mandant in Cloud Volumes Service erhält seinen eigenen Namespace und VLAN für eine vollständige Datenisolierung. Nachdem ein Benutzer authentifiziert wurde, kann die Service Delivery Engine (SDE) nur noch Konfigurationsdaten für diesen Mandanten lesen.
+Jeder Kunde erhält ein eigenes Subnetz, das standardmäßig von anderen Kunden abgetrennt ist und jeder Mandant in Google Cloud NetApp Volumes erhält seinen eigenen Namespace und VLAN zur vollständigen Datenisolierung. Nachdem ein Benutzer authentifiziert wurde, kann die Service Delivery Engine (SDE) nur noch Konfigurationsdaten für diesen Mandanten lesen.
 
 
 
@@ -30,41 +30,41 @@ Für Techniker vor Ort wird ein Ticket für die Leistungsbeschreibung (Statement
 
 == Operations Team
 
-Das Betriebsteam für Cloud Volumes Service setzt sich aus Produktionstechnik und einem Site Reliability Engineer (SRE) für Cloud Volume Services sowie NetApp Field Support Engineers und Hardware-Partnern zusammen. Alle Mitglieder des Betriebsteams sind für die Arbeit in Google Cloud akkreditiert und für jedes angehobene Ticket werden detaillierte Arbeitsunterlagen aufbewahrt. Darüber hinaus gibt es einen strengen Änderungskontroll- und Genehmigungsprozess, um sicherzustellen, dass jede Entscheidung angemessen überprüft wird.
+Das Betriebsteam für Google Cloud NetApp Volumes besteht aus Production Engineering und einem Site Reliability Engineer (SRE) für Google Cloud NetApp Volumes sowie NetApp Field Support Engineers und Partnern für Hardware. Alle Mitglieder des Betriebsteams sind für die Arbeit in Google Cloud akkreditiert und für jedes angehobene Ticket werden detaillierte Arbeitsunterlagen aufbewahrt. Darüber hinaus gibt es einen strengen Änderungskontroll- und Genehmigungsprozess, um sicherzustellen, dass jede Entscheidung angemessen überprüft wird.
 
-Das SRE-Team verwaltet die Kontrollebene und wie die Daten von UI-Anfragen an Back-End-Hardware und -Software in Cloud Volumes Service weitergeleitet werden. Das SRE-Team verwaltet außerdem Systemressourcen, wie z. B. die maximale Anzahl von Volumes und Inode. SRES dürfen nicht mit Kundendaten interagieren oder Zugriff haben. Darüber hinaus koordiniert SRES mit Return Material Authorizations (RMAs), wie z. B. neue Festplatten- oder Speicherersatzanfragen für die Backend-Hardware.
+Das SRE-Team verwaltet die Kontrollebene und das Umleiten der Daten von UI-Anforderungen an die Back-End-Hardware und -Software in Google Cloud NetApp Volumes. Das SRE-Team verwaltet außerdem Systemressourcen, wie z. B. die maximale Anzahl von Volumes und Inode. SRES dürfen nicht mit Kundendaten interagieren oder Zugriff haben. Darüber hinaus koordiniert SRES mit Return Material Authorizations (RMAs), wie z. B. neue Festplatten- oder Speicherersatzanfragen für die Backend-Hardware.
 
 
 
 == Mitwirkungspflichten des Kunden
 
-Kunden von Cloud Volumes Service verwalten das Active Directory und die Benutzerrollenverwaltung sowie die Menge und die Datenvorgänge ihrer Organisation. Kunden können über Administratorrollen verfügen und Berechtigungen an andere Endbenutzer innerhalb desselben Google Cloud-Projekts delegieren. Dabei werden die beiden vordefinierten Rollen verwendet, die NetApp und Google Cloud (Administrator und Viewer) bereitstellen.
+Kunden von Google Cloud NetApp Volumes managen das Active Directory und das Benutzerrollenmanagement ihrer Unternehmen sowie das Volume und die Datenvorgänge. Kunden können über Administratorrollen verfügen und Berechtigungen an andere Endbenutzer innerhalb desselben Google Cloud-Projekts delegieren. Dabei werden die beiden vordefinierten Rollen verwendet, die NetApp und Google Cloud (Administrator und Viewer) bereitstellen.
 
-Der Administrator kann eine beliebige VPC im Kundenprojekt an Cloud Volumes Service Peer, die der Kunde für angemessen entscheidet. Der Kunde ist selbst dafür verantwortlich, den Zugriff auf sein Google Cloud Marketplace Abonnement zu managen und die VPCs zu managen, die Zugriff auf die Datenebene haben.
+Der Administrator kann eine beliebige VPC im Kundenprojekt von Google Cloud NetApp Volumes abgleichen, die der Kunde für angemessen erlegt. Der Kunde ist selbst dafür verantwortlich, den Zugriff auf sein Google Cloud Marketplace Abonnement zu managen und die VPCs zu managen, die Zugriff auf die Datenebene haben.
 
 
 
 == Bösartiger SRE-Schutz
 
-Ein Problem, das entstehen könnte, ist, wie schützt Cloud Volumes Service vor Szenarien, in denen es einen bösartigen SRE gibt oder wenn die SRE-Anmeldeinformationen kompromittiert wurden?
+Eine mögliche Sorge ist, wie sich Google Cloud NetApp Volumes vor Szenarien schützen, in denen eine schädliche SRE vorhanden ist oder die SRE-Anmeldedaten kompromittiert wurden?
 
-Der Zugang zur Produktionsumgebung ist nur mit einer begrenzten Anzahl von SRE-Einzelpersonen möglich. Darüber hinaus sind Administratorrechte auf eine Handvoll erfahrener Administratoren beschränkt. Alle Aktionen, die von jedem Mitarbeiter der Cloud Volumes Service Produktionsumgebung ausgeführt werden, werden protokolliert. Anomalien an der Basis- oder verdächtigen Aktivitäten werden durch unsere SIEM-Plattform (Security Information and Event Management) Threat Intelligence (Threat Intelligence Platform) erkannt. Dadurch können böswillige Aktionen nachverfolgt und abgemildert werden, bevor das Cloud Volumes Service-Backend zu einem zu großen Schaden angerichtet wird.
+Der Zugang zur Produktionsumgebung ist nur mit einer begrenzten Anzahl von SRE-Einzelpersonen möglich. Darüber hinaus sind Administratorrechte auf eine Handvoll erfahrener Administratoren beschränkt. Alle Aktionen, die von jedem in der Google Cloud NetApp Volumes-Produktionsumgebung durchgeführt werden, werden protokolliert und alle Anomalien bei der Baseline oder verdächtigen Aktivitäten werden von unserer SIEM-Plattform (Security Information and Event Management) zur Bedrohungserkennung erkannt. So können bösartige Aktionen nachverfolgt und abgemildert werden, bevor am Back-End von Google Cloud NetApp Volumes zu viel Schaden angerichtet wird.
 
 
 
 == Volumenlebenszyklus
 
-Cloud Volumes Service managt nur die Objekte innerhalb des Service, nicht die Daten innerhalb der Volumes. Nur Clients, die auf die Volumes zugreifen, können die Daten, ACLs, Dateieigentümer usw. managen. Die Daten in diesen Volumes sind im Ruhezustand verschlüsselt und der Zugriff ist auf Mandanten der Cloud Volumes Service Instanz beschränkt.
+Google Cloud NetApp Volumes managt nur die Objekte innerhalb des Service, nicht die Daten innerhalb der Volumes. Nur Clients, die auf die Volumes zugreifen, können die Daten, ACLs, Dateieigentümer usw. managen. Die Daten in diesen Volumes werden im Ruhezustand verschlüsselt und der Zugriff ist auf Mandanten der Google Cloud NetApp Volumes-Instanz beschränkt.
 
-Der Lebenszyklus eines Volumes für Cloud Volumes Service ist create-Update-delete. Volumes behalten Snapshot Kopien von Volumes, bis die Volumes gelöscht werden. Nur validierte Cloud Volumes Service Administratoren können Volumes in Cloud Volumes Service löschen. Wenn ein Administrator eine Volume-Löschung angefordert hat, muss ein zusätzlicher Schritt zur Eingabe des Volume-Namens erforderlich sein, um die Löschung zu überprüfen. Nachdem ein Volume gelöscht wurde, ist das Volume verschwunden und kann nicht wiederhergestellt werden.
+Der Volume-Lebenszyklus von Google Cloud NetApp Volumes ist create-Update-delete. Volumes behalten Snapshot Kopien von Volumes vor, bis die Volumes gelöscht werden. Nur validierte NetApp Volumes von Google Cloud können Volumes in Google Cloud NetApp Volumes löschen. Wenn ein Administrator eine Volume-Löschung angefordert hat, muss ein zusätzlicher Schritt zur Eingabe des Volume-Namens erforderlich sein, um die Löschung zu überprüfen. Nachdem ein Volume gelöscht wurde, ist das Volume verschwunden und kann nicht wiederhergestellt werden.
 
-Falls ein Cloud Volumes Service-Vertrag beendet wird, kennzeichnet NetApp Volumes nach einem bestimmten Zeitraum zum Löschen. Bevor dieser Zeitraum abläuft, können Sie Volumes auf Kundenwunsch wiederherstellen.
+Für den Fall, dass ein Google Cloud NetApp Volumes-Vertrag beendet wird, kennzeichnet NetApp Volumes zum Löschen nach einem bestimmten Zeitraum. Bevor dieser Zeitraum abläuft, können Sie Volumes auf Kundenwunsch wiederherstellen.
 
 
 
 == Zertifizierungen
 
-Cloud Volumes Services für Google Cloud sind derzeit nach den Standards ISO/IEC 27001:2013 und ISO/IEC 27018:2019 zertifiziert. Der Service erhielt kürzlich auch seinen SOC2 Type I Attestation Report. Weitere Informationen über die Verpflichtung von NetApp zur Datensicherheit und zum Datenschutz finden Sie unter https://www.netapp.com/company/trust-center/compliance/["Compliance: Datensicherheit und Datenschutz"^].
+Google Cloud NetApp Volumes für Google Cloud ist derzeit nach ISO/IEC 27001:2013 und ISO/IEC 27018:2019 zertifiziert. Der Service erhielt kürzlich auch seinen SOC2 Type I Attestation Report. Informationen zur NetApp Verpflichtung zu Datensicherheit und Datenschutz finden Sie unter https://www.netapp.com/company/trust-center/compliance/["Compliance: Datensicherheit und Datenschutz"^].
 
 
 

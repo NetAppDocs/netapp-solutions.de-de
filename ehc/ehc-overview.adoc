@@ -62,7 +62,7 @@ Unabhängig von der verwendeten Cloud umfasst der erste Cluster bei Implementier
 
 Wenn Kunden planen, Storage-intensive Workloads zu hosten und horizontal auf jeder Cloud-gehosteten VMware Lösung zu skalieren, schreibt die hyperkonvergente Standardinfrastruktur vor, dass die Erweiterung sowohl auf die Computing- als auch auf die Storage-Ressourcen erfolgen sollte.
 
-Durch die Integration in NetApp Cloud Volumes wie Azure NetApp Files, Amazon FSX ONTAP, Cloud Volumes ONTAP (in allen drei gängigen Hyperscalern verfügbar) und Cloud Volumes Service für Google Cloud haben Kunden jetzt die Möglichkeit, ihren Storage unabhängig voneinander zu skalieren. Außerdem können sie dem SDDC-Cluster nur noch bei Bedarf Computing-Nodes hinzufügen.
+Durch die Integration in NetApp Cloud Volumes wie Azure NetApp Files, Amazon FSX ONTAP, Cloud Volumes ONTAP (in allen drei wichtigen Hyperscalern verfügbar) und Google Cloud NetApp Volumes für Google Cloud haben Kunden jetzt Optionen, ihren Storage unabhängig voneinander zu skalieren. Sie können dem SDDC-Cluster nur nach Bedarf Computing-Nodes hinzufügen.
 
 
 
@@ -74,7 +74,7 @@ Durch die Integration in NetApp Cloud Volumes wie Azure NetApp Files, Amazon FSX
 * Es ist sehr einfach, die Storage-Kapazitäten von vSAN, das auf den Cluster-Hosts aufgebaut ist, zu erreichen. Verwenden Sie NetApp Cloud Volumes, um Storage zu skalieren, um entweder aktive Datensätze zu hosten oder kühlere Daten auf persistenten Storage zu verschieben.
 
 
-Azure NetApp Files, Amazon FSX ONTAP, Cloud Volumes ONTAP (in allen drei großen Hyperscalern verfügbar) und Cloud Volumes Service für Google Cloud können in Verbindung mit Gast-VMs eingesetzt werden. Diese Hybrid-Storage-Architektur besteht aus einem vSAN Datastore, der das Gastbetriebssystem und Binärdaten der Applikationen enthält. Die Applikationsdaten sind über einen Gastinitiator mit der VM verbunden. NFS-/SMB-Mounts kommunizieren direkt mit Amazon FSX ONTAP, Cloud Volume ONTAP, Azure NetApp Files und Cloud Volumes Service for Google Cloud. Mit dieser Konfiguration lassen sich Herausforderungen mit Storage-Kapazität wie mit vSAN bewältigen. Der verfügbare freie Speicherplatz hängt von den eingesetzten Rack-Flächen und Storage-Richtlinien ab.
+Azure NetApp Files, Amazon FSX ONTAP, Cloud Volumes ONTAP (in allen drei großen Hyperscalern verfügbar) und Google Cloud NetApp Volumes für Google Cloud können in Verbindung mit Gast-VMs verwendet werden. Diese Hybrid-Storage-Architektur besteht aus einem vSAN Datastore, der das Gastbetriebssystem und Binärdaten der Applikationen enthält. Die Applikationsdaten sind über einen gastbasierten iSCSI-Initiator an die VM oder über NFS-/SMB-Mounts verbunden, die eine direkte Kommunikation mit Amazon FSX ONTAP, Cloud Volume ONTAP, Azure NetApp Files und Google Cloud NetApp Volumes für Google Cloud ermöglichen. Mit dieser Konfiguration lassen sich Herausforderungen mit Storage-Kapazität wie mit vSAN bewältigen. Der verfügbare freie Speicherplatz hängt von den eingesetzten Rack-Flächen und Storage-Richtlinien ab.
 
 Betrachten wir ein SDDC-Cluster mit drei Nodes auf VMware Cloud auf AWS:
 
@@ -103,7 +103,7 @@ NOTE: Die Option in-Guest Storage war zum Zeitpunkt der Erstellung dieses Dokume
 === Wichtige Hinweise
 
 * Platzieren Sie in Hybrid-Storage-Modellen Tier-1- oder Workloads mit hoher Priorität auf vSAN Datastore, um alle spezifischen Latenzanforderungen abzudecken, da diese Teil des Hosts selbst und in der Nähe sind. Nutzung von in-Guest-Mechanismen für alle Workload-VMs, für die transaktionsorientierte Latenzen akzeptabel sind
-* Nutzen Sie die NetApp SnapMirror Technologie zur Replizierung der Workload-Daten vom lokalen ONTAP-System zu Cloud Volumes ONTAP oder Amazon FSX ONTAP, um die Migration mithilfe von Mechanismen auf Blockebene zu vereinfachen. Dies gilt nicht für Azure NetApp Files und Cloud Volumes Services. Für die Migration von Daten zu Azure NetApp Files oder Cloud Volumes Services verwenden Sie je nach verwendetem Dateiprotokoll NetApp XCP, BlueXP Copy und Sync, rysnc oder robocopy.
+* Nutzen Sie die NetApp SnapMirror Technologie zur Replizierung der Workload-Daten vom lokalen ONTAP-System zu Cloud Volumes ONTAP oder Amazon FSX ONTAP, um die Migration mithilfe von Mechanismen auf Blockebene zu vereinfachen. Dies gilt nicht für Azure NetApp Files und Google Cloud NetApp Volumes. Verwenden Sie für die Migration von Daten zu Azure NetApp Files oder Google Cloud NetApp Volumes NetApp XCP, BlueXP  Kopie und Synchronisierung, rysnc oder robocopy, je nach verwendetem Dateiprotokoll.
 * Bei den Tests wird eine zusätzliche Latenz von 2 bis 4 ms angezeigt, während der Zugriff auf Storage von den jeweiligen SDDCs erfolgt. Berücksichtigen Sie diese zusätzliche Latenz bei der Zuordnung des Storage in die Applikationsanforderungen.
 * Um mit dem Gast verbundenen Storage während des Test Failover und des tatsächlichen Failover zu mounten, stellen Sie sicher, dass iSCSI-Initiatoren neu konfiguriert sind, DNS für SMB-Freigaben aktualisiert wird und die NFS-Mount-Punkte in fstab aktualisiert werden.
 * Vergewissern Sie sich, dass die Registry-Einstellungen für Microsoft Multipath I/O (MPIO), Firewall und Festplatten-Timeout innerhalb der VM ordnungsgemäß konfiguriert sind.
@@ -144,6 +144,6 @@ NOTE: Wenden Sie sich an NetApp Solution Architects und zugehörige Hyperscaler-
 
 == Detaillierte Architektur
 
-Im allgemeinen wird mit dieser Architektur (in der Abbildung unten dargestellt) erläutert, wie sich Hybrid-Multi-Cloud-Konnektivität und App-Portabilität über diverse Cloud-Provider hinweg erreichen lässt, die NetApp Cloud Volumes ONTAP, Cloud Volumes Service für Google Cloud und Azure NetApp Files als zusätzliche Option für Gast-Storage verwenden.
+Im Hinblick auf die allgemeine Perspektive deckt diese Architektur (in der Abbildung unten dargestellt), wie NetApp Cloud Volumes ONTAP, Google Cloud NetApp Volumes für Google Cloud und Azure NetApp Files als zusätzliche in-Guest-Storage-Option für Hybrid-Multi-Cloud-Konnektivität und Applikationsportabilität über mehrere Cloud-Provider hinweg erreicht werden.
 
 image:ehc-architecture.png["Hybrid Cloud-Architektur Der Enterprise-Klasse"]

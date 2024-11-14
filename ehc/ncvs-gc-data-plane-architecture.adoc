@@ -2,7 +2,7 @@
 sidebar: sidebar 
 permalink: ehc/ncvs-gc-data-plane-architecture.html 
 keywords: cloud volumes service, google cloud, service networking, vpc peering 
-summary: Cloud Volumes Service für Google Cloud nutzt das Google Cloud Private Services ZugriffsFramework. In diesem Framework können sich Benutzer mit dem Cloud Volumes Service verbinden. Dieses Framework verwendet Service Networking und VPC Peering so wie andere Google Cloud-Services, dass die vollständige Isolierung zwischen Mandanten gewährleistet ist. 
+summary: Google Cloud NetApp Volumes für Google Cloud nutzt das Zugriffs-Framework für Google Cloud für private Services. In diesem Framework können sich die Benutzer mit den Google Cloud NetApp Volumes verbinden. Dieses Framework verwendet Service Networking und VPC Peering so wie andere Google Cloud-Services, dass die vollständige Isolierung zwischen Mandanten gewährleistet ist. 
 ---
 = Datenplanarchitektur
 :hardbreaks:
@@ -14,22 +14,22 @@ summary: Cloud Volumes Service für Google Cloud nutzt das Google Cloud Private 
 
 
 [role="lead"]
-Cloud Volumes Service für Google Cloud nutzt die Google Cloud https://cloud.google.com/vpc/docs/configure-private-services-access["Zugang zu privaten Services"^] Framework: In diesem Framework können sich Benutzer mit dem Cloud Volumes Service verbinden. Dieses Framework verwendet Service Networking und VPC Peering so wie andere Google Cloud-Services, dass die vollständige Isolierung zwischen Mandanten gewährleistet ist.
+Google Cloud NetApp Volumes für Google Cloud nutzt das Google Cloud https://cloud.google.com/vpc/docs/configure-private-services-access["Zugang zu privaten Services"^] Framework. In diesem Framework können sich die Benutzer mit den Google Cloud NetApp Volumes verbinden. Dieses Framework verwendet Service Networking und VPC Peering so wie andere Google Cloud-Services, dass die vollständige Isolierung zwischen Mandanten gewährleistet ist.
 
-Eine Übersicht über die Architektur von Cloud Volumes Service für Google Cloud finden Sie unter https://cloud.google.com/architecture/partners/netapp-cloud-volumes/architecture["Architektur für Cloud Volumes Service"^].
+Eine Architekturübersicht zu Google Cloud NetApp Volumes für Google Cloud finden Sie unter https://cloud.google.com/architecture/partners/netapp-cloud-volumes/architecture["Architektur für Google Cloud NetApp Volumes"^].
 
-Benutzer-VPCs (Standalone oder Shared) werden an VPCs innerhalb von Cloud Volumes Service gemanagten Mandantenprojekten weitergegeben, die die Volumes hostet.
+Benutzer-VPCs (Standalone oder Shared) werden in von Google Cloud NetApp Volumes gemanagten Mandantenprojekten mit dem Host der Volumes an VPCs geleitet.
 
 image:ncvs-gc-image5.png["Die Abbildung zeigt den Input/Output-Dialog oder die Darstellung des schriftlichen Inhalts"]
 
-Die obige Abbildung zeigt ein Projekt (das CVS Verbraucherprojekt in der Mitte) mit drei VPC-Netzwerken, die mit Cloud Volumes Service verbunden sind, und mehreren Compute Engine VMs (GCE1-7), die Volumes gemeinsam nutzen:
+Die obige Abbildung zeigt ein Projekt (das Verbraucherprojekt NetApp Volumes in der Mitte) mit drei VPC-Netzwerken, die mit Google Cloud NetApp-Volumes und mehreren Compute Engine-VMs (GCE1-7) verbunden sind und Volumes gemeinsam nutzen:
 
 * VPC1 ermöglicht GCE1 auf Volumes A und B. zuzugreifen
 * VPC2 ermöglicht GCE2 und GCE4 den Zugriff auf Lautstärke C.
-* Das dritte VPC-Netzwerk ist eine gemeinsame VPC, von der zwei Service-Projekte gemeinsam genutzt werden. GCE3, GCE4, GCE5 und GCE6 können auf Volumes D und E. zugreifen Shared VPC-Netzwerke werden nur für Volumes des Servicetyps „CVS-Performance“ unterstützt.
+* Das dritte VPC-Netzwerk ist eine gemeinsame VPC, von der zwei Service-Projekte gemeinsam genutzt werden. Damit können GCE3, GCE4, GCE5 und GCE6 auf Volumes D und E zugreifen. Gemeinsam genutzte VPC-Netzwerke werden nur für Volumes des Servicetyps NetApp Volumes unterstützt.
 
 
 
 NOTE: GCE7 kann auf keine Volumes zugreifen.
 
-Die Daten können sowohl bei der Übertragung (mit Kerberos- und/oder SMB-Verschlüsselung) als auch im Ruhezustand in Cloud Volumes Service verschlüsselt werden.
+Die Daten können sowohl während der Übertragung (mit Kerberos- und/oder SMB-Verschlüsselung) als auch im Ruhezustand in Google Cloud NetApp Volumes verschlüsselt werden.

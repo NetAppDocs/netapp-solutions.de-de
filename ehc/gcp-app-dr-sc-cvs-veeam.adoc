@@ -1,7 +1,7 @@
 ---
 sidebar: sidebar 
 permalink: ehc/gcp-app-dr-sc-cvs-veeam.html 
-keywords: gcp, gcve, snapcenter, cvo, cvs, iscsi, guest connect, dr, disaster recovery 
+keywords: gcp, gcve, snapcenter, cvo, gcnv, iscsi, guest connect, dr, disaster recovery 
 summary: Disaster Recovery in die Cloud ist eine stabile und kostengünstige Möglichkeit zum Schutz von Workloads vor Standortausfällen und Datenbeschädigungen wie Ransomware. Mit NetApp SnapMirror können lokale VMware Workloads, die Storage mit Anbindung des Gastspeichers verwenden, auf NetApp Cloud Volumes ONTAP repliziert werden, die in Google Cloud ausgeführt werden. 
 ---
 = Applikationskonsistente Disaster Recovery mit NetApp SnapCenter und Veeam Replizierung
@@ -92,7 +92,7 @@ video::395e33db-0d63-4e48-8898-b01200f006ca[panopto]
 ====
 Zwei wichtige Faktoren, die bei der Implementierung des SDDC berücksichtigt werden müssen, sind die Größe des SDDC-Clusters in der GCVE-Lösung und die Dauer, bis das SDDC den Betrieb aufrecht erhalten hat. Diese beiden wichtigen Überlegungen für eine Disaster-Recovery-Lösung tragen zur Senkung der Gesamtbetriebskosten bei. Das SDDC kann mit nur drei Hosts eingerichtet sein und bis hin zu einem Cluster mit mehreren Hosts in einer umfassenden Implementierung.
 
-Der NetApp Cloud Volume Service für NFS-Datastore und die Cloud Volumes ONTAP für SQL-Datenbanken und das Protokoll können in jede VPC implementiert werden. GCVE sollte über eine private Verbindung zu dieser VPC verfügen, um den NFS-Datastore zu mounten und die VM mit den iSCSI-LUNs zu verbinden.
+Google Cloud NetApp Volumes für NFS Datastore und Cloud Volumes ONTAP für SQL Datenbanken und Protokoll können in jede VPC implementiert werden. GCVE sollte über eine private Verbindung zu diesem VPC verfügen, um den NFS-Datastore zu mounten und die VM mit den iSCSI-LUNs zu verbinden.
 
 Informationen zum Konfigurieren von GCVE SDDC finden Sie unter link:gcp-setup.html["Implementieren und Konfigurieren der Virtualisierungsumgebung auf der Google Cloud Platform (GCP)"^]. Überprüfen Sie als Voraussetzung, ob die Gast-VMs auf den GCVE-Hosts Daten aus dem Cloud Volumes ONTAP nutzen können, nachdem eine Verbindung hergestellt wurde.
 

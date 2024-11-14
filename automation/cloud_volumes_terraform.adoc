@@ -1,7 +1,7 @@
 ---
 sidebar: sidebar 
 permalink: automation/cloud_volumes_terraform.html 
-keywords: AWS, Azure, GCP, FSX, CVO, ANF, CVS, Terraform, automation 
+keywords: AWS, Azure, GCP, FSX, CVO, ANF, NetApp Volumes, Terraform, automation 
 summary: 'Diese Seite beschreibt die automatisierte Methode zur Implementierung von NetApp Volumes auf Cloud-Providern (AWS, Azure, GCP) mithilfe von Terraform.' 
 ---
 = Automatisierung von Cloud Volumes über Terraform
@@ -1698,10 +1698,10 @@ Terraform-Variablen für NetApp CVO Instanzen in HA-Paar auf GCP.
 | *gcp_cvo_gcp_Volume_size_unit* | Zeichenfolge | (Optional) ['GB' oder 'TB']. Der Standardwert ist „TB“. 
 |===
 --
-.CVS Volume
+.NetApp Volumes Volume
 --
-.Terraform Konfigurationsdateien für die Implementierung von NetApp CVS Volume auf GCP
-Dieser Abschnitt enthält verschiedene Terraform-Konfigurationsdateien für die Implementierung/Konfiguration von NetApp CVS (Cloud Volumes Services) Volume auf GCP (Google Cloud Platform).
+.Terraform-Konfigurationsdateien für die Implementierung von NetApp Volumes auf GCP
+Dieser Abschnitt enthält diverse Terraform-Konfigurationsdateien zum Implementieren/Konfigurieren von NetApp Volumes (Google Cloud NetApp Volumes) auf GCP (Google Cloud Platform).
 
 Terraform-Dokumentation: https://registry.terraform.io/providers/NetApp/netapp-gcp/latest/docs[]
 
@@ -1755,25 +1755,25 @@ Zum Löschen der Bereitstellung
     terraform destroy
 ----
 .Rezepte:
-`CVS Volume`
+`NetApp Volumes Volume`
 
-Terraform-Variablen für NetApp GCP CVS Volume.
+Terraform-Variablen für NetApp-GCP-NetApp-Volumes-Volume.
 
 [cols="20%, 10%, 70%"]
 |===
 | *Name* | *Typ* | *Beschreibung* 
 
 
-| *gcp_cvs_Name* | Zeichenfolge | (Erforderlich): Der Name des NetApp CVS Volumes 
+| *gcp_cvs_Name* | Zeichenfolge | (Erforderlich) der Name des NetApp Volumes Volume. 
 
 
-| *gcp_cvs_Projekt_id* | Zeichenfolge | (Erforderlich) das GCP Projekt_id, in dem das CVS Volume erstellt wird. 
+| *gcp_cvs_Projekt_id* | Zeichenfolge | (Erforderlich) die GCP Project_id, bei der das NetApp Volumes Volume erstellt wird. 
 
 
-| *gcp_cvs_gcp_Service_Account_PATH* | Zeichenfolge | (Erforderlich) der lokale Pfad der Service_Account JSON-Datei für GCP-Autorisierungszwecke. Dieses Servicekonto wird verwendet, um das CVS Volume in GCP zu erstellen. 
+| *gcp_cvs_gcp_Service_Account_PATH* | Zeichenfolge | (Erforderlich) der lokale Pfad der Service_Account JSON-Datei für GCP-Autorisierungszwecke. Mit diesem Servicekonto wird das NetApp Volumes-Volume in GCP erstellt. 
 
 
-| *gcp_cvs_Region* | Zeichenfolge | (Erforderlich) die GCP-Zone, in der das CVS Volume erstellt wird. 
+| *gcp_cvs_Region* | Zeichenfolge | (Erforderlich) die GCP-Zone, in der das NetApp Volumes-Volume erstellt wird. 
 
 
 | *gcp_cvs_Network* | Zeichenfolge | (Erforderlich) das Netzwerk-VPC des Volumes. 

@@ -2,9 +2,9 @@
 sidebar: sidebar 
 permalink: ehc/ncvs-gc-cloud-volumes-service-architecture.html 
 keywords: tenancy model, shared vpcs, service controls, packet sniffing, trace considerations 
-summary: 'Cloud Volumes Service verwendet für die Bereitstellung des Service Google PSA in einer Weise, die mit anderen nativen Google Cloud-Services wie CloudSQL, Google Cloud VMware Engine (GCVE) und FileStore ähnlich ist.' 
+summary: 'In ähnlicher Weise wie andere native Google Cloud Services wie CloudSQL, Google Cloud VMware Engine (GCVE) und FileStore verwendet Google Cloud NetApp Volumes zur Bereitstellung des Service die Google PSA.' 
 ---
-= Architektur von Cloud Volumes Service
+= Google Cloud NetApp Volumes Architektur
 :hardbreaks:
 :allow-uri-read: 
 :nofooter: 
@@ -14,9 +14,9 @@ summary: 'Cloud Volumes Service verwendet für die Bereitstellung des Service Go
 
 
 [role="lead"]
-Cloud Volumes Service verwendet in ähnlicher Weise wie andere Cloud-native Dienste von Google wie CloudSQL, Google Cloud VMware Engine (GCVE) und FileStore https://cloud.google.com/vpc/docs/private-services-access?hl=en_US["Google PSA"^] Für die Bereitstellung des Service. In PSA werden Dienste innerhalb eines Service-Producer-Projekts aufgebaut, das verwendet wird https://cloud.google.com/vpc/docs/vpc-peering?hl=en_US["VPC-Netzwerk-Peering"^] So stellen Sie eine Verbindung zum Serviceverbraucher her. Der Hersteller des Service wird von NetApp bereitgestellt und betrieben. Der Serviceverbraucher ist eine VPC in einem Kundenprojekt und hostet die Clients, die auf Cloud Volumes Service Dateifreigaben zugreifen möchten.
+In ähnlicher Weise wie andere native Google Cloud Services wie CloudSQL, Google Cloud VMware Engine (GCVE) und FileStore verwendet Google Cloud NetApp Volumes https://cloud.google.com/vpc/docs/private-services-access?hl=en_US["Google PSA"^] für die Bereitstellung des Service. In PSA werden Services innerhalb eines Service-Producer-Projekts aufgebaut, das eine Verbindung zum Service-Verbraucher herstellt https://cloud.google.com/vpc/docs/vpc-peering?hl=en_US["VPC-Netzwerk-Peering"^]. Der Serviceanbieter wird von NetApp bereitgestellt und betrieben, der Servicekunde ist eine VPC in einem Kundenprojekt, in dem die Clients, die auf die Dateifreigaben von Google Cloud NetApp Volumes zugreifen möchten, gehostet werden.
 
-Die folgende Abbildung, auf die im Bezug genommen wird https://cloud.google.com/architecture/partners/netapp-cloud-volumes/architecture?hl=en_US["Abschnitt zur Architektur"^] In der Cloud Volumes Service-Dokumentation wird eine allgemeine Ansicht angezeigt.
+Die folgende Abbildung, die in der Dokumentation von Google Cloud NetApp Volumes referenziert https://cloud.google.com/architecture/partners/netapp-cloud-volumes/architecture?hl=en_US["Abschnitt zur Architektur"^] wird, zeigt eine allgemeine Ansicht.
 
 image:ncvs-gc-image1.png["Die Abbildung zeigt den Input/Output-Dialog oder die Darstellung des schriftlichen Inhalts"]
 
@@ -26,15 +26,15 @@ Der Teil über der gepunkteten Linie zeigt die Kontrollebene des Services an, de
 
 == Tenancy-Modell
 
-In Cloud Volumes Service gelten einzelne Projekte als eigenständige Mandanten. Das bedeutet, dass Manipulationen von Volumes, Snapshot Kopien usw. pro Projekt durchgeführt werden. Das heißt, alle Volumes sind im Besitz des Projekts, in dem sie erstellt wurden. Nur das Projekt kann standardmäßig die darin enthaltenen Daten managen und darauf zugreifen. Dies wird als Ansicht der Kontrollebene des Services betrachtet.
+In Google Cloud NetApp Volumes gelten einzelne Projekte als eindeutige Mandanten. Das bedeutet, dass Manipulationen von Volumes, Snapshot Kopien usw. pro Projekt durchgeführt werden. Das heißt, alle Volumes sind im Besitz des Projekts, in dem sie erstellt wurden. Nur das Projekt kann standardmäßig die darin enthaltenen Daten managen und darauf zugreifen. Dies wird als Ansicht der Kontrollebene des Services betrachtet.
 
 
 
 === Gemeinsam genutzte VPCs
 
-In der Ansicht „Datenebene“ kann Cloud Volumes Service eine Verbindung zu einer gemeinsamen VPC herstellen. Sie können Volumes im Hosting-Projekt oder in einem der Service-Projekte erstellen, die mit der gemeinsam genutzten VPC verbunden sind. Alle mit dieser gemeinsamen VPC verbundenen Projekte (Host oder Service) sind in der Lage, die Volumes auf der Netzwerkebene (TCP/IP) zu erreichen. Da alle Clients mit Netzwerkkonnektivität auf der gemeinsam genutzten VPC potenziell über NAS-Protokolle auf die Daten zugreifen können, muss die Zugriffssteuerung für das individuelle Volume (z. B. User-/Group-Zugriffssteuerungslisten (ACLs) und Hostnamen/IP-Adressen für NFS-Exporte) verwendet werden, um zu kontrollieren, wer auf die Daten zugreifen kann.
+In der Ansicht der Datenebene können sich Google Cloud NetApp Volumes mit einer gemeinsamen VPC verbinden. Sie können Volumes im Hosting-Projekt oder in einem der Service-Projekte erstellen, die mit der gemeinsam genutzten VPC verbunden sind. Alle mit dieser gemeinsamen VPC verbundenen Projekte (Host oder Service) sind in der Lage, die Volumes auf der Netzwerkebene (TCP/IP) zu erreichen. Da alle Clients mit Netzwerkkonnektivität auf der gemeinsam genutzten VPC potenziell über NAS-Protokolle auf die Daten zugreifen können, muss die Zugriffssteuerung für das individuelle Volume (z. B. User-/Group-Zugriffssteuerungslisten (ACLs) und Hostnamen/IP-Adressen für NFS-Exporte) verwendet werden, um zu kontrollieren, wer auf die Daten zugreifen kann.
 
-Sie können Cloud Volumes Service mit bis zu fünf VPCs pro Kundenprojekt verbinden. In der Kontrollebene können Sie mit dem Projekt alle erstellten Volumes managen – unabhängig von der VPC, mit der sie verbunden sind. Auf der Datenebene sind VPCs voneinander isoliert, wobei jedes Volume nur mit einer VPC verbunden werden kann.
+Google Cloud NetApp Volumes können mit bis zu fünf VPCs pro Kundenprojekt verbunden werden. In der Kontrollebene können Sie mit dem Projekt alle erstellten Volumes managen – unabhängig von der VPC, mit der sie verbunden sind. Auf der Datenebene sind VPCs voneinander isoliert, wobei jedes Volume nur mit einer VPC verbunden werden kann.
 
 Der Zugriff auf einzelne Volumes wird über protokollspezifische Zugriffskontrollmechanismen (NFS/SMB) gesteuert.
 
@@ -46,9 +46,9 @@ Das bedeutet, dass auf der Netzwerkebene alle mit der gemeinsam genutzten VPC ve
 
 VPC-Service-Kontrollen einrichten eine Zugriffskontrollumgebung um Google Cloud Services herum, die mit dem Internet verbunden sind und weltweit zugänglich sind. Diese Dienste bieten Zugriffskontrolle über Benutzeridentitäten, können aber nicht einschränken, aus welchen Netzwerkstandortanforderungen stammen. Die VPC-Service-Kontrollen schließen diese Lücke, indem sie Funktionen zur Einschränkung des Zugriffs auf definierte Netzwerke einführen.
 
-Die Cloud Volumes Service-Datenebene ist nicht mit dem externen Internet verbunden, sondern mit privaten VPCs mit klar definierten Netzwerkgrenzen (Perimeter). Innerhalb dieses Netzwerks verwendet jedes Volume eine protokollspezifische Zugriffssteuerung. Jegliche externe Netzwerkverbindung wird explizit von Google Cloud-Projektadministratoren erstellt. Die Kontrollebene bietet jedoch nicht denselben Schutz wie die Datenebene und kann von jedem beliebigen Ort mit gültigen Zugangsdaten aufgerufen werden ( https://datatracker.ietf.org/doc/html/rfc7519["JWT-Token"^]).
+Die Datenebene von Google Cloud NetApp Volumes ist nicht mit dem externen Internet verbunden, sondern mit privaten VPCs mit klar definierten Netzwerkgrenzen (Perimeter). Innerhalb dieses Netzwerks verwendet jedes Volume eine protokollspezifische Zugriffssteuerung. Jegliche externe Netzwerkverbindung wird explizit von Google Cloud-Projektadministratoren erstellt. Die Kontrollebene bietet jedoch nicht den gleichen Schutz wie die Datenebene und kann von überall aus mit gültigen Zugangsdaten aufgerufen werden ( https://datatracker.ietf.org/doc/html/rfc7519["JWT-Token"^]).
 
-Kurz gesagt, die Cloud Volumes Service Datenebene bietet die Möglichkeit der Netzwerk-Zugriffssteuerung, ohne dass die VPC-Service-Kontrollen unterstützt werden müssen. Außerdem werden nicht explizit VPC-Service-Controls verwendet.
+Kurz gesagt: Die Datenebene von Google Cloud NetApp Volumes ermöglicht die Netzwerkzugriffskontrolle – ohne die Unterstützung von VPC-Servicekontrollen und ohne ausdrückliche Nutzung der VPC-Servicekontrollen.
 
 
 
@@ -56,12 +56,12 @@ Kurz gesagt, die Cloud Volumes Service Datenebene bietet die Möglichkeit der Ne
 
 Paketerfassungen können für die Behebung von Netzwerkproblemen oder anderen Problemen (z. B. NAS-Berechtigungen, LDAP-Konnektivität usw.) nützlich sein, können aber auch missverständlich verwendet werden, um Informationen über Netzwerk-IP-Adressen, MAC-Adressen, Benutzer- und Gruppennamen und die Sicherheitsstufe für Endpunkte zu erhalten. Aufgrund der Art und Weise, wie Google Cloud-Netzwerke, VPCs und Firewall-Regeln konfiguriert werden, sollte ein unerwünschter Zugriff auf Netzwerkpakete ohne Benutzeranmeldung oder nur schwer zu erhalten sein link:ncvs-gc-control-plane-architecture.html#jwt-tokens["JWT-Token"] In Cloud-Instanzen integriert. Paketerfassungen sind nur auf Endpunkten (z. B. Virtual Machines (VMs) möglich und nur in Endpunkten innerhalb der VPC möglich, es sei denn, ein Shared VPC und/oder ein externer Netzwerktunnel/IP-Weiterleitung wird verwendet, um explizit externen Traffic zu Endpunkten zu erlauben. Es gibt keine Möglichkeit, den Verkehr außerhalb der Kunden zu schnuppern.
 
-Bei gemeinsamen VPCs wird die Verschlüsselung auf der Übertragungsstrecke mit NFS Kerberos und/oder genutzt link:ncvs-gc-data-encryption-in-transit.html#smb-encryption["SMB-Verschlüsselung"] Kann einen Großteil der Informationen aus Spuren verbergen. Allerdings wird noch etwas Verkehr in Klartext gesendet, wie link:ncvs-gc-other-nas-infrastructure-service-dependencies.html#dns["DNS"] Und link:ncvs-gc-other-nas-infrastructure-service-dependencies.html#ldap-queries["LDAP-Abfragen"]. Die folgende Abbildung zeigt eine Paketerfassung aus einer Klartext-LDAP-Abfrage, die aus Cloud Volumes Service stammt, und die potenziellen identifizierenden Informationen, die freigelegt wurden. LDAP-Abfragen in Cloud Volumes Service unterstützen derzeit keine Verschlüsselung oder LDAP über SSL. CVS-Performance unterstützt LDAP-Signatur, falls durch Active Directory angefordert. CVS-SW unterstützt LDAP-Signatur nicht.
+Bei der Verwendung gemeinsam genutzter VPCs kann die Verschlüsselung während des Fluges mit NFS Kerberos und/oder link:ncvs-gc-data-encryption-in-transit.html#smb-encryption["SMB-Verschlüsselung"]viele der von Traces gewonnenen Informationen maskieren. Allerdings wird ein Teil des Verkehrs immer noch in Klartext gesendet, wie link:ncvs-gc-other-nas-infrastructure-service-dependencies.html#dns["DNS"] und link:ncvs-gc-other-nas-infrastructure-service-dependencies.html#ldap-queries["LDAP-Abfragen"]. Die folgende Abbildung zeigt die Paketerfassung einer LDAP-Abfrage im Klartext aus Google Cloud NetApp Volumes sowie die potenziellen identifizierenden offengelegten Informationen. LDAP-Abfragen in Google Cloud NetApp Volumes unterstützen derzeit keine Verschlüsselung bzw. LDAP über SSL. NetApp Volumes-Performance unterstützt LDAP-Signing, sofern von Active Directory angefordert. NetApp Volumes-SW unterstützt LDAP-Signing nicht.
 
 image:ncvs-gc-image2.png["Die Abbildung zeigt den Input/Output-Dialog oder die Darstellung des schriftlichen Inhalts"]
 
 
-NOTE: UnixUserPassword wird von LDAP abgefragt und nicht im Klartext, sondern in einem gesalzenem Hash gesendet. Standardmäßig füllt Windows LDAP die Felder unixUserPassword nicht aus. Dieses Feld ist nur erforderlich, wenn Sie Windows LDAP für interaktive Anmeldungen über LDAP für Clients verwenden müssen. Cloud Volumes Service unterstützt keine interaktiven LDAP-Anmeldungen bei den Instanzen.
+NOTE: UnixUserPassword wird von LDAP abgefragt und nicht im Klartext, sondern in einem gesalzenem Hash gesendet. Standardmäßig füllt Windows LDAP die Felder unixUserPassword nicht aus. Dieses Feld ist nur erforderlich, wenn Sie Windows LDAP für interaktive Anmeldungen über LDAP für Clients verwenden müssen. Google Cloud NetApp Volumes unterstützt keine interaktiven LDAP-Anmeldungen bei den Instanzen.
 
 Die folgende Abbildung zeigt eine Paketerfassung aus einem NFS-Kerberos-Gespräch neben einer NFS-Erfassung über AUTH_SYS. Beachten Sie, wie sich die Informationen in einer Kurve zwischen den beiden unterscheiden und wie die Aktivierung der Verschlüsselung während der Übertragung eine größere Gesamtsicherheit für den NAS-Datenverkehr bietet.
 

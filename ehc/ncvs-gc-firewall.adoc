@@ -2,7 +2,7 @@
 sidebar: sidebar 
 permalink: ehc/ncvs-gc-firewall.html 
 keywords: tcp, nfs, smb share, kerberos, active directory, dns 
-summary: Cloud Volumes Service legt mehrere TCP Ports für NFS- und SMB-Freigaben bereit. 
+summary: Google Cloud NetApp Volumes setzen mehrere TCP-Ports für NFS- und SMB-Freigaben frei. 
 ---
 = Firewall
 :hardbreaks:
@@ -14,7 +14,7 @@ summary: Cloud Volumes Service legt mehrere TCP Ports für NFS- und SMB-Freigabe
 
 
 [role="lead"]
-Cloud Volumes Service legt mehrere TCP Ports für NFS- und SMB-Freigaben bereit:
+Google Cloud NetApp Volumes setzen mehrere TCP-Ports für NFS- und SMB-Freigaben frei:
 
 * https://cloud.google.com/architecture/partners/netapp-cloud-volumes/security-considerations?hl=en_US["Für NFS-Zugriff erforderliche Ports"^]
 * https://cloud.google.com/architecture/partners/netapp-cloud-volumes/security-considerations?hl=en_US["Für SMB-Zugriff erforderliche Ports"^]
@@ -22,6 +22,6 @@ Cloud Volumes Service legt mehrere TCP Ports für NFS- und SMB-Freigaben bereit:
 
 Außerdem erfordern SMB, NFS mit LDAP, einschließlich Kerberos und Dual-Protokoll-Konfigurationen den Zugriff auf eine Windows Active Directory Domain. Active Directory-Verbindungen müssen sein https://cloud.google.com/architecture/partners/netapp-cloud-volumes/creating-smb-volumes?hl=en_US["Konfiguriert"^] Pro Region. Active Directory-Domänencontroller (DC) werden mithilfe identifiziert https://docs.microsoft.com/en-us/openspecs/windows_protocols/ms-adts/7fcdce70-5205-44d6-9c3a-260e616a2f04["DNS-basierte DC-Erkennung"^] Verwenden der angegebenen DNS-Server. Alle zurückgegebenen Datacenter werden genutzt. Die Liste der geeigneten DCs kann durch Angabe einer Active Directory-Site beschränkt werden.
 
-Cloud Volumes Service erreicht mit IP-Adressen aus dem CIDR-Bereich, der dem zugewiesen ist `gcloud compute address` Befehl während https://cloud.google.com/architecture/partners/netapp-cloud-volumes/setting-up-private-services-access?hl=en_US["On-Boarding the Cloud Volumes Service"^]. Sie können dieses CIDR als Quelladressen verwenden, um eingehende Firewalls für Ihre Active Directory-Domänencontroller zu konfigurieren.
+Google Cloud NetApp Volumes erreicht mit IP-Adressen aus dem CIDR-Bereich mit dem Befehl zugewiesen `gcloud compute address`, während https://cloud.google.com/architecture/partners/netapp-cloud-volumes/setting-up-private-services-access?hl=en_US["Google Cloud NetApp Volumes integriert"^]. Sie können dieses CIDR als Quelladressen verwenden, um eingehende Firewalls für Ihre Active Directory-Domänencontroller zu konfigurieren.
 
-Active Directory-Domänencontroller müssen https://cloud.google.com/architecture/partners/netapp-cloud-volumes/security-considerations?hl=en_US["Legen Sie wie hier erwähnt Ports den Cloud Volumes Service-CIDRs offen"^].
+Active Directory-Domänencontroller müssen https://cloud.google.com/architecture/partners/netapp-cloud-volumes/security-considerations?hl=en_US["Legen Sie Ports wie hier erwähnt den Google Cloud NetApp Volumes CIDRs offen"^].

@@ -1,10 +1,10 @@
 ---
 sidebar: sidebar 
 permalink: ehc/gcp-migrate-veeam.html 
-keywords: gcp, gcve, cvs, migrate , dr, disaster recovery, veeam, replication, proxy, re-ip 
-summary: Kunden, die derzeit Veeam für ihre Datensicherungsanforderungen verwenden, verwenden die Lösung weiterhin, um die Workloads zu GCVE zu migrieren und von den Vorteilen der NFS-Datastores des NetApp Cloud Volume Service zu profitieren. 
+keywords: gcp, gcve, gcnv, migrate , dr, disaster recovery, veeam, replication, proxy, re-ip 
+summary: Kunden, die derzeit Veeam für ihre Datensicherungsanforderungen verwenden, verwenden die Lösung weiterhin, um die Workloads zu GCVE zu migrieren und von den Vorteilen der Google Cloud NetApp Volumes NFS-Datastores zu profitieren. 
 ---
-= VM-Migration zu NetApp Cloud Volume Service NFS-Datastore auf Google Cloud VMware Engine mithilfe der Veeam Replizierungsfunktion
+= VM-Migration zu Google Cloud NetApp Volumes NFS-Datastore auf Google Cloud VMware Engine mithilfe der Veeam Replizierungsfunktion
 :hardbreaks:
 :allow-uri-read: 
 :nofooter: 
@@ -14,7 +14,7 @@ summary: Kunden, die derzeit Veeam für ihre Datensicherungsanforderungen verwen
 
 
 [role="lead"]
-Kunden, die derzeit Veeam für ihre Datensicherungsanforderungen verwenden, verwenden die Lösung weiterhin, um die Workloads zu GCVE zu migrieren und von den Vorteilen der NFS-Datastores des NetApp Cloud Volume Service zu profitieren.
+Kunden, die derzeit Veeam für ihre Datensicherungsanforderungen verwenden, verwenden die Lösung weiterhin, um die Workloads zu GCVE zu migrieren und von den Vorteilen der Google Cloud NetApp Volumes NFS-Datastores zu profitieren.
 
 
 
@@ -24,7 +24,7 @@ Autoren: Suresh ThopPay, NetApp
 
 VM-Workloads, die auf VMware vSphere ausgeführt werden, können mithilfe der Veeam Replication-Funktion in die Google Cloud VMware Engine (GCVE) migriert werden.
 
-Dieses Dokument bietet einen Schritt-für-Schritt-Ansatz für die Einrichtung und Durchführung der VM-Migration mit NetApp Cloud Volume Service, Veeam und der Google Cloud VMware Engine (GCVE).
+Dieses Dokument bietet einen Schritt-für-Schritt-Ansatz für die Einrichtung und Durchführung einer VM-Migration mit Google Cloud NetApp Volumes, Veeam und der Google Cloud VMware Engine (GCVE).
 
 image:gcp_migration_veeam_01.png["Veeam VM Replication Architektur"]
 
@@ -46,7 +46,7 @@ Siehe link:https://cloud.google.com/network-connectivity/docs/how-to/choose-prod
 
 === Übersicht Zur Lösungsimplementierung
 
-. Stellen Sie sicher, dass der NFS-Datastore aus dem NetApp-Cloud-Volume-Service in GCVE vCenter gemountet ist.
+. Stellen Sie sicher, dass der NFS-Datastore aus den Google Cloud NetApp Volumes in GCVE vCenter gemountet ist.
 . Sicherstellen, dass Veeam Backup Recovery in vorhandener VMware vSphere-Umgebung implementiert wird
 . Erstellen Sie einen Replikationsjob, um die Replikation virtueller Maschinen auf die Instanz der Google Cloud VMware Engine zu starten.
 . Führen Sie ein Failover des Veeam Replication Job durch.
@@ -59,10 +59,9 @@ Siehe link:https://cloud.google.com/network-connectivity/docs/how-to/choose-prod
 
 
 
-==== Stellen Sie sicher, dass der NFS-Datastore aus dem NetApp-Cloud-Volume-Service in GCVE vCenter gemountet ist
+==== Stellen Sie sicher, dass der NFS-Datastore aus den Google Cloud NetApp Volumes in GCVE vCenter gemountet ist
 
-Melden Sie sich bei GCVE vCenter an, und stellen Sie sicher, dass ein NFS-Datastore mit ausreichend Speicherplatz verfügbar ist.
-Falls nicht, wenden Sie sich bitte an link:gcp-ncvs-datastore.html["Mounten Sie NetApp CVS als NFS-Datastore in GCVE"]
+Melden Sie sich bei GCVE vCenter an, und stellen Sie sicher, dass ein NFS-Datastore mit ausreichend Speicherplatz verfügbar ist. Falls nicht, wenden Sie sich bitte an link:gcp-ncvs-datastore.html["Mounten Sie NetApp Volumes als NFS-Datastore in GCVE"]
 
 
 

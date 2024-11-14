@@ -2,7 +2,7 @@
 sidebar: sidebar 
 permalink: ehc/ncvs-gc-architecture_overview.html 
 keywords: architecture overview, control plane, data plane 
-summary: Als Teil des Vertrauens einer Cloud-Lösung müssen Sie die Architektur und die Art und Weise der Sicherheit kennen. In diesem Abschnitt werden verschiedene Aspekte der Cloud Volumes Service-Architektur in Google erläutert, um mögliche Bedenken hinsichtlich der Datensicherheit zu zerstreuen und Bereiche herauszurufen, in denen zusätzliche Konfigurationsschritte erforderlich sind, um die sichere Implementierung zu erhalten. 
+summary: Als Teil des Vertrauens einer Cloud-Lösung müssen Sie die Architektur und die Art und Weise der Sicherheit kennen. In diesem Abschnitt werden verschiedene Aspekte der Google Cloud NetApp Volumes-Architektur in Google erläutert, um potenzielle Bedenken hinsichtlich der Datensicherung zu zerstreuen und Bereiche aufzurufen, in denen zusätzliche Konfigurationsschritte für die sicherste Implementierung erforderlich sein könnten. 
 ---
 = Überblick
 :hardbreaks:
@@ -14,20 +14,20 @@ summary: Als Teil des Vertrauens einer Cloud-Lösung müssen Sie die Architektur
 
 
 [role="lead"]
-Als Teil des Vertrauens einer Cloud-Lösung müssen Sie die Architektur und die Art und Weise der Sicherheit kennen. In diesem Abschnitt werden verschiedene Aspekte der Cloud Volumes Service-Architektur in Google erläutert, um mögliche Bedenken hinsichtlich der Datensicherheit zu zerstreuen und Bereiche herauszurufen, in denen zusätzliche Konfigurationsschritte erforderlich sind, um die sichere Implementierung zu erhalten.
+Als Teil des Vertrauens einer Cloud-Lösung müssen Sie die Architektur und die Art und Weise der Sicherheit kennen. In diesem Abschnitt werden verschiedene Aspekte der Google Cloud NetApp Volumes-Architektur in Google erläutert, um potenzielle Bedenken hinsichtlich der Datensicherung zu zerstreuen und Bereiche aufzurufen, in denen zusätzliche Konfigurationsschritte für die sicherste Implementierung erforderlich sein könnten.
 
-Die allgemeine Architektur von Cloud Volumes Service kann in zwei Hauptkomponenten aufgeteilt werden: Die Kontrollebene und die Datenebene.
+Die allgemeine Architektur von Google Cloud NetApp Volumes lässt sich in zwei Hauptkomponenten aufteilen: Die Kontrollebene und die Datenebene.
 
 
 
 == Kontrollebene
 
-Die Kontrollebene in Cloud Volumes Service ist die von Cloud Volumes Service-Administratoren und der nativen Automatisierungssoftware von NetApp gemanagte Back-End-Infrastruktur. Diese Ebene ist für Endbenutzer vollständig transparent und beinhaltet Netzwerk, Storage-Hardware, Software-Updates usw., um einen Mehrwert für eine Cloud-residente Lösung wie Cloud Volumes Service bereitzustellen.
+Die Kontrollebene in Google Cloud NetApp Volumes ist die Back-End-Infrastruktur, die von Administratoren von Google Cloud NetApp Volumes und der nativen Automatisierungssoftware NetApp gemanagt wird. Diese Ebene ist für Endbenutzer vollständig transparent und umfasst Netzwerke, Storage-Hardware, Softwareupdates usw., um einer Cloud-residenten Lösung wie Google Cloud NetApp Volumes einen Mehrwert zu bieten.
 
 
 
 == Datenebene
 
-Die Datenebene in Cloud Volumes Service umfasst die tatsächlichen Daten-Volumes und die gesamte Cloud Volumes Service-Konfiguration (wie Zugriffssteuerung, Kerberos Authentifizierung usw.). Die Datenebene unterliegt vollständig der Kontrolle von Endbenutzern und Nutzern der Cloud Volumes Service Plattform.
+Die Datenebene in Google Cloud NetApp Volumes umfasst die tatsächlichen Daten-Volumes und die gesamte Konfiguration von Google Cloud NetApp Volumes (z. B. Zugriffssteuerung, Kerberos-Authentifizierung usw.). Die Datenebene steht vollständig unter der Kontrolle von Endbenutzern und den Verbrauchern der Plattform Google Cloud NetApp Volumes.
 
-Es gibt unterschiedliche Arten, wie jede Ebene gesichert und verwaltet wird. In den folgenden Abschnitten werden diese Unterschiede näher beschrieben. Zunächst wird die Cloud Volumes Service Architektur im Überblick angezeigt.
+Es gibt unterschiedliche Arten, wie jede Ebene gesichert und verwaltet wird. In den folgenden Abschnitten werden diese Unterschiede behandelt. Beginnen Sie dabei mit einer Übersicht über die Architektur von Google Cloud NetApp Volumes.

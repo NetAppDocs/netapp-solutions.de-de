@@ -20,11 +20,11 @@ Die übertragenen Daten können auf der NAS-Protokollebene verschlüsselt und da
 
 == Google Cloud Network
 
-Google Cloud verschlüsselt den Datenverkehr auf Netzwerkebene wie in beschrieben https://cloud.google.com/security/encryption-in-transit["Verschlüsselung während der Übertragung"^] In der Google-Dokumentation. Wie im Abschnitt „Cloud Volumes Services Architecture“ erwähnt, wird Cloud Volumes Service aus einem von NetApp gesteuerten PSA Producer-Projekt bereitgestellt.
+Google Cloud verschlüsselt Datenverkehr auf Netzwerkebene, wie in der Google-Dokumentation beschrieben https://cloud.google.com/security/encryption-in-transit["Verschlüsselung während der Übertragung"^]. Wie im Abschnitt „Google Cloud NetApp Volumes Architektur“ erwähnt, wird Google Cloud NetApp Volumes aus einem von NetApp kontrollierten PSA-Produzenten-Projekt geliefert.
 
-Im Fall von CVS-SW führt der Producer-Mandant Google VMs aus, um den Service bereitzustellen. Der Datenverkehr zwischen Benutzer-VMs und Cloud Volumes Service-VMs wird automatisch durch Google verschlüsselt.
+Im Falle von NetApp Volumes-SW führt der Produzentenmandant Google VMs aus, um den Service bereitzustellen. Der Datenverkehr zwischen Benutzer-VMs und Google Cloud NetApp Volumes VMs wird automatisch von Google verschlüsselt.
 
-Obwohl der Datenpfad für CVS-Performance nicht vollständig auf der Netzwerkebene verschlüsselt ist, verwenden NetApp und Google eine Kombination https://1.ieee802.org/security/802-1ae/["Der IEEE 802.1AE Verschlüsselung (MACsec)"^], https://datatracker.ietf.org/doc/html/rfc2003["Kapselung"^] (Datenverschlüsselung) und Netzwerke mit physischen Einschränkungen zum Schutz der Daten bei der Übertragung zwischen dem Cloud Volumes Service CVS-Performance Servicetyp und Google Cloud
+Obwohl der Datenpfad für NetApp Volumes Performance auf der Netzwerkebene nicht vollständig verschlüsselt ist, verwenden NetApp und Google eine Kombination https://1.ieee802.org/security/802-1ae/["Der IEEE 802.1AE Verschlüsselung (MACsec)"^], (Datenverschlüsselung) und physisch beschränkte Netzwerke, https://datatracker.ietf.org/doc/html/rfc2003["Kapselung"^] um die Daten auf der Übertragungsstrecke zwischen dem Servicetyp Google Cloud NetApp Volumes NetApp und Google Cloud zu schützen.
 
 
 
@@ -40,15 +40,15 @@ https://docs.microsoft.com/en-us/windows-server/storage/file-server/smb-security
 
 Wenn die SMB-Verschlüsselung aktiviert ist, können Clients, die keine Verschlüsselung unterstützen, nicht auf die Freigabe zugreifen.
 
-Cloud Volumes Service unterstützt RC4-HMAC, AES-128-CTS-HMAC-SHA1 und AES-256-CTS-HMAC-SHA1-Sicherheitschiffren für SMB-Verschlüsselung. SMB verhandelt den vom Server am häufigsten unterstützten Verschlüsselungstyp.
+Google Cloud NetApp Volumes unterstützt RC4-HMAC, AES-128-CTS-HMAC-SHA1 und AES-256-CTS-HMAC-SHA1-Sicherheitskiffren für SMB-Verschlüsselung. SMB verhandelt den vom Server am häufigsten unterstützten Verschlüsselungstyp.
 
 
 
 === Kerberos: NFSv4.1
 
-Für NFSv4.1 bietet CVS-Performance Kerberos-Authentifizierung wie in beschrieben https://datatracker.ietf.org/doc/html/rfc7530["RFC7530"^]. Sie können Kerberos auf Volume-Basis aktivieren.
+Für NFSv4.1 bietet NetApp Volumes-Performance Kerberos-Authentifizierung wie in beschrieben https://datatracker.ietf.org/doc/html/rfc7530["RFC7530"^]. Sie können Kerberos pro Volume aktivieren.
 
-Der derzeit stärkste verfügbare Verschlüsselungstyp für Kerberos ist AES-256-CTS-HMAC-SHA1. NetApp Cloud Volumes Service unterstützt AES-256-CTS-HMAC-SHA1, AES-128-CTS-HMAC-SHA1, DES3 und DES für NFS. Es unterstützt auch ARCFOUR-HMAC (RC4) für CIFS/SMB-Datenverkehr, jedoch nicht für NFS.
+Der derzeit stärkste verfügbare Verschlüsselungstyp für Kerberos ist AES-256-CTS-HMAC-SHA1. Google Cloud NetApp Volumes unterstützt AES-256-CTS-HMAC-SHA1, AES-128-CTS-HMAC-SHA1, DES3 und DES für NFS. Es unterstützt auch ARCFOUR-HMAC (RC4) für CIFS/SMB-Datenverkehr, jedoch nicht für NFS.
 
 Kerberos bietet drei verschiedene Sicherheitsstufen für NFS-Mounts, die Möglichkeiten bieten, wie stark die Kerberos-Sicherheit sein sollte.
 
@@ -125,4 +125,4 @@ Die folgende Tabelle zeigt Unterschiede in den einzelnen Ebenen in Bezug auf Sic
 
 
 |===
-In Cloud Volumes Service wird ein konfigurierter Active Directory-Server als Kerberos-Server und LDAP-Server verwendet (um Benutzeridentitäten aus einem RFC2307-kompatiblen Schema zu suchen). Es werden keine anderen Kerberos oder LDAP-Server unterstützt. NetApp empfiehlt besonders, LDAP für das Identitätsmanagement in Cloud Volumes Service zu verwenden. Informationen darüber, wie NFS Kerberos in Paketerfassungen dargestellt wird, finden Sie im Abschnitt Link:ncvs-gc-Cloud-Volumes-Service-architecture.HTML#Packet Sniffing/trace thoerings[„Packet Sniffing/trace thoerings.“]
+In Google Cloud NetApp-Volumes wird ein konfigurierter Active Directory-Server als Kerberos-Server und LDAP-Server verwendet (um Benutzeridentitäten von einem RFC2307-kompatiblen Schema abzurufen). Es werden keine anderen Kerberos oder LDAP-Server unterstützt. NetApp empfiehlt insbesondere die Verwendung von LDAP für das Identitätsmanagement in Google Cloud NetApp Volumes. Informationen darüber, wie NFS Kerberos in Paketerfassungen dargestellt wird, finden Sie im Abschnitt Link:ncvs-gc-Cloud-Volumes-Service-architecture.HTML#Packet Sniffing/trace thoerings[„Packet Sniffing/trace thoerings.“]
