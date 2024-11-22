@@ -16,7 +16,7 @@ summary: 'Gemeinsam genutzter Speicher in Proxmox Virtual Environment (VE) reduz
 [role="lead"]
 Gemeinsam genutzter Speicher in Proxmox Virtual Environment (VE) reduziert die Zeit für die VM-Live-Migration und sorgt für ein besseres Ziel für Backups und konsistente Vorlagen in der gesamten Umgebung. ONTAP-Speicher kann die Anforderungen von Proxmox VE-Host-Umgebungen sowie von Gast-File-, Block- und Objekt-Storage erfüllen.
 
-Proxmox VE-Hosts müssen über FC-, Ethernet- oder andere unterstützte Schnittstellen verfügen, die mit Switches verkabelt sind und über die Kommunikation mit logischen ONTAP-Schnittstellen verfügen.
+Proxmox VE-Hosts müssen über FC-, Ethernet- oder andere unterstützte Schnittstellen verfügen, die mit Switches verkabelt sind und über die Kommunikation mit logischen ONTAP-Schnittstellen verfügen. Immer auf unterstützte Konfigurationen prüfen https://mysupport.netapp.com/matrix/#welcome["Interoperabilitäts-Matrix-Tool"].
 
 
 
@@ -142,6 +142,8 @@ Zur Nutzung von SMB/CIFS-Dateifreigaben müssen bestimmte Aufgaben vom Speichera
 
 NOTE: Das Kennwort wird in einer Klartextdatei gespeichert und ist nur für den Root-Benutzer zugänglich. Siehe link:https://pve.proxmox.com/pve-docs/chapter-pvesm.html#storage_cifs["Proxmox VE-Dokumentation"].
 
+.SMB Shared-Storage-Pool mit ONTAP
+video::5b4ae54a-08d2-4f7d-95ec-b22d015f6035[panopto,width=360]
 .<strong>-Abfragestellen-</strong>
 [%collapsible]
 ====
@@ -200,6 +202,8 @@ ONTAP unterstützt alle von Proxmox VE unterstützten NFS-Versionen. Um Fehlerto
 
 Wenn Sie neu bei ONTAP sind, führen Sie die folgenden Aufgaben über die Benutzeroberfläche von System Manager aus, um die Benutzerfreundlichkeit zu erhöhen.
 
+.NFS nconnect Option mit ONTAP
+video::f6c9aba3-b070-45d6-8048-b22e001acfd4[panopto,width=360]
 .<strong>-Abfragestellen-</strong>
 [%collapsible]
 ====
@@ -248,12 +252,14 @@ image:proxmox-ontap-image12.png["Storage-Konfigurationsdatei für NFS"]
 
 == LVM mit iSCSI
 
+.LVM Shared Pool mit iSCSI mit ONTAP
+video::d66ef67f-bcc2-4ced-848e-b22e01588e8c[panopto,width=360]
 Führen Sie die folgenden Aufgaben aus, um Logical Volume Manager für gemeinsamen Speicher auf Proxmox-Hosts zu konfigurieren:
 
 .<strong>-Abfragestellen-</strong>
 [%collapsible]
 ====
-. Stellen Sie sicher, dass zwei linux-Bridges auf jeder eigenen ethernet-nic konfiguriert sind (idealerweise auf verschiedenen VLANs).
+. Stellen Sie sicher, dass zwei linux vlan-Schnittstellen verfügbar sind.
 . Stellen Sie sicher, dass Multipath-Tools auf allen Proxmox VE-Hosts installiert sind. Stellen Sie sicher, dass er beim Booten gestartet wird.
 +
 [source, shell]
@@ -319,14 +325,16 @@ image:proxmox-ontap-image19.png["lvm iscsi-Konfiguration"]
 ====
 
 
-=== LVM mit NVMe/TCP
+== LVM mit NVMe/TCP
 
+.Gemeinsamer LVM-Pool mit NVMe/TCP unter Verwendung von ONTAP
+video::80164fe4-06db-4c21-a25d-b22e0179c3d2[panopto,width=360]
 Führen Sie die folgenden Aufgaben aus, um Logical Volume Manager für gemeinsam genutzten Speicher auf Proxmox-Hosts zu konfigurieren:
 
 .<strong>-Abfragestellen-</strong>
 [%collapsible]
 ====
-. Stellen Sie sicher, dass zwei linux-Bridges mit jeweils eigenem ethernet-Gerät konfiguriert sind (idealerweise in verschiedenen VLANs).
+. Stellen Sie sicher, dass zwei linux vlan-Schnittstellen verfügbar sind.
 . Führen Sie auf jedem Proxmox-Host im Cluster den folgenden Befehl aus, um die Host-Initiator-Info zu sammeln.
 +
 [source, shell]
