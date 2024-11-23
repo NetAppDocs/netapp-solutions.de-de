@@ -26,7 +26,7 @@ VMware HCX ist primär eine Mobilitätsplattform, die speziell zur Cloud-übergr
 
 Dieses Dokument bietet eine Schritt-für-Schritt-Anleitung zur Implementierung und Konfiguration von VMware HCX, einschließlich aller Hauptkomponenten – vor Ort und im Cloud-Datacenter –, die verschiedene VM-Migrationsmechanismen unterstützt.
 
-Weitere Informationen finden Sie unter https://docs.vmware.com/en/VMware-HCX/4.4/hcx-getting-started/GUID-DE0AD0AE-A6A6-4769-96ED-4D200F739A68.html["Einführung in HCX-Implementierungen"^] Und https://docs.vmware.com/en/VMware-HCX/4.4/hcx-getting-started/GUID-70F9C40C-804C-4FC8-9FBD-77F9B2FA77CA.html["Checkliste B – HCX mit einer VMware Cloud auf AWS SDDC Zielumgebung installieren"^].
+Weitere Informationen finden Sie unter https://techdocs.broadcom.com/us/en/vmware-cis/hcx/vmware-hcx/4-10/vmware-hcx-user-guide-4-10.html["VMware HCX-Benutzerhandbuch"^] und https://techdocs.broadcom.com/us/en/vmware-cis/hcx/vmware-hcx/4-10/getting-started-with-vmware-hcx-4-10/install-checklist-b-hcx-with-a-vmc-sddc-instance.html["Checkliste B – HCX mit einer VMware Cloud auf AWS SDDC Zielumgebung installieren"^].
 
 .Allgemeine Schritte
 [%collapsible]
@@ -47,13 +47,13 @@ Diese Liste enthält grundlegende Schritte zur Installation und Konfiguration vo
 .Voraussetzungen
 [%collapsible]
 ====
-Bevor Sie beginnen, stellen Sie sicher, dass die folgenden Voraussetzungen erfüllt sind. Weitere Informationen finden Sie unter https://docs.vmware.com/en/VMware-HCX/4.4/hcx-user-guide/GUID-A631101E-8564-4173-8442-1D294B731CEB.html["Vorbereitung der HCX-Installation"^]. Nachdem die Voraussetzungen einschließlich Konnektivität erfüllt sind, konfigurieren und aktivieren Sie HCX, indem Sie einen Lizenzschlüssel aus der VMware HCX-Konsole bei VMC generieren. Nach der Aktivierung von HCX wird das vCenter Plug-in implementiert und kann über die vCenter-Konsole zur Verwaltung aufgerufen werden.
+Bevor Sie beginnen, stellen Sie sicher, dass die folgenden Voraussetzungen erfüllt sind. Weitere Informationen finden Sie unter https://techdocs.broadcom.com/us/en/vmware-cis/hcx/vmware-hcx/4-10/vmware-hcx-user-guide-4-10/preparing-for-hcx-installations.html["Installation wird vorbereitet"^]. Nachdem die Voraussetzungen einschließlich Konnektivität erfüllt sind, konfigurieren und aktivieren Sie HCX, indem Sie einen Lizenzschlüssel aus der VMware HCX-Konsole bei VMC generieren. Nach der Aktivierung von HCX wird das vCenter Plug-in implementiert und kann über die vCenter-Konsole zur Verwaltung aufgerufen werden.
 
 Die folgenden Installationsschritte müssen ausgeführt werden, bevor Sie mit der HCX-Aktivierung und -Bereitstellung fortfahren:
 
 . Verwenden Sie ein vorhandenes VMC SDDC oder erstellen Sie nach diesem Vorgang ein neues SDDC link:aws-setup.html["Link von NetApp"^] Oder hier https://docs.vmware.com/en/VMware-Cloud-on-AWS/services/com.vmware.vmc-aws.getting-started/GUID-EF198D55-03E3-44D1-AC48-6E2ABA31FF02.html["Link zu VMware"^].
 . Der Netzwerkpfad von der lokalen vCenter Umgebung zu VMC SDDC muss die Migration von VMs über vMotion unterstützen.
-. Stellen Sie sicher, dass die erforderlichen https://docs.vmware.com/en/VMware-HCX/4.4/hcx-user-guide/GUID-A631101E-8564-4173-8442-1D294B731CEB.html["Firewall-Regeln und -Ports"^] Sind für vMotion Traffic zwischen dem lokalen vCenter Server und dem SDDC vCenter zulässig.
+. Stellen Sie sicher, dass die erforderlichen https://techdocs.broadcom.com/us/en/vmware-cis/hcx/vmware-hcx/4-10/vmware-hcx-user-guide-4-10/preparing-for-hcx-installations/network-port-and-protocol-requirements.html["Firewall-Regeln und -Ports"^] Daten für den vMotion Traffic zwischen dem lokalen vCenter Server und dem SDDC vCenter zulässig sind.
 . Das FSX ONTAP NFS-Volume sollte als ergänzender Datastore im VMC SDDC gemountet werden. Um die NFS-Datastores mit dem entsprechenden Cluster zu verbinden, führen Sie die in diesem  oder diesem https://docs.vmware.com/en/VMware-Cloud-on-AWS/services/com.vmware.vmc-aws-operations/GUID-D55294A3-7C40-4AD8-80AA-B33A25769CCA.html["Link zu VMware"^] beschriebenen Schritte link:aws-native-overview.html["Link von NetApp"^]aus.
 
 
@@ -198,7 +198,7 @@ Die VMware HCX Interconnect (HCX-IX) Appliance bietet sichere Tunnelfunktionen �
 NOTE: Computing-Profile beinhalten die Parameter für die Computing-, Storage- und Netzwerkimplementierung, die für die Implementierung einer virtuellen Interconnect Appliance erforderlich sind. Außerdem wird angegeben, welcher Teil des VMware Datacenters für den HCX-Service verfügbar sein soll.
 
 +
-Ausführliche Anweisungen finden Sie unter https://docs.vmware.com/en/VMware-HCX/4.4/hcx-user-guide/GUID-BBAC979E-8899-45AD-9E01-98A132CE146E.html["Erstellen eines Computing-Profils"^].
+Ausführliche Anweisungen finden Sie unter https://techdocs.broadcom.com/us/en/vmware-cis/hcx/vmware-hcx/4-10/vmware-hcx-user-guide-4-10/configuring-and-managing-the-hcx-interconnect/configuring-the-hcx-service-mesh/create-a-compute-profile.html["Erstellen eines Computing-Profils"^].
 
 +
 image:fsx-hcx-image13.png["Die Abbildung zeigt den Input/Output-Dialog oder die Darstellung des schriftlichen Inhalts"]
@@ -213,7 +213,7 @@ NOTE: Dafür benötigen Sie mindestens zwei IP-Adressen. Diese IP-Adressen werde
 image:fsx-hcx-image14.png["Die Abbildung zeigt den Input/Output-Dialog oder die Darstellung des schriftlichen Inhalts"]
 
 +
-Ausführliche Anweisungen finden Sie unter https://docs.vmware.com/en/VMware-HCX/4.4/hcx-user-guide/GUID-184FCA54-D0CB-4931-B0E8-A81CD6120C52.html["Erstellen eines Netzwerkprofils"^].
+Ausführliche Anweisungen finden Sie unter https://techdocs.broadcom.com/us/en/vmware-cis/hcx/vmware-hcx/4-10/vmware-hcx-user-guide-4-10/configuring-and-managing-the-hcx-interconnect/configuring-the-hcx-service-mesh/create-a-network-profile.html["Erstellen eines Netzwerkprofils"^].
 
 +
 
@@ -254,7 +254,7 @@ image:fsx-hcx-image18.png["Die Abbildung zeigt den Input/Output-Dialog oder die 
 ====
 HCX bietet bidirektionale Migrationsservices zwischen zwei oder mehr Umgebungen, beispielsweise On-Premises- und VMC SDDCs. Applikations-Workloads können mithilfe verschiedener Migrationstechnologien wie HCX Bulk Migration, HCX vMotion, HCX Cold Migration, HCX Replication Assisted vMotion (erhältlich mit HCX Enterprise Edition) und HCX OS Assisted Migration (erhältlich mit HCX Enterprise Edition) zu und von aktivierten Standorten migriert werden (mit HCX Enterprise Edition erhältlich).
 
-Weitere Informationen über verfügbare HCX-Migrationstechnologien finden Sie unter https://docs.vmware.com/en/VMware-HCX/4.4/hcx-user-guide/GUID-8A31731C-AA28-4714-9C23-D9E924DBB666.html["Migrationstypen von VMware HCX"^]
+Weitere Informationen zu verfügbaren HCX-Migrationstechnologien finden Sie unter https://techdocs.broadcom.com/us/en/vmware-cis/hcx/vmware-hcx/4-10/vmware-hcx-user-guide-4-10/migrating-virtual-machines-with-vmware-hcx/vmware-hcx-migration-types.html["Migrationstypen von VMware HCX"^]
 
 Die HCX-IX Appliance verwendet den Mobility Agent Service, um vMotion-, Cold- und Replication Assisted vMotion-Migrationen (RAV) durchzuführen.
 
@@ -286,7 +286,7 @@ image:fsx-hcx-image22.png["Die Abbildung zeigt den Input/Output-Dialog oder die 
 . Klicken Sie nach Abschluss der Validierungsprüfungen auf Los, um die Migration zu starten.
 +
 
-NOTE: Der vMotion Transfer erfasst den aktiven VM-Speicher, seinen Ausführungszustand, seine IP-Adresse und seine MAC-Adresse. Weitere Informationen zu den Anforderungen und Einschränkungen von HCX vMotion finden Sie unter https://docs.vmware.com/en/VMware-HCX/4.1/hcx-user-guide/GUID-517866F6-AF06-4EFC-8FAE-DA067418D584.html["VMware HCX vMotion und „Cold Migration“ verstehen"^].
+NOTE: Der vMotion Transfer erfasst den aktiven VM-Speicher, seinen Ausführungszustand, seine IP-Adresse und seine MAC-Adresse. Weitere Informationen zu den Anforderungen und Einschränkungen von HCX vMotion finden Sie unter https://techdocs.broadcom.com/us/en/vmware-cis/hcx/vmware-hcx/4-10/vmware-hcx-user-guide-4-10/migrating-virtual-machines-with-vmware-hcx/understanding-vmware-hcx-vmotion-and-cold-migration.html#GUID-517866F6-AF06-4EFC-8FAE-DA067418D584-en["VMware HCX vMotion und „Cold Migration“ verstehen"^].
 
 . Über das Dashboard HCX > Migration können Sie den Fortschritt und den Abschluss von vMotion überwachen.
 +
@@ -309,7 +309,7 @@ Die Dauer der Replizierung kann gegenüber vMotion einer kleinen Anzahl von VMs 
 image:fsx-hcx-image25.png["Die Abbildung zeigt den Input/Output-Dialog oder die Darstellung des schriftlichen Inhalts"]
 
 =====
-Weitere Informationen zu den HCX-Migrationsoptionen und zur Migration von Workloads von On-Premises zu VMware Cloud on AWS mit HCX finden Sie im https://docs.vmware.com/en/VMware-HCX/4.4/hcx-user-guide/GUID-14D48C15-3D75-485B-850F-C5FCB96B5637.html["VMware HCX-Benutzerhandbuch"^].
+Weitere Informationen zu den HCX-Migrationsoptionen und zum Migrieren von Workloads von lokalen Systemen zu VMware Cloud on AWS mithilfe von HCX finden Sie auf der https://techdocs.broadcom.com/us/en/vmware-cis/hcx/vmware-hcx/4-10/vmware-hcx-user-guide-4-10/migrating-virtual-machines-with-vmware-hcx.html["VMware HCX-Benutzerhandbuch"^].
 
 
 NOTE: VMware HCX vMotion erfordert eine Durchsatzfunktion von 100 MB/s oder mehr.
@@ -352,5 +352,5 @@ https://docs.aws.amazon.com/fsx/latest/ONTAPGuide["https://docs.aws.amazon.com/f
 +
 VMware HCX-Benutzerhandbuch
 
-* https://docs.vmware.com/en/VMware-HCX/4.4/hcx-user-guide/GUID-BFD7E194-CFE5-4259-B74B-991B26A51758.html["https://docs.vmware.com/en/VMware-HCX/4.4/hcx-user-guide/GUID-BFD7E194-CFE5-4259-B74B-991B26A51758.html"^]
+* https://techdocs.broadcom.com/us/en/vmware-cis/hcx/vmware-hcx/4-10/vmware-hcx-user-guide-4-10.html["https://techdocs.broadcom.com/us/en/vmware-cis/hcx/vmware-hcx/4-10/vmware-hcx-user-guide-4-10.html"^]
 

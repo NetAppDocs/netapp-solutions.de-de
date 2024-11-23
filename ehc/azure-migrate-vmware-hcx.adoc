@@ -56,7 +56,7 @@ NOTE: HCX Advanced ist die Standardoption und die VMware HCX Enterprise Edition 
 * Nutzen Sie ein bereits softwaredefiniertes Datacenter (SDDC) einer Azure VMware Lösung oder erstellen Sie mithilfe dieses Modells eine Private Cloud link:azure-setup.html["Link von NetApp"^] Oder hier https://docs.microsoft.com/en-us/azure/azure-vmware/deploy-azure-vmware-solution?tabs=azure-portal["Microsoft-Link"^].
 * Die Migration von VMs und zugehörigen Daten vom lokalen Datacenter mit VMware vSphere erfordert Netzwerkkonnektivität vom Datacenter zur SDDC-Umgebung. Vor der Migration von Workloads https://docs.microsoft.com/en-us/azure/azure-vmware/tutorial-expressroute-global-reach-private-cloud["Richten Sie eine Site-to-Site-VPN- oder Express-Route-globale REACH-Verbindung ein"^] Zwischen der lokalen Umgebung und der jeweiligen Private Cloud verschieben.
 * Der Netzwerkpfad von der lokalen VMware vCenter Server Umgebung zur Private Cloud der Azure VMware Lösung muss die Migration von VMs mithilfe von vMotion unterstützen.
-* Stellen Sie sicher, dass die erforderlichen https://docs.vmware.com/en/VMware-HCX/4.4/hcx-user-guide/GUID-A631101E-8564-4173-8442-1D294B731CEB.html["Firewall-Regeln und -Ports"^] Sind für vMotion Traffic zwischen dem lokalen vCenter Server und SDDC vCenter zulässig. In der Private Cloud ist das Routing im vMotion Netzwerk standardmäßig konfiguriert.
+* Stellen Sie sicher, dass die erforderlichen https://learn.microsoft.com/en-us/azure/azure-vmware/tutorial-network-checklist?source=recommendations["Firewall-Regeln und -Ports"^] Ressourcen für vMotion Traffic zwischen dem lokalen vCenter Server und SDDC vCenter zulässig sind. In der Private Cloud ist das Routing im vMotion Netzwerk standardmäßig konfiguriert.
 * Das Azure NetApp Files NFS-Volume sollte als Datastore in der Azure VMware-Lösung eingebunden werden. Befolgen Sie die in diesem Schritt beschriebenen Schritte https://learn.microsoft.com/en-us/azure/azure-vmware/attach-azure-netapp-files-to-azure-vmware-solution-hosts?tabs=azure-portal["Verlinken"^] Um Azure NetApp Files-Datenspeicher an Azure VMware Solutions Hosts anzuschließen.
 
 
@@ -261,7 +261,7 @@ image:anfd-hcx-image15.png["Screenshot aus dem abgeschlossenen Prozess auf der S
 ====
 Workloads können mithilfe verschiedener VMware HCX Migrationstechnologien bidirektional zwischen lokalen und Azure SDDCs migriert werden. VMs können mithilfe von mehreren Migrationstechnologien wie HCX Bulk Migration, HCX vMotion, HCX Cold Migration, HCX Replication Assisted vMotion (erhältlich mit HCX Enterprise Edition) und HCX OS Assisted Migration (erhältlich mit der HCX Enterprise Edition) in und von VMware HCX Enterprise Edition verschoben werden.
 
-Weitere Informationen zu verschiedenen HCX-Migrationsmechanismen finden Sie unter https://docs.vmware.com/en/VMware-HCX/4.4/hcx-user-guide/GUID-8A31731C-AA28-4714-9C23-D9E924DBB666.html["Migrationstypen von VMware HCX"^].
+Weitere Informationen zu verschiedenen HCX-Migrationsmechanismen finden Sie unter https://learn.microsoft.com/en-us/azure/azure-vmware/architecture-migrate#vmware-hcx-migration-options["Migrationstypen von VMware HCX"^].
 
 *Massenmigration*
 
@@ -294,7 +294,7 @@ NOTE: Während dieser Migration wird auf dem angegebenen Azure NetApp Files Data
 
 image:anfd-hcx-image19.png["Die Abbildung zeigt den Input/Output-Dialog oder die Darstellung des schriftlichen Inhalts"]
 
-Weitere und detaillierte Informationen zu verschiedenen Migrationsoptionen und zur Migration von Workloads von On-Premises-Systemen zur Azure VMware Lösung mithilfe von HCX finden Sie unter https://docs.vmware.com/en/VMware-HCX/4.4/hcx-user-guide/GUID-14D48C15-3D75-485B-850F-C5FCB96B5637.html["VMware HCX-Benutzerhandbuch"^].
+Weitere und detaillierte Informationen zu den verschiedenen Migrationsoptionen und zum Migrieren von Workloads von On-Premises auf die Azure VMware-Lösung mithilfe von HCX finden Sie unter https://learn.microsoft.com/en-us/azure/azure-vmware/architecture-migrate["Überlegungen zur VMware HCX-Migration"^].
 
 Wenn Sie mehr über diesen Prozess erfahren möchten, sehen Sie sich das folgende Video an:
 
@@ -348,7 +348,7 @@ https://docs.microsoft.com/en-us/azure/azure-vmware/["https://docs.microsoft.com
 
 https://docs.microsoft.com/en-us/azure/azure-netapp-files/["https://docs.microsoft.com/en-us/azure/azure-netapp-files/"^]
 
-* VMware HCX-Benutzerhandbuch
+* Überlegungen zur VMware HCX-Migration
 
 
-https://docs.vmware.com/en/VMware-HCX/4.4/hcx-user-guide/GUID-BFD7E194-CFE5-4259-B74B-991B26A51758.html["https://docs.vmware.com/en/VMware-HCX/4.4/hcx-user-guide/GUID-BFD7E194-CFE5-4259-B74B-991B26A51758.html"^]
+https://learn.microsoft.com/en-us/azure/azure-vmware/architecture-migrate["https://learn.microsoft.com/en-us/azure/azure-vmware/architecture-migrate"^]
