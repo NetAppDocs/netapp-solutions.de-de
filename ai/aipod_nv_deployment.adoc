@@ -40,7 +40,7 @@ Die folgende Tabelle zeigt Beispiel-Verkabelungszuweisungen für bis zu 16 DGX-S
 | Switch 1-Ports 37-40 | AFF-A90-01 bis -04 | Port e11a 
 
 
-| Switch 1-Ports 41-44 | AFF-A90-01 bis -04 | Port e8a 
+| Switch 1-Ports 41-44 | AFF-A90-01 bis -04 | Anschluss e2a 
 
 
 | Switch 1-Ports 57-64 | ISL zu switch2 | Anschlüsse 57-64 
@@ -61,7 +61,7 @@ Die folgende Tabelle zeigt Beispiel-Verkabelungszuweisungen für bis zu 16 DGX-S
 | Switch2-Ports 37-40 | AFF-A90-01 bis -04 | Port e11b 
 
 
-| Switch2-Ports 41-44 | AFF-A90-01 bis -04 | Port e8b 
+| Switch2-Ports 41-44 | AFF-A90-01 bis -04 | Anschluss e2b 
 
 
 | Switch2-Ports 57-64 | ISL zu switch1 | Anschlüsse 57-64 
@@ -100,7 +100,7 @@ Im Folgenden werden die grundlegenden Schritte zur Konfiguration der SN4600-Swit
 . Konfigurieren Sie LACP MLAG für jedes Paar von Client-Ports und Speicherports an beiden Switches
 +
 ** Port swp17 auf jedem Switch für DGX-H100-01 (enp170s0f1np1 und enp41s0f1np1), Port swp18 für DGX-H100-02 usw. (bond1-16)
-** Port swp41 auf jedem Switch für AFF-A90-01 (e8a und e8b), Port swp42 für AFF-A90-02 usw. (bond17-20)
+** Port swp41 auf jedem Switch für AFF-A90-01 (e2a und e2b), Port swp42 für AFF-A90-02 usw. (bond17-20)
 ** nv-Set-Schnittstelle bondX Bond-Mitglied swpX
 ** nv-Set-Schnittstelle bondx Bond-Mlag-id X
 
@@ -201,7 +201,7 @@ Im Folgenden werden die grundlegenden Schritte zur Konfiguration des Speichersys
 . Konfigurieren Sie ifrps auf jedem Controller
 +
 ** NET Port ifgrp create -Node <node> -ifgrp a1a -Mode Multimode_lacp -distr-Function Port
-** NET Port ifgrp add-Port -Node <node> -ifgrp <ifgrp> -Ports <node>:e8a,<node>:e8b
+** NET Port ifgrp add-Port -Node <node> -ifgrp <ifgrp> -Ports <node>:e2a,<node>:e2b
 
 
 . Konfigurieren Sie den Management-vlan-Port auf ifgrp auf jedem Controller
@@ -245,7 +245,7 @@ Im Folgenden werden die grundlegenden Schritte zur Konfiguration des Speichersys
 +
 ** SVM für RDMA-Unterstützung konfigurieren
 +
-*** vserver modify -vserver basepod-Data -rdma aktiviert
+*** vserver nfs modify -vserver basepod-Data -rdma aktiviert
 
 
 ** Erstellung der LIFs

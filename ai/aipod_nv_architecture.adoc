@@ -24,7 +24,7 @@ Diese Referenzarchitektur nutzt separate Fabrics für den Compute-Cluster-Interc
 
 _NetApp AIPOD-Lösungstopologie_
 
-image:aipod_nv_A90_topo.png["Fehler: Fehlendes Grafikbild"]
+image:aipod_nv_A90_topo.png["Die Abbildung zeigt den Input/Output-Dialog oder die Darstellung des schriftlichen Inhalts"]
 
 
 
@@ -52,7 +52,11 @@ Weitere Informationen zur Konnektivität des DGX H100-Systems finden Sie in der 
 
 Jedes AFF A90 Storage-System ist über sechs 200-GbE-Ports von jedem Controller verbunden. Vier Ports von jedem Controller werden für den Workload-Datenzugriff aus den DGX-Systemen verwendet. Zwei Ports von jedem Controller werden als LACP-Schnittstellengruppe konfiguriert, um den Zugriff über die Server der Managementebene für Cluster-Managementartefakte und Benutzer-Home Directorys zu unterstützen. Der gesamte Zugriff auf die Daten aus dem Storage-System erfolgt über NFS, wobei eine Storage Virtual Machine (SVM) dediziert für den KI-Workload-Zugriff und eine separate SVM für das Cluster-Management vorgesehen ist.
 
-link:ai/aipod_nv_deployment.html["Einzelheiten zur Implementierung"]Weitere Informationen zur Konfiguration des Storage-Systems finden Sie auf der Seite.
+Die Management SVM benötigt nur eine einzelne LIF, die sich auf den auf jedem Controller konfigurierten 2-Port-Schnittstellengruppen befindet. Andere FlexGroup Volumes werden auf der Management-SVM bereitgestellt, um Artefakte im Cluster-Management wie Cluster-Node-Images, Systemüberwachungsdaten und Home Directories der Endbenutzer zu beherbergen. Die nachfolgende Abbildung zeigt die logische Konfiguration des Storage-Systems.
+
+_NetApp A90 logische Konfiguration des Storage-Clusters_
+
+image:aipod_nv_a90_logical.png["Die Abbildung zeigt den Input/Output-Dialog oder die Darstellung des schriftlichen Inhalts"]
 
 
 
