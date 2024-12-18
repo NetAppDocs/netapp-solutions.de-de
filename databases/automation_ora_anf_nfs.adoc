@@ -150,7 +150,7 @@ Die Bereitstellung erfordert die folgenden Voraussetzungen.
 . Implementieren Sie im Azure-Cloud-Portal Azure Linux-VMs als Oracle DB-Server. Erstellen Sie einen Azure NetApp Files-Kapazitätspool und Datenbank-Volumes für die Oracle-Datenbank. VM-SSH-Authentifizierung für privaten/öffentlichen Schlüssel für Azure-Benutzer für DB-Server aktivieren Details zur Umgebungs-Einrichtung finden Sie im Architekturdiagramm im vorherigen Abschnitt. Auch genannt link:azure_ora_nfile_procedures.html["Schritt-für-Schritt-Anweisungen zur Oracle-Implementierung auf Azure VM und Azure NetApp Files"^] Ausführliche Informationen finden Sie unter.
 +
 
-NOTE: Stellen Sie bei Azure-VMs, die mit lokaler Festplattenredundanz implementiert werden, sicher, dass Sie mindestens 128 G auf der VM-Root-Festplatte zugewiesen haben, damit ausreichend Speicherplatz für die Bereitstellung von Oracle-Installationsdateien und die Hinzufügen der OS-Swap-Datei zur Verfügung steht. Erweitern Sie die Partition /tmplv und /rootlv OS entsprechend. Stellen Sie sicher, dass die Benennung des Datenbank-Volumes der Konvention VMname-u01, VMname-u02 und VMname-u03 entspricht.
+NOTE: Stellen Sie bei Azure-VMs, die mit lokaler Festplattenredundanz implementiert werden, sicher, dass Sie mindestens 128 G auf der VM-Root-Festplatte zugewiesen haben, damit ausreichend Speicherplatz für die Bereitstellung von Oracle-Installationsdateien und die Hinzufügen der OS-Swap-Datei zur Verfügung steht. Erweitern Sie die Partition /tmplv und /rootlv OS entsprechend. Fügen Sie 1G freien Platz zu rootvg-homelv hinzu, wenn er kleiner als 1G ist. Stellen Sie sicher, dass die Benennung des Datenbank-Volumes der Konvention VMname-u01, VMname-u02 und VMname-u03 entspricht.
 
 +
 [source, cli]
@@ -161,6 +161,11 @@ sudo lvresize -r -L +20G /dev/mapper/rootvg-rootlv
 [source, cli]
 ----
 sudo lvresize -r -L +10G /dev/mapper/rootvg-tmplv
+----
++
+[source, cli]
+----
+sudo lvresize -r -L +1G /dev/mapper/rootvg-homelv
 ----
 . Stellen Sie im Azure-Cloud-Portal einen Windows-Server bereit, damit das UI-Tool NetApp SnapCenter mit der neuesten Version ausgeführt wird. Details finden Sie unter folgendem Link: link:https://docs.netapp.com/us-en/snapcenter/install/task_install_the_snapcenter_server_using_the_install_wizard.html["Installieren Sie den SnapCenter-Server"^]
 . Stellen Sie eine Linux VM als Ansible-Controller-Node mit der neuesten Version von Ansible und Git bereit. Details finden Sie unter folgendem Link: link:../automation/getting-started.html["Erste Schritte mit der Automatisierung von NetApp Lösungen"^] In Abschnitt -
