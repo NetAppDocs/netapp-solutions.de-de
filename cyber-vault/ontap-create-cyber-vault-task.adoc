@@ -43,6 +43,10 @@ Mit dem folgenden Befehl wird ein 2GB SnapLock Compliance-Volume mit dem Namen `
 `cluster2::> volume create -vserver SVM2 -volume dstvolB -aggregate node01_aggr -snaplock-type compliance -type DP -size 2GG`
 
 . Legen Sie auf dem Zielcluster zum Erstellen des Air-GAP den Standardaufbewahrungszeitraum fest, wie unter beschriebenlink:https://docs.netapp.com/us-en/ontap/snaplock/set-default-retention-period-task.html["Legen Sie den Standardaufbewahrungszeitraum fest"^]. Einem SnapLock-Volume, das ein Vault-Ziel ist, ist ein Standardaufbewahrungszeitraum zugewiesen. Der Wert für diesen Zeitraum wird zunächst auf mindestens 0 Jahre und maximal 100 Jahre (beginnend mit ONTAP 9.10.1) festgelegt. Bei älteren ONTAP Versionen beträgt der Wert 0 - 70.) für SnapLock Compliance Volumes. Jede NetApp Snapshot-Kopie wird zunächst mit diesem standardmäßigen Aufbewahrungszeitraum festgelegt. Die Standard-Aufbewahrungsfrist muss geändert werden. Die Aufbewahrungsfrist kann bei Bedarf später verlängert, aber nie verkürzt werden. Weitere Informationen finden Sie unter link:https://docs.netapp.com/us-en/ontap/snaplock/set-retention-period-task.html["Aufbewahrungszeit einstellen"^].
++
+
+NOTE: Service-Provider sollten bei der Festlegung der Aufbewahrungsfrist die Vertragsenddaten des Kunden berücksichtigen. Wenn zum Beispiel die Cyber-Vault-Aufbewahrungsfrist 30 Tage beträgt und der Vertrag des Kunden vor Ablauf der Aufbewahrungsfrist endet, können Daten im Cyber-Vault erst nach Ablauf der Aufbewahrungsfrist gelöscht werden.
+
 . link:https://docs.netapp.com/us-en/ontap/data-protection/create-replication-relationship-task.html["Erstellen einer neuen Replikationsbeziehung"^] Zwischen der nicht-SnapLock-Quelle und dem neuen SnapLock-Ziel, das Sie in Schritt 3 erstellt haben.
 +
 Dieses Beispiel erstellt eine neue SnapMirror-Beziehung zum SnapLock Ziel-Volume dstvolB mithilfe einer XDPDefault-Richtlinie, um täglich und wöchentlich gekennzeichnete Snapshot-Kopien nach einem stündlichen Zeitplan zu archivieren:
