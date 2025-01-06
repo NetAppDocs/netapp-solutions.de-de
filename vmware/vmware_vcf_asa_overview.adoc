@@ -16,9 +16,9 @@ summary:
 [role="lead"]
 VMware Cloud Foundation (VCF) ist eine integrierte softwaredefinierte Datacenter-Plattform (SDDC), die einen vollständigen Stack von softwaredefinierter Infrastruktur für die Ausführung von Enterprise-Applikationen in einer Hybrid-Cloud-Umgebung bereitstellt. Sie kombiniert Computing-, Storage-, Netzwerk- und Managementfunktionen in einer einheitlichen Plattform und ermöglicht so ein konsistentes Betriebserlebnis in Private und Public Clouds.
 
-Autor: Josh Powell
+Autor: Josh Powell, Suresh Thoppay
 
-Dieses Dokument enthält Informationen zu Storage-Optionen, die für VMware Cloud Foundation mit dem NetApp All-Flash-SAN-Array zur Verfügung stehen. Unterstützte Storage-Optionen werden mit spezifischen Anweisungen zur Implementierung von iSCSI-Datastores als ergänzenden Storage für Management-Domänen sowie für vVol (iSCSI)- und NVMe/TCP-Datastores als ergänzende Datastores für Workload-Domänen abgedeckt. Ebenfalls behandelt wird die Datensicherung von VMs und Datastores mit SnapCenter für VMware vSphere.
+Dieses Dokument enthält Informationen zu Storage-Optionen, die für VMware Cloud Foundation mit dem NetApp All-Flash-SAN-Array zur Verfügung stehen. Unterstützte Storage-Optionen werden durch spezielle Anweisungen zur Implementierung von VMFS-Datastores (FC/iSCSI) als Principal und ergänzenden Storage (FC/iSCSI/NVMe-of/vVol) für Management- und Workload-Domänen abgedeckt. Ebenfalls behandelt wird die Datensicherung von VMs und Datastores mit SnapCenter für VMware vSphere.
 
 
 
@@ -71,16 +71,50 @@ Weitere Informationen zur Architektur und Planung von VCF finden Sie unter link:
 
 ==== VCF Storage-Optionen
 
-VMware unterteilt Speicheroptionen für VCF in *Principal* und *Supplemental* Speicher. Die VCF-Management-Domäne muss vSAN als Haupt-Storage verwenden. Es gibt jedoch zahlreiche zusätzliche Storage-Optionen für die Managementdomäne sowie Haupt- und ergänzende Storage-Optionen für VI-Workload-Domänen.
+VMware unterteilt Speicheroptionen für VCF in *Principal* und *Supplemental* Speicher. ONTAP Storage kann ab VCF als Haupt- und Ergänzungsspeicher für Management- und Workload-Domänen genutzt werden. Mit VCF 5.2 kann eine vorhandene vSphere Umgebung in eine VCF-Managementdomäne konvertiert oder als Workload-Domäne in eine vorhandene VCF-Umgebung importiert werden.
 
 image:vmware-vcf-aff-image01.png["VCF Storage-Optionen"]
 
-*Hauptspeicher für Workload-Domänen*
-Hauptspeicher bezieht sich auf jeden Storage-Typ, der während des Setups im SDDC Manager direkt mit einer VI-Workload-Domäne verbunden werden kann. Der Hauptspeicher wird mit dem SDDC Manager als Teil der Cluster-Erstellungs-Orchestrierung bereitgestellt und ist der erste für eine Workload-Domäne konfigurierte Datastore. Sie umfasst vSAN, VVols (VMFS), NFS und VMFS auf Fibre Channel.
+*Principal Storage for Management and Workload Domains* Principal Storage bezieht sich auf jeden Speichertyp, der im Rahmen des Domain-Setups bereitgestellt oder importiert werden kann. Um ONTAP Storage als Hauptspeicher in der Management-Domäne zu verwenden, muss er aus der bestehenden vSphere Umgebung konvertiert werden. Die Option VMFS auf FC oder NFS v3 Datastore wird unterstützt.
+
+[cols="20% 20% 20% 20% 20%"]
+|===
+| Speichertyp | Management Domain – Standardcluster | Verwaltungsdomäne – Zusätzlicher Cluster | VI Workload Domain – Standardcluster | VI Workload Domain – zusätzlicher Cluster 
+
+
+| VMFS auf FC | *Import-Tool* | *SDDC-API* | Ja. | Ja. 
+
+
+| VMFS auf iSCSI | NA | NA | NA | NA 
+
+
+| VVol mit FC | NA | NA | Nein | Ja. 
+
+
+| VVol mit iSCSI | NA | NA | Nein | Ja. 
+|===
+* NA – nicht von VCF unterstützt.
+
 
 *Ergänzender Speicher für Management- und Workload-Domänen*
 Zusätzlicher Storage ist der Storage-Typ, der dem Management oder den Workload-Domänen jederzeit nach der Erstellung des Clusters hinzugefügt werden kann. Zusätzlicher Storage umfasst die größte Auswahl an unterstützten Storage-Optionen, die alle von NetApp ASA Arrays unterstützt werden. Für die meisten Storage-Protokolltypen kann zusätzlicher Storage mit den ONTAP Tools für VMware vSphere implementiert werden.
 
+[cols="25% 25% 25% 25%"]
+|===
+| Speichertyp | Management Domain – Standardcluster | Verwaltungsdomäne – Zusätzlicher Cluster | VI Workload Domain 
+
+
+| VMFS auf FC | Ja. | Ja. | Ja. 
+
+
+| VMFS auf iSCSI | Ja. | Ja. | Ja. 
+
+
+| VVol mit FC | Ja. | Ja. | Ja. 
+
+
+| VVol mit iSCSI | Ja. | Ja. | Ja. 
+|===
 Zusätzliche Dokumentationsressourcen für VMware Cloud Foundation:
 * link:https://docs.vmware.com/en/VMware-Cloud-Foundation/index.html["Dokumentation zu VMware Cloud Foundation"]
 * link:https://docs.vmware.com/en/VMware-Cloud-Foundation/5.1/vcf-design/GUID-2156EC66-BBBB-4197-91AD-660315385D2E.html["Unterstützte Storage-Typen für VMware Cloud Foundation"]
@@ -194,12 +228,14 @@ Weitere Informationen zu 3-2-1-1-Backup-Strategien mit BlueXP finden Sie unter l
 
 == Lösungsüberblick
 
-Die in dieser Dokumentation vorgestellten Szenarien zeigen, wie ONTAP-Storage-Systeme als zusätzlicher Storage für Management- und Workload-Domänen eingesetzt werden. Darüber hinaus wird das SnapCenter Plug-in für VMware vSphere zur Sicherung von VMs und Datastores verwendet.
+Die in dieser Dokumentation vorgestellten Szenarien zeigen, wie ONTAP-Speichersysteme als Haupt- und Ergänzungsspeicher für Management- und Workload-Domänen eingesetzt werden. Darüber hinaus wird das SnapCenter Plug-in für VMware vSphere zur Sicherung von VMs und Datastores verwendet.
 
 Szenarien in dieser Dokumentation:
 
 * *Verwenden Sie ONTAP-Tools, um iSCSI-Datastores in einer VCF-Management-Domain bereitzustellen*. Klicken Sie Auf link:vmware_vcf_asa_supp_mgmt_iscsi.html["*Hier*"] Für Bereitstellungsschritte.
 * *Verwenden von ONTAP-Tools zur Bereitstellung von VVols (iSCSI) Datastores in einer VI Workload-Domäne*. Klicken Sie Auf link:vmware_vcf_asa_supp_wkld_vvols.html["*Hier*"] Für Bereitstellungsschritte.
 * *Konfiguration von NVMe over TCP Datastores für die Verwendung in einer VI Workload Domain*. Klicken Sie Auf link:vmware_vcf_asa_supp_wkld_nvme.html["*Hier*"] Für Bereitstellungsschritte.
-* *Bereitstellen und Verwenden des SnapCenter Plug-ins für VMware vSphere zum Schutz und zur Wiederherstellung von VMs in einer VI-Workload-Domäne*. Klicken Sie Auf link:vmware_vcf_asa_scv_wkld.html["*Hier*"] Für Bereitstellungsschritte.
+* *Bereitstellen und Verwenden des SnapCenter Plug-ins für VMware vSphere zum Schutz und zur Wiederherstellung von VMs in einer VI-Workload-Domäne* Klicken Sie link:vmware_vcf_asa_scv_wkld.html["*Hier*"] für Bereitstellungsschritte.
+* *Stretchcluster mit VMFS Datastore in Management Domain verwenden* Klicken Sie link:vmware_vcf_asa_mgmt_stretchcluster.html["*Hier*"] für Bereitstellungsschritte.
+* *Verwenden Sie Stretch Cluster mit VMFS Datastore in VI Workload Domain* Klicken Sie link:vmware_vcf_asa_wkld_stretchcluster.html["*Hier*"] für Bereitstellungsschritte.
 
