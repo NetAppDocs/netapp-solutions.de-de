@@ -40,7 +40,7 @@ image:ontap-cyber-vault-air-gap.png["Cyber-Vault mit Air-Gap-Technologie und Net
 Mit dem folgenden Befehl wird ein 2GB SnapLock Compliance-Volume mit dem Namen `dstvolB` im `SVM2` Aggregat erstellt `node01_aggr`:
 
 +
-`cluster2::> volume create -vserver SVM2 -volume dstvolB -aggregate node01_aggr -snaplock-type compliance -type DP -size 2GG`
+`cluster2::> volume create -vserver SVM2 -volume dstvolB -aggregate node01_aggr -snaplock-type compliance -type DP -size 2GB`
 
 . Legen Sie auf dem Zielcluster zum Erstellen des Air-GAP den Standardaufbewahrungszeitraum fest, wie unter beschriebenlink:https://docs.netapp.com/us-en/ontap/snaplock/set-default-retention-period-task.html["Legen Sie den Standardaufbewahrungszeitraum fest"^]. Einem SnapLock-Volume, das ein Vault-Ziel ist, ist ein Standardaufbewahrungszeitraum zugewiesen. Der Wert für diesen Zeitraum wird zunächst auf mindestens 0 Jahre und maximal 100 Jahre (beginnend mit ONTAP 9.10.1) festgelegt. Bei älteren ONTAP Versionen beträgt der Wert 0 - 70.) für SnapLock Compliance Volumes. Jede NetApp Snapshot-Kopie wird zunächst mit diesem standardmäßigen Aufbewahrungszeitraum festgelegt. Die Standard-Aufbewahrungsfrist muss geändert werden. Die Aufbewahrungsfrist kann bei Bedarf später verlängert, aber nie verkürzt werden. Weitere Informationen finden Sie unter link:https://docs.netapp.com/us-en/ontap/snaplock/set-retention-period-task.html["Aufbewahrungszeit einstellen"^].
 +
