@@ -14,9 +14,11 @@ summary:
 
 
 [role="lead"]
-In diesem Szenario zeigen wir, wie Sie mit den ONTAP-Tools für VMware vSphere (OTV) ein Stretch-Cluster für ein VCF-Management und Workload-Domänen konfigurieren.
+In diesem Szenario zeigen wir, wie Sie mit den ONTAP Tools für VMware vSphere (OTV) einen Stretch-Cluster für eine VCF-Verwaltungsdomäne konfigurieren. Dies gilt als einzelne Instanz – mehrere Verfügbarkeitszonen.
 
 Autor: Suresh Thoppay
+
+image:vmware_vcf_asa_mgmt_stretchcluster_image01.jpg["Einzelinstanz – Mehrere Verfügbarkeitszonen"]
 
 
 
@@ -24,18 +26,20 @@ Autor: Suresh Thoppay
 
 Die Stretch-Cluster-Lösung kann im Standard-Cluster oder in zusätzlichen Clustern in VCF-Management- oder Workload-Domänen implementiert werden. VMFS auf FC wird sowohl für den Haupt- als auch für ergänzende Datastores unterstützt. VMFS auf iSCSI wird nur mit ergänzenden Datastores unterstützt. Weitere Informationen zur Unterstützung von VMFS auf NVMe-of mit SnapMirror Active Sync finden Sie auf IMT.
 
+image:vmware_vcf_asa_mgmt_stretchcluster_image02.jpg["Stretch Cluster mit ONTAP für VCF Management-Domäne"]
+
 .Hauptspeicher in der Management-Domäne
 [%collapsible]
 ====
-Ab VCF 5.2 kann die Management-Domain mit dem VCF Import Tool ohne VSAN bereitgestellt werden. Die Konvertierungsoption des VCF-Importtools ermöglicht eine vorhandene vCenter-Bereitstellung in eine Management-Domäne. Alle Cluster in vCenter werden Teil der Management-Domäne. Für jede Cluster muss ein eigener verteilter Switch zur Konvertierung zur Verfügung stehen. Bis das VCF-Importtool mehrere Netzwerkprofile unterstützt, sollten Sie Stretch-VLANs für das vMotion-Netzwerk verwenden.
+Ab VCF 5.2 kann die Management-Domain mit dem VCF Import Tool ohne VSAN bereitgestellt werden. Die Konvertierungsoption des VCF-Importwerkzeugs ermöglichtlink:vmware_vcf_convert_fc.html["Eine bestehende vCenter-Implementierung in eine Management-Domäne"]. Alle Cluster in vCenter werden Teil der Management-Domäne.
 
 . VSphere-Hosts bereitstellen
 . VCenter Server auf lokalem Datastore implementieren (vCenter muss gleichzeitig auf vSphere Hosts vorhanden sein, die in Management-Domäne umgewandelt werden)
 . Implementieren Sie ONTAP-Tools für VMware vSphere
 . Deploy SnapCenter Plug-in for VMware vSphere (optional)
 . Datastore erstellen (FC-Zonenkonfiguration sollte vorhanden sein)
-. Migrieren Sie die VMs zum neu erstellten Datastore
 . Sichern des vSphere-Clusters
+. Migrieren Sie die VMs zum neu erstellten Datastore
 
 
 
@@ -62,7 +66,7 @@ NOTE: Wenn das Cluster erweitert oder schrumpft, müssen Sie die Host-Cluster-Be
 
 Informationen zum Konfigurieren von ONTAP-Speichersystemen finden Sie im link:https://docs.netapp.com/us-en/ontap["ONTAP 9-Dokumentation"] Zentrieren.
 
-Informationen zum Konfigurieren von VCF finden Sie unter link:https://docs.vmware.com/en/VMware-Cloud-Foundation/index.html["Dokumentation zu VMware Cloud Foundation"].
+Informationen zum Konfigurieren von VCF finden Sie unter link:https://techdocs.broadcom.com/us/en/vmware-cis/vcf/vcf-5-2-and-earlier/5-2.html["VMware Cloud Foundation 5.2 – Dokumentation"].
 
 
 

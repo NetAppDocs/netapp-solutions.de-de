@@ -1,0 +1,86 @@
+---
+sidebar: sidebar 
+permalink: vmware/vmware_vcf_aff_supp_fc.html 
+keywords: netapp, vmware, cloud, foundation, vcf, aff, all-flash, array, ontap tools, otv, sddc, fc 
+summary:  
+---
+= VMFS auf FC als VCF Supplemental Datastore
+:hardbreaks:
+:allow-uri-read: 
+:nofooter: 
+:icons: font
+:linkattrs: 
+:imagesdir: ../media/
+
+
+[role="lead"]
+In diesem Szenario wird die Implementierung von VMFS Datastores mit einem Fibre Channel Back-End (FC) für Management- und Workload-Domänen mit ONTAP Tools demonstriert.
+
+Autor: Suresh Thoppay
+
+
+
+== Szenarioübersicht
+
+Der VCF Supplemental Datastore wird im Rahmen von Day-2 Operations mit vCenter bereitgestellt. Dieses Szenario umfasst die folgenden grundlegenden Schritte:
+
+* Bereitstellung von ONTAP-Tools auf Managementdomäne
+* Registrieren Sie vCenter Server mit VI-Workloads in ONTAP Tools
+* Definieren Sie das Storage Back-End auf dem ONTAP Tools Plug-in für VMware vSphere
+* Bereitstellung von VMFS auf FC-Transport
+
+
+
+
+== Voraussetzungen
+
+Dieses Szenario erfordert die folgenden Komponenten und Konfigurationen:
+
+* Ein ONTAP Storage-System mit FC-Ports, die mit FC-Switches verbunden sind.
+* SVM wurde mit FC-Leben erstellt.
+* VSphere mit FC HBAs, die mit FC-Switches verbunden sind.
+* Das Zoning für ein einzelnes Initiator-Ziel ist auf FC-Switches konfiguriert.
++
+
+NOTE: Nutzen Sie die logische SVM-FC-Schnittstelle in der Zonenkonfiguration statt physischer FC-Ports in ONTAP Systemen.
+
+
+
+NetApp empfiehlt Multipath für FC LUNs.
+
+
+
+== Bereitstellungsschritte für die Verwaltungsdomäne
+
+Führen Sie die folgenden Schritte aus, um ONTAP Tools bereitzustellen und zum Erstellen eines VMFS-Datastore in der VCF-Managementdomäne zu verwenden:
+
+* link:https://docs.netapp.com/us-en/ontap-tools-vmware-vsphere-10/deploy/ontap-tools-deployment.html["Implementieren Sie ONTAP-Tools in der Managementdomäne"]
+* link:https://docs.netapp.com/us-en/ontap-tools-vmware-vsphere-10/configure/add-storage-backend.html["Storage-Backend mit vSphere Client-Schnittstelle definieren"]
+* link:https://docs.netapp.com/us-en/ontap-tools-vmware-vsphere-10/configure/create-vvols-datastore.html["Stellen Sie VMFS auf FC bereit"]
+
+
+
+
+== Implementierungsschritte für VI-Workload-Domänen
+
+Um ONTAP Tools zu implementieren und sie zum Erstellen eines VMFS Datenspeichers in der VCF VI Workload-Domäne zu verwenden, führen Sie die folgenden Schritte aus:
+
+* link:https://docs.netapp.com/us-en/ontap-tools-vmware-vsphere-10/configure/add-vcenter.html["Registrieren Sie VI-Workload vCenter, um das vCenter Plug-in zu aktivieren"]
+* link:https://docs.netapp.com/us-en/ontap-tools-vmware-vsphere-10/configure/add-storage-backend.html["Storage-Backend mit vSphere Client-Schnittstelle definieren"]
+* link:https://docs.netapp.com/us-en/ontap-tools-vmware-vsphere-10/configure/create-vvols-datastore.html["Stellen Sie VMFS auf FC bereit"]
+
+
+
+
+== Weitere Informationen
+
+Informationen zum Konfigurieren von ONTAP-Speichersystemen finden Sie im link:https://docs.netapp.com/us-en/ontap["ONTAP 9-Dokumentation"] Zentrieren.
+
+Informationen zum Konfigurieren von VCF finden Sie unter link:https://techdocs.broadcom.com/us/en/vmware-cis/vcf/vcf-5-2-and-earlier/5-2.html["Dokumentation zu VMware Cloud Foundation"].
+
+
+
+== Video-Demo für diese Lösung
+
+.VMFS(FC) Datastore als ergänzender Speicher für VCF Management Domain
+video::3135c36f-3a13-4c95-aac9-b2a0001816dc[panopto,width=360]
