@@ -13,7 +13,7 @@ summary:
 == Implementierung und Konfiguration der Container-Plattform Red hat OpenShift auf Azure
 
 [role="lead"]
-In diesem Abschnitt wird ein High-Level-Workflow beschrieben, in dem erläutert wird, wie OpenShift-Cluster in Azure eingerichtet und gemanagt und zustandsbehaftete Anwendungen darauf bereitgestellt werden. Er zeigt die Nutzung von NetApp Cloud Volumes ONTAP Storage mit Unterstützung der Provisionierung von persistenten Volumes für Trident/Astra Control. Einzelheiten zur Nutzung von Astra Control Center für die Durchführung von Datensicherungs- und Migrationsaktivitäten für die zustandsbehafteten Applikationen werden bereitgestellt.
+In diesem Abschnitt wird ein High-Level-Workflow beschrieben, in dem erläutert wird, wie OpenShift-Cluster in Azure eingerichtet und gemanagt und zustandsbehaftete Anwendungen darauf bereitgestellt werden. Es zeigt die Nutzung von NetApp Cloud Volumes ONTAP Storage mit Hilfe von Trident, um persistente Volumes bereitzustellen. Einzelheiten zur Nutzung von Astra Control Center für die Durchführung von Datensicherungs- und Migrationsaktivitäten für die zustandsbehafteten Applikationen werden bereitgestellt.
 
 Das folgende Diagramm zeigt die auf Azure implementierten Cluster, die über ein VPN mit dem Datacenter verbunden sind.
 
@@ -109,31 +109,8 @@ pullSecret:
 
 
 ====
-.Installation von Astra Control Provisioner im OCP Cluster in Azure
-[%collapsible]
-====
-* Bei diesem Projekt wurde Astra Control Provisioner (ACP) auf allen Clustern installiert (On-Premises-Cluster, On-Premises-Cluster, in dem Astra Control Center implementiert ist, und der Cluster in Azure). Weitere Informationen zur Astra Control Provisionierung link:https://docs.netapp.com/us-en/astra-control-center/release-notes/whats-new.html#7-november-2023-23-10-0["Hier"].
-* Back-End- und Storage-Klassen erstellen Siehe Anweisungen link:https://docs.netapp.com/us-en/trident/trident-use/backends.html["Hier"].
-
-
-====
-.Fügen Sie das OCP-Cluster in Azure dem Astra Control Center hinzu.
-[%collapsible]
-====
-* Erstellen Sie eine separate KubeConfig-Datei mit einer Cluster-Rolle, die die erforderlichen Mindestberechtigungen für das Management eines Clusters durch Astra Control enthält. Die Anweisungen sind zu finden
-link:https://docs.netapp.com/us-en/astra-control-center/get-started/setup_overview.html#create-a-cluster-role-kubeconfig["Hier"].
-* Fügen Sie das Cluster gemäß den Anweisungen zu Astra Control Center hinzu
-link:https://docs.netapp.com/us-en/astra-control-center/get-started/setup_overview.html#add-cluster["Hier"]
-
-
-====
 .Verwendung der CSI-Topology-Funktion von Trident für Multi-Zone-Architekturen
 Heute können Cloud-Provider Kubernetes/OpenShift-Cluster-Administratoren Nodes der zonbasierten Cluster erstellen. Die Nodes können sich in verschiedenen Verfügbarkeitszonen innerhalb einer Region oder über verschiedene Regionen hinweg befinden. Um die Bereitstellung von Volumes für Workloads in einer Architektur mit mehreren Zonen zu vereinfachen, verwendet Trident die CSI-Topologie. Mithilfe der CSI Topology-Funktion kann der Zugriff auf Volumes auf einen Teil von Nodes basierend auf Regionen und Verfügbarkeitszonen begrenzt werden. Weitere Einzelheiten finden Sie unterlink:https://docs.netapp.com/us-en/trident/trident-use/csi-topology.html["Hier"].
 
 
 NOTE: Kubernetes unterstützt zwei Volume-Bindungsmodi: - Wenn **_VolumeBindingMode_ auf _Immediate_** (Standard) eingestellt ist, erstellt Trident das Volume ohne Topologieorientierung. Persistente Volumes werden erstellt, ohne dass sie von den Planungsanforderungen des anfragenden Pods abhängig sind. - Wenn **_VolumeBindingMode_ auf _WaitForFirstConsumer_** gesetzt wird, wird die Erstellung und Bindung eines Persistent Volume für eine PVC verzögert, bis ein Pod, der die PVC verwendet, geplant und erstellt wird. Auf diese Weise werden Volumes erstellt, um Planungseinschränkungen zu erfüllen, die durch Topologieanforderungen durchgesetzt werden. Trident Storage Back-Ends können so entworfen werden, dass sie Volumes selektiv basierend auf Verfügbarkeitszonen bereitstellen (Topologieorientiertes Back-End). Bei StorageClasses, die ein solches Backend nutzen, wird ein Volume nur erstellt, wenn es von einer Applikation angefordert wird, die in einer unterstützten Region/Zone geplant ist. (Topologieorientierte StorageClass) Weitere Details finden Sie unterlink:https://docs.netapp.com/us-en/trident/trident-use/csi-topology.html["Hier"].
-
-[Underline]#*Demonstrationsvideo*#
-
-.Verwendung von Astra Control für Failover und Failback von Applikationen
-video::1546191b-bc46-42eb-ac34-b0d60142c58d[panopto,width=360]
