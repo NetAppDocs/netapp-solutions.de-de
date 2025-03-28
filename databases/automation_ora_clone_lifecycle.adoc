@@ -1,8 +1,8 @@
 ---
 sidebar: sidebar 
 permalink: databases/automation_ora_clone_lifecycle.html 
-keywords: Oracle, AWS, FSx ONTAP, Database, Oracle 19c, HA, DR 
-summary: 'Die Lösung bietet ein auf Ansible basierendes Automatisierungs-Toolkit zur Konfiguration von Oracle Database High Availability and Disaster Recovery (HA/DR) mit AWS FSX ONTAP als Oracle-Datenbank-Storage und EC2-Instanzen als Computing-Instanzen in AWS.' 
+keywords: Database, Oracle, DataGuard, AWS, FSx ONTAP, Azure, ANF, 
+summary: Die Lösung bietet ein Ansible-basiertes Automatisierungs-Toolkit für die Einrichtung, das Klonen und die Aktualisierung von Oracle Klon-Datenbanken von einer primären Datenbank. Die primäre Datenbank kann die physische Standby-Datenbank in der Oracle Data Guard-Konfiguration sein. Die Lösung kann in einem privaten Datacenter oder in der AWS Cloud mit FSX ONTAP Storage in NFS- oder ASM-Konfiguration oder in der Azure Cloud mit Azure NetApp Files Storage in NFS-Konfiguration eingesetzt werden. 
 ---
 = SnapCenter Lifecycle Automation für Oracle-Klone
 :hardbreaks:
@@ -16,13 +16,13 @@ summary: 'Die Lösung bietet ein auf Ansible basierendes Automatisierungs-Toolki
 Allen Cao, Niyaz Mohamed, NetApp
 
 [role="lead"]
-Diese Lösung bietet ein auf Ansible basierendes Automatisierungs-Toolkit zur Konfiguration von Oracle Database High Availability and Disaster Recovery (HA/DR) mit AWS FSX ONTAP als Oracle-Datenbank-Storage und EC2-Instanzen als Computing-Instanzen in AWS.
+Die Lösung bietet ein Ansible-basiertes Automatisierungs-Toolkit für die Einrichtung, das Klonen und die Aktualisierung von Oracle Klon-Datenbanken von einer primären Datenbank. Die primäre Datenbank kann die physische Standby-Datenbank in der Oracle Data Guard-Konfiguration sein. Die Lösung kann in einem privaten Datacenter oder in der AWS Cloud mit FSX ONTAP Storage in NFS- oder ASM-Konfiguration oder in der Azure Cloud mit Azure NetApp Files Storage in NFS-Konfiguration eingesetzt werden.
 
 
 
 == Zweck
 
-Kunden sind begeistert von der FlexClone Funktion von NetApp ONTAP Storage für Datenbanken, mit deutlichen Einsparungen bei den Storage-Kosten. Dieses Ansible-basierte Toolkit automatisiert die Einrichtung, das Klonen und die Aktualisierung von geklonten Oracle Datenbanken anhand der NetApp SnapCenter Befehlszeilen-Dienstprogramme für ein optimiertes Lifecycle Management. Das Toolkit ist auf Oracle-Datenbanken anwendbar, die auf ONTAP Storage entweder bei Vorliegen oder in der Public Cloud bereitgestellt und über das UI Tool NetApp SnapCenter gemanagt werden.
+Kunden sind von der FlexClone Funktion des NetApp ONTAP Storage für schnelle (in Minuten) große Datenbankklone sowie zusätzliche Storage-Einsparungen begeistert, wenn die Thin Clone-Funktion für das jeweilige Storage-Angebot in einem privaten Datacenter oder in der Public Cloud aktiviert ist. Dieses Ansible-basierte Toolkit automatisiert die Einrichtung, das Klonen und die Aktualisierung von geklonten Oracle Datenbanken anhand der NetApp SnapCenter Befehlszeilen-Dienstprogramme für ein optimiertes Lifecycle Management. Das Toolkit gilt für Oracle-Datenbanken, die auf ONTAP Storage entweder vor Ort oder in der Public Cloud (AWS oder Azure) implementiert und über das UI-Tool NetApp SnapCenter gemanagt werden.
 
 Diese Lösung eignet sich für folgende Anwendungsfälle:
 
@@ -74,16 +74,18 @@ Ansible controller:
 ....
 ....
 SnapCenter server:
-  version 5.0
+  version 5.0 and up, 6.1 for Azure NetApp Files
   backup policy configured
   Source database protected with a backup policy
 ....
 ....
 Oracle servers:
-  Source server managed by SnapCenter
-  Target server managed by SnapCenter
-  Target server with identical Oracle software stack as source server installed and configured
+  Source server managed by SnapCenter (In Data Guard, this would be the physical standby serer)
+  Target server managed by SnapCenter (clone DB host)
 ....
+
+NOTE: Zur Vereinfachung sollte der Clone Ziel Oracle Server identisch mit Standby Oracle Server wie z. B. Oracle Software Stack sowie Verzeichnis-Layout für Oracle Home usw. konfiguriert werden
+
 ====
 
 
@@ -95,6 +97,9 @@ Oracle servers:
 ----
 git clone https://bitbucket.ngage.netapp.com/scm/ns-bb/na_oracle_clone_lifecycle.git
 ----
+
+NOTE: Auf das Toolkit kann derzeit nur ein interner NetApp-Benutzer mit Bitbucket-Zugriff zugreifen. Interessierte externe Benutzer können über das Account Team Kontakt mit dem NetApp Solutions Engineering Team aufnehmen.
+
 ====
 
 
@@ -102,7 +107,7 @@ git clone https://bitbucket.ngage.netapp.com/scm/ns-bb/na_oracle_clone_lifecycle
 
 [%collapsible]
 ====
-Das Toolkit enthält eine Host-Datei, die die Ziele definiert, für die ein Ansible-Playbook ausgeführt wird. In der Regel sind dies die Ziel-Clones-Hosts von Oracle. Im Folgenden finden Sie eine Beispieldatei. Ein Hosteintrag enthält die IP-Adresse des Zielhosts sowie den SSH-Schlüssel für den Zugriff eines Admin-Benutzers auf den Host, um den Klon- oder Aktualisierungsbefehl auszuführen.
+Das Toolkit enthält eine Host-Datei, die die Ziele definiert, auf denen ein Ansible-Playbook ausgeführt wird. In der Regel sind dies die Ziel-Clones-Hosts von Oracle. Im Folgenden finden Sie eine Beispieldatei. Ein Hosteintrag enthält die IP-Adresse des Zielhosts sowie den SSH-Schlüssel für den Zugriff eines Admin-Benutzers auf den Host, um den Klon- oder Aktualisierungsbefehl auszuführen.
 
 #Oracle-Clone-Hosts
 
@@ -157,7 +162,7 @@ clone_db_sid: NTAP1DEV
 
 [%collapsible]
 ====
-Der Oracle-Zielserver für Clones sollte denselben Oracle-Softwarestack aufweisen wie der Oracle-Quellserver, der installiert und gepatcht ist. Oracle-Benutzer .bash_profile hat ORACLE_BASE in Höhe von USD und ORACLE_HOME in Höhe von USD konfiguriert. Außerdem sollte die Variable „ORACLE_HOME“ mit der Oracle-Quellservereinstellung übereinstimmen. Hier ein Beispiel.
+Der Oracle-Zielserver für Klone sollte den gleichen Oracle-Softwarestack aufweisen, wie der Oracle-Quellserver installiert und gepatcht ist. Oracle-Benutzer .bash_profile hat ORACLE_BASE in Höhe von USD und ORACLE_HOME in Höhe von USD konfiguriert. Außerdem sollte die Variable „ORACLE_HOME“ mit der Oracle-Quellservereinstellung übereinstimmen. Hier ein Beispiel.
 
  # .bash_profile
 ....
@@ -199,6 +204,9 @@ ansible-playbook -i hosts clone_1_setup.yml -u admin -e @vars/vars.yml
 0 */4 * * * /home/admin/na_oracle_clone_lifecycle/clone_1_refresh.sh
 ----
 
+
+
+NOTE: Ändern Sie den Benutzernamen zu Ihrem sudo-Benutzer für die SnapCenter-Konfiguration.
 
 Erstellen Sie für eine zusätzliche Clone-Datenbank separate Clones_n_Setup.yml und Clone_n_refresh.yml sowie Clone_n_refresh.sh. Konfigurieren Sie die Ansible-Zielhosts und die Datei hostname.yml im Verzeichnis Host_vars entsprechend.
 
