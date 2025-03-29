@@ -17,7 +17,7 @@ summary:
 Ab VMware vSphere 8.0 U1 (als Tech-Preview) ermöglicht die nconnect Funktion mehrere TCP-Verbindungen für NFS v3 Datastore Volumes für einen höheren Durchsatz. Kunden, die NFS-Datastore verwenden, können nun die Anzahl der Verbindungen zum NFS-Server erhöhen und so die Auslastung von Hochgeschwindigkeits-Netzwerkkarten maximieren.
 
 
-NOTE: Das Feature ist allgemein verfügbar für NFS v3 mit 8.0 U2, siehe Speicher Abschnitt auf link:https://docs.vmware.com/en/VMware-vSphere/8.0/rn/vsphere-esxi-802-release-notes/index.html["Versionshinweise zu VMware vSphere 8.0 Update 2"]. Die Unterstützung für NFS v4.1 wurde mit vSphere 8.0 U3 hinzugefügt. Weitere Informationen finden Sie unter link:https://docs.vmware.com/en/VMware-vSphere/8.0/rn/vsphere-vcenter-server-803-release-notes/index.html["Versionshinweise zu vSphere 8.0 Update 3"]
+NOTE: Das Feature ist allgemein verfügbar für NFS v3 mit 8.0 U2, siehe Speicher Abschnitt auf link:https://techdocs.broadcom.com/us/en/vmware-cis/vsphere/vsphere/8-0/release-notes/esxi-update-and-patch-release-notes/vsphere-esxi-802-release-notes.html["Versionshinweise zu VMware vSphere 8.0 Update 2"]. Die Unterstützung für NFS v4.1 wurde mit vSphere 8.0 U3 hinzugefügt. Weitere Informationen finden Sie unter link:https://techdocs.broadcom.com/us/en/vmware-cis/vsphere/vsphere/8-0/release-notes/esxi-update-and-patch-release-notes/vsphere-esxi-803-release-notes.html["Versionshinweise zu vSphere 8.0 Update 3"]
 
 
 
@@ -137,7 +137,7 @@ Siehe link:https://kb.vmware.com/s/article/91497["VMware KB-Artikel 91497"] Find
 
 Die maximale Anzahl von auf ONTAP unterstützten Verbindungen hängt vom Storage-Plattformmodell ab. Suchen Sie auf exec_ctx link:https://www.netapp.com/media/10720-tr-4067.pdf["NFS Best Practice und Implementierungsleitfaden"] Finden Sie weitere Informationen.
 
-Wenn die Anzahl der Verbindungen pro NFSv3-Datastore erhöht wird, nimmt die Anzahl der NFS-Datastores, die auf diesem vSphere Host gemountet werden können, ab. Insgesamt werden pro vSphere-Host 256 Verbindungen unterstützt. Prüfen link:https://kb.vmware.com/s/article/91481["VMware KB-Artikel 91481"] Für Datastore-Begrenzungen pro vSphere-Host.
+Wenn die Anzahl der Verbindungen pro NFSv3-Datastore erhöht wird, nimmt die Anzahl der NFS-Datastores, die auf diesem vSphere Host gemountet werden können, ab. Insgesamt werden pro vSphere-Host 256 Verbindungen unterstützt. Prüfen Sielink:https://knowledge.broadcom.com/external/article?legacyId=91481["VMware KB-Artikel 91481"], ob die Datastore-Begrenzungen pro vSphere-Host vorhanden sind.
 
 
 NOTE: VVol Datastore unterstützt keine nConnect-Funktion. Protokollendpunkte werden jedoch auf die Verbindungsgrenze angerechnet. Bei der Erstellung von vVol Datastores wird für jeden Daten-LIF der SVM ein Protokollendpunkt erstellt.

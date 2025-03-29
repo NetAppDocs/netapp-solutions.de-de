@@ -151,7 +151,7 @@ Die folgenden Abschnitte enthalten Schritt-für-Schritt-Verfahren für die Imple
 
 === Voraussetzungen für die Bereitstellung
 
-[%collapsible]
+[%collapsible%open]
 ====
 Die Bereitstellung erfordert die folgenden Voraussetzungen.
 
@@ -178,7 +178,7 @@ NOTE: Stellen Sie sicher, dass Sie mindestens 50G im Oracle VM Root-Volume zugew
 
 === DB VM-Kernel-Konfiguration
 
-[%collapsible]
+[%collapsible%open]
 ====
 Melden Sie sich bei den bereitgestellten Voraussetzungen als Admin-Benutzer über SSH bei der Oracle VM an und sudo beim Root-Benutzer, um den Linux-Kernel für die Oracle-Installation zu konfigurieren. Oracle-Installationsdateien können in einem AWS S3-Bucket bereitgestellt und in die VM übertragen werden.
 
@@ -398,7 +398,7 @@ chmod 440 /etc/sudoers
 
 === Bereitstellung und Zuordnung von FSX ONTAP-LUNs zur DB-VM
 
-[%collapsible]
+[%collapsible%open]
 ====
 Stellen Sie drei Volumes über die Befehlszeile bereit, indem Sie sich beim FSX Cluster als fsxadmin-Benutzer über ssh und FSX Cluster-Management-IP anmelden. Erstellen Sie LUNs innerhalb der Volumes, um die Binärdateien, Daten und Protokolldateien der Oracle-Datenbank zu hosten.
 
@@ -530,7 +530,7 @@ nim        /vol/ora_02_logs/ora_02_u03_02            ora_02        6  iscsi
 
 === DB-VM-Speicherkonfiguration
 
-[%collapsible]
+[%collapsible%open]
 ====
 Importieren und richten Sie nun den FSX ONTAP-Speicher für die Oracle Grid-Infrastruktur und Datenbankinstallation auf der VMC-Datenbank-VM ein.
 
@@ -823,7 +823,7 @@ systemctl restart multipathd
 
 === Installation der Oracle Grid-Infrastruktur
 
-[%collapsible]
+[%collapsible%open]
 ====
 . Loggen Sie sich als Admin-Benutzer über SSH bei der DB VM ein und aktivieren Sie die Passwort-Authentifizierung durch Entkommentieren `PasswordAuthentication yes` Und dann kommentiert `PasswordAuthentication no`.
 +
@@ -1084,7 +1084,7 @@ CRS-4638: Oracle High Availability Services is online
 
 === Installation der Oracle Database
 
-[%collapsible]
+[%collapsible%open]
 ====
 . Melden Sie sich als Oracle-Benutzer an, und heben Sie die Einstellung auf `$ORACLE_HOME` Und `$ORACLE_SID` Wenn es eingestellt ist.
 +
@@ -1475,7 +1475,7 @@ Damit ist die Neustartbereitstellung auf einem Amazon FSX ONTAP-Speicher und ein
 
 ==== SnapCenter-Einrichtung
 
-[%collapsible]
+[%collapsible%open]
 ====
 SnapCenter setzt auf ein Host-seitiges Plug-in für Datenbank-VM, um applikationsorientierte Management-Aktivitäten für die Datensicherung durchzuführen. Detaillierte Informationen zu NetApp SnapCenter Plug-in für Oracle finden Sie in dieser Dokumentation link:https://docs.netapp.com/us-en/snapcenter/protect-sco/concept_what_you_can_do_with_the_snapcenter_plug_in_for_oracle_database.html["Welche Möglichkeiten bietet das Plug-in für Oracle Database"^]. Im Folgenden finden Sie allgemeine Schritte zur Einrichtung von SnapCenter für Oracle-Datenbank-Backup, -Recovery und -Klonen.
 
@@ -1516,7 +1516,7 @@ NOTE: Stellen Sie sicher, dass der Name des SnapCenter-Servers in die IP-Adresse
 
 ==== Datenbank-Backup
 
-[%collapsible]
+[%collapsible%open]
 ====
 SnapCenter nutzt FSX ONTAP-Volumen-Snapshot für viel schnelleres Datenbank-Backup, -Wiederherstellung oder -Klonen im Vergleich zu herkömmlichen RMAN-basierten Methoden. Die Snapshots sind anwendungskonsistent, da die Datenbank vor einem Snapshot in den Oracle-Backup-Modus versetzt wird.
 
@@ -1551,7 +1551,7 @@ image:aws_ora_fsx_vmc_snapctr_11.png["Screenshot mit der SnapCenter-Konfiguratio
 
 ==== Datenbank-Recovery
 
-[%collapsible]
+[%collapsible%open]
 ====
 SnapCenter bietet verschiedene Wiederherstellungs- und Recovery-Optionen für Oracle Datenbanken aus dem Snapshot-Backup. In diesem Beispiel zeigen wir eine Point-in-Time-Wiederherstellung, um eine Tabelle versehentlich wiederherzustellen. Auf VM ora_02, zwei Datenbanken cdb3, cdb4 teilen sich die gleichen +DATEN und +LOGS-Plattengruppen. Die Datenbankwiederherstellung für eine Datenbank hat keine Auswirkung auf die Verfügbarkeit der anderen Datenbank.
 
@@ -1748,7 +1748,7 @@ SQL>
 
 ==== Datenbankklone
 
-[%collapsible]
+[%collapsible%open]
 ====
 In diesem Beispiel wird mit denselben Backup-Sets eine Datenbank auf derselben VM in einem anderen ORACLE_HOME geklont. Die Verfahren gelten auch für das Klonen einer Datenbank aus dem Backup auf separate VM in VMC, falls erforderlich.
 

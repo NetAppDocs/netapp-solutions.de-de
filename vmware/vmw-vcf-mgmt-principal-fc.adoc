@@ -1,0 +1,77 @@
+---
+sidebar: sidebar 
+permalink: vmware/vmw-vcf-mgmt-principal-fc.html 
+keywords: netapp, vmware, cloud, foundation, vcf, asa, all-flash, array, ontap tools, otv, sddc, fc 
+summary:  
+---
+= VMFS auf FC als Hauptspeicher für Management-Domänen
+:hardbreaks:
+:allow-uri-read: 
+:nofooter: 
+:icons: font
+:linkattrs: 
+:imagesdir: ../media/
+
+
+[role="lead"]
+In diesem Szenario werden wir den Anwendungsfall der Verwendung eines vorhandenen FC-basierten VMFS-Datenspeichers auf ONTAP für die Verwendung als Hauptspeicher für eine VMware Cloud Foundation (VCF) Management-Domäne prüfen.
+
+
+
+== Einführung
+
+Sofern zutreffend, beziehen wir uns auf die externe Dokumentation für die Schritte, die im SDDC Manager des VCF durchgeführt werden müssen, und verweisen auf die Schritte, die spezifisch für den Abschnitt zur Speicherkonfiguration sind.
+
+Informationen zum Konvertieren einer vorhandenen FC-basierten vSphere-Umgebung mit ONTAP finden Sie unter link:vmw-vcf-mgmt-fc.html["Konvertieren Sie vSphere Umgebung (FC-Datastore) in VCF Management Domain"].
+
+
+NOTE: Mit VCF Version 5.2 wurde die Möglichkeit eingeführt, eine vorhandene vSphere 8 Umgebung in eine VCF Management Domain zu konvertieren oder als VCF VI Workload-Domänen zu importieren. Vor dieser Version war VMware vSAN die einzige Option für Haupt-Storage für die VCF Management-Domäne.
+
+
+NOTE: Diese Lösung ist für ONTAP Plattformen anwendbar, die FC Storage unterstützen, einschließlich NetApp ASA, AFF und FAS.
+
+
+
+== Voraussetzungen
+
+In diesem Szenario werden die folgenden Komponenten und Konfigurationen verwendet:
+
+* NetApp Storage-System mit einer Storage Virtual Machine (SVM), die für FC-Datenverkehr konfiguriert ist
+* Logische Schnittstellen (LIF) wurden auf der FC-Fabric erstellt, die FC-Datenverkehr übertragen wird und mit der SVM verknüpft ist.
+* Das Zoning wurde so konfiguriert, dass es ein einzelnes Initiator-Ziel-Zoning auf FC-Switches für Host-HBAs und Speicherziele verwendet.
+
+
+Informationen zum Konfigurieren von ONTAP-Speichersystemen finden Sie im link:https://docs.netapp.com/us-en/ontap["ONTAP 9-Dokumentation"] Zentrieren.
+
+Informationen zum Konfigurieren von VCF finden Sie unter link:https://docs.vmware.com/en/VMware-Cloud-Foundation/index.html["Dokumentation zu VMware Cloud Foundation"].
+
+
+
+== Implementierungsschritte
+
+
+
+=== Management Domain – Standardcluster
+
+FC Principal Storage auf dem anfänglichen Cluster wird nur mit dem VCF Brownfield-Importtool unterstützt. Wenn VCF mit dem Cloud Builder Tool implementiert wird (ab Version 5.2.x), wird nur vSAN unterstützt.
+
+Weitere Informationen zur Verwendung einer vorhandenen vSphere-Umgebung finden Sie unter https://techdocs.broadcom.com/us/en/vmware-cis/vcf/vcf-5-2-and-earlier/5-2/map-for-administering-vcf-5-2/importing-existing-vsphere-environments-admin/convert-or-import-a-vsphere-environment-into-vmware-cloud-foundation-admin.html["Konvertieren vorhandener vSphere Umgebung in Management-Domäne"].
+
+
+
+=== Verwaltungsdomäne – Zusätzlicher Cluster
+
+Der zusätzliche vSphere Cluster in der Management-Domain kann mit folgenden Optionen implementiert werden:
+
+* Sie verfügen über einen zusätzlichen Cluster in der vSphere-Umgebung, und verwenden Sie das VCF Brownfield-Importtool, um die vSphere-Umgebung in die Management-Domäne zu konvertieren. https://docs.netapp.com/us-en/ontap-tools-vmware-vsphere-10/configure/create-vvols-datastore.html["ONTAP Tools für VMware vSphere"] https://docs.netapp.com/us-en/ontap/san-admin/provision-storage.html["System Manager oder ONTAP API"] Kann verwendet werden, um den VMFS-Datastore im vSphere-Cluster bereitzustellen.
+* Nutzen Sie die SDDC API zur Implementierung eines zusätzlichen Clusters. Auf den vSphere-Hosts sollte der VMFS-Datenspeicher konfiguriert sein. Verwenden Sie https://docs.netapp.com/us-en/ontap/san-admin/provision-storage.html["System Manager oder ONTAP API"] diese Funktion, um eine LUN für vSphere-Hosts bereitzustellen.
+* Verwenden Sie die SDDC Manager-Benutzeroberfläche, um zusätzliche Cluster zu implementieren. Aber diese Option erzeugt nur VSAN Datenspeicher bis Version 5.2.x.
+
+
+
+
+== Weitere Informationen
+
+Informationen zum Konfigurieren von ONTAP-Speichersystemen finden Sie im link:https://docs.netapp.com/us-en/ontap["ONTAP 9-Dokumentation"] Zentrieren.
+
+Informationen zum Konfigurieren von VCF finden Sie unter link:https://techdocs.broadcom.com/us/en/vmware-cis/vcf/vcf-5-2-and-earlier/5-2.html["Dokumentation zu VMware Cloud Foundation"].

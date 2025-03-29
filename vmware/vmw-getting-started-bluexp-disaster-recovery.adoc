@@ -1,0 +1,46 @@
+---
+sidebar: sidebar 
+permalink: vmware/vmw-getting-started-bluexp-disaster-recovery.html 
+keywords: vmware, getting, started, overview, netapp, bluexp, disaster, recovery, draas 
+summary:  
+---
+= BlueXP  Disaster Recovery (DRaaS)
+:hardbreaks:
+:allow-uri-read: 
+:nofooter: 
+:icons: font
+:linkattrs: 
+:imagesdir: ../media/
+
+
+[role="lead"]
+Die Disaster-Recovery-Planung ist für VMware Administratoren unerlässlich, um Ausfallzeiten bei Hardware-Ausfällen, Cyberangriffen oder Naturkatastrophen zu minimieren.
+
+
+
+== Einführung
+
+Ein erfolgreicher Plan und eine Kombination von Technologien sorgen dafür, dass geschäftskritische Daten, Applikationen und VMs geschützt werden. Die Herausforderung bei DR besteht darin, das angemessene Schutzniveau und die zugehörigen Kosten zu ermitteln.
+
+ONTAP Arrays bieten integrierte Replizierung für die Übertragung von Volume-Daten und damit der Virtual Machines auf den designierten Datastore-LUNs von einem Standort zum anderen. BlueXP  DRaaS lässt sich in vSphere integrieren und automatisiert den gesamten Workflow für nahtloses Failover und Failback bei einem Notfall.
+
+Weitere Informationen zu BlueXP  DRaaS finden Sie unter link:https://docs.netapp.com/us-en/netapp-solutions/ehc/dr-draas-overview.html["Überblick über BlueXP  DRaaS"].
+
+
+
+== Überlegungen
+
+Die zeitaufwendigsten Teile eines DR-Failovers in einer VMware vSphere Umgebung sind die Ausführung der Schritte, die zum Inventarisieren, Registrieren, Neukonfigurieren und Hochfahren von VMs am DR-Standort erforderlich sind. Eine ideale Lösung bietet sowohl niedrige RPOs (wie in Minuten gemessen) als auch ein niedriges RTO (in Minuten bis Stunden gemessen). Ein Faktor, der in einer DR-Lösung oft übersehen wird, ist die Möglichkeit, die DR-Lösung effizient und in regelmäßigen Abständen zu testen.
+
+Für die Erstellung einer DR-Lösung sollten folgende Faktoren berücksichtigt werden:
+
+* Die Recovery-Zeitvorgabe (RTO). Die RTO beschreibt, wie schnell ein Unternehmen nach einem Ausfall eine Wiederherstellung durchführen kann, genauer gesagt, wie lange es dauert, bis Business Services wieder verfügbar sind.
+* Der Recovery-Zeitpunkt (RPO). Der RPO gibt an, wie alt die wiederhergestellten Daten sind, nachdem sie verfügbar gemacht wurden, relativ zum Zeitpunkt des Notfalls.
+* Skalierbarkeit und Anpassungsfähigkeit: Zu diesem Faktor gehört auch die Möglichkeit, Storage-Ressourcen bei steigender Nachfrage inkrementell zu erweitern.
+
+
+Weitere technische Informationen zu den verfügbaren Lösungen finden Sie unter:
+
+* link:https://docs.netapp.com/us-en/netapp-solutions/ehc/dr-draas-nfs.html["DR unter Verwendung von BlueXP  DRaaS für NFS-Datastores"]
+* link:https://docs.netapp.com/us-en/netapp-solutions/ehc/dr-draas-vmfs.html["DR, die BlueXP  DRaaS für VMFS-Datastores verwendet"]
+

@@ -16,8 +16,6 @@ summary:
 [role="lead"]
 Veeam Backup & Replication ist eine effektive und zuverlässige Lösung für den Schutz von Daten in der VMware Cloud. Diese Lösung zeigt die ordnungsgemäße Einrichtung und Konfiguration für den Einsatz von Veeam Backup and Replication für das Backup und die Wiederherstellung von Applikations-VMs auf FSX ONTAP-NFS-Datastores in VMware Cloud.
 
-Autor: Josh Powell – NetApp Solutions Engineering
-
 
 
 == Überblick
@@ -47,7 +45,7 @@ Alle Virtual Machines in dieser Lösung befinden sich in ergänzenden NFS-Datast
 
 
 .Übersicht Zur Lösungsimplementierung
-[%collapsible]
+[%collapsible%open]
 ====
 Diese Liste enthält die allgemeinen Schritte, die erforderlich sind, um Veeam Backup & Replication zu konfigurieren, Backup- und Restore-Jobs mithilfe von FSX ONTAP als Backup-Repository auszuführen und Restores von SQL Server- und Oracle-VMs und -Datenbanken durchzuführen:
 
@@ -60,7 +58,7 @@ Diese Liste enthält die allgemeinen Schritte, die erforderlich sind, um Veeam B
 
 ====
 .Voraussetzungen
-[%collapsible]
+[%collapsible%open]
 ====
 Der Zweck dieser Lösung besteht darin, die Datensicherung von Virtual Machines zu demonstrieren, die in der VMware Cloud ausgeführt werden und sich in NFS-Datenspeichern befinden, die von FSX ONTAP gehostet werden. Bei dieser Lösung wird vorausgesetzt, dass die folgenden Komponenten konfiguriert und einsatzbereit sind:
 
@@ -91,7 +89,7 @@ Die Test-/Validierung dieser Lösung wurde in einem Labor durchgeführt, das in 
 image:aws-vmc-veeam-00.png["Diagramm Zur Lösungsarchitektur"]
 
 .Hardware-/Software-Komponenten
-[%collapsible]
+[%collapsible%open]
 ====
 Der Zweck dieser Lösung besteht darin, die Datensicherung von Virtual Machines zu demonstrieren, die in der VMware Cloud ausgeführt werden und sich in NFS-Datenspeichern befinden, die von FSX ONTAP gehostet werden. Bei dieser Lösung wird davon ausgegangen, dass die folgenden Komponenten bereits konfiguriert und einsatzbereit sind:
 
@@ -137,7 +135,7 @@ Weitere Informationen zu den Transportmodi finden Sie im https://helpcenter.veea
 Im folgenden Schritt behandeln wir die Bereitstellung des Veeam Proxy Servers auf einer Windows VM im VMware Cloud SDDC.
 
 .Implementieren Sie Veeam Proxy für die Verteilung von Backup-Workloads
-[%collapsible]
+[%collapsible%open]
 ====
 In diesem Schritt wird der Veeam Proxy auf einer vorhandenen Windows-VM bereitgestellt. So können Backup-Jobs zwischen dem primären Veeam Backup-Server und dem Veeam Proxy verteilt werden.
 
@@ -185,7 +183,7 @@ image:aws-vmc-veeam-10.png["Konfigurieren Sie die Regeln für den Netzwerkverkeh
 Der primäre Veeam Backup-Server und der Veeam Proxy-Server haben Zugriff auf ein Backup-Repository in Form eines direkt verbundenen Speichers. In diesem Abschnitt werden die Erstellung eines FSX ONTAP-Dateisystems, das Mounten von iSCSI-LUNs auf den Veeam-Servern und die Erstellung von Backup-Repositorys behandelt.
 
 .FSX ONTAP-Dateisystem erstellen
-[%collapsible]
+[%collapsible%open]
 ====
 Erstellen Sie ein FSX ONTAP-Dateisystem, das zum Hosten der iSCSI-Volumes für die Veeam Backup-Repositorys verwendet wird.
 
@@ -206,7 +204,7 @@ image:aws-vmc-veeam-03.png["Geben Sie die Dateisysteminformationen ein"]
 
 ====
 .Konfigurieren und Mounten von iSCSI-LUNs
-[%collapsible]
+[%collapsible%open]
 ====
 Erstellen und konfigurieren Sie die iSCSI-LUNs auf FSX ONTAP und mounten Sie sie auf den Veeam Backup- und Proxy-Servern. Diese LUNs werden später zur Erstellung von Veeam Backup-Repositorys verwendet.
 
@@ -257,7 +255,7 @@ image:aws-vmc-veeam-13.png["Windows Datenträgerverwaltung"]
 
 ====
 .Veeam Backup Repositorys Erstellen
-[%collapsible]
+[%collapsible%open]
 ====
 Erstellen Sie in der Veeam Backup and Replication-Konsole Backup-Repositorys für die Veeam Backup- und Veeam Proxy-Server. Diese Repositorys werden als Backup-Ziele für die Backups virtueller Maschinen verwendet.
 
@@ -293,7 +291,7 @@ In dieser Lösung wurden separate Backup-Jobs erstellt für:
 
 
 .Allgemeine Überlegungen beim Konfigurieren von Veeam Backup-Jobs
-[%collapsible]
+[%collapsible%open]
 ====
 . Ermöglichen Sie eine applikationsgerechte Verarbeitung, um konsistente Backups zu erstellen und Transaktions-Log-Verarbeitung durchzuführen.
 . Nach Aktivierung der anwendungsorientierten Verarbeitung fügen Sie der Anwendung die richtigen Anmeldeinformationen mit Administratorrechten hinzu, da diese sich von den Anmeldedaten des Gastbetriebssystems unterscheiden können.
@@ -329,7 +327,7 @@ Veeam Backup & Replication bietet mehrere Optionen für die Wiederherstellung vo
 
 
 .Stellen Sie die SQL Server Datenbank mit Veeam Explorer Instant Recovery wieder her
-[%collapsible]
+[%collapsible%open]
 ====
 . Navigieren Sie in der Veeam Backup and Replication-Konsole zur Liste der SQL Server-Backups, klicken Sie mit der rechten Maustaste auf einen Server und wählen Sie *Restore Application items* und dann *Microsoft SQL Server-Datenbanken...* aus.
 +
@@ -369,7 +367,7 @@ Mit dem Veeam Explorer für Oracle Database können Sie eine standardmäßige Wi
 Weitere Informationen zur Wiederherstellung von Oracle-Datenbanken mit Veeam Explorer finden Sie im Abschnitt Oracle in der https://helpcenter.veeam.com/docs/backup/explorers/veor_user_guide.html?ver=120["Benutzerhandbuch Für Veeam Explorers"].
 
 .Stellen Sie Oracle Datenbanken mit Veeam Explorer wieder her
-[%collapsible]
+[%collapsible%open]
 ====
 In diesem Abschnitt wird die Wiederherstellung einer Oracle-Datenbank auf einem anderen Server mit Veeam Explorer behandelt.
 
@@ -406,7 +404,7 @@ image:aws-vmc-veeam-31.png["Zielposition festlegen"]
 
 ====
 .Veröffentlichen der Oracle-Datenbank auf einem alternativen Server
-[%collapsible]
+[%collapsible%open]
 ====
 In diesem Abschnitt wird eine Datenbank für einen schnellen Zugriff auf einen alternativen Server veröffentlicht, ohne eine vollständige Wiederherstellung zu starten.
 

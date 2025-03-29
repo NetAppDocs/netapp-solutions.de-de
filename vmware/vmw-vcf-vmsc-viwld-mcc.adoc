@@ -16,7 +16,11 @@ summary:
 [role="lead"]
 Die Workloads auf VCF werden durch vSphere Metro Storage Cluster (vMSC) gesichert. ONTAP MetroCluster mit FC- oder IP-Implementierung wird normalerweise verwendet, um die Fehlertoleranz von VMFS und NFS-Datenspeichern bereitzustellen.
 
-image:vmw-vcf-vmsc-viwld-mcc-image01.png["VCF VI Workload Domain mit vMSC"]
+image:vmw-vcf-vmsc-viwld-mcc-image01.png["VCF VI Workload Domain mit vMSC, width=500"]
+
+
+
+== Einführung
 
 In dieser Lösung zeigen wir, wie die Implementierung von Stetched VCF VI Workload Domain mit NFS als Principal Datastore mithilfe von ONTAP MetroCluster erfolgt. Die VI-Workload-Domain kann mithilfe des SDDC Manager implementiert oder eine vorhandene vSphere-Umgebung als VI-Workload-Domain importiert werden.
 
@@ -97,7 +101,7 @@ Eine Übersicht über den Konvertierungsprozess finden Sie unter https://techdoc
 Stellen Sie vSphere auf Hosts bereit, die die vom Broadcom Support-Portal heruntergeladene ISO verwenden, oder verwenden Sie die vorhandene Bereitstellungsoption für den vSphere-Host.
 
 .Mounten Sie den NFS-Datenspeicher mit den Host-VMs
-[%collapsible]
+[%collapsible%open]
 ====
 In diesem Schritt erstellen wir das NFS-Volume und mounten es als Datenspeicher, um VMs zu hosten.
 
@@ -137,7 +141,7 @@ Das VCF Import Tool von VMware von Broadcom ist ein Dienstprogramm, das sowohl a
 Weitere Informationen finden Sie unter https://docs.vmware.com/en/VMware-Cloud-Foundation/5.2/vcf-admin/GUID-44CBCB85-C001-41B2-BBB4-E71928B8D955.html["Optionen und Parameter des VCF-Importwerkzeugs"].
 
 .VCF-Importwerkzeug kopieren und extrahieren
-[%collapsible]
+[%collapsible%open]
 ====
 Mit dem VCF-Import-Tool wird auf der vCenter-Appliance überprüft, ob sich das vSphere-Cluster in einem ordnungsgemäßen Zustand für den VCF-Konvertierungs- oder Importprozess befindet.
 
@@ -153,7 +157,7 @@ tar -xvf vcf-brownfield-import-<buildnumber>.tar.gz
 
 ====
 .Validieren Sie die vCenter Appliance
-[%collapsible]
+[%collapsible%open]
 ====
 Verwenden Sie das VCF-Importtool, um die vCenter-Appliance vor dem Import als VI-Workload-Domain zu validieren.
 
@@ -162,7 +166,7 @@ Verwenden Sie das VCF-Importtool, um die vCenter-Appliance vor dem Import als VI
 
 ====
 .Erstellen Sie eine JSON-Datei für die NSX-Bereitstellung
-[%collapsible]
+[%collapsible%open]
 ====
 Erstellen Sie eine NSX-Bereitstellungsspezifikation, um NSX Manager während des Imports oder der Konvertierung einer vSphere-Umgebung in VMware Cloud Foundation bereitzustellen. Für die NSX-Bereitstellung sind mindestens 3 Hosts erforderlich.
 
@@ -206,7 +210,7 @@ Kopieren Sie die JSON-Datei in den vcf Benutzer-Home-Ordner im SDDC Manager.
 
 ====
 .Laden Sie Software zum SDDC Manager hoch
-[%collapsible]
+[%collapsible%open]
 ====
 Kopieren Sie das VCF Import Tool in den Home-Ordner des vcf-Benutzers und das NSX Deployment Bundle in den Ordner /nfs/vmware/vcf/nfs-Mount/Bundle/ auf dem SDDC Manager.
 
@@ -214,7 +218,7 @@ Detaillierte Anweisungen finden Sie unter https://techdocs.broadcom.com/us/en/vm
 
 ====
 .Detaillierte Überprüfung auf vCenter vor der Konvertierung
-[%collapsible]
+[%collapsible%open]
 ====
 Bevor Sie eine Verwaltungsdomänenkonvertierung oder einen VI-Workload-Domänenimportvorgang durchführen, müssen Sie eine detaillierte Überprüfung durchführen, um sicherzustellen, dass die vorhandene vSphere-Umgebung für die Konvertierung oder den Import unterstützt wird. . SSH zur SDDC Manager-Appliance als Benutzer vcf. . Navigieren Sie zu dem Verzeichnis, in das Sie das VCF-Import-Tool kopiert haben. . Führen Sie den folgenden Befehl aus, um zu überprüfen, ob die vSphere-Umgebung konvertiert werden kann
 
@@ -225,7 +229,7 @@ image:vmw-vcf-vmsc-viwld-mcc-image08.png["VCF VC prüfen"]
 
 ====
 .Konvertieren Sie vSphere Cluster in eine VCF VI Workload-Domäne
-[%collapsible]
+[%collapsible%open]
 ====
 Das VCF Import Tool wird für die Durchführung des Konvertierungsprozesses verwendet.
 
@@ -246,7 +250,7 @@ Beim Prüfen des Clusters stellt er Informationen zu NFS-Datenspeichern bereit. 
 
 ====
 .Lizenz zu VCF hinzufügen
-[%collapsible]
+[%collapsible%open]
 ====
 Nach Abschluss der Konvertierung muss die Lizenzierung der Umgebung hinzugefügt werden.
 

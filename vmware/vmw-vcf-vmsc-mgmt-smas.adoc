@@ -1,0 +1,74 @@
+---
+sidebar: sidebar 
+permalink: vmware/vmw-vcf-vmsc-mgmt-smas.html 
+keywords: netapp, vmware, cloud, foundation, vcf, asa, all-flash, array, ontap tools, otv, sddc, iscsi 
+summary:  
+---
+= Stretch-Cluster für Management-Domain unter Verwendung von SnapMirror Active Sync
+:hardbreaks:
+:allow-uri-read: 
+:nofooter: 
+:icons: font
+:linkattrs: 
+:imagesdir: ../media/
+
+
+[role="lead"]
+In diesem Szenario zeigen wir, wie Sie mit den ONTAP Tools für VMware vSphere (OTV) einen Stretch-Cluster für eine VCF-Verwaltungsdomäne konfigurieren. Dies gilt als einzelne Instanz – mehrere Verfügbarkeitszonen.
+
+image:vmware_vcf_asa_mgmt_stretchcluster_image01.jpg["Einzelinstanz – Mehrere Verfügbarkeitszonen"]
+
+
+
+== Szenarioübersicht
+
+Die Stretch-Cluster-Lösung kann im Standard-Cluster oder in zusätzlichen Clustern in VCF-Management- oder Workload-Domänen implementiert werden. VMFS auf FC wird sowohl für den Haupt- als auch für ergänzende Datastores unterstützt. VMFS auf iSCSI wird nur mit ergänzenden Datastores unterstützt. Weitere Informationen zur Unterstützung von VMFS auf NVMe-of mit SnapMirror Active Sync finden Sie auf IMT.
+
+image:vmware_vcf_asa_mgmt_stretchcluster_image02.jpg["Stretch Cluster mit ONTAP für VCF Management-Domäne"]
+
+.Hauptspeicher in der Management-Domäne
+[%collapsible%open]
+====
+Ab VCF 5.2 kann die Management-Domain mit dem VCF Import Tool ohne VSAN bereitgestellt werden. Die Konvertierungsoption des VCF-Importwerkzeugs ermöglichtlink:vmw-vcf-mgmt-fc.html["Eine bestehende vCenter-Implementierung in eine Management-Domäne"]. Alle Cluster in vCenter werden Teil der Management-Domäne.
+
+. VSphere-Hosts bereitstellen
+. VCenter Server auf lokalem Datastore implementieren (vCenter muss gleichzeitig auf vSphere Hosts vorhanden sein, die in Management-Domäne umgewandelt werden)
+. Implementieren Sie ONTAP-Tools für VMware vSphere
+. Deploy SnapCenter Plug-in for VMware vSphere (optional)
+. Datastore erstellen (FC-Zonenkonfiguration sollte vorhanden sein)
+. Sichern des vSphere-Clusters
+. Migrieren Sie die VMs zum neu erstellten Datastore
+
+
+
+NOTE: Wenn das Cluster erweitert oder schrumpft, müssen Sie die Host-Cluster-Beziehung auf ONTAP-Tools aktualisieren, damit das Cluster die Änderungen an der Quelle oder dem Ziel anzeigt.
+
+====
+.Zusätzlicher Speicher in der Management Domain
+[%collapsible%open]
+====
+Sobald die Management-Domäne hochgefahren ist und ausgeführt wird, können mit ONTAP Tools zusätzliche Datastores erstellt werden, sodass die Erweiterung von Konsistenzgruppen ausgelöst wird.
+
+
+TIP: Wenn ein vSphere-Cluster geschützt ist, werden alle Datastores im Cluster geschützt.
+
+Wenn die VCF-Umgebung mit dem Cloud Builder-Tool bereitgestellt wird, stellen Sie zum Erstellen des zusätzlichen Speichers mit iSCSI ONTAP-Tools bereit, um den iSCSI-Datastore zu erstellen und den vSphere-Cluster zu schützen.
+
+
+NOTE: Wenn das Cluster erweitert oder schrumpft, müssen Sie die Host-Cluster-Beziehung auf ONTAP-Tools aktualisieren, damit das Cluster die Änderungen an der Quelle oder dem Ziel anzeigt.
+
+====
+
+
+== Weitere Informationen
+
+Informationen zum Konfigurieren von ONTAP-Speichersystemen finden Sie im link:https://docs.netapp.com/us-en/ontap["ONTAP 9-Dokumentation"] Zentrieren.
+
+Informationen zum Konfigurieren von VCF finden Sie unter link:https://techdocs.broadcom.com/us/en/vmware-cis/vcf/vcf-5-2-and-earlier/5-2.html["VMware Cloud Foundation 5.2 – Dokumentation"].
+
+
+
+== Video-Demo für diese Lösung
+
+.Stretch-Cluster für VCF mit ONTAP Tools
+video::569a91a9-2679-4414-b6dc-b25d00ff0c5a[panopto,width=360]

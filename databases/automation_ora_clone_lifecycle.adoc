@@ -58,7 +58,7 @@ NOTE: Es gibt bestimmte Beschränkungen bezüglich der Erstellung und/oder Freig
 
 === Voraussetzungen für die Bereitstellung
 
-[%collapsible]
+[%collapsible%open]
 ====
 Die Bereitstellung erfordert die folgenden Voraussetzungen.
 
@@ -91,7 +91,7 @@ NOTE: Zur Vereinfachung sollte der Clone Ziel Oracle Server identisch mit Standb
 
 === Toolkit herunterladen
 
-[%collapsible]
+[%collapsible%open]
 ====
 [source, cli]
 ----
@@ -105,7 +105,7 @@ NOTE: Auf das Toolkit kann derzeit nur ein interner NetApp-Benutzer mit Bitbucke
 
 === Dateikonfiguration der Ansible Ziel-Hosts
 
-[%collapsible]
+[%collapsible%open]
 ====
 Das Toolkit enthält eine Host-Datei, die die Ziele definiert, auf denen ein Ansible-Playbook ausgeführt wird. In der Regel sind dies die Ziel-Clones-Hosts von Oracle. Im Folgenden finden Sie eine Beispieldatei. Ein Hosteintrag enthält die IP-Adresse des Zielhosts sowie den SSH-Schlüssel für den Zugriff eines Admin-Benutzers auf den Host, um den Klon- oder Aktualisierungsbefehl auszuführen.
 
@@ -122,7 +122,7 @@ ora_04.cie.netapp.com ansible_host=10.61.180.29 ansible_ssh_private_key_file=ora
 
 === Konfiguration globaler Variablen
 
-[%collapsible]
+[%collapsible%open]
 ====
 Die Ansible-Playbooks verwenden variable Eingaben aus mehreren variablen Dateien. Unten finden Sie ein Beispiel für die globale Variablendatei VARs.yml.
 
@@ -140,7 +140,7 @@ snapctr_pwd: 'xxxxxxxx'
 
 === Konfiguration der Host-Variablen
 
-[%collapsible]
+[%collapsible%open]
 ====
 Hostvariablen werden im Verzeichnis Host_VARs mit dem Namen {{ Host_Name }}.yml definiert. Unten ist ein Beispiel für die Oracle-Zieldatei ora_04.cie.netapp.com.yml, die eine typische Konfiguration zeigt.
 
@@ -160,7 +160,7 @@ clone_db_sid: NTAP1DEV
 
 === Zusätzliche Clone-Ziel-Oracle-Serverkonfiguration
 
-[%collapsible]
+[%collapsible%open]
 ====
 Der Oracle-Zielserver für Klone sollte den gleichen Oracle-Softwarestack aufweisen, wie der Oracle-Quellserver installiert und gepatcht ist. Oracle-Benutzer .bash_profile hat ORACLE_BASE in Höhe von USD und ORACLE_HOME in Höhe von USD konfiguriert. Außerdem sollte die Variable „ORACLE_HOME“ mit der Oracle-Quellservereinstellung übereinstimmen. Hier ein Beispiel.
 
@@ -181,7 +181,7 @@ export ORACLE_HOME=/u01/app/oracle/product/19.0.0/NTAP1
 
 === Ausführung des Playbook
 
-[%collapsible]
+[%collapsible%open]
 ====
 Es gibt insgesamt drei Playbooks zur Ausführung des Lebenszyklus von Oracle Datenbankklonen mit SnapCenter CLI-Dienstprogrammen.
 

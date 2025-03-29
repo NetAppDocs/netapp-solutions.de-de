@@ -137,7 +137,7 @@ Es wird davon ausgegangen, dass Sie Ihre primäre Oracle-Datenbank bereits in ei
 
 === Voraussetzungen für die Bereitstellung
 
-[%collapsible]
+[%collapsible%open]
 ====
 Die Bereitstellung erfordert die folgenden Voraussetzungen.
 
@@ -177,7 +177,7 @@ Vnet Gateway-Verbindungsstatus: image:azure_ora_anf_dg_vnet_03.png["Screenshot m
 
 === Primäre Oracle VLDB-Konfiguration für Data Guard
 
-[%collapsible]
+[%collapsible%open]
 ====
 In dieser Demonstration haben wir eine primäre Oracle-Datenbank namens NTAP auf dem primären Azure DB-Server mit sechs NFS-Bereitstellungspunkten eingerichtet: /U01 für die Oracle-Binärdatei, /u02, /u04, /u05, /u06 für die Oracle-Datendateien und eine Oracle-Steuerdatei, /u03 für die aktiven Oracle-Protokolle, archivierte Protokolldateien und eine redundante Oracle-Steuerdatei. Dieses Setup dient als Referenzkonfiguration. Bei der tatsächlichen Implementierung sollten Ihre spezifischen Anforderungen in Bezug auf die Größenbestimmung des Kapazitäts-Pools, das Service Level, die Anzahl der Datenbank-Volumes und die Dimensionierung der einzelnen Volumes berücksichtigt werden.
 
@@ -505,7 +505,7 @@ Hiermit ist die Demonstration eines Data Guard-Setups für VLDB NTAP am primäre
 
 === Standby-Konfiguration von Oracle VLDB für Data Guard
 
-[%collapsible]
+[%collapsible%open]
 ====
 Oracle Data Guard erfordert die Kernel-Konfiguration des Betriebssystems und Oracle-Software-Stacks einschließlich Patch-Sets auf dem Standby-DB-Server, um mit dem primären DB-Server zu übereinstimmen. Für einfaches Management und einfache Handhabung sollte die Speicherkonfiguration des Standby-DB-Servers idealerweise auch mit dem primären DB-Server übereinstimmen, wie z.B. das Datenbankverzeichnis-Layout und die Größe der NFS-Bereitstellungspunkte.
 
@@ -825,7 +825,7 @@ Hiermit ist die Demonstration eines Data Guard-Setups für VLDB NTAP mit aktivie
 
 === Data Guard Broker Einrichten
 
-[%collapsible]
+[%collapsible%open]
 ====
 Oracle Data Guard Broker ist ein verteiltes Management-Framework, das die Erstellung, Wartung und Überwachung von Oracle Data Guard Konfigurationen automatisiert und zentralisiert. Im folgenden Abschnitt wird erläutert, wie Data Guard Broker für die Verwaltung der Data Guard-Umgebung eingerichtet wird.
 
@@ -922,7 +922,7 @@ Im Falle eines Ausfalls kann der Data Guard Broker verwendet werden, um umgehend
 
 === Klon-Standby-Datenbank für andere Anwendungsfälle via Automatisierung
 
-[%collapsible]
+[%collapsible%open]
 ====
 Das NetApp Solutions Engineering Team erhalten Sie Informationen zum Automatisierungs-Toolkit, mit dem Sie Klone für ein vollständiges Lifecycle Management für Klone erstellen und aktualisieren können.
 

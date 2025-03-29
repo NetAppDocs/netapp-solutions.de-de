@@ -13,10 +13,8 @@ summary:
 :imagesdir: ../media/
 
 
-Autor: Suresh Thoppay
-
 [role="lead"]
-VMware vSphere von Broadcom unterstützt VMFS-, NFS- und vVol-Datastores zum Hosten von Virtual Machines. Kunden haben die Möglichkeit, diese Datastores mit hyperkonvergenten Infrastrukturen oder zentralisierten Shared-Storage-Systemen zu erstellen. Kunden sehen häufig den Nutzen, wenn sie auf ONTAP-basierten Storage-Systemen hosten, um platzsparende Snapshots und Klone von virtuellen Maschinen bereitzustellen, Flexibilität bei der Auswahl verschiedener Implementierungsmodelle in den Rechenzentren und Clouds, betriebliche Effizienz durch Überwachungs- und Warnungswerkzeuge, Sicherheit, Governance und optionale Compliance-Tools zur Prüfung von VM-Daten, usw.
+VMware vSphere von Broadcom unterstützt VMFS-, NFS- und vVol-Datastores zum Hosten von Virtual Machines. Kunden haben die Möglichkeit, diese Datastores mit hyperkonvergenten Infrastrukturen oder zentralisierten Shared-Storage-Systemen zu erstellen. Kunden sehen häufig den Mehrwert eines Hostings auf ONTAP-basierten Storage-Systemen, um platzsparende Snapshots und Klone von Virtual Machines, Flexibilität bei der Auswahl verschiedener Implementierungsmodelle in den Datacentern und Clouds, betriebliche Effizienz durch Überwachungs- und Warn-Tools, Sicherheit, Governance und optionale Compliance-Tools zur Inspektion von VM-Daten usw. zu bieten.
 
 VMs, die auf ONTAP Datastores gehostet werden, können mit dem SnapCenter Plug-in für VMware vSphere (SCV) gesichert werden. SCV erstellt speicherbasierte Snapshots und repliziert auch auf ONTAP Remote-Speichersystem. Wiederherstellungen können entweder auf primären oder sekundären Storage-Systemen durchgeführt werden.
 
@@ -25,14 +23,14 @@ Kunden können zwischen Cloud Insights und Aria Operations oder einer Kombinatio
 Kunden können Datenspeicher mit dem vCenter Plug-in der ONTAP Tools einfach bereitstellen. Ihre APIs und VMs können zu ONTAP Datastores migriert werden, während dieses aktiviert ist.
 
 
-NOTE: Einige VMs, die mit externen Managementtools wie Aria Automation, Tanzu (oder anderen Kubernetes-Varianten) implementiert werden, sind in der Regel von der VM-Storage-Richtlinie abhängig. Wenn eine Migration zwischen Datenspeichern innerhalb derselben VM-Storage-Richtlinie durchgeführt werden sollte, sollte dies die Auswirkungen für Applikationen verringern. Wenden Sie sich an Applikationseigentümer, um diese VMs ordnungsgemäß zu einem neuen Datenspeicher zu migrieren. VSphere 8 eingeführt https://core.vmware.com/resource/vsphere-vmotion-notifications["VMotion Benachrichtigung"] Um die Anwendung für vMotion vorzubereiten.
+NOTE: Einige VMs, die mit externen Managementtools wie Aria Automation, Tanzu (oder anderen Kubernetes-Varianten) implementiert werden, sind in der Regel von der VM-Storage-Richtlinie abhängig. Wenn eine Migration zwischen Datenspeichern innerhalb derselben VM-Storage-Richtlinie durchgeführt werden sollte, sollte dies die Auswirkungen für Applikationen verringern. Wenden Sie sich an die Anwendungseigentümer, um diese VMs ordnungsgemäß zu einem neuen Datastore zu migrieren. VSphere 8 wurde eingeführt, um Anwendungen für vMotion vorzubereiten. https://techdocs.broadcom.com/us/en/vmware-cis/vsphere/vsphere/8-0/how-to-prepare-an-application-for-vsphere-vmotion.html#:~:text=vSphere%208.0%20introduces%20a%20notification,the%20necessary%20steps%20to%20prepare.["VSphere vMotion Benachrichtigungen für latenzkritische Anwendungen"]
 
 
 
 == Netzwerkanforderungen
 
 .VM-Migration mit vMotion
-[%collapsible]
+[%collapsible%open]
 ====
 Es wird angenommen, dass ein duales Storage-Netzwerk für den ONTAP Datastore bereits vorhanden ist, um Konnektivität, Fehlertoleranz und Performance-Steigerung zu ermöglichen.
 
@@ -55,10 +53,10 @@ TIP: Stellen Sie sicher, dass für die von vMotion und Provisioning VMkernel Sch
 VMotion wird häufig verwendet, um die VMs unabhängig von ihrem Einschaltzustand zu migrieren. Weitere Überlegungen und Migrationsverfahren für spezifische Szenarien finden Sie unten.
 
 
-NOTE: Verstehen https://docs.vmware.com/en/VMware-vSphere/8.0/vsphere-vcenter-esxi-management/GUID-0540DF43-9963-4AF9-A4DB-254414DC00DA.html["VM-Bedingungen und Einschränkungen von vSphere vMotion"] Bevor Sie mit den Optionen für die VM-Migration fortfahren.
+NOTE: Informieren Sie sich https://techdocs.broadcom.com/us/en/vmware-cis/vsphere/vsphere/8-0/vcenter-and-host-management-8-0/migrating-virtual-machines-host-management/migration-with-vmotion-host-management/virtual-machine-conditions-and-limitation-for-vmotion-host-management.html["VM-Bedingungen und Einschränkungen von vSphere vMotion"], bevor Sie mit den VM-Migrationsoptionen fortfahren.
 
 .Migration von VMs aus spezifischen vSphere Datastores
-[%collapsible]
+[%collapsible%open]
 ====
 Gehen Sie wie folgt vor, um VMs mithilfe der Benutzeroberfläche auf einen neuen Datastore zu migrieren.
 
@@ -111,7 +109,7 @@ $vm, $vmdisk | Get-SPBMEntityConfiguration
 ----
 ====
 .Migration von VMs im gleichen vSphere-Cluster
-[%collapsible]
+[%collapsible%open]
 ====
 Gehen Sie wie folgt vor, um VMs mithilfe der Benutzeroberfläche auf einen neuen Datastore zu migrieren.
 
@@ -167,10 +165,10 @@ TIP: Wenn Datastore Cluster mit vollautomatisiertem Storage DRS (Dynamic Resourc
 
 ====
 .Migration von VMs über mehrere vSphere-Cluster hinweg
-[%collapsible]
+[%collapsible%open]
 ====
 
-NOTE: Siehe https://docs.vmware.com/en/VMware-vSphere/8.0/vsphere-vcenter-esxi-management/GUID-03E7E5F9-06D9-463F-A64F-D4EC20DAF22E.html["CPU-Kompatibilität und vSphere Enhanced vMotion-Kompatibilität"] Wenn Quell- und Ziel-Hosts unterschiedlicher CPU-Familie oder -Modell sind.
+NOTE: Beziehen Sie sich auf https://techdocs.broadcom.com/us/en/vmware-cis/vsphere/vsphere/8-0/vcenter-and-host-management-8-0/migrating-virtual-machines-host-management/cpu-compatibility-and-evc-host-management.html["CPU-Kompatibilität und vSphere Enhanced vMotion-Kompatibilität"] Quell- und Ziel-Hosts mit unterschiedlichen CPU-Familien oder -Modellen.
 
 Gehen Sie wie folgt vor, um VMs mithilfe der Benutzeroberfläche auf einen neuen Datastore zu migrieren.
 
@@ -238,12 +236,12 @@ $vm, $vmdisk | Get-SPBMEntityConfiguration
 ----
 ====
 .Migration von VMs über vCenter Server in derselben SSO-Domäne hinweg
-[#vmotion-same-sso%collapsible]
+[#vmotion-same-sso%collapsible%open]
 ====
 Gehen Sie wie folgt vor, um VMs auf einen neuen vCenter-Server zu migrieren, der auf derselben vSphere Client-Benutzeroberfläche aufgeführt ist.
 
 
-NOTE: Weitere Anforderungen wie Quell- und Ziel-vCenter-Versionen usw. finden Sie unter https://docs.vmware.com/en/VMware-vSphere/8.0/vsphere-vcenter-esxi-management/GUID-DAD0C40A-7F66-44CF-B6E8-43A0153ABE81.html["VSphere-Dokumentation zu Anforderungen für vMotion zwischen vCenter-Serverinstanzen"]
+NOTE: Weitere Anforderungen wie Quell- und Ziel-vCenter-Versionen usw. finden Sie unter https://techdocs.broadcom.com/us/en/vmware-cis/vsphere/vsphere/8-0/vcenter-and-host-management-8-0/migrating-virtual-machines-host-management/vmotion-across-vcenter-server-systems-host-management/requirements-for-migration-across-vcenter-servers-host-management.html["VSphere-Dokumentation zu Anforderungen für vMotion zwischen vCenter-Serverinstanzen"]
 
 . Wählen Sie bei vSphere Web Client den Cluster aus dem Host- und Cluster-Inventar aus und klicken Sie auf die Registerkarte VMs.
 +
@@ -309,7 +307,7 @@ $targetvm, $targetvmdisk | Get-SPBMEntityConfiguration
 ----
 ====
 .Migration von VMs über vCenter-Server in einer anderen SSO-Domain hinweg
-[%collapsible]
+[%collapsible%open]
 ====
 
 NOTE: Dieses Szenario setzt voraus, dass die Kommunikation zwischen den vCenter Servern besteht. Andernfalls prüfen Sie das unten aufgeführte Szenario für den Standort von Across-Rechenzentren. Voraussetzungen prüfen https://docs.vmware.com/en/VMware-vSphere/8.0/vsphere-vcenter-esxi-management/GUID-1960B6A6-59CD-4B34-8FE5-42C19EE8422A.html["VSphere-Dokumentation auf Advanced Cross vCenter vMotion"]
@@ -330,7 +328,7 @@ image:migrate-vms-to-ontap-image11.png["Cross vCenter Server-Export"]
 
 +
 
-TIP: VM kann auch vom Ziel-vCenter-Server importiert werden. Überprüfen Sie für dieses Verfahren https://docs.vmware.com/en/VMware-vSphere/8.0/vsphere-vcenter-esxi-management/GUID-ED703E35-269C-48E0-A34D-CCBB26BFD93E.html["Importieren oder Klonen Sie eine Virtual Machine mit Advanced Cross vCenter vMotion"]
+TIP: VM kann auch vom Ziel-vCenter-Server importiert werden. Überprüfen Sie für dieses Verfahren https://techdocs.broadcom.com/us/en/vmware-cis/vsphere/vsphere/8-0/vcenter-and-host-management-8-0/migrating-virtual-machines-host-management/vmotion-across-vcenter-server-systems-host-management/migrate-a-virtual-machine-from-an-external-vcenter-server-instance-host-management.html["Importieren oder Klonen Sie eine Virtual Machine mit Advanced Cross vCenter vMotion"]
 
 . Geben Sie vCenter-Anmeldeinformationen an, und klicken Sie auf Anmelden.
 +
@@ -392,30 +390,30 @@ $targetvm, $targetvmdisk | Get-SPBMEntityConfiguration
 ----
 ====
 .Migration von VMs zwischen Datacenter-Standorten
-[%collapsible]
+[%collapsible%open]
 ====
 * Wenn der Layer-2-Datenverkehr über Rechenzentren verteilt wird, entweder über NSX Federation oder andere Optionen, befolgen Sie das Verfahren zur Migration von VMs über vCenter-Server hinweg.
-* HCX bietet verschiedene https://docs.vmware.com/en/VMware-HCX/4.8/hcx-user-guide/GUID-8A31731C-AA28-4714-9C23-D9E924DBB666.html["Migrationstypen"] Mit Hilfe der Replikation unterstützte vMotion über die Rechenzentren hinweg, um die VM ohne Ausfallzeiten zu verschieben.
+* HCX bietet verschiedene Funktionen https://techdocs.broadcom.com/us/en/vmware-cis/hcx/vmware-hcx/4-11/vmware-hcx-user-guide-4-11/migrating-virtual-machines-with-vmware-hcx/vmware-hcx-migration-types.html["Migrationstypen"], einschließlich replizierungsunterstützter vMotion in den Rechenzentren, um VMs ohne Ausfallzeiten zu verschieben.
 * https://docs.vmware.com/en/Site-Recovery-Manager/index.html["Site Recovery Manager (SRM)"] Ist in der Regel für Disaster-Recovery-Zwecke gedacht und wird häufig auch für geplante Migration unter Verwendung von Speicher-Array-basierter Replikation verwendet.
-* Continuous Data Protection (CDP)-Produkte werden verwendet https://core.vmware.com/resource/vmware-vsphere-apis-io-filtering-vaio#section1["VSphere API für IO (VAIO)"] Um die Daten abzufangen und eine Kopie an einen Remote-Standort zu senden, um eine RPO-Lösung von nahezu null zu ermöglichen.
+* CDP-Produkte (Continous Data Protection) werden https://techdocs.broadcom.com/us/en/vmware-cis/vsphere/vsphere/7-0/vsphere-storage-7-0/filtering-virtual-machine-i-o-in-vsphere/about-i-o-filters/classes-of-vaio-filters.html["VSphere API für IO (VAIO)"] zum Abfangen der Daten und zum Senden einer Kopie an einen Remote-Standort für eine RPO-Lösung von nahezu null verwendet.
 * Auch Backup- und Recovery-Produkte können eingesetzt werden. Dies führt aber oft zu einer längeren RTO.
 * https://docs.netapp.com/us-en/bluexp-disaster-recovery/get-started/dr-intro.html["BlueXP Disaster Recovery als Service (DRaaS)"] Nutzt Storage Array-basierte Replizierung und automatisiert bestimmte Aufgaben für die Wiederherstellung der VMs am Zielstandort.
 
 
 ====
 .Migration von VMs in einer Hybrid-Cloud-Umgebung
-[%collapsible]
+[%collapsible%open]
 ====
-* https://docs.vmware.com/en/VMware-Cloud/services/vmware-cloud-gateway-administration/GUID-91C57891-4D61-4F4C-B580-74F3000B831D.html["Konfigurieren Sie Den Hybriden Verknüpften Modus"] Und befolgen Sie das Verfahren von link:#vmotion-same-sso["Migration von VMs über vCenter Server in derselben SSO-Domäne hinweg"]
+* https://techdocs.broadcom.com/us/en/vmware-cis/cloud/vmware-cloud/cloud/vmware-cloud-gateway-administration/about-hybrid-linked-mode.html["Konfigurieren Sie Den Hybriden Verknüpften Modus"] Und befolgen Sie das Verfahren von link:#vmotion-same-sso["Migration von VMs über vCenter Server in derselben SSO-Domäne hinweg"]
 * HCX bietet verschiedene https://docs.vmware.com/en/VMware-HCX/4.8/hcx-user-guide/GUID-8A31731C-AA28-4714-9C23-D9E924DBB666.html["Migrationstypen"] Einschließlich Replication unterstützte vMotion über die Datacenter, um die VM zu verschieben, während sie eingeschaltet ist.
 +
-** Link:../ehc/aws-migrate-vmware-hcx.html [TR 4942: Migration von Workloads auf FSX ONTAP-Datastore mit VMware HCX]
-** Link:../ehc/azure-migrate-vmware-hcx.html [TR-4940: Migrieren Sie Workloads mithilfe von VMware HCX zu einem Azure NetApp Files Datastore – QuickStart Guide]
-** Link:../ehc/gcp-migrate-vmware-hcx.html [Workloads auf Google Cloud NetApp Volumes Datastore auf Google Cloud VMware Engine mit VMware HCX migrieren – QuickStart Guide]
+** link:../ehc/aws-migrate-vmware-hcx.html["TR 4942: Migration von Workloads auf FSX ONTAP Datastore mithilfe von VMware HCX"]
+** link:../ehc/azure-migrate-vmware-hcx.html["TR-4940: Migration von Workloads auf Azure NetApp Files Datastore mithilfe von VMware HCX - QuickStart Guide"]
+** link:../ehc/gcp-migrate-vmware-hcx.html["Migrieren Sie Workloads mithilfe des VMware HCX – QuickStart Guide zu Google Cloud NetApp Volumes Datastore in der Google Cloud VMware Engine"]
 
 
 * https://docs.netapp.com/us-en/bluexp-disaster-recovery/get-started/dr-intro.html["BlueXP Disaster Recovery als Service (DRaaS)"] Nutzt Storage Array-basierte Replizierung und automatisiert bestimmte Aufgaben für die Wiederherstellung der VMs am Zielstandort.
-* Mit unterstützten CDP-Produkten (Continous Data Protection), die verwendet werden https://core.vmware.com/resource/vmware-vsphere-apis-io-filtering-vaio#section1["VSphere API für IO (VAIO)"] Um die Daten abzufangen und eine Kopie an einen Remote-Standort zu senden, um eine RPO-Lösung von nahezu null zu ermöglichen.
+* Mit unterstützten CDP-Produkten (Continous Data Protection), die zum Abfangen der Daten und zum Senden einer Kopie an einen Remote-Standort für eine RPO-Lösung von nahezu null verwenden https://techdocs.broadcom.com/us/en/vmware-cis/vsphere/vsphere/7-0/vsphere-storage-7-0/filtering-virtual-machine-i-o-in-vsphere/about-i-o-filters/classes-of-vaio-filters.html["VSphere API für IO (VAIO)"].
 
 
 
@@ -434,7 +432,7 @@ VM-Vorlagen können vom vCenter Server oder von einer Content Library gemanagt w
 
 
 .Migration von auf einem Datastore gehosteten VM-Vorlagen
-[%collapsible]
+[%collapsible%open]
 ====
 . Klicken Sie in vSphere Web Client mit der rechten Maustaste auf die VM-Vorlage unter der Ordneransicht VM und Vorlagen, und wählen Sie die Option zum Konvertieren in VM aus.
 +
@@ -445,7 +443,7 @@ image:migrate-vms-to-ontap-image16.png["Konvertieren Sie die VM-Vorlage in VM"]
 
 ====
 .Kopieren von Elementen der Inhaltsbibliothek
-[%collapsible]
+[%collapsible%open]
 ====
 . Wählen Sie in vSphere Web Client Content Libraries aus
 +
@@ -483,7 +481,7 @@ Get-ContentLibaryItem -ContentLibary (Get-ContentLibary 'CL01' -Server $sourcevc
 ----
 ====
 .Hinzufügen von VM als Vorlagen in der Content Library
-[%collapsible]
+[%collapsible%open]
 ====
 . Wählen Sie in vSphere Web Client die VM aus, und klicken Sie mit der rechten Maustaste, um in der Bibliothek als Vorlage klonen zu wählen
 +
@@ -499,7 +497,7 @@ image:migrate-vms-to-ontap-image22.png["Auswahl des Vorlagentyps"]
 
 +
 
-NOTE: Weitere Informationen zu VM-Vorlagen auf Content Library finden Sie unter https://docs.vmware.com/en/VMware-vSphere/8.0/vsphere-vm-administration/GUID-E9EAF7AC-1C08-441A-AB80-0BAA1EAF9F0A.html["Administrationshandbuch für vSphere VM"]
+NOTE: Weitere Informationen zu VM-Vorlagen auf Content Library finden Sie unter https://techdocs.broadcom.com/us/en/vmware-cis/vsphere/vsphere/8-0/vsphere-virtual-machine-administration-guide-8-0.html["Administrationshandbuch für vSphere VM"]
 
 
 
@@ -521,7 +519,7 @@ NOTE: Weitere Informationen zu VM-Vorlagen auf Content Library finden Sie unter 
 * Wenn kein in-Place-Upgrade möglich ist, kann eine neue Umgebung einrichten und die oben genannten Migrationsoptionen verwenden.
 +
 
-TIP: Importieren Sie in der Option „vCenter-übergreifende Migration“ aus dem Ziel, wenn die Exportoption auf der Quelle nicht verfügbar ist. Überprüfen Sie für dieses Verfahren https://docs.vmware.com/en/VMware-vSphere/8.0/vsphere-vcenter-esxi-management/GUID-ED703E35-269C-48E0-A34D-CCBB26BFD93E.html["Importieren oder Klonen Sie eine Virtual Machine mit Advanced Cross vCenter vMotion"]
+TIP: Importieren Sie in der Option „vCenter-übergreifende Migration“ aus dem Ziel, wenn die Exportoption auf der Quelle nicht verfügbar ist. Überprüfen Sie für dieses Verfahren link:https://techdocs.broadcom.com/us/en/vmware-cis/vsphere/vsphere/8-0/vcenter-and-host-management-8-0/migrating-virtual-machines-host-management/vmotion-across-vcenter-server-systems-host-management/migrate-a-virtual-machine-from-an-external-vcenter-server-instance-host-management.html["Importieren oder Klonen Sie eine Virtual Machine mit Advanced Cross vCenter vMotion"]
 
 
 
@@ -532,7 +530,7 @@ TIP: Importieren Sie in der Option „vCenter-übergreifende Migration“ aus de
 * Migrieren Sie VMs von jedem vSphere Cluster zu einer Ziel-Workload-Domäne.
 +
 
-NOTE: Um die Netzwerkkommunikation mit vorhandenen VMs auf anderen Clustern im Quell-vCenter zu ermöglichen, erweitern Sie entweder das NSX-Segment, indem Sie die vcenter vSphere-Quell-Hosts zur Transportzone hinzufügen, oder verwenden Sie die L2-Bridge am Edge, um die L2-Kommunikation im VLAN zu ermöglichen. Prüfen Sie die NSX-Dokumentation von https://docs.vmware.com/en/VMware-NSX/4.1/administration/GUID-0E28AC86-9A87-47D4-BE25-5E425DAF7585.html["Konfigurieren Sie eine Edge VM für Bridging"]
+NOTE: Um die Netzwerkkommunikation mit vorhandenen VMs auf anderen Clustern im Quell-vCenter zu ermöglichen, erweitern Sie entweder das NSX-Segment, indem Sie die vcenter vSphere-Quell-Hosts zur Transportzone hinzufügen, oder verwenden Sie die L2-Bridge am Edge, um die L2-Kommunikation im VLAN zu ermöglichen. Prüfen Sie die NSX-Dokumentation von https://techdocs.broadcom.com/us/en/vmware-cis/nsx/vmware-nsx/4-2/administration-guide/segments/edge-bridging-extending-overlay-segments-to-vlan/configure-an-edge-vm-for-bridging.html["Konfigurieren Sie eine Edge VM für Bridging"]
 
 
 
@@ -541,11 +539,10 @@ NOTE: Um die Netzwerkkommunikation mit vorhandenen VMs auf anderen Clustern im Q
 
 == Weitere Ressourcen
 
-* https://docs.vmware.com/en/VMware-vSphere/8.0/vsphere-vcenter-esxi-management/GUID-FE2B516E-7366-4978-B75C-64BF0AC676EB.html["Migration von vSphere Virtual Machines"]
-* https://core.vmware.com/blog/whats-new-vsphere-8-vmotion["Neuerungen in vSphere 8 für vMotion"]
-* https://core.vmware.com/vmotion["Ressourcen für vSphere vMotion"]
-* https://docs.vmware.com/en/VMware-NSX/4.1/administration/GUID-47F34658-FA46-4160-B2E0-4EAE722B43F0.html["Tier-0-Gateway-Konfigurationen in NSX Federation"]
-* https://docs.vmware.com/en/VMware-HCX/4.8/hcx-user-guide/GUID-BFD7E194-CFE5-4259-B74B-991B26A51758.html["HCX 4.8 Benutzerhandbuch"]
-* https://docs.vmware.com/en/Site-Recovery-Manager/index.html["VMware Site Recovery Manager - Dokumentation"]
+* https://techdocs.broadcom.com/us/en/vmware-cis/vsphere/vsphere/8-0/vcenter-and-host-management-8-0/migrating-virtual-machines-host-management.html["Migration von vSphere Virtual Machines"]
+* https://techdocs.broadcom.com/us/en/vmware-cis/vsphere/vsphere/8-0/vcenter-and-host-management-8-0/migrating-virtual-machines-host-management/migration-with-vmotion-host-management.html["Migration von Virtual Machines mit vSphere vMotion"]
+* https://techdocs.broadcom.com/us/en/vmware-cis/nsx/vmware-nsx/4-2/administration-guide/managing-nsx-t-in-multiple-locations/nsx-t-federation/networking-topologies-in-nsx-federation/tier-0-in-federation.html["Tier-0-Gateway-Konfigurationen in NSX Federation"]
+* https://techdocs.broadcom.com/us/en/vmware-cis/hcx/vmware-hcx/4-11/vmware-hcx-user-guide-4-11.html["HCX 4.8 Benutzerhandbuch"]
+* https://techdocs.broadcom.com/us/en/vmware-cis/live-recovery.html["VMware Live Recovery-Dokumentation"]
 * https://docs.netapp.com/us-en/bluexp-disaster-recovery/get-started/dr-intro.html["BlueXP Disaster Recovery für VMware"]
 

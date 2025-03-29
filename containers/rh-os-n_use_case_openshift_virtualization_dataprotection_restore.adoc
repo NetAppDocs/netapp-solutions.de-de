@@ -23,7 +23,7 @@ In diesem Abschnitt wird beschrieben, wie virtuelle Maschinen aus einem Backup w
 Um aus einem Backup wiederherzustellen, nehmen wir an, dass der Namespace, in dem die virtuelle Maschine existierte, versehentlich gelöscht wurde.
 
 .Restore auf denselben Namespace
-[%collapsible]
+[%collapsible%open]
 ====
 Um das Backup wiederherzustellen, das wir gerade erstellt haben, müssen wir eine Restore Custom Resource (CR) erstellen. Geben Sie ihm einen Namen, geben Sie den Namen des Backups an, von dem aus wir die Wiederherstellungs-PVs wiederherstellen möchten, und setzen Sie sie auf „True“. Weitere Parameter können wie in dargestellt eingestellt werden link:https://docs.openshift.com/container-platform/4.14/backup_and_restore/application_backup_and_restore/backing_up_and_restoring/restoring-applications.html["Dokumentation"]. Klicken Sie auf die Schaltfläche Erstellen.
 
@@ -45,7 +45,7 @@ image:redhat_openshift_OADP_restore_image2.jpg["Wiederherstellung abgeschlossen"
 
 ====
 .Wiederherstellung in einem anderen Namespace
-[%collapsible]
+[%collapsible%open]
 ====
 Um die VM in einem anderen Namespace wiederherzustellen, können Sie in der yaml-Definition des Restore CR ein NamepaceMapping bereitstellen.
 
@@ -71,7 +71,7 @@ image:redhat_openshift_OADP_restore_image3.jpg["Wiederherstellung in einem neuen
 
 ====
 .Wiederherstellung auf eine andere Storage-Klasse
-[%collapsible]
+[%collapsible%open]
 ====
 Velero bietet eine allgemeine Möglichkeit, die Ressourcen während der Wiederherstellung durch Angabe von json Patches zu ändern. Die json-Patches werden auf die Ressourcen angewendet, bevor sie wiederhergestellt werden. Die json-Patches werden in einer configmap angegeben und im Wiederherstellungsbefehl auf die configmap verwiesen. Diese Funktion ermöglicht Ihnen die Wiederherstellung mit einer anderen Storage-Klasse.
 

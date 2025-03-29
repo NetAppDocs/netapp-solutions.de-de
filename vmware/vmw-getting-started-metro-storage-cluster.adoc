@@ -1,0 +1,43 @@
+---
+sidebar: sidebar 
+permalink: vmware/vmw-getting-started-metro-storage-cluster.html 
+keywords: vmware, getting, started, overview, netapp, storage, metro, cluster 
+summary:  
+---
+= VSphere Metro Storage-Cluster
+:hardbreaks:
+:allow-uri-read: 
+:nofooter: 
+:icons: font
+:linkattrs: 
+:imagesdir: ../media/
+
+
+[role="lead"]
+Erweiterte Business Continuity ist für Unternehmen von großer Bedeutung, da sie ihre VMware-Umgebungen vor Ausfällen in einer oder mehreren Ausfall-Domains schützen möchten.
+
+
+
+== Einführung
+
+Neben den in die Produkte integrierten Verfügbarkeiten bieten VMware und NetApp erweiterte Konfigurationen, die Workloads weiter schützen, die sich auf Ausfall-Domains wie Racks, Gebäude, Standorte oder sogar Städte verteilen.
+
+
+
+== NetApp MetroCluster
+
+NetApp MetroCluster nutzt die Hochverfügbarkeitsfunktion (High Availability, HA) von NetApp zum Schutz vor Controller-Ausfällen. MetroCluster umfasst außerdem SyncMirror Technologie, Cluster Failover On Demand (CFOD), Hardware-Redundanz und geografische Trennung für Hochverfügbarkeit. SyncMirror spiegelt Daten synchron über zwei Plexe: Den lokalen Plex, der aktiv Daten bereitstellt, und den Remote-Plex als Standby. Alle MetroCluster Komponenten wie Controller, Storage, Kabel, Switches und Adapter verfügen über Hardware-Redundanz.
+
+
+
+== Aktive NetApp SnapMirror-Synchronisierung
+
+NetApp SnapMirror Active Sync bietet granularen Schutz von Datastores mit FCP- und iSCSI-SAN-Protokollen, wodurch selektiv die Topologie mit hohen Prioritäten gesichert wird. Im Gegensatz zu den aktiv/aktiv-MetroCluster-Systemen bietet es aktiven aktiv/aktiv-Zugriff auf lokale und Remote-Standorte. Ab ONTAP 9.15.1 unterstützt die SnapMirror Active Sync symmetrische aktiv/aktiv-Funktion, sodass I/O-Vorgänge für Lese- und Schreibvorgänge von beiden Kopien einer geschützten LUN mit bidirektionaler synchroner Replizierung möglich sind.
+
+
+
+== VMware vSphere Metro Storage-Cluster
+
+VMware vSphere Metro Storage Cluster (vMSC) erweitert VMware HA durch erweiterbaren aktiv/aktiv-Storage. Diese zertifizierte Konfiguration schützt VMs und Container vor Ausfällen. Dies wird mithilfe erweiterter Storage-Konzepte und Cluster von vSphere Hosts erreicht. Diese Hosts sind auf verschiedene Ausfall-Domains verteilt. Die NetApp MetroCluster und SnapMirror Active Sync Storage-Technologien werden eingesetzt, um Sicherung und unterstützte Storage-Angebote bereitzustellen. Durch die Nutzung von vMSC bietet eine zertifizierte NetApp Lösung robuste und stabile IT-Abläufe über Ausfalldomänen hinweg.
+
+Ausführliche Informationen finden Sie im https://docs.netapp.com/us-en/ontap-apps-dbs/vmware/vmware_vmsc_overview.html#continuous-availability-solutions-for-vsphere-environments["VSphere Metro Storage-Cluster mit ONTAP"]. {Nbsp}

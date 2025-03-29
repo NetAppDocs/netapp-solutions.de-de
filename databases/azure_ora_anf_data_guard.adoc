@@ -13,8 +13,6 @@ summary: 'Die Lösung bietet einen Überblick und Details zur Konfiguration von 
 :imagesdir: ../media/
 
 
-Allen Cao, Niyaz Mohamed, NetApp
-
 [role="lead"]
 Die Lösung bietet einen Überblick und Details zur Konfiguration von Oracle Data Guard mit Microsoft Azure NetApp Files (ANF) als primären und Standby-Datenbank-Storage, um die Lizenz- und Betriebskosten der Oracle Data Guard HA/DR-Lösung in der Azure Cloud zu senken.
 
@@ -115,7 +113,7 @@ image:azure_ora_anf_data_guard_architecture.png["Dieses Bild enthält ein detail
 === Wichtige Faktoren für die Implementierung
 
 * *Standby-Datenbankklone.* Beim Empfangen und Anwenden von Transaktionsprotokollen von der primären Datenbank kann die physische Standby-Datenbank geklont und auf einer DB-VM gemountet werden, um andere Workloads wie ENTWICKLUNG, TEST oder Bericht zu unterstützen. Der Klon kann ein dünner oder Thick Clone sein. Derzeit unterstützt ANF nur Thick Clone, also eine vollständige Kopie der Standby-Datenbank. Die Option ANF Thin Clone wird in Kürze veröffentlicht. Für eine über Thin Cloning erstellte Kopie von Datenbank-Volumes verwendet es dieselben DB-Volumes der Standby-Datenbank und nutzt Copy-on-Write-Technologie für die iOS mit Schreibzugriffen. Der Klon ist somit sehr Storage-effizient und kann für viele andere Anwendungsfälle mit minimaler und inkrementeller neuer Storage-Zuweisung für neue Schreib-I/OS verwendet werden. Dies führt zu enormen Einsparungen bei den Storage-Kosten, indem der Platzbedarf für Active Data Guard Storage deutlich verringert wird. NetApp empfiehlt, FlexClone-Aktivitäten bei einem Datenbank-Wechsel vom primären Storage auf Standby-ANF-Storage zu minimieren, um die Oracle-Performance auf hohem Niveau zu halten.
-* *Oracle Software-Anforderungen.* im Allgemeinen muss eine physische Standby-Datenbank die gleiche Database Home-Version wie die primäre Datenbank haben, einschließlich Patch Set Exceptions (PSEs), Critical Patch Updates (CPUs), und Patch-Set-Updates (PSUs), es sei denn, es wird ein Oracle Data Guard Standby-First Patch Apply-Prozess durchgeführt (wie in My Oracle Support Note 1265700.1 unter beschrieben link:http://support.oracle.com.["support.oracle.com"^]
+* *Oracle Software-Anforderungen.* Im Allgemeinen muss eine physische Standby-Datenbank dieselbe Datenbank-Home-Version wie die primäre Datenbank haben, einschließlich PSE (Patch Set Exceptions), Critical Patch Updates (CPUs) und PSUs (Patch Set Updates), es sei denn, ein Oracle Data Guard Standby-First Patch Apply-Prozess wird ausgeführt (wie in My Oracle Support Note 1265700.1 unter beschriebenlink:https://support.oracle.com["support.oracle.com"^].
 * *Überlegungen zur Struktur des Standby-Datenbankverzeichnisses.* Wenn möglich, sollten die Datendateien, Protokolldateien und Kontrolldateien auf den primären und Standby-Systemen dieselben Namen und Pfadnamen haben und die Namenskonventionen für die optimale flexible Architektur (OFA) verwenden. Die Archivverzeichnisse in der Standby-Datenbank sollten auch zwischen Standorten identisch sein, einschließlich Größe und Struktur. Diese Strategie erlaubt es anderen Vorgängen wie Backups, Switchover und Failover, dieselben Schritte auszuführen, wodurch die Wartungskomplexität verringert wird.
 * *Protokollierungsmodus erzwingen.* um sich vor nicht eingeloggten direkten Schreibvorgängen in der primären Datenbank zu schützen, die nicht an die Standby-Datenbank weitergegeben werden kann, aktivieren Sie die Option PROTOKOLLIERUNG an der primären Datenbank ERZWINGEN, bevor Sie Datendatei-Backups für die Standby-Erstellung durchführen.
 * *Größenanpassung der Azure VM* Für diese Tests und Validierungen wurde eine Azure VM - Standard_B4ms mit 4 vCPUs und 16 gib Arbeitsspeicher verwendet. Sie müssen die Größe der Azure DB-VM entsprechend der Anzahl der vCPUs und der Menge des RAM basierend auf tatsächlichen Workload-Anforderungen festlegen.
@@ -135,7 +133,7 @@ Ihre primäre Oracle-Datenbank kann auch auf einem NetApp ONTAP Storage oder ein
 
 === Voraussetzungen für die Bereitstellung
 
-[%collapsible]
+[%collapsible%open]
 ====
 Die Bereitstellung erfordert die folgenden Voraussetzungen.
 
@@ -174,7 +172,7 @@ Vnet Gateway-Verbindungsstatus: image:azure_ora_anf_dg_vnet_03.png["Screenshot m
 
 === Bereiten Sie die primäre Datenbank für Data Guard vor
 
-[%collapsible]
+[%collapsible%open]
 ====
 In dieser Demonstration haben wir eine primäre Oracle-Datenbank namens NTAP auf dem primären Azure DB-Server mit drei NFS-Bereitstellungspunkten eingerichtet: /U01 für die Oracle-Binärdatei, /u02 für die Oracle-Datendateien und eine Oracle Steuerdatei, /u03 für die aktiven Oracle-Protokolle, archivierte Protokolldateien und eine redundante Oracle Steuerdatei. Im Folgenden werden die detaillierten Verfahren zum Einrichten der primären Datenbank für den Oracle Data Guard-Schutz erläutert. Alle Schritte sollten als Eigentümer der Oracle-Datenbank oder als Standardbenutzer ausgeführt `oracle` werden.
 
@@ -484,7 +482,7 @@ Damit ist die Einrichtung der primären Datenbank für Data Guard abgeschlossen.
 
 === Bereiten Sie die Standby-Datenbank vor und aktivieren Sie Data Guard
 
-[%collapsible]
+[%collapsible%open]
 ====
 Oracle Data Guard erfordert die Kernel-Konfiguration des Betriebssystems und Oracle-Software-Stacks einschließlich Patch-Sets auf dem Standby-DB-Server, um mit dem primären DB-Server zu übereinstimmen. Für einfaches Management und einfache Handhabung sollte die Speicherkonfiguration des Standby-DB-Servers idealerweise auch mit dem primären DB-Server übereinstimmen, wie z.B. das Datenbankverzeichnis-Layout und die Größe der NFS-Bereitstellungspunkte. Im Folgenden finden Sie detaillierte Verfahren zum Einrichten des Standby-Oracle-DB-Servers und zum Aktivieren von Oracle DataGuard für HA-/DR-Schutz. Alle Befehle sollten als standardmäßige Oracle-Benutzer-id ausgeführt werden `oracle`.
 
@@ -846,7 +844,7 @@ Damit ist die Data Guard-Schutzeinrichtung für NTAP vom primären zum Standby m
 
 === Data Guard Broker Einrichten
 
-[%collapsible]
+[%collapsible%open]
 ====
 Oracle Data Guard Broker ist ein verteiltes Management-Framework, das die Erstellung, Wartung und Überwachung von Oracle Data Guard Konfigurationen automatisiert und zentralisiert. Im folgenden Abschnitt wird erläutert, wie Data Guard Broker für die Verwaltung der Data Guard-Umgebung eingerichtet wird.
 
@@ -943,7 +941,7 @@ Im Falle eines Ausfalls kann der Data Guard Broker verwendet werden, um umgehend
 
 === Clone Standby-Datenbank für andere Anwendungsfälle
 
-[%collapsible]
+[%collapsible%open]
 ====
 Der wichtigste Vorteil, wenn Sie die Oracle Standby-Datenbank im Oracle Data Guard Setup auf ANF hosten, besteht darin, dass sie schnell geklont werden kann, um für viele andere Anwendungsfälle geeignet zu sein – bei Aktivierung eines Thin Clones mit minimalen zusätzlichen Storage-Investitionen. NetApp empfiehlt, zum Managen Ihrer Oracle DataGuard Datenbank das UI-Tool SnapCenter zu verwenden. Im folgenden Abschnitt wird gezeigt, wie mit dem Tool NetApp SnapCenter ein Snapshot von den gemounteten und unter Recovery-Standby-Datenbank-Volumes auf dem ANF erstellt und geklont wird, und zwar zu anderen Zwecken wie ENTWICKLUNG, TEST, BERICHT usw.
 

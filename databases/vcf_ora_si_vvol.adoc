@@ -143,7 +143,7 @@ In den folgenden Abschnitten werden Schritt-für-Schritt-Anleitungen für die Im
 
 === Voraussetzungen für die Bereitstellung
 
-[%collapsible]
+[%collapsible%open]
 ====
 Die Bereitstellung erfordert die folgenden Voraussetzungen.
 
@@ -161,7 +161,7 @@ NOTE: Stellen Sie sicher, dass Sie mindestens 50G im Oracle VM Root-Volume zugew
 
 === Storage-Funktionsprofil erstellen
 
-[%collapsible]
+[%collapsible%open]
 ====
 Erstellen Sie zunächst ein individuelles Storage-Funktionsprofil für den unterstrichenen ONTAP Storage, der den VVols Datastore hostet.
 
@@ -200,7 +200,7 @@ image:vcf_ora_vvol_scp_07.png["Screenshot mit einer individuellen Konfiguration 
 
 === VVols Datastore erstellen und konfigurieren
 
-[%collapsible]
+[%collapsible%open]
 ====
 Wenn die Voraussetzungen erfüllt sind, melden Sie sich über vSphere Client als Admin-Benutzer bei VCF an und navigieren Sie zur Workload-Domäne. Erstellen Sie VVols nicht mit der integrierten VMware Storage-Option. Stattdessen können Sie VVols mit dem Tool NetApp ONTAP erstellen. Im Folgenden werden die Verfahren zum Erstellen und Konfigurieren von VVols beschrieben.
 
@@ -245,7 +245,7 @@ NOTE: Wenn eine Oracle Datenbank geklont wird, wird der VVols-Liste eine zusätz
 
 === Erstellen von VM Storage-Richtlinien anhand von Storage-Funktionsprofilen
 
-[%collapsible]
+[%collapsible%open]
 ====
 Bevor Sie Storage aus einem VVols-Datastore in eine Datenbank-VM bereitstellen, fügen Sie eine VM-Storage-Richtlinie basierend auf dem Storage-Funktionsprofil hinzu, das aus dem vorherigen Schritt erstellt wurde. Im Folgenden werden die Verfahren beschrieben.
 
@@ -288,7 +288,7 @@ image:vcf_ora_vvol_vm_policy_07.png["Screenshot mit der Konfiguration einer VM-S
 
 === Weisen Sie Festplatten der DB-VM aus VVols-Datastores zu und konfigurieren Sie den DB-Storage
 
-[%collapsible]
+[%collapsible%open]
 ====
 Fügen Sie über vSphere Client drei Festplatten aus den VVols-Datastores zur Datenbank-VM hinzu, indem Sie die VM-Einstellungen bearbeiten. Melden Sie sich dann bei der VM an, um die Festplatten zu formatieren und in die Mount-Punkte /u01, /u02 und /u03 einzuhängen. Im Folgenden werden die genauen Schritte und Aufgaben erläutert.
 
@@ -432,7 +432,7 @@ UUID=aff942c4-b224-4b62-807d-6a5c22f7b623 /boot                   xfs     defaul
 
 === Implementierung von Oracle Database in VCF
 
-[%collapsible]
+[%collapsible%open]
 ====
 Es wird empfohlen, das NetApp Automatisierungs-Toolkit für die Implementierung von Oracle in VCF mit VVols zu nutzen. Detaillierte Informationen zur Ausführung der automatisierten Oracle-Bereitstellung auf xfs-Dateisystemen finden Sie in TR-4992: link:automation_ora_c-series_nfs.html["Vereinfachte, automatisierte Oracle-Implementierung auf NetApp C-Series mit NFS"^]. TR-4992 deckt zwar die automatisierte Implementierung von Oracle auf der NetApp C-Series mit NFS ab, ist jedoch mit der Implementierung von Oracle in VCF mit VVols identisch, wenn das Mounten von NFS-Filesystemen in Datenbank-VM umgangen wird. Wir würden das einfach mit bestimmten Tags überspringen. Im Folgenden werden die einzelnen Schritte beschrieben.
 
@@ -501,7 +501,7 @@ ansible-playbook -i hosts 5-destroy.yml -u admin -e @vars/vars.yml
 
 ==== SnapCenter-Einrichtung
 
-[%collapsible]
+[%collapsible%open]
 ====
 SnapCenter Version 6 verfügt über viele Funktionsverbesserungen gegenüber Version 5, einschließlich der Unterstützung für VMware VVols Datastore. SnapCenter setzt auf ein Host-seitiges Plug-in auf einer Datenbank-VM, um applikationsspezifische Management-Aktivitäten zur Datensicherung durchzuführen. Detaillierte Informationen zum NetApp SnapCenter Plug-in für Oracle finden Sie in dieser Dokumentation link:https://docs.netapp.com/us-en/snapcenter/protect-sco/concept_what_you_can_do_with_the_snapcenter_plug_in_for_oracle_database.html["Welche Möglichkeiten bietet das Plug-in für Oracle Database"^]. Im Folgenden finden Sie grundlegende Schritte zum Einrichten von SnapCenter Version 6 für Backup, Recovery und Klonen von Oracle-Datenbanken in VCF.
 
@@ -557,7 +557,7 @@ NOTE: Stellen Sie sicher, dass der Name des SnapCenter-Servers auf die IP-Adress
 
 ==== Datenbank-Backup
 
-[%collapsible]
+[%collapsible%open]
 ====
 SnapCenter nutzt ONTAP Volume Snapshot für ein wesentlich schnelleres Backup, Restore oder Klonen von Datenbanken im Vergleich zu herkömmlichen RMAN-basierten Methoden. Die Snapshots sind anwendungskonsistent, da die Datenbank vor einem Snapshot in den Oracle-Backup-Modus versetzt wird.
 
@@ -600,7 +600,7 @@ image:vcf_ora_vvol_snapctr_bkup_10.png["Screenshot mit der SnapCenter-Konfigurat
 
 ==== Datenbank-Restore/-Recovery
 
-[%collapsible]
+[%collapsible%open]
 ====
 SnapCenter bietet verschiedene Wiederherstellungs- und Recovery-Optionen für Oracle Datenbanken aus dem Snapshot-Backup. In diesem Beispiel demonstrieren wir, wie die Daten aus einem älteren Snapshot-Backup wiederhergestellt werden, und führen dann ein Rollforward der Datenbank zum letzten verfügbaren Protokoll durch.
 
@@ -741,7 +741,7 @@ SQL>
 
 ==== Datenbankklone
 
-[%collapsible]
+[%collapsible%open]
 ====
 In diesem Beispiel werden die letzten Backup-Sätze verwendet, um eine Datenbank auf der DB VM ora_02 in einer anderen Software-Installation und ORACLE_HOME in VCF zu klonen.
 

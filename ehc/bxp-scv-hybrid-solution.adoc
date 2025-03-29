@@ -16,8 +16,6 @@ summary:
 [role="lead"]
 Die 3-2-1-1-Backup-Strategie ist eine in der Branche anerkannte Datenschutzmethode, die einen umfassenden Ansatz für den Schutz wertvoller Daten bietet.  Diese Strategie ist zuverlässig und stellt sicher, dass auch bei unerwarteten Notfällen weiterhin eine Kopie der Daten verfügbar ist.
 
-Autor: Josh Powell – NetApp Solutions Engineering
-
 
 
 == Überblick
@@ -85,7 +83,7 @@ image:bxp-scv-hybrid-03.png["Kaskadierender Topologie"]
 Außerdem kann NetApp StorageGRID als Objekt-Storage-Backup-Ziel verwendet werden. Weitere Informationen zu StorageGRID finden Sie im https://www.netapp.com/data-storage/storagegrid["StorageGRID Landing Page"].
 
 .Übersicht Zur Lösungsimplementierung
-[%collapsible]
+[%collapsible%open]
 ====
 Diese Liste enthält die allgemeinen Schritte, die erforderlich sind, um diese Lösung zu konfigurieren und Backup- und Restore-Vorgänge von SCV und BlueXP Backup- und Recovery-Vorgängen auszuführen:
 
@@ -112,7 +110,7 @@ Diese Liste enthält die allgemeinen Schritte, die erforderlich sind, um diese L
 
 ====
 .Voraussetzungen
-[%collapsible]
+[%collapsible%open]
 ====
 Mit dieser Lösung soll die Datensicherung von Virtual Machines demonstriert werden, die in VMware vSphere ausgeführt werden und sich in NFS-Datenspeichern befinden, die von NetApp ONTAP gehostet werden. Bei dieser Lösung wird vorausgesetzt, dass die folgenden Komponenten konfiguriert und einsatzbereit sind:
 
@@ -164,7 +162,7 @@ Sie können SnapMirror Beziehungen in BlueXP einrichten, wo viele der Schritte a
 Folgende Schritte müssen über die BlueXP Webkonsole durchgeführt werden:
 
 .Einrichtung der Replizierung für primäre und sekundäre ONTAP Storage-Systeme
-[%collapsible]
+[%collapsible%open]
 ====
 Melden Sie sich zunächst bei der BlueXP Webkonsole an und navigieren Sie zu den Leinwand.
 
@@ -209,7 +207,7 @@ image:bxp-scv-hybrid-48.png["Überprüfen und los geht's"]
 Alle erforderlichen Schritte zum Aufbau von SnapMirror Beziehungen können mit System Manager oder der ONTAP CLI durchgeführt werden. Im folgenden Abschnitt finden Sie detaillierte Informationen zu beiden Methoden:
 
 .Zeichnen Sie die logischen Schnittstellen von Intercluster und Ziel auf
-[%collapsible]
+[%collapsible%open]
 ====
 Sie können die logischen Inter-Cluster-Informationen für die ONTAP Quell- und Ziel-Cluster aus System Manager oder aus der CLI abrufen.
 
@@ -226,7 +224,7 @@ ONTAP-Dest::> network interface show -role intercluster
 
 ====
 .Cluster-Peering zwischen ONTAP Clustern einrichten
-[%collapsible]
+[%collapsible%open]
 ====
 Zum Erstellen von Cluster-Peering zwischen ONTAP Clustern muss im anderen Peer-Cluster eine eindeutige Passphrase bestätigt werden, die beim Initiierung des ONTAP-Clusters eingegeben wurde.
 
@@ -261,7 +259,7 @@ ONTAP-Dest::> cluster peer show
 
 ====
 .SVM-Peering-Beziehung einrichten
-[%collapsible]
+[%collapsible%open]
 ====
 Im nächsten Schritt werden eine SVM-Beziehung zwischen den Ziel- und Quell-Storage Virtual Machines eingerichtet, die die Volumes enthalten, die sich in den SnapMirror Beziehungen befinden.
 
@@ -290,7 +288,7 @@ image:dr-vmc-aws-image16.png["Die Abbildung zeigt den Input/Output-Dialog oder d
 
 ====
 .Erstellen einer Snapshot Aufbewahrungsrichtlinie
-[%collapsible]
+[%collapsible%open]
 ====
 SnapCenter managt Aufbewahrungszeitpläne für Backups, die als Snapshot Kopien auf dem primären Storage-System existieren. Dies wird beim Erstellen einer Richtlinie in SnapCenter festgelegt. SnapCenter managt keine Aufbewahrungsrichtlinien für Backups, die in sekundären Storage-Systemen aufbewahrt werden. Diese Richtlinien werden separat durch eine SnapMirror Richtlinie gemanagt, die auf dem sekundären FSX-Cluster erstellt wurde und mit den Ziel-Volumes in einer SnapMirror Beziehung zum Quell-Volume verknüpft ist.
 
@@ -332,7 +330,7 @@ NOTE: Erstellen Sie für jedes SnapMirror Label zusätzliche Regeln und die Anza
 
 ====
 .Erstellung von Ziel-Volumes
-[%collapsible]
+[%collapsible%open]
 ====
 Um ein Ziel-Volume auf ONTAP zu erstellen, das der Empfänger von Snapshot-Kopien aus unseren Quell-Volumes sein wird, führen Sie den folgenden Befehl auf dem Ziel-ONTAP-Cluster aus:
 
@@ -341,7 +339,7 @@ ONTAP-Dest::> volume create -vserver DestSVM -volume DestVolName -aggregate Dest
 ....
 ====
 .SnapMirror Beziehungen zwischen Quell- und Ziel-Volumes erstellen
-[%collapsible]
+[%collapsible%open]
 ====
 Führen Sie den folgenden Befehl auf dem Ziel-ONTAP-Cluster aus, um eine SnapMirror Beziehung zwischen einem Quell- und Ziel-Volume zu erstellen:
 
@@ -350,7 +348,7 @@ ONTAP-Dest::> snapmirror create -source-path OnPremSourceSVM:OnPremSourceVol -de
 ....
 ====
 .SnapMirror Beziehungen initialisieren
-[%collapsible]
+[%collapsible%open]
 ====
 Initialisieren Sie die SnapMirror-Beziehung. Bei diesem Prozess wird ein neuer Snapshot initiiert, der vom Quell-Volume erzeugt wird und in das Ziel-Volume kopiert.
 
@@ -371,7 +369,7 @@ Nach der Installation kann das SnapCenter-Plug-in für VMware vSphere über die 
 Um Backups Ihrer virtuellen Maschinen und Datenspeicher zu konfigurieren, müssen die folgenden Schritte über die Plug-in-Schnittstelle durchgeführt werden.
 
 .ONTAP Storage-Systeme ermitteln
-[%collapsible]
+[%collapsible%open]
 ====
 Die ONTAP Storage-Cluster ermitteln, die für primäre und sekundäre Backups verwendet werden können.
 
@@ -388,7 +386,7 @@ image:bxp-scv-hybrid-06.png["Hinzufügen des Storage-Systems"]
 
 ====
 .Erstellen Sie SCV-Backup-Richtlinien
-[%collapsible]
+[%collapsible%open]
 ====
 Richtlinien legen den Aufbewahrungszeitraum, die Häufigkeit und die Replikationsoptionen für die von SCV verwalteten Backups fest.
 
@@ -417,7 +415,7 @@ NOTE: Snapshot-Labels sind nützlich, da sie verwendet werden können, um Richtl
 
 ====
 .Erstellen von Ressourcengruppen
-[%collapsible]
+[%collapsible%open]
 ====
 Ressourcengruppen enthalten die Datastores und virtuellen Maschinen, die in einen Backup-Job aufgenommen werden sollen, sowie die zugehörige Richtlinie und den Backup-Zeitplan.
 
@@ -463,7 +461,7 @@ image:bxp-scv-hybrid-13.png["Richtlinie für Ressourcengruppen"]
 
 ====
 .Führen Sie einen Backupjob aus
-[%collapsible]
+[%collapsible%open]
 ====
 Führen Sie in diesem letzten Schritt einen Backupjob aus und überwachen Sie dessen Fortschritt. Mindestens ein Backup-Job muss in SCV erfolgreich abgeschlossen werden, bevor Ressourcen von BlueXP Backup und Recovery erkannt werden können.
 
@@ -492,7 +490,7 @@ Sobald der Connector für den verwendeten Cloud-Provider installiert ist, wird e
 Gehen Sie wie folgt vor, um BlueXP Backup und Recovery für Backup-Daten zu konfigurieren, die durch SCV On-Premises gemanagt werden:
 
 .Arbeitsumgebungen zum Bildschirm hinzufügen
-[%collapsible]
+[%collapsible%open]
 ====
 In einem ersten Schritt fügen Sie die lokalen ONTAP Storage-Systeme zu BlueXP hinzu
 
@@ -512,7 +510,7 @@ image:bxp-scv-hybrid-18.png["Anmeldedaten für das Storage-System hinzufügen"]
 
 ====
 .Erkennen Sie lokale SCV-Appliance und vCenter
-[%collapsible]
+[%collapsible%open]
 ====
 Um den lokalen Datastore und die Ressourcen der virtuellen Maschine zu ermitteln, fügen Sie Informationen für den SCV-Daten-Broker und Anmeldeinformationen für die vCenter Management-Appliance hinzu.
 
@@ -540,7 +538,7 @@ image:bxp-scv-hybrid-23.png["Zeigen Sie die verfügbaren Ressourcen an"]
 
 ====
 .BlueXP Backup-Richtlinien erstellen
-[%collapsible]
+[%collapsible%open]
 ====
 Erstellen Sie in BlueXP Backup und Recovery für Virtual Machines Richtlinien zur Angabe des Aufbewahrungszeitraums, der Backup-Quelle und der Archivierungsrichtlinie.
 
@@ -570,7 +568,7 @@ NOTE: Das hier eingegebene SnapMirror-Label wird verwendet, um zu ermitteln, wel
 
 ====
 .Backup von Datastores auf Amazon Web Services
-[%collapsible]
+[%collapsible%open]
 ====
 Im letzten Schritt aktivieren Sie die Datensicherung für einzelne Datenspeicher und Virtual Machines. Im folgenden Schritt wird die Aktivierung von Backups auf AWS beschrieben.
 
@@ -624,7 +622,7 @@ Dieser Abschnitt bietet einen Überblick über den Datenwiederherstellungsprozes
 Für diese Lösung wurden virtuelle Maschinen an ursprünglichen und alternativen Standorten wiederhergestellt. In dieser Lösung werden nicht alle Aspekte der Datenwiederherstellungsfunktionen von SCV behandelt. Ausführliche Informationen zu allen Angeboten von SCV finden Sie im https://docs.netapp.com/us-en/sc-plugin-vmware-vsphere/scpivs44_restore_vms_from_backups.html["Wiederherstellung von VMs aus Backups"] In der Produktdokumentation.
 
 .Stellen Sie virtuelle Maschinen über SCV wieder her
-[%collapsible]
+[%collapsible%open]
 ====
 Führen Sie die folgenden Schritte aus, um eine VM-Wiederherstellung aus dem primären oder sekundären Speicher wiederherzustellen.
 
@@ -658,7 +656,7 @@ Mit BlueXP Backup und Recovery für Virtual Machines können Virtual Machines an
 Weitere Informationen finden Sie unter https://docs.netapp.com/us-en/bluexp-backup-recovery/task-restore-vm-data.html["Wiederherstellung der Daten von Virtual Machines aus der Cloud"].
 
 .Wiederherstellung von Virtual Machines aus BlueXP Backup und Recovery
-[%collapsible]
+[%collapsible%open]
 ====
 Führen Sie die folgenden Schritte aus, um eine Virtual Machine aus dem Backup- und Recovery-Verfahren von BlueXP wiederherzustellen.
 

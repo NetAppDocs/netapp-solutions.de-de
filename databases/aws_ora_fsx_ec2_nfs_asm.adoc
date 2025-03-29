@@ -114,7 +114,7 @@ Im folgenden Abschnitt werden schrittweise Bereitstellungsverfahren beschrieben.
 
 === Voraussetzungen für die Bereitstellung
 
-[%collapsible]
+[%collapsible%open]
 ====
 Die Bereitstellung erfordert die folgenden Voraussetzungen.
 
@@ -136,7 +136,7 @@ NOTE: Stellen Sie sicher, dass Sie mindestens 50G im Root-Volume der EC2-Instanz
 
 === Konfiguration des EC2-Instance-Kernels
 
-[%collapsible]
+[%collapsible%open]
 ====
 Melden Sie sich bei den bereitgestellten Voraussetzungen als ec2-User bei der EC2-Instanz an und sudo to root-Benutzer, um den Linux-Kernel für die Oracle-Installation zu konfigurieren.
 
@@ -245,7 +245,7 @@ usermod -a -G asm oracle
 
 === Bereitstellen und Exportieren von NFS-Volumes, die auf den EC2-Instanz-Host gemountet werden sollen
 
-[%collapsible]
+[%collapsible%open]
 ====
 Stellen Sie drei Volumes über die Befehlszeile bereit, indem Sie sich beim FSX Cluster über ssh anmelden als fsxadmin-Benutzer mit FSX Cluster Management IP, um die binären, Daten- und Protokolldateien der Oracle-Datenbank zu hosten.
 
@@ -297,7 +297,7 @@ svm_ora   svm_ora_root aggr1        online     RW          1GB    972.1MB    0%
 
 === Konfiguration des Datenbank-Storage
 
-[%collapsible]
+[%collapsible%open]
 ====
 Importieren und richten Sie nun den FSX Storage für die Oracle Grid-Infrastruktur und die Datenbankinstallation auf dem EC2-Instanzhost ein.
 
@@ -406,7 +406,7 @@ chmod 640 /oralogs/asm/*
 
 === Installation der Oracle Grid-Infrastruktur
 
-[%collapsible]
+[%collapsible%open]
 ====
 . Melden Sie sich als ec2-Benutzer über SSH bei der EC2-Instanz an und aktivieren Sie die Passwortauthentifizierung durch Entkommentieren `PasswordAuthentication yes` Und dann kommentiert `PasswordAuthentication no`.
 +
@@ -542,7 +542,7 @@ ora.evmd            ONLINE  ONLINE       ip-172-30-15-58          STABLE
 
 === Installation der Oracle Database
 
-[%collapsible]
+[%collapsible%open]
 ====
 . Melden Sie sich als Oracle-Benutzer an, und heben Sie die Einstellung auf `$ORACLE_HOME` Und `$ORACLE_SID` Wenn es eingestellt ist.
 +

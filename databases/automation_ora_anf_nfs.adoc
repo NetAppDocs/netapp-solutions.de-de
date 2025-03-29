@@ -142,7 +142,7 @@ In den folgenden Abschnitten werden Schritt-für-Schritt-Verfahren für die auto
 
 === Voraussetzungen für die Bereitstellung
 
-[%collapsible]
+[%collapsible%open]
 ====
 Die Bereitstellung erfordert die folgenden Voraussetzungen.
 
@@ -200,7 +200,7 @@ video::d1c859b6-e45a-44c7-8361-b10f012fc89b[panopto,width=360]
 
 === Automatisierungsparameter-Dateien
 
-[%collapsible]
+[%collapsible%open]
 ====
 In dem Playbook „Ansible“ werden die Installations- und Konfigurationsaufgaben von Datenbanken mit vordefinierten Parametern ausgeführt. Für diese Oracle-Automatisierungslösung gibt es drei benutzerdefinierte Parameterdateien, die vor der Ausführung des Playbooks Benutzereingaben erfordern.
 
@@ -216,7 +216,7 @@ Zusätzlich zu diesen benutzerdefinierten Variablendateien gibt es mehrere stand
 
 === Konfiguration von Parameterdateien
 
-[%collapsible]
+[%collapsible%open]
 ====
 . Ansible Ziel `hosts` Dateikonfiguration:
 +
@@ -290,7 +290,7 @@ nfs_lif: 172.30.136.68
 
 === Ausführung des Playbook
 
-[%collapsible]
+[%collapsible%open]
 ====
 Das Automatisierungs-Toolkit enthält insgesamt fünf Playbooks. Jede führt unterschiedliche Aufgabenblöcke aus und erfüllt unterschiedliche Zwecke.
 
@@ -354,7 +354,7 @@ ansible-playbook -i hosts 5-destroy.yml -u azureuser -e @vars/vars.yml
 
 === Validierung nach der Ausführung
 
-[%collapsible]
+[%collapsible%open]
 ====
 Melden Sie sich nach der Ausführung des Playbook bei der VM des Oracle DB Servers an, um zu überprüfen, ob Oracle installiert und konfiguriert ist und eine Container-Datenbank erfolgreich erstellt wurde. Im Folgenden finden Sie ein Beispiel für die Validierung von Oracle-Datenbanken auf Host ora-01.
 
@@ -591,7 +591,7 @@ image:automation_ora_anf_nfs_em_01.png["Dieses Bild zeigt den Anmeldebildschirm 
 
 === Migrieren Sie die Oracle-Datenbank zu Azure
 
-[%collapsible]
+[%collapsible%open]
 ====
 Die Oracle-Datenbankmigration aus lokalen Umgebungen in die Cloud nimmt die Arbeit stark in sich auf. Die richtige Strategie und Automatisierung sorgt für einen reibungslosen Prozess und eine Minimierung von Serviceunterbrechungen und Ausfallzeiten. Befolgen Sie diese detaillierten Anweisungen link:azure_ora_nfile_migration.html#converting-a-single-instance-non-cdb-to-a-pdb-in-a-multitenant-cdb["Datenbankmigration von On-Premises-Systemen in die Azure Cloud"^] Als Leitfaden für Ihre Datenbankmigration.
 
@@ -600,7 +600,7 @@ Die Oracle-Datenbankmigration aus lokalen Umgebungen in die Cloud nimmt die Arbe
 
 === Backup, Wiederherstellung und Klonen von Oracle mit SnapCenter
 
-[%collapsible]
+[%collapsible%open]
 ====
 NetApp empfiehlt das SnapCenter UI-Tool für das Management der in der Azure-Cloud implementierten Oracle-Datenbank. Informationen finden Sie im Bericht TR-4988: link:snapctr_ora_azure_anf.html["Oracle Database Backup, Recovery und Klonen auf ANF mit SnapCenter"^] Entsprechende Details.
 

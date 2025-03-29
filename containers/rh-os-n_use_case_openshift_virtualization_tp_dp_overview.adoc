@@ -13,8 +13,6 @@ summary: Red hat OpenShift Virtualization Data Protection mit NetApp ONTAP
 :imagesdir: ../media/
 
 
-Autor: Banu Sundhar, NetApp
-
 [role="lead"]
 Dieser Abschnitt des Referenzdokuments enthält Details zum Erstellen von Snapshots und Backups von VMs mithilfe von Trident Protect.
 
@@ -36,7 +34,7 @@ Trident Protect ermöglicht Snapshots, Backups, Restores und Disaster Recovery v
 
 
 .Erstellen Sie AppVault
-[%collapsible]
+[%collapsible%open]
 ====
 Bevor Snapshots und Backups für eine Applikation oder eine VM erstellt werden, muss ein Objektspeicher in Trident Protect konfiguriert werden, um die Snapshots und Backups zu speichern. Dies geschieht mit dem Bucket CR. Nur Administratoren können einen Bucket CR erstellen und konfigurieren. Der Bucket CR wird in Trident Protect als AppVault bezeichnet. AppVault-Objekte sind die deklarative Kubernetes-Workflow-Darstellung eines Storage-Buckets. Ein AppVault CR enthält die Konfigurationen, die für einen Bucket erforderlich sind, der für Schutzvorgänge verwendet werden kann, z. B. Backups, Snapshots, Wiederherstellungsvorgänge und SnapMirror-Replikation.
 
@@ -102,7 +100,7 @@ image:rh-os-n_use_case_ocpv_tp_dp_8.png["ONTAP S3 Appvault wurde erstellt"]
 
 ====
 .Erstellen Sie eine VM in OpenShift Virtualization
-[%collapsible]
+[%collapsible%open]
 ====
 Die folgenden Screenshots zeigen die Erstellung der VM (Demo-Fedora in Namespace Demo) aus der Konsole mit der Vorlage. Die Stammfestplatte wählt automatisch die Standardspeicherklasse aus. Überprüfen Sie daher, ob die Standardspeicherklasse richtig eingestellt ist. In diesem Setup ist die Standard-Storage-Klasse **sc-zonea-san**. Stellen Sie sicher, dass Sie beim Erstellen der zusätzlichen Festplatte die Speicherklasse sc-zonea-san auswählen und das Kontrollkästchen „**optimierte Speichereinstellungen anwenden**“ aktivieren. Dadurch werden die Zugriffsmodi auf RWX und Volume Mode auf Block eingestellt.
 
@@ -125,7 +123,7 @@ image:rh-os-n_use_case_ocpv_tp_dp_7.png["vm, Pods und pvc erstellt"]
 
 ====
 .App Erstellen
-[%collapsible]
+[%collapsible%open]
 ====
 **Trident Protect App für die VM erstellen**
 
@@ -152,7 +150,7 @@ image:rh-os-n_use_case_ocpv_tp_dp_9.png["App erstellt"]
 
 ====
 .Backups Erstellen
-[%collapsible]
+[%collapsible%open]
 ====
 **Erstellen Sie ein On-Demand Backup**
 
@@ -202,7 +200,7 @@ image:rh-os-n_use_case_ocpv_tp_dp_17.png["Backups werden nach Bedarf und nach Ze
 
 ====
 .Wiederherstellung aus Backups
-[%collapsible]
+[%collapsible%open]
 ====
 **Wiederherstellung der VM auf den gleichen Namespace**
 
@@ -282,7 +280,7 @@ image:rh-os-n_use_case_ocpv_tp_dp_23.png["VM im neuen Namespace"]
 
 ====
 .Erstellen Sie Snapshots
-[%collapsible]
+[%collapsible%open]
 ====
 **Erstellen Sie einen On-Demand-Snapshot** Erstellen Sie einen Snapshot für die App und geben Sie den Appvault an, wo er gespeichert werden soll.
 
@@ -350,7 +348,7 @@ image:rh-os-n_use_case_ocpv_tp_dp_26.png["Geplanter Snapshot"]
 
 ====
 .Wiederherstellung aus Snapshot
-[%collapsible]
+[%collapsible%open]
 ====
 **VM aus dem Snapshot in den gleichen Namespace wiederherstellen** Löschen Sie die VM Demo-Fedora aus dem Namespace demo2.
 
@@ -428,7 +426,7 @@ image:rh-os-n_use_case_ocpv_tp_dp_32.png["VM in neuem Namespace wiederhergestell
 
 ====
 .Auswahl spezifischer VMs in einem Namespace zur Erstellung von Snapshots/Backups und Wiederherstellung
-[%collapsible]
+[%collapsible%open]
 ====
 Im vorherigen Beispiel hatten wir eine einzelne VM innerhalb eines Namespace. Durch Einbeziehung des gesamten Namespace im Backup wurden alle mit der VM verbundenen Ressourcen erfasst. Im folgenden Beispiel fügen wir dem gleichen Namespace eine weitere VM hinzu und erstellen mithilfe einer Label-Selektor eine Anwendung nur für diese neue VM.
 
@@ -489,9 +487,9 @@ image:rh-os-n_use_case_ocpv_tp_dp_18.png["Backup einer bestimmten VM erstellt"]
 
 **Eine bestimmte VM auf den gleichen Namespace zurückstellen** das Backup einer bestimmten VM (centos) wurde mit der entsprechenden App erstellt. Wenn daraus eine Backup-in-Place-Wiederherstellung oder eine Backup-Wiederherstellung erstellt wird, wird nur diese spezifische VM wiederhergestellt. Löschen Sie die CentOS VM.
 
-image:rh-os-n_use_case_ocpv_tp_dp_33["CentOS VM vorhanden"]
+image:rh-os-n_use_case_ocpv_tp_dp_33.png["CentOS VM vorhanden"]
 
-image:rh-os-n_use_case_ocpv_tp_dp_34["CentOS VM gelöscht"]
+image:rh-os-n_use_case_ocpv_tp_dp_34.png["CentOS VM gelöscht"]
 
 Erstellen Sie eine in-Place-Backup-Wiederherstellung aus Demo-centos-Backup-on-Demand, und überprüfen Sie, ob die centos VM neu erstellt wurde.
 
@@ -500,9 +498,9 @@ Erstellen Sie eine in-Place-Backup-Wiederherstellung aus Demo-centos-Backup-on-D
 #tp create bir demo-centos-restore --backup demo/demo-centos-backup-on-demand -n demo
 BackupInplaceRestore "demo-centos-restore" created.
 ----
-image:rh-os-n_use_case_ocpv_tp_dp_35["centos vm bir erstellen"]
+image:rh-os-n_use_case_ocpv_tp_dp_35.png["centos vm bir erstellen"]
 
-image:rh-os-n_use_case_ocpv_tp_dp_36["centos vm wurde erstellt"]
+image:rh-os-n_use_case_ocpv_tp_dp_36.png["centos vm wurde erstellt"]
 
 **Eine spezifische VM auf einen anderen Namespace wiederherstellen** Erstellen Sie eine Backup-Wiederherstellung in einem anderen Namespace (demo3) von Demo-centos-Backup-on-Demand und überprüfen Sie, ob die centos VM neu erstellt wurde.
 
@@ -511,8 +509,8 @@ image:rh-os-n_use_case_ocpv_tp_dp_36["centos vm wurde erstellt"]
 # tp create br demo2-centos-restore --backup demo/demo-centos-backup-on-demand --namespace-mapping demo:demo3 -n demo3
 BackupRestore "demo2-centos-restore" created.
 ----
-image:rh-os-n_use_case_ocpv_tp_dp_37["centos vm bir erstellen"]
+image:rh-os-n_use_case_ocpv_tp_dp_37.png["centos vm bir erstellen"]
 
-image:rh-os-n_use_case_ocpv_tp_dp_38["centos vm wurde erstellt"]
+image:rh-os-n_use_case_ocpv_tp_dp_38.png["centos vm wurde erstellt"]
 
 ====

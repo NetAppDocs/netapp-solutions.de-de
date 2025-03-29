@@ -116,7 +116,7 @@ Ihre Oracle VLDB kann entweder auf einem ANF-Speicher oder einem beliebigen Spei
 
 === Voraussetzungen für die Bereitstellung
 
-[%collapsible]
+[%collapsible%open]
 ====
 Die Bereitstellung erfordert die folgenden Voraussetzungen.
 
@@ -133,7 +133,7 @@ NOTE: Stellen Sie sicher, dass Sie mindestens 128 G im Stammvolume der Azure VM 
 
 === Bereitstellen und Exportieren des NFS-Volumes, das auf dem primären Oracle VLDB-Server gemountet werden soll
 
-[%collapsible]
+[%collapsible%open]
 ====
 In diesem Abschnitt zeigen wir die Bereitstellung eines NFS-Volumes aus einem ANF-Kapazitätspool über die Azure-Portalkonsole. Wiederholen Sie die Verfahren für andere ANF-Kapazitätspools, wenn mehr als ein ANF-Kapazitätspool für die Größe der Datenbank eingerichtet ist.
 
@@ -185,7 +185,7 @@ sudo chown oracle:oinstall /nfsanf
 
 === Einrichtung der inkrementellen Zusammenführung von Oracle RMAN zu Image-Kopien auf ANF
 
-[%collapsible]
+[%collapsible%open]
 ====
 RMAN Incremental Merge Aktualisieren Sie die Staging-Datenbank-Datendateien-Image-Kopie kontinuierlich bei jedem inkrementellen Backup/Merge-Intervall. Die Image-Kopie der Datenbanksicherung ist so aktuell wie die Häufigkeit, in der Sie die inkrementelle Sicherung/Zusammenführung durchführen. Berücksichtigen Sie also die Datenbankleistung, Ihre RTO- und RPO-Ziele bei der Entscheidung über die Häufigkeit der inkrementellen Backups und Merge von RMAN.
 
@@ -812,7 +812,7 @@ Damit ist die Einrichtung eines Backup- und Merge-Backups von Oracle VLDB-Standb
 
 === Wechseln Sie zum schnellen Wiederherstellen von Oracle VLDB zu Image Copy
 
-[%collapsible]
+[%collapsible%open]
 ====
 Im Falle eines Fehlers aufgrund eines Problems im Primärspeicher, wie z. B. Datenverlust oder -Beschädigung, kann die Datenbank schnell auf eine Image-Kopie im ANF NFS-Mount umgeschaltet und ohne Datenbank-Wiederherstellung in den aktuellen Zustand versetzt werden. Durch die Eliminierung der Medienwiederherstellung wird die Datenbank-Recovery für ein VLDB erheblich beschleunigt. Dieser Anwendungsfall setzt voraus, dass der Oracle VLDB DB-Server intakt ist und dass die Datenbanksteuerungsdatei, die archivierten und die aktuellen Protokolle für die Recovery verfügbar sind.
 
@@ -1094,7 +1094,7 @@ SQL>
 
 === Oracle VLDB-Wiederherstellung von der Image-Kopie auf einen Standby-DB-Server
 
-[%collapsible]
+[%collapsible%open]
 ====
 Bei einem Ausfall, bei dem sowohl der primäre Speicher als auch der Host des primären DB-Servers verloren gehen, kann keine Wiederherstellung vom ursprünglichen Server aus durchgeführt werden. Allerdings ist Ihre Backup-Image-Kopie für Oracle-Datenbanken, die auf dem ANF NFS-Dateisystem verfügbar ist, äußerst praktisch. Sie können die primäre Datenbank mithilfe der Backup-Image-Kopie schnell auf einem Standby-DB-Server wiederherstellen, sofern einer verfügbar ist. In diesem Abschnitt werden wir die schrittweisen Verfahren für eine solche Wiederherstellung erläutern.
 

@@ -16,8 +16,6 @@ summary: Disaster Recovery in die Cloud ist eine stabile und kostengünstige Mö
 [role="lead"]
 Disaster Recovery in die Cloud ist eine stabile und kostengünstige Möglichkeit zum Schutz von Workloads vor Standortausfällen und Datenbeschädigungen wie Ransomware. Mit NetApp SnapMirror können lokale VMware Workloads, die Storage mit Anbindung des Gastspeichers verwenden, auf NetApp Cloud Volumes ONTAP repliziert werden, die in Google Cloud ausgeführt werden.
 
-Autoren: Suresh ThopPay, NetApp
-
 
 
 == Überblick
@@ -76,7 +74,7 @@ NOTE: Es gibt mehrere Optionen, um On-Premises-Datacenter mit Google Cloud zu ve
 === Einzelheiten Zur Bereitstellung
 
 .Konfiguration von CVO auf Google Cloud und Replizierung von Volumes zu CVO
-[%collapsible]
+[%collapsible%open]
 ====
 Der erste Schritt besteht darin, Cloud Volumes ONTAP auf Google Cloud ( zu konfigurierenlink:gcp-guest.html["cvo"^]) Und replizieren Sie die gewünschten Volumen zu Cloud Volumes ONTAP mit den gewünschten Frequenzen und Snapshot-Aufbewahrung.
 
@@ -88,7 +86,7 @@ Eine Schritt-für-Schritt-Anleitung zum Einrichten von SnapCenter und zum Repliz
 video::395e33db-0d63-4e48-8898-b01200f006ca[panopto]
 ====
 .Konfigurieren Sie GCVE-Hosts und CVO-Datenzugriff
-[%collapsible]
+[%collapsible%open]
 ====
 Zwei wichtige Faktoren, die bei der Implementierung des SDDC berücksichtigt werden müssen, sind die Größe des SDDC-Clusters in der GCVE-Lösung und die Dauer, bis das SDDC den Betrieb aufrecht erhalten hat. Diese beiden wichtigen Überlegungen für eine Disaster-Recovery-Lösung tragen zur Senkung der Gesamtbetriebskosten bei. Das SDDC kann mit nur drei Hosts eingerichtet sein und bis hin zu einem Cluster mit mehreren Hosts in einer umfassenden Implementierung.
 
@@ -100,7 +98,7 @@ Nachdem Cloud Volumes ONTAP und GCVE ordnungsgemäß konfiguriert wurden, beginn
 
 ====
 .Veeam Komponenten Installieren
-[%collapsible]
+[%collapsible%open]
 ====
 Der Veeam Backup-Server, Backup-Repository und Backup-Proxy, der bereitgestellt werden muss, basieren auf einem Implementierungsszenario. In diesem Anwendungsfall müssen kein Objektspeicher für Veeam implementiert und auch kein Scale-out-Repository erforderlich sein.
 https://helpcenter.veeam.com/docs/backup/vsphere/replication_components.html?ver=120["Das Installationsverfahren finden Sie in der Veeam-Dokumentation"]
@@ -108,14 +106,14 @@ Weitere Informationen finden Sie unter link:gcp-migrate-veeam.html["Migration mi
 
 ====
 .VM Replication mit Veeam einrichten
-[%collapsible]
+[%collapsible%open]
 ====
 VCenter vor Ort und GCVE vCenter müssen bei Veeam registriert werden. https://helpcenter.veeam.com/docs/backup/vsphere/replica_job.html?ver=120["VSphere VM Replication Job einrichten"] Wählen Sie im Assistenten zur Gastverarbeitung die Option Anwendungsverarbeitung deaktivieren, da wir SnapCenter für applikationsgerechtes Backup und Recovery verwenden werden.
 
 video::8b7e4a9b-7de1-4d48-a8e2-b01200f00692[panopto,width=360]
 ====
 .Failover von Microsoft SQL Server VM
-[%collapsible]
+[%collapsible%open]
 ====
 video::9762dc99-081b-41a2-ac68-b01200f00ac0[panopto,width=360]
 ====

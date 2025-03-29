@@ -145,7 +145,7 @@ NOTE: Das Kennwort wird in einer Klartextdatei gespeichert und ist nur für den 
 .SMB Shared-Storage-Pool mit ONTAP
 video::5b4ae54a-08d2-4f7d-95ec-b22d015f6035[panopto,width=360]
 .<strong>-Abfragestellen-</strong>
-[%collapsible]
+[%collapsible%open]
 ====
 Wenn Sie neu bei ONTAP sind, führen Sie die folgenden Aufgaben über die Benutzeroberfläche von System Manager aus, um die Benutzerfreundlichkeit zu erhöhen.
 
@@ -171,7 +171,7 @@ image:proxmox-ontap-image03.png["SMB-Share-Info"]
 
 ====
 .<strong>-Abfragestellen-</strong>
-[%collapsible]
+[%collapsible%open]
 ====
 . Sammeln Sie den SMB-Server, den Freigabenamen und die Anmeldeinformationen, die für die Freigabeauthentifizierung verwendet werden sollen.
 . Stellen Sie sicher, dass mindestens zwei Schnittstellen in verschiedenen VLANs (für Fehlertoleranz) konfiguriert sind und NIC RSS unterstützt.
@@ -205,7 +205,7 @@ Wenn Sie neu bei ONTAP sind, führen Sie die folgenden Aufgaben über die Benutz
 .NFS nconnect Option mit ONTAP
 video::f6c9aba3-b070-45d6-8048-b22e001acfd4[panopto,width=360]
 .<strong>-Abfragestellen-</strong>
-[%collapsible]
+[%collapsible%open]
 ====
 . Stellen Sie sicher, dass SVM für NFS aktiviert ist. Siehe link:https://docs.netapp.com/us-en/ontap/nfs-config/verify-protocol-enabled-svm-task.html["ONTAP 9-Dokumentation"]
 . Haben Sie mindestens zwei Leben pro Controller. Folgen Sie den Schritten über den obigen Link. Als Referenz hier ist der Screenshot der Leben, die wir in unserem Labor verwenden.
@@ -226,7 +226,7 @@ image:proxmox-ontap-image08.png["NFS-Volume-Informationen"]
 
 ====
 .<strong>-Abfragestellen-</strong>
-[%collapsible]
+[%collapsible%open]
 ====
 . Stellen Sie sicher, dass mindestens zwei Schnittstellen in verschiedenen VLANs konfiguriert sind (für Fehlertoleranz). Verwenden Sie NIC-Bonding.
 . Wenn Sie die Verwaltungsoberfläche verwenden `https:<proxmox-node>:8006`, klicken Sie auf Rechenzentrum, wählen Sie Speicher aus, klicken Sie auf Hinzufügen und wählen Sie NFS aus.
@@ -257,7 +257,7 @@ video::d66ef67f-bcc2-4ced-848e-b22e01588e8c[panopto,width=360]
 Führen Sie die folgenden Aufgaben aus, um Logical Volume Manager für gemeinsamen Speicher auf Proxmox-Hosts zu konfigurieren:
 
 .<strong>-Abfragestellen-</strong>
-[%collapsible]
+[%collapsible%open]
 ====
 . Stellen Sie sicher, dass zwei linux vlan-Schnittstellen verfügbar sind.
 . Stellen Sie sicher, dass Multipath-Tools auf allen Proxmox VE-Hosts installiert sind. Stellen Sie sicher, dass er beim Booten gestartet wird.
@@ -279,7 +279,7 @@ cat /etc/iscsi/initiator.name
 
 ====
 .<strong>-Abfragestellen-</strong>
-[%collapsible]
+[%collapsible%open]
 ====
 Wenn ONTAP neu ist, bieten Sie System Manager zur besseren Benutzerfreundlichkeit an.
 
@@ -298,7 +298,7 @@ image:proxmox-ontap-image14.png["iscsi-lun-Details"]
 
 ====
 .<strong>-Abfragestellen-</strong>
-[%collapsible]
+[%collapsible%open]
 ====
 . Gehen Sie zur Management-UI `https:<proxmox node>:8006`, klicken Sie auf Rechenzentrum, wählen Sie Speicher aus, klicken Sie auf Hinzufügen und wählen Sie iSCSI aus.
 +
@@ -332,7 +332,7 @@ video::80164fe4-06db-4c21-a25d-b22e0179c3d2[panopto,width=360]
 Führen Sie die folgenden Aufgaben aus, um Logical Volume Manager für gemeinsam genutzten Speicher auf Proxmox-Hosts zu konfigurieren:
 
 .<strong>-Abfragestellen-</strong>
-[%collapsible]
+[%collapsible%open]
 ====
 . Stellen Sie sicher, dass zwei linux vlan-Schnittstellen verfügbar sind.
 . Führen Sie auf jedem Proxmox-Host im Cluster den folgenden Befehl aus, um die Host-Initiator-Info zu sammeln.
@@ -346,7 +346,7 @@ nvme show-hostnqn
 
 ====
 .<strong>-Abfragestellen-</strong>
-[%collapsible]
+[%collapsible%open]
 ====
 Wenn ONTAP neu ist, bieten Sie System Manager zur Verbesserung der Benutzerfreundlichkeit an.
 
@@ -361,7 +361,7 @@ image:proxmox-ontap-image20.png["Erstellung eines nvme Namespace"]
 
 ====
 .<strong>-Abfragestellen-</strong>
-[%collapsible]
+[%collapsible%open]
 ====
 . Navigieren Sie zu Shell auf jedem Proxmox VE-Host im Cluster, erstellen Sie die Datei /etc/nvme/Discovery.conf und aktualisieren Sie den für Ihre Umgebung spezifischen Inhalt.
 +

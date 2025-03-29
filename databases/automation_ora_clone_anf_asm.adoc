@@ -58,7 +58,7 @@ NOTE: Es gibt bestimmte Beschränkungen bezüglich der Erstellung und/oder Freig
 
 === Voraussetzungen für die Bereitstellung
 
-[%collapsible]
+[%collapsible%open]
 ====
 Die Bereitstellung erfordert die folgenden Voraussetzungen.
 
@@ -85,7 +85,7 @@ NOTE: Zur Vereinfachung sollte der Clone Ziel Oracle Server identisch mit Standb
 
 === Toolkit herunterladen
 
-[%collapsible]
+[%collapsible%open]
 ====
 [source, cli]
 ----
@@ -99,7 +99,7 @@ NOTE: Auf das Toolkit kann derzeit nur ein interner NetApp-Benutzer mit Bitbucke
 
 === Dateikonfiguration der Ansible-Quell- und -Ziel-Hosts
 
-[%collapsible]
+[%collapsible%open]
 ====
 Das Toolkit enthält eine Hostdatei, die die Quelle definiert und auf Oracle-Hosts abzielt, auf die das Ansible-Playbook ausgeführt wird. In der Regel umfasst es den Standby-DB-Host in Data Guard-Setup und den Ziel-Oracle-Klon-Host. Im Folgenden finden Sie eine Beispieldatei. Ein Hosteintrag enthält die IP-Adresse des Zielhosts sowie den SSH-Schlüssel für den Benutzerzugriff auf den Host, um den Klon- oder Aktualisierungsbefehl auszuführen. Der Azure NetApp Files Storage wird über API konfiguriert. Daher erfolgt die ANF-Verbindung über lokalen Host über HTTP-Protokoll.
 
@@ -120,7 +120,7 @@ localhost ansible_connection=local
 
 === Konfiguration globaler Variablen
 
-[%collapsible]
+[%collapsible%open]
 ====
 Nachfolgend finden Sie ein Beispiel für die typische globale Variablendatei vars.yml, die Variablen enthält, die auf globaler Ebene anwendbar sind.
 
@@ -196,7 +196,7 @@ sys_pwd: "xxxxxxxx"
 
 === Konfiguration der Host-Variablen
 
-[%collapsible]
+[%collapsible%open]
 ====
 Hostvariablen werden im Verzeichnis Host_VARs mit dem Namen {{ Host_Name }}.yml definiert, das nur für den jeweiligen Host gilt. Für diese Lösung wird nur die DB-Host-Parameterdatei für Zielklone konfiguriert. Die Oracle-Standby-DB-Parameter werden in der globalen VARs-Datei konfiguriert. Nachfolgend ist ein Beispiel für die Zieldatei orac.yml der Oracle-Clone-DB-Hostvariable orac.yml aufgeführt, die eine typische Konfiguration zeigt.
 
@@ -219,7 +219,7 @@ asm_sid: +ASM
 
 === Zusätzliche Clone-Ziel-Oracle-Serverkonfiguration
 
-[%collapsible]
+[%collapsible%open]
 ====
 Der Oracle-Zielserver für Clones sollte denselben Oracle-Softwarestack aufweisen wie der Oracle-Quellserver, der installiert und gepatcht ist. Oracle-Benutzer .bash_profile hat ORACLE_BASE in Höhe von USD und ORACLE_HOME in Höhe von USD konfiguriert. Außerdem sollte die Variable „ORACLE_HOME“ mit der Oracle-Quellservereinstellung übereinstimmen. Wenn sich die Zieleinstellung ORACLE_HOME von der Standby-Konfiguration des Oracle-Servers unterscheidet, erstellen Sie einen symbolischen Link, um die Unterschiede zu umgehen. Hier ein Beispiel.
 
@@ -242,7 +242,7 @@ alias asm='export ORACLE_HOME=$GRID_HOME;export PATH=$PATH:$GRID_HOME/bin;export
 
 === Ausführung des Playbook
 
-[%collapsible]
+[%collapsible%open]
 ====
 Es gibt insgesamt zwei Playbooks zur Ausführung des Lebenszyklus von Oracle-Datenbankklonen. DB-Klone oder -Aktualisierungen können nach Bedarf ausgeführt oder als crontab-Job geplant werden.
 

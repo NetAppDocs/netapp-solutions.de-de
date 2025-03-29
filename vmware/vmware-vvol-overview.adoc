@@ -14,7 +14,13 @@ summary:
 
 
 [role="lead"]
-VMware Virtual Volumes (VVols) ermöglichen die Erfüllung applikationsspezifischer Anforderungen zur Grundlage von Entscheidungen für die Storage-Bereitstellung, während gleichzeitig die umfassenden Funktionen der Storage-Arrays genutzt werden können. Mit der vSphere API for Storage Awareness (VASA) können VM-Administratoren leicht alle benötigten Storage-Funktionen nutzen, um VMs bereitzustellen, ohne mit ihrem Storage-Team interagieren zu müssen. Vor VASA konnten VM-Administratoren VM-Storage-Richtlinien definieren, mussten dann aber gemeinsam mit ihren Storage-Administratoren geeignete Datastores ermitteln – oft anhand der Dokumentation oder von Namenskonventionen. Mit VASA können vCenter Administratoren mit den entsprechenden Berechtigungen eine Reihe von Storage-Funktionen definieren, mit denen vCenter Benutzer dann VMs bereitstellen können. Durch die Zuordnung zwischen VM-Storage-Richtlinie und Datastore-Storage-Funktionsprofil kann in vCenter eine Liste kompatibler Datastores zur Auswahl angezeigt werden. Außerdem können andere Technologien wie Aria (ehemals vRealize) Automation oder Tanzu Kubernetes Grid aktiviert werden, um automatisch Storage aus einer zugewiesenen Richtlinie auszuwählen. Dieser Ansatz wird als richtlinienbasiertes Storage-Management bezeichnet. Während Storage-Funktionsprofile und -Richtlinien auch bei herkömmlichen Datastores verwendet werden können, konzentrieren wir uns hier auf VVols Datastores. Der VASA Provider für ONTAP ist im Rahmen von ONTAP Tools für VMware vSphere enthalten.
+VMware Virtual Volumes (VVols) ermöglichen die Erfüllung applikationsspezifischer Anforderungen zur Grundlage von Entscheidungen für die Storage-Bereitstellung, während gleichzeitig die umfassenden Funktionen der Storage-Arrays genutzt werden können.
+
+
+
+== Überblick
+
+Mit der vSphere API for Storage Awareness (VASA) können VM-Administratoren leicht alle benötigten Storage-Funktionen nutzen, um VMs bereitzustellen, ohne mit ihrem Storage-Team interagieren zu müssen. Vor VASA konnten VM-Administratoren VM-Storage-Richtlinien definieren, mussten dann aber gemeinsam mit ihren Storage-Administratoren geeignete Datastores ermitteln – oft anhand der Dokumentation oder von Namenskonventionen. Mit VASA können vCenter Administratoren mit den entsprechenden Berechtigungen eine Reihe von Storage-Funktionen definieren, mit denen vCenter Benutzer dann VMs bereitstellen können. Durch die Zuordnung zwischen VM-Storage-Richtlinie und Datastore-Storage-Funktionsprofil kann in vCenter eine Liste kompatibler Datastores zur Auswahl angezeigt werden. Außerdem können andere Technologien wie Aria (ehemals vRealize) Automation oder Tanzu Kubernetes Grid aktiviert werden, um automatisch Storage aus einer zugewiesenen Richtlinie auszuwählen. Dieser Ansatz wird als richtlinienbasiertes Storage-Management bezeichnet. Während Storage-Funktionsprofile und -Richtlinien auch bei herkömmlichen Datastores verwendet werden können, konzentrieren wir uns hier auf VVols Datastores. Der VASA Provider für ONTAP ist im Rahmen von ONTAP Tools für VMware vSphere enthalten.
 
 Vorteile von VASA Provider aus dem Storage Array:
 
@@ -84,7 +90,9 @@ VMware Virtual Volumes (VVols) bietet die folgenden Vorteile:
 
 Eine Dual-Fabric-Umgebung wird in der Regel für Storage-Netzwerke empfohlen, um Hochverfügbarkeit, Performance und Fehlertoleranz zu gewährleisten. Die VVols werden mit iSCSI, FC, NFSv3 und NVMe/FC unterstützt. HINWEIS: Weitere link:https://imt.netapp.com/matrix["Interoperabilitäts-Matrix-Tool (IMT)"] Informationen finden Sie unter Unterstützte Version des ONTAP-Tools
 
-Die Konnektivitätsoption bleibt konsistent mit den Optionen für VMFS-Datastore oder NFS-Datastore. Im Folgenden ist ein Beispiel für ein vSphere-Referenznetzwerk für iSCSI und NFS aufgeführt. image:vmware-vvol-overview-image03.png["ISCSI-Netzwerk"]
+Die Konnektivitätsoption bleibt konsistent mit den Optionen für VMFS-Datastore oder NFS-Datastore. Im Folgenden ist ein Beispiel für ein vSphere-Referenznetzwerk für iSCSI und NFS aufgeführt.
+
+image:vmware-vvol-overview-image03.png["ISCSI-Netzwerk"]
 
 image:vmware-vvol-overview-image04.png["NFS Netzwerk"]
 

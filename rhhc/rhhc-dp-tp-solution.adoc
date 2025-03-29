@@ -13,8 +13,6 @@ summary: Red hat OpenShift Container Application Data Protection mit Trident Pro
 :imagesdir: ../media/
 
 
-Autor: Banu Sundhar, NetApp
-
 [role="lead"]
 Dieser Abschnitt des Referenzdokuments enthält Details zum Erstellen von Snapshots und Backups von Container-Apps mithilfe von Trident Protect. NetApp Trident Protect bietet erweiterte Funktionen für das Applikations-Datenmanagement, mit denen die Funktionalität und Verfügbarkeit zustandsbehafteter Kubernetes-Applikationen auf der Basis von NetApp ONTAP Storage-Systemen und der NetApp Trident CSI Storage-bereitstellung verbessert werden. Trident Protect erstellt Applikations-Snapshots und -Backups, was bedeutet, dass nicht nur Snapshots und Backups von Applikationsdaten in persistenten Volumes erstellt werden, sondern auch Snapshots und Backups von Applikations-Metadaten werden erstellt. Die von Trident Protect erstellten Snapshots und Backups können im folgenden Objektspeicher gespeichert und später wiederhergestellt werden.
 
@@ -36,7 +34,7 @@ NOTE: Der Clusteradministrator hat Zugriff auf Ressourcen im standardmäßigen T
 Trident Protect kann mit den Anweisungen in der Dokumentation installiert werdenlink:https://docs.netapp.com/us-en/trident/trident-protect/trident-protect-installation.html["Hier"]. Dieser Abschnitt zeigt den Workflow für den Datenschutz von Container-Anwendungen und die Wiederherstellung der Anwendungen mit Trident Protect. 1. Erstellung von Snapshots (nach Bedarf, geplant) 2. Wiederherstellung von Snapshots (Restore auf denselben und unterschiedlichen Namespace) 3. Backup-Erstellung 4. Aus Backup wiederherstellen
 
 .Voraussetzung
-[%collapsible]
+[%collapsible%open]
 ====
 Bevor Snapshots und Backups für eine Anwendung erstellt werden, muss ein Objektspeicher in Trident Protect konfiguriert werden, um die Snapshots und Backups zu speichern. Dies geschieht mit dem Bucket CR. Nur Administratoren können einen Bucket CR erstellen und konfigurieren. Der Bucket CR wird in Trident Protect als AppVault bezeichnet. AppVault-Objekte sind die deklarative Kubernetes-Workflow-Darstellung eines Storage-Buckets. Ein AppVault CR enthält die Konfigurationen, die für einen Bucket erforderlich sind, der für Schutzvorgänge verwendet werden kann, z. B. Backups, Snapshots, Wiederherstellungsvorgänge und SnapMirror-Replikation.
 
@@ -178,7 +176,7 @@ image:rhhc_dp_tp_solution_container_image2.png["App erstellt"]
 
 ====
 .Erstellen Sie Snapshots
-[%collapsible]
+[%collapsible%open]
 ====
 **Erstellen einer On-Demand-Momentaufnahme**
 
@@ -243,7 +241,7 @@ image:rhhc_dp_tp_solution_container_image8.png["PVC-Snap wurde im Zeitplan erste
 
 ====
 .Löschen Sie die Anwendung, um den Anwendungsverlust zu simulieren
-[%collapsible]
+[%collapsible%open]
 ====
 [source, yaml]
 ----
@@ -253,7 +251,7 @@ No resources found in postgres namespace.
 ----
 ====
 .Wiederherstellung von Snapshots im selben Namespace
-[%collapsible]
+[%collapsible%open]
 ====
 [source, yaml]
 ----
@@ -268,7 +266,7 @@ image:rhhc_dp_tp_solution_container_image10.png["App wiederhergestellt, Sir"]
 
 ====
 .Wiederherstellung von Snapshots in einem anderen Namespace
-[%collapsible]
+[%collapsible%open]
 ====
 [source, yaml]
 ----
@@ -283,7 +281,7 @@ image:rhhc_dp_tp_solution_container_image12.png["App wiederhergestellt, SnapRest
 
 ====
 .Backups Erstellen
-[%collapsible]
+[%collapsible%open]
 ====
 **Erstellen eines On-Demand-Backups**
 
@@ -307,7 +305,7 @@ image:rhhc_dp_tp_solution_container_image13a.png["Zuvor erstellter Zeitplan"]
 
 ====
 .Wiederherstellung aus Backup
-[%collapsible]
+[%collapsible%open]
 ====
 **Löschen Sie die Anwendung und VES, um einen Datenverlust zu simulieren.**
 
@@ -327,7 +325,7 @@ image:rhhc_dp_tp_solution_container_image17.png["Wiederherstellung in einem ande
 
 ====
 .Applikationen Migrieren
-[%collapsible]
+[%collapsible%open]
 ====
 Zum Klonen oder Migrieren einer Anwendung auf einen anderen Cluster (Ausführen eines Cluster-übergreifenden Klons) erstellen Sie ein Backup auf dem Quellcluster, und stellen Sie das Backup dann in einem anderen Cluster wieder her. Stellen Sie sicher, dass Trident Protect auf dem Ziel-Cluster installiert ist.
 
