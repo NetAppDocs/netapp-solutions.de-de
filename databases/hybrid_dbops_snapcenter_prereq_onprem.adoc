@@ -96,6 +96,76 @@ Um das Management einer Hybrid-Cloud-Datenbankumgebung zu vereinfachen, empfiehl
 
 Mit den Automatisierungsfunktionen eines Ansible-Controllers lässt sich SnapCenter für bestimmte Aufgaben erweitern, beispielsweise durch Aufbrechen der SnapMirror Instanz zur Aktivierung der DR-Datenkopie für die Produktion.
 
-Befolgen Sie diese Anweisungen, um Ihren Ansible-Steuerungsknoten für RedHat- oder CentOS-Maschinen einzurichten: Einschließlich:_include/Automation_RHEL_centos_Setup.adoc[]
+Folgen Sie diesen Anweisungen, um Ihren Ansible-Steuerungsknoten für RedHat- oder CentOS-Maschinen einzurichten:
 
-Befolgen Sie diese Anweisung, um Ihren Ansible-Steuerungsknoten für Ubuntu- oder Debian-Maschinen einzurichten: Include:_include/Automation_ubuntu_debian_Setup.adoc[]
+. Anforderungen für den Ansible-Kontroll-Node:
++
+.. Eine RHEL/CentOS Maschine mit den folgenden Paketen installiert:
++
+... Python3
+... Pip3
+... Ansible (Version größer als 2.10.0)
+... Git
+
+
+
+
+
+
+Wenn Sie eine neue RHEL/CentOS Maschine ohne die oben genannten Anforderungen installiert haben, führen Sie die folgenden Schritte aus, um diese Maschine als Ansible-Steuerungsknoten einzurichten:
+
+. Ansible-Repository für RHEL-8/RHEL-7 aktivieren
++
+.. Für RHEL-8 (führen Sie den folgenden Befehl als root aus)
++
+[source, cli]
+----
+subscription-manager repos --enable ansible-2.9-for-rhel-8-x86_64-rpms
+----
+.. Für RHEL-7 (führen Sie den folgenden Befehl als root aus)
++
+[source, cli]
+----
+subscription-manager repos --enable rhel-7-server-ansible-2.9-rpms
+----
+
+
+. Fügen Sie den unten stehenden Inhalt in das Terminal ein
++
+[source, cli]
+----
+sudo yum -y install python3 >> install.log
+sudo yum -y install python3-pip >> install.log
+python3 -W ignore -m pip --disable-pip-version-check install ansible >> install.log
+sudo yum -y install git >> install.log
+----
+
+
+Befolgen Sie diese Anweisungen, um Ihren Ansible-Steuerungsknoten für Ubuntu oder Debian-Maschinen einzurichten:
+
+. Anforderungen für den Ansible-Kontroll-Node:
++
+.. Eine Ubuntu/Debian-Maschine mit den folgenden Paketen installiert:
++
+... Python3
+... Pip3
+... Ansible (Version größer als 2.10.0)
+... Git
+
+
+
+
+
+
+Wenn Sie einen neuen Ubuntu/Debian-Rechner ohne die oben genannten Anforderungen installiert haben, führen Sie die folgenden Schritte aus, um diesen Rechner als den Ansible-Steuerungsknoten einzurichten:
+
+. Fügen Sie den unten stehenden Inhalt in das Terminal ein
++
+[source, cli]
+----
+sudo apt-get -y install python3 >> outputlog.txt
+sudo apt-get -y install python3-pip >> outputlog.txt
+python3 -W ignore -m pip --disable-pip-version-check install ansible >> outputlog.txt
+sudo apt-get -y install git >> outputlog.txt
+----
+
