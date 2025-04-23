@@ -2,7 +2,7 @@
 sidebar: sidebar 
 permalink: hyperv/hyperv-smas.html 
 keywords: hyperv, hyper-v, snapmirror, active, sync, stretch, cluster, netapp, virtualization 
-summary: In diesem Dokument wird die SnapMirror Active Sync-Technologie dokumentiert, die bidirektionale synchrone Replikation zwischen Microsoft dehnt Failover-Cluster aus, sodass standortübergreifende Anwendungsdaten wie MSSQL und Oracle an beiden Standorten aktiv verfügbar und synchron sind. 
+summary: In diesem Dokument wird die synchrone bidirektionale Replikation zwischen Microsoft Stretch-Clustern mit aktiver SnapMirror-Synchronisierungstechnologie dokumentiert, sodass standortübergreifende Anwendungsdaten wie MSSQL und Oracle an beiden Standorten aktiv verfügbar und synchron sind. 
 ---
 = Aktive SnapMirror-Synchronisierung mit Microsoft Stretch-Clustern
 :hardbreaks:
@@ -269,7 +269,7 @@ image:hyperv-smas-image13.png["Die Abbildung zeigt den Input/Output-Dialog oder 
 
 
 .Storage-Ausfall an einem Standort
-* Stoppen einer SVM am primären Standort Aktion: Stoppen der iSCSI SVM erwartete Ergebnisse: Das primäre Hyper-V Cluster hat bereits eine Verbindung zum gespiegelten Standort hergestellt und hat mit SnapMirror Active Sync symmetrische aktiv/aktiv keine Workload-Auswirkungen mit einem RPO von null und einem RTO von null.
+* Stoppen einer SVM am primären Standort Aktion: Stoppen der iSCSI SVM erwartete Ergebnisse: Das primäre Hyper-V Cluster ist bereits mit dem gespiegelten Standort verbunden. Symmetrische aktiv/aktiv-Lösung von SnapMirror mit aktiver Synchronisierung bewirkt keine Workload-Auswirkung mit einem RPO von null und einem RTO von null.
 
 
 .Erfolgskriterien
@@ -288,4 +288,4 @@ Beachten Sie bei den Tests Folgendes:
 
 == Zusammenfassung
 
-Mit SnapMirror Active Sync können standortübergreifende Anwendungsdaten wie MSSQL und Oracle aktiv zugänglich und synchron über beide Standorte hinweg gemacht werden. Bei einem Ausfall werden die Applikationen unmittelbar auf den verbleibenden aktiven Standort umgeleitet, ohne dass Daten verloren gehen oder der Zugriff verloren geht.
+Mit SnapMirror Active Sync können Anwendungsdaten an mehreren Standorten, wie z. B. MSSQL und Oracle, über beide Standorte hinweg aktiv zugänglich und synchron sein. Bei einem Ausfall werden die Applikationen unmittelbar auf den verbleibenden aktiven Standort umgeleitet, ohne dass Daten verloren gehen oder der Zugriff verloren geht.
