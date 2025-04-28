@@ -14,7 +14,7 @@ summary: Red hat OpenShift Virtualisierung mit NetApp ONTAP
 
 
 [role="lead"]
-In diesem Abschnitt wird die Erstellung einer virtuellen Maschine mit Red hat OpenShift Virtualization erläutert.
+In diesem Abschnitt wird die Erstellung einer virtuellen Maschine mit Red hat OpenShift Virtualization erläutert. Als Voraussetzung dafür sollten Sie bereits das Trident-Backend, die Storage-Klasse und die Volume-Snapshot-Klassenobjekte erstellt haben. Weitere Informationen finden Sie imlink:rh-os-n_use_case_openshift_virtualization_trident_install.html["Trident-Installation"].
 
 
 
@@ -38,7 +38,7 @@ Die virtuelle Maschine wird erstellt und gestartet und kommt in den Status *runn
 Informationen zum Konfigurieren der ONTAP-san-Storage-Klasse auf dem Cluster finden Sie unter link:rh-os-n_use_case_openshift_virtualization_workflow_vm_migration_using_mtv.html["Abschnitt zur Migration einer VM von VMware auf OpenShift Virtualization"].
 
 
-NOTE: Sie können ONTAP NAS oder iSCSI als Standardspeicherklasse für das Cluster einrichten. Wenn Sie auf Quick Create VirtualMachine klicken, wird die Standard-Speicherklasse verwendet, um die PVC und das PV für die bootfähige Root-Festplatte für die VM zu erstellen. Wenn Ihre Standard-Storage-Klasse nicht ontap-nas oder ontap-san ist, können Sie die Storage-Klasse für die Festplatte auswählen, indem Sie VirtualMachine anpassen > VirtualMachine Parameter anpassen > Disks auswählen und dann die Festplatte bearbeiten, um die erforderliche Storage-Klasse zu verwenden.
+NOTE: Wenn Sie auf Quick Create VirtualMachine klicken, wird die Standard-Speicherklasse verwendet, um die PVC und das PV für die bootfähige Root-Festplatte für die VM zu erstellen. Sie können eine andere Speicherklasse für die Festplatte auswählen, indem Sie VirtualMachine anpassen > VirtualMachine-Parameter anpassen > Datenträger auswählen und dann die Festplatte bearbeiten, um die erforderliche Speicherklasse zu verwenden.
 
 Normalerweise ist der Block-Zugriffsmodus im Vergleich zu Dateisystemen bei der Bereitstellung der VM-Festplatten vorzuziehen.
 
