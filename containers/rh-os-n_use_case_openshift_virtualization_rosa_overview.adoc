@@ -34,7 +34,7 @@ Wir werden auch prüfen, wie eine Verbindung zur Virtual Machine mit den Gastanm
 * link:https://docs.aws.amazon.com/eks/latest/userguide/helm.html["Helm 3-Dokumentation"]
 * link:https://docs.openshift.com/rosa/rosa_hcp/rosa-hcp-sts-creating-a-cluster-quickly.html["EIN HCP-ROSA-CLUSTER"] (Mit mindestens 3 Bare-Metal-Worker-Nodes)
 * link:https://console.redhat.com/openshift/overview["Zugriff auf die Red hat OpenShift -Webkonsole"]
-* Trident 25.02 oder höher
+* Trident 25.02 oder höher die oben genannte Trident-Voraussetzung finden Sie unterlink:rh-os-n_use_case_openshift_virtualization_trident_install.html["Trident-Installation"].
 * link:https://docs.redhat.com/en/documentation/openshift_container_platform/4.17/html/virtualization/installing#virt-aws-bm_preparing-cluster-for-virt["OpenShift Virtualization ist auf ROSA Cluster installiert"]
 
 
@@ -99,10 +99,6 @@ deletionPolicy: Retain
 #oc create -f snapshot-class.yaml
 ----
 Stellen Sie vor der Installation von OpenShift Virtualization sicher, dass die Storage-Klasse und die Volume-Snapshot-Klasse als Standardwerte konfiguriert sind. Weitere Informationen zum Einrichten von Standardwerten finden Sie imlink:rh-os-n_use_case_openshift_virtualization_trident_install.html["Festlegen der Standardeinstellungen im Abschnitt Trident-Speicher und Snapshot Klasse"].
-
-Stellen Sie sicher, dass die Standardspeicherklasse auf Trident-csi gesetzt ist image:redhat_openshift_ocpv_rosa_image1.png["OCP-V Standard-Storage-Klasse"]
-
-Stellen Sie sicher, dass die StandardvolumeSnapShotClasses wie gezeigt eingestellt sind image:redhat_openshift_ocpv_rosa_image2.png["OCP-V Standard VolumeSnapshot Class"]
 
 
 
