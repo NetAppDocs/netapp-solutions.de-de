@@ -1,0 +1,133 @@
+---
+sidebar: sidebar 
+permalink: vm-migrate/shift-toolkit-conversion.html 
+keywords: netapp, vmware, esxi, vm, migration, openshift, virtualization, hyper-v, proxmox 
+summary:  
+---
+= Die VM-Konvertierung mit dem Shift Toolkit durchführen
+:hardbreaks:
+:allow-uri-read: 
+:nofooter: 
+:icons: font
+:linkattrs: 
+:imagesdir: ../media/
+
+
+[role="lead"]
+In diesem Abschnitt wird beschrieben, wie die VM-Konvertierung mit dem Shift Toolkit durchgeführt wird.
+
+
+
+== Umwandlung
+
+Mit der Option zur Clone Based Conversion können Sie die virtuelle Festplatte einfach zwischen Hypervisoren für die folgenden Festplattenformate konvertieren:
+
+* VMware ESX zu Microsoft Hyper-V (VMDK zu VHDX)
+* VMware ESX zu Red hat KVM (VMDK zu QCOW2)
+
+
+Die konvertierten qcow2-Dateien sind mit allen KVM-Hypervisoren kompatibel. Beispielsweise kann eine qcow2-Datei mit RHEL-basiertem KVM mit virt-Manager zur Erstellung einer VM sowie mit ubuntu KVM, Rocky Linux-basiertem KVM und anderen genutzt werden. Das gleiche kann mit Oracle Linux Virtualization Manager mit Tweak und mit OpenShift Virtualisierung nach dem Import mit NetApp Trident verwendet werden. Das Ziel besteht darin, die Festplatte (in Sekunden in Minuten konvertiert) bereitzustellen, die dann in vorhandene Automatisierungsskripts integriert werden kann, die von Unternehmen zur Bereitstellung der VM und zur Zuweisung des Netzwerks genutzt werden. Dieser Ansatz trägt dazu bei, die Gesamtmigrationszeiten zu verkürzen, da die Festplattenkonvertierung durch die Shift Toolkit-APIs und das verbleibende Skript zur Erstellung der VMs erfolgt.
+
+In zukünftigen Versionen unterstützt das Shift Toolkit die End-to-End-Migration von VMware zu anderen kompatiblen KVM-Hypervisoren. Mit dem aktuellen Release kann die Konvertierung jedoch über die UI oder APIs erfolgen.
+
+
+
+=== In QCOW2-Format konvertieren
+
+Um die virtuellen Festplatten in das QCOW2-Format mit dem NetApp Shift Toolkit zu konvertieren, gehen Sie wie folgt vor:
+
+* Erstellen Sie einen Zielorttyp, der KVM als Hypervisor angibt.
++
+
+NOTE: Hypervisor-Details sind für KVM nicht erforderlich.
+
++
+image:shift-toolkit-image57.png["Die Abbildung zeigt den Input/Output-Dialog oder die Darstellung des schriftlichen Inhalts"]
+
+* Erstellen Sie eine Ressourcengruppe mit den VMs, für die die Datenträgerkonvertierung erforderlich ist
++
+image:shift-toolkit-image58.png["Die Abbildung zeigt den Input/Output-Dialog oder die Darstellung des schriftlichen Inhalts"]
+
++
+image:shift-toolkit-image59.png["Die Abbildung zeigt den Input/Output-Dialog oder die Darstellung des schriftlichen Inhalts"]
+
++
+image:shift-toolkit-image60.png["Die Abbildung zeigt den Input/Output-Dialog oder die Darstellung des schriftlichen Inhalts"]
+
+* Erstellen Sie den Blueprint, um das virtuelle Laufwerk in das QCOW2-Format zu konvertieren.
++
+image:shift-toolkit-image61.png["Die Abbildung zeigt den Input/Output-Dialog oder die Darstellung des schriftlichen Inhalts"]
+
++
+image:shift-toolkit-image62.png["Die Abbildung zeigt den Input/Output-Dialog oder die Darstellung des schriftlichen Inhalts"]
+
++
+image:shift-toolkit-image63.png["Die Abbildung zeigt den Input/Output-Dialog oder die Darstellung des schriftlichen Inhalts"]
+
+* Bestimmen Sie einen Steckplatz mithilfe der Planungsoption. Wenn die Konvertierung auf Ad-hoc-Basis durchgeführt werden soll, lassen Sie die Terminierungsoption deaktiviert.
++
+image:shift-toolkit-image64.png["Die Abbildung zeigt den Input/Output-Dialog oder die Darstellung des schriftlichen Inhalts"]
+
+* Sobald der Blueprint erstellt wurde, wird ein vorbereiteter VM-Job initiiert, und er führt automatisch Skripte auf den Quell-VMs aus, um sie für die Konvertierung vorzubereiten.
++
+image:shift-toolkit-image65.png["Die Abbildung zeigt den Input/Output-Dialog oder die Darstellung des schriftlichen Inhalts"]
+
+* Sobald der vorbereitende VM-Job erfolgreich abgeschlossen ist (wie in der Abbildung unten gezeigt), sind die mit den VMs verbundenen VM-Laufwerke zur Konvertierung bereit, und der Blueprint-Status wird auf „aktiv“ aktualisiert.
+* Klicken Sie auf „Convert“, nachdem Sie die erforderliche Ausfallzeit für die VMs eingeplant haben.
++
+image:shift-toolkit-image66.png["Die Abbildung zeigt den Input/Output-Dialog oder die Darstellung des schriftlichen Inhalts"]
+
+* Der Konvertierungsvorgang verwendet einen Point-in-Time-Snapshot. Schalten Sie die VM bei Bedarf aus und starten Sie den Vorgang dann erneut.
++
+image:shift-toolkit-image67.png["Die Abbildung zeigt den Input/Output-Dialog oder die Darstellung des schriftlichen Inhalts"]
+
++
+** Der Konvertierungsvorgang führt jeden Vorgang für die VM und die jeweilige Festplatte aus, um das entsprechende Format zu generieren.
++
+image:shift-toolkit-image68.png["Die Abbildung zeigt den Input/Output-Dialog oder die Darstellung des schriftlichen Inhalts"]
+
+
+
+* Verwenden Sie die konvertierte Festplatte, indem Sie die VM manuell erstellen und die Festplatte daran anschließen.
++
+image:shift-toolkit-image69.png["Die Abbildung zeigt den Input/Output-Dialog oder die Darstellung des schriftlichen Inhalts"]
+
+
+
+
+NOTE: Das Shift-Toolkit unterstützt Festplattenkonvertierungen nur für das qcow2-Format. VM-Erstellung oder -Registrierung wird nicht unterstützt. Um die konvertierte Festplatte zu verwenden, erstellen Sie die VM manuell und verbinden Sie die Festplatte.
+
+
+
+=== Konvertieren in das VHDX-Format
+
+Um die virtuellen Festplatten mit NetApp Shift Toolkit in das VHDX-Format zu konvertieren, gehen Sie folgendermaßen vor:
+
+* Erstellen Sie einen Zielorttyp, der Hyper-V als Hypervisor angibt.
+* Erstellen Sie eine Ressourcengruppe mit den VMs, für die die Datenträgerkonvertierung erforderlich ist
++
+image:shift-toolkit-image70.png["Die Abbildung zeigt den Input/Output-Dialog oder die Darstellung des schriftlichen Inhalts"]
+
++
+image:shift-toolkit-image71.png["Die Abbildung zeigt den Input/Output-Dialog oder die Darstellung des schriftlichen Inhalts"]
+
+* Erstellen Sie den Entwurf, um das virtuelle Laufwerk in das VHDX-Format zu konvertieren. Sobald der Plan erstellt wurde, werden die Vorbereitungsjobs automatisch gestartet.
++
+image:shift-toolkit-image72.png["Die Abbildung zeigt den Input/Output-Dialog oder die Darstellung des schriftlichen Inhalts"]
+
+* Wählen Sie „Konvertieren“, sobald die erforderliche Ausfallzeit für die VMs geplant wurde.
++
+image:shift-toolkit-image73.png["Die Abbildung zeigt den Input/Output-Dialog oder die Darstellung des schriftlichen Inhalts"]
+
+* Bei der Konvertierung wird jeder Vorgang für die VM und die jeweilige Festplatte durchgeführt, um das entsprechende VHDX-Format zu generieren.
++
+image:shift-toolkit-image74.png["Die Abbildung zeigt den Input/Output-Dialog oder die Darstellung des schriftlichen Inhalts"]
+
+* Verwenden Sie die konvertierte Festplatte, indem Sie die VM manuell erstellen und die Festplatte daran anschließen.
++
+image:shift-toolkit-image75.png["Die Abbildung zeigt den Input/Output-Dialog oder die Darstellung des schriftlichen Inhalts"]
+
+
+
+
+NOTE: Um die konvertierte VHDX-Festplatte in einer VM zu verwenden, muss die VM manuell über Hyper-V Manager oder PowerShell Befehle erstellt und die Festplatte damit verbunden werden. Außerdem sollte das Netzwerk auch manuell abgebildet werden.

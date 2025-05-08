@@ -1,0 +1,127 @@
+---
+sidebar: sidebar 
+permalink: vm-migrate/shift-toolkit-migration.html 
+keywords: netapp, vmware, esxi, vm, migration, openshift, virtualization, hyper-v, proxmox 
+summary:  
+---
+= Durchführung der VM-Migration mit dem Shift Toolkit
+:hardbreaks:
+:allow-uri-read: 
+:nofooter: 
+:icons: font
+:linkattrs: 
+:imagesdir: ../media/
+
+
+[role="lead"]
+In diesem Abschnitt wird beschrieben, wie die VM-Migration mit dem Shift Toolkit durchgeführt wird.
+
+
+
+== Migration
+
+Sobald die Blaupause erstellt wurde, kann die Option „Migrate“ ausgeführt werden. Während der Migrationsoption führt Shift Toolkit eine Reihe von Schritten zum Konvertieren des Festplattenformats durch und verwendet das konvertierte Laufwerk, um virtuelle Maschinen auf dem Hyper-V-Host zu erstellen, wie im Blueprint definiert.
+
+Folgende grundlegende Schritte werden durchgeführt:
+
+Voraussetzung: Bevor Sie die Migration starten, stellen Sie sicher, dass die virtuellen Maschinen (VMs) ordnungsgemäß ausgeschaltet werden, unabhängig davon, ob die Migration ad-hoc oder geplant ist, basierend auf der geplanten Wartungszeit. Vergewissern Sie sich, dass die VMs vollständig heruntergefahren sind. Wenn das Betriebssystem Updates aussteht, starten Sie die Migration erst, nachdem die VMs vollständig heruntergefahren wurden.
+
+* Löschen Sie vorhandene Snapshots für alle VMs im Modell
+* VM Snapshots für Blueprint auslösen – an der Quelle
+* Lösen Sie vor der Festplattenkonvertierung einen Volume-Snapshot aus
+* Klonen und Konvertieren von VMDK in VHDX Format für alle VMs
+* Fahren Sie die VMs in der Sicherungsgruppe – am Ziel – ein
+* Registrieren Sie die Netzwerke auf jeder VM
+* Entfernen Sie VMware-Tools, und weisen Sie die IP-Adressen mit Trigger-Skript oder Cron-Job abhängig vom OS-Typ zu
+
+
+
+
+=== Zu berücksichtigende Faktoren
+
+Stellen Sie vor Beginn der Migration sicher, dass alle Voraussetzungen erfüllt sind (was in diesem Abschnitt „Voraussetzungen“ im Einzelnen erläutert wird). Hier eine kurze Checkliste zur Zusammenfassung:
+
+* Stellen Sie sicher, dass die Shift VM Teil der Domäne ist
+* Stellen Sie sicher, dass die CIFS-Freigabe mit den entsprechenden Berechtigungen konfiguriert ist
+* Der für die Migration oder Konvertierung verwendete qtree hat den richtigen Sicherheitsstil
+* Versuchen Sie zur Durchführung eines schnellen Tests, eine VM mithilfe von Hyper-V Manager von einem beliebigen Hyper-V Host im Cluster aus zu erstellen, und platzieren Sie die VHDX auf der CIFS-Freigabe (siehe Punkt – A). Testen Sie dasselbe aus Shift Toolkit VM durch Hinzufügen von Hyper-V Management Tools (entweder über „Programme und Funktionen“ oder mit „PowerShell“ – Add-windowsfeature rsat-Hyper-V-Tools)
+
+
+
+NOTE: Wenn es Fehler gibt, link:https://learn.microsoft.com/en-us/windows-server/virtualization/hyper-v/manage/remotely-manage-hyper-v-hosts["Aktivieren Sie die Delegierung mithilfe eines beliebigen Authentifizierungsprotokolls"].
+
+
+
+=== Tipps und Überlegungen zum Netzwerk
+
+Folgende Netzwerkaspekte sind zu berücksichtigen:
+
+* Stellen Sie sicher, dass die statischen IP-Adressen verfügbar und keiner anderen VM zugewiesen sind
+
+
+Für Windows-VMs:
+
+* Das Skript Prepare erstellt eine Kopie der Netzwerkkonfigurationsdetails (IP-Adressraum, Gateway-Adresse, DNS-Server) und Trigger-Skript (während der Migration) wendet die Netzwerkeinstellungen erneut an, sei es eine einzelne NIC oder mehrere NICs auf der Grundlage der Blueprint-Zuordnung.
+* Nach der Migration zeigt der Windows-Geräte-Manager möglicherweise weiterhin die alten Netzwerkadapterinformationen aus der Vormigration an. Dies wirkt sich nicht auf den neuen Netzwerkadapter aus, der nach der Migration erstellt wurde, und verursacht keine IP-Konflikte. Das Skript löscht diese alte Registrierung derzeit nicht, sodass sie sichtbar bleibt.
+
+
+Für Linux-VMs:
+
+* Das Prepare-Skript erstellt eine Kopie der Netzwerkkonfigurationsdetails (IP-Adressraum, Routen, DNS-Server, Netzwerkgerätenamen) und je nach Linux-Distribution den verwendeten Netzwerktyp identifizieren und die IP-Einstellungen anwenden. Das Skript zur Neuzuweisung des Netzwerks wird über crontab als cron-Job festgelegt und beim Booten ausgelöst. So führt der cronjob beispielsweise das Skript (nach der Migration) auf der Instanz aus, um die Netzwerkeinstellungen erneut anzuwenden, sei es eine einzelne NIC oder mehrere NICs, die auf der Blueprint-Zuordnung basieren.
+* In bestimmten Szenarien haben die konvertierten Hyper-V-VMs Schnittstellennamen wie eth0 oder eth1 anstelle von ens192 oder 33 auf der Quellseite. In diesem Fall aktualisiert das Skript die Netzwerkkonfigurationsdetails, um die neuen Schnittstellennamen zu erfüllen. Wenn vorhersehbare Namen verwendet werden (wie moderne Systeme) und der Schnittstellenname auf der Hyper-V-Seite beibehalten wird, überspringt das Skript die Netzwerkseite und entfernt nur VMware-Tools und startet dann die VM neu.
+* Das Shift Toolkit unterstützt derzeit NetworkManager-, Netplan- und ifconfig-Mechanismen und behält die IP wie im Blueprint angegeben bei.
+
+
+
+
+=== Phasen und Optionen
+
+Hier sind die wichtigsten Phasen und Optionen des Migrationsprozesses.
+
+. VM vorbereiten – die VMs auf die Migration vorbereiten, sicherstellen, dass alle Voraussetzungen vollständig erfüllt sind.
+. Migrieren: Sobald die Vorbereitung abgeschlossen ist, wählen Sie VMware-VMs aus und migrieren Sie sie zu Hyper-V. Überprüfen Sie nach Abschluss der Migration, ob die VMs erfolgreich gestartet wurden und die Daten ordnungsgemäß migriert wurden.
+. Test Migrate: Die Testmigration simuliert die Migration, indem die VMDK in VHDX konvertiert wird und Hyper-V-VMs erstellt werden. Dazu wird die konvertierte VHDX-Datei auf der SMB-Freigabe verwendet. Die Testmigration erlaubt keine Konfiguration der Netzwerkzuordnung. Diese Aufgabe sollte in der Regel manuell in ein Bubble-Netzwerk durchgeführt werden.
+. Migration erneut versuchen – Wenn die Migration fehlschlägt, bietet das Shift Toolkit eine Option zum erneuten Versuch. Mit dieser Funktion kann der Migrationsjob nach dem Fehlerfall wieder aufgenommen werden. Bevor Sie den Vorgang wiederholen, müssen Sie alle Fehlermeldungen überprüfen und korrigieren.
+
+
+
+NOTE: Das Shift Toolkit ändert die Quell-VM nicht, außer beim Kopieren der für die VM-Vorbereitung erforderlichen Skripte. Dies ermöglicht ein schnelles Rollback bei Konvertierungsfehlern.
+
+Um den Migrieren des Workflows mit der im Blueprint angegebenen Konfiguration auszulösen, klicken Sie auf Migrieren.
+
+image:shift-toolkit-image50.png["Die Abbildung zeigt den Input/Output-Dialog oder die Darstellung des schriftlichen Inhalts"]
+
+Nach der Initiierung wird der Workflow aktiviert, und der Konvertierungsprozess folgt den beschriebenen Schritten zur Registrierung der VM. Wenn die VMs in der Blaupause nicht ausgeschaltet sind, fordert das Shift Toolkit zum ordnungsgemäßen Herunterfahren auf, bevor Sie fortfahren.
+
+image:shift-toolkit-image51.png["Die Abbildung zeigt den Input/Output-Dialog oder die Darstellung des schriftlichen Inhalts"]
+
+
+NOTE: Wir empfehlen, nicht mehr als zehn Konvertierungen parallel von derselben ESXi-Quelle zum selben Hyper-V-Ziel zu lösen
+
+image:shift-toolkit-image52.png["Die Abbildung zeigt den Input/Output-Dialog oder die Darstellung des schriftlichen Inhalts"]
+
+Die Konvertierung von VMDK zu VHDX erfolgt in Sekundenschnelle, wodurch dieser Ansatz der schnellste aller gegen Aufpreis verfügbaren Optionen ist. Dies trägt auch dazu bei, die VM-Ausfallzeiten während der Migration zu reduzieren.
+
+image:shift-toolkit-image53.png["Die Abbildung zeigt den Input/Output-Dialog oder die Darstellung des schriftlichen Inhalts"]
+
+Sobald der Job abgeschlossen ist, ändert sich der Status des Blueprints in „Migration abgeschlossen“.
+
+image:shift-toolkit-image54.png["Die Abbildung zeigt den Input/Output-Dialog oder die Darstellung des schriftlichen Inhalts"]
+
+Wenn die Migration abgeschlossen ist, ist es an der Zeit, die VMs auf Hyper-V-Seite zu validieren. Der Screenshot unten zeigt die VMs, die auf dem Hyper-V-Host ausgeführt werden, der während der Erstellung des Blueprints angegeben wurde.
+
+image:shift-toolkit-image55.png["Die Abbildung zeigt den Input/Output-Dialog oder die Darstellung des schriftlichen Inhalts"]
+
+
+NOTE: Shift Toolkit verwendet Cron-Job, der beim Booten ausgeführt wird. Wenn die VMs auf Hyper-V-Hosts erworben wurden, gibt es keine ssh-Verbindungen oder Äquivalente für Linux-basierte VMs.
+
+image:shift-toolkit-image56.png["Die Abbildung zeigt den Input/Output-Dialog oder die Darstellung des schriftlichen Inhalts"]
+
+
+NOTE: Bei Windows VMs verwendet das Shift Toolkit PowerShell direkt zur Verbindung mit diesen Windows-basierten Gast-VMs. PowerShell Direct ermöglicht die Verbindung zu Windows-basierten Gast-VMs, unabhängig von ihrer Netzwerkkonfiguration oder den Remote-Managementeinstellungen.
+
+
+NOTE: Nach der Konvertierung sind alle VM-Festplatten unter Windows OS mit Ausnahme der OS-Festplatte offline. Dies liegt daran, dass der NewDiskPolicy-Parameter auf VMware-VMs standardmäßig auf Offline-ALL gesetzt ist. Das Problem wird durch die standardmäßige Microsoft Windows SAN-Richtlinie verursacht. Diese Richtlinie soll die Aktivierung von LUNs beim Starten von Windows Server verhindern, wenn mehrere Server darauf zugreifen. Dies wird getan, um mögliche Datenbeschädigungen zu vermeiden. Dies kann durch Ausführen eines PowerShell Befehls gehandhabt werden: Set-StorageSetting -NewDiskPolicy OnlineAll
+
+
+NOTE: Nutzen Sie mehrere Volumes für das Staging der VMs, d. h. die VMs sollten nach Bedarf auf verschiedene Volumes verteilt werden. Wenn die Ressourcengruppe VMs mit großen VMDKs umfasst, verteilen Sie diese zur Konvertierung auf verschiedene Volumes. Dieser Ansatz verhindert viele Fehler bei Snapshots, indem Klonvorgänge parallel auf separaten Volumes durchgeführt werden, während die Klonaufteilung im Hintergrund erfolgt.

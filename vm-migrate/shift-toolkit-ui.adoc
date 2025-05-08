@@ -1,0 +1,628 @@
+---
+sidebar: sidebar 
+permalink: vm-migrate/shift-toolkit-ui.html 
+keywords: netapp, vmware, esxi, vm, migration, openshift, virtualization, hyper-v, proxmox 
+summary:  
+---
+= Einrichten und Verwenden der Shift Toolkit GUI
+:hardbreaks:
+:allow-uri-read: 
+:nofooter: 
+:icons: font
+:linkattrs: 
+:imagesdir: ../media/
+
+
+[role="lead"]
+In diesem Abschnitt wird beschrieben, wie Sie das Shift Toolkit über die Benutzeroberfläche einrichten und ausführen.
+
+
+
+== Führen Sie das Shift Toolkit aus
+
+* Greifen Sie über den Browser auf die Shift Toolkit UI zu, indem Sie die bei der Installation angegebene Adresse eingeben"http://<IP[].>:3001“
++
+
+NOTE: Verwenden Sie Google Chrome oder Internet Explorer für beste Erfahrung.
+
+* Greifen Sie mit den Standardanmeldeinformationen wie unten auf die UI zu:
++
+Benutzername: Admin
+
++
+Passwort: Admin
+
+
+
+
+NOTE: Die Anmeldedaten des Administrators können mithilfe der Option „Passwort ändern“ geändert werden.
+
+image:shift-toolkit-image18.png["Die Abbildung zeigt den Input/Output-Dialog oder die Darstellung des schriftlichen Inhalts"]
+
+Akzeptieren Sie die rechtliche EULA, indem Sie auf „Akzeptieren und fortfahren“ klicken.
+
+image:shift-toolkit-image19.png["Die Abbildung zeigt den Input/Output-Dialog oder die Darstellung des schriftlichen Inhalts"]
+
+
+
+== Shift Toolkit-Konfiguration
+
+Nachdem der Storage und die Konnektivität sowohl mit den Quell- als auch mit den Ziel-Hypervisoren ordnungsgemäß konfiguriert wurden, beginnen Sie mit der Konfiguration des Shift Toolkits, um die Migration bzw. Konvertierung der Virtual Machine VMDK in das entsprechende Format zu automatisieren und dabei die FlexClone Funktion zu nutzen.
+
+
+
+=== Sites Hinzufügen
+
+Im ersten Schritt werden die Quell-vCenter und anschließend die Hyper-V Zieldetails (sowohl Hypervisoren als auch Storage) erkannt und zum Shift-Toolkit hinzugefügt. Öffnen Sie das Shift Toolkit in einem unterstützten Browser und verwenden Sie den Standardbenutzernamen und das Standardpasswort (admin/admin) und klicken Sie auf „Sites hinzufügen“.
+
+image:shift-toolkit-image20.png["Die Abbildung zeigt den Input/Output-Dialog oder die Darstellung des schriftlichen Inhalts"]
+
+
+NOTE: Standorte können auch über die Option Entdecken hinzugefügt werden.
+
+Fügen Sie die folgenden Plattformen hinzu:
+
+*Quelle*
+
+* Details Zum Quellstandort
++
+** Standortname: Geben Sie einen Namen für den Standort an
+** Hypervisor – Wählen Sie VMware als Quelle (nur Option während der GA verfügbar).
+** Standort – Wählen Sie die Standardoption aus
+** Connector – Wählen Sie die Standardauswahl aus
+
+
+
+
+Klicken Sie anschließend auf Weiter.
+
+image:shift-toolkit-image21.png["Die Abbildung zeigt den Input/Output-Dialog oder die Darstellung des schriftlichen Inhalts"]
+
+* Quell-vCenter
++
+** Endpunkt: Geben Sie die IP-Adresse oder den FQDN des vCenter-Servers ein
+** Benutzername - Benutzername für den Zugriff auf vCenter (im UPN-Format: `username@domain.com`)
+** VCenter-Kennwort – Kennwort für den Zugriff auf vCenter für die Bestandsaufnahme der Ressourcen.
+** VCenter SSL-Fingerabdruck (optional)
+
+
+
+
+Wählen Sie „Selbstsigniertes Zertifikat akzeptieren“ und klicken Sie auf „Weiter“.
+
+image:shift-toolkit-image22.png["Die Abbildung zeigt den Input/Output-Dialog oder die Darstellung des schriftlichen Inhalts"]
+
+* Zugangsdaten für das ONTAP-Speichersystem
+
+
+image:shift-toolkit-image23.png["Die Abbildung zeigt den Input/Output-Dialog oder die Darstellung des schriftlichen Inhalts"]
+
+Sobald das Shift Toolkit hinzugefügt wurde, führt es eine automatische Erkennung durch und zeigt die VMs zusammen mit den relevanten Metadateninformationen an. Das Shift Toolkit erkennt automatisch die von den VMs verwendeten Netzwerke und Portgruppen und füllt diese aus.
+
+
+NOTE: Wenn Änderungen am Quellstandort vorgenommen werden, stellen Sie sicher, dass die Ermittlung ausgeführt wird, um die neuesten Informationen abzurufen. Dies kann durch Klicken auf 3 Punkte gegen den Namen der Website getan werden und klicken Sie auf "Discover Site".
+
+
+NOTE: Der VM-Bestand wird alle 24 Stunden automatisch aktualisiert.
+
+image:shift-toolkit-image24.png["Die Abbildung zeigt den Input/Output-Dialog oder die Darstellung des schriftlichen Inhalts"]
+
+Um die Daten für ein bestimmtes vCenter anzuzeigen, wechseln Sie zum Dashboard und klicken Sie auf „View VM List“ neben dem entsprechenden Standortnamen. Auf der Seite wird der VM-Bestand zusammen mit den VM-Attributen angezeigt.
+
+Im nächsten Schritt wird der Ziel-Hypervisor hinzugefügt. Klicken Sie zum Hinzufügen auf „Neue Site hinzufügen“ und wählen Sie „Ziel“.
+
+*Ziel*
+
+image:shift-toolkit-image25.png["Die Abbildung zeigt den Input/Output-Dialog oder die Darstellung des schriftlichen Inhalts"]
+
+* Details Zum Zielstandort
++
+** Standortname: Geben Sie einen Namen für den Standort an
+** Hypervisor – Wählen Sie Hyper-V oder KVM als Ziel aus
+** Standort – Wählen Sie die Standardoption aus
+** Connector – Wählen Sie die Standardauswahl aus
+
+
+
+
+Klicken Sie anschließend auf Weiter.
+
+image:shift-toolkit-image26.png["Die Abbildung zeigt den Input/Output-Dialog oder die Darstellung des schriftlichen Inhalts"]
+
+Geben Sie basierend auf der Auswahl des Hypervisors die erforderlichen Details ein.
+
+* Details zu Hyper-V als Ziel
++
+** Hyper-V Standalone oder Failover Cluster Manager IP-Adresse oder FQDN
+** Benutzername: Benutzername für den Zugriff (im UPN-Format: `username@domain.com` Oder Domäne\Administrator)
++
+Kennwort – Kennwort für den Zugriff auf Hyper-V-Host oder FCI-Instanz zur Durchführung der Bestandsaufnahme der Ressourcen.
+
++
+Wählen Sie „Selbstsigniertes Zertifikat akzeptieren“ und klicken Sie auf „Weiter“.
+
+
+
+
+
+image:shift-toolkit-image27.png["Die Abbildung zeigt den Input/Output-Dialog oder die Darstellung des schriftlichen Inhalts"]
+
+Klicken Sie anschließend auf Weiter
+
+
+NOTE: Shift Toolkit kommuniziert nicht direkt mit System Center in der aktuellen Version.
+
+
+NOTE: Die Hyper-V FCI- und Host-Erkennung basiert auf der DNS-Auflösung. Stellen Sie sicher, dass die Hostnamen aus Shift Toolkit VM aufgelöst werden müssen. Falls die Auflösung fehlschlägt, aktualisieren Sie die Host-Datei (C:\Windows\System32\drivers\etc\Hosts) und versuchen Sie den Erkennungsvorgang erneut.
+
+*ONTAP-Speichersystem*
+
+image:shift-toolkit-image28.png["Die Abbildung zeigt den Input/Output-Dialog oder die Darstellung des schriftlichen Inhalts"]
+
+
+NOTE: Das Quell- und Ziel-Storage-System sollten so sein, wie die Konvertierung des Festplattenformats auf Volume-Ebene und innerhalb desselben Volumes erfolgt.
+
+image:shift-toolkit-image29.png["Die Abbildung zeigt den Input/Output-Dialog oder die Darstellung des schriftlichen Inhalts"]
+
+Im nächsten Schritt werden die erforderlichen VMs als Ressourcengruppen in ihre Migrationsgruppen gruppiert.
+
+
+
+== Ressourcengruppen
+
+Sobald die Plattformen hinzugefügt wurden, gruppieren Sie die VMs, die Sie migrieren oder in Ressourcengruppen konvertieren möchten. Shift Toolkit-Ressourcengruppen ermöglichen es Ihnen, Gruppen abhängiger VMs in logische Gruppen zu gruppieren, die ihre Startaufträge und Startverzögerungen enthalten.
+
+
+NOTE: Stellen Sie sicher, dass die Qtrees bereitgestellt werden (wie im Abschnitt „Voraussetzung“ erwähnt), bevor Sie die Ressourcengruppen erstellen.
+
+Klicken Sie auf den Menüpunkt „Neue Ressourcengruppe erstellen“, um mit dem Erstellen von Ressourcengruppen zu beginnen.
+
+. Greifen Sie auf Ressourcengruppen zu, indem Sie auf „Create New Resource Group“ klicken.
++
+image:shift-toolkit-image30.png["Die Abbildung zeigt den Input/Output-Dialog oder die Darstellung des schriftlichen Inhalts"]
+
+. Wählen Sie in der „New Resource Group“ aus der Dropdown-Liste die Source Site aus und klicken Sie auf „Create“.
+. Geben Sie Details zu Ressourcengruppen an, und wählen Sie den Workflow aus. Der Workflow bietet zwei Optionen
++
+.. Klonbasierte Migration – führt eine End-to-End-Migration der VM vom Quell-Hypervisor zum Ziel-Hypervisor durch.
+.. Clone Based Conversion – führt die Konvertierung des Festplattenformats in den ausgewählten Hypervisor-Typ durch.
++
+image:shift-toolkit-image31.png["Die Abbildung zeigt den Input/Output-Dialog oder die Darstellung des schriftlichen Inhalts"]
+
+
+
+. Klicken Sie auf „Weiter“.
+. Wählen Sie über die Suchoption die entsprechenden VMs aus. Die Standard-Filteroption ist „Datastore“.
++
+
+NOTE: Verschieben Sie die zu konvertierenden oder zu migrierenden VMs in einen designierten Datastore auf einer neu erstellten ONTAP SVM vor der Konvertierung. Dies hilft bei der Isolierung des NFS-Produktions-Datenspeichers und der dafür vorgesehene Datenspeicher kann für das Staging der Virtual Machines verwendet werden.
+
++
+image:shift-toolkit-image32.png["Die Abbildung zeigt den Input/Output-Dialog oder die Darstellung des schriftlichen Inhalts"]
+
++
+
+NOTE: Im Dropdown-Menü „Datastore“ in diesem Kontext werden nur NFSv3-Datastores angezeigt. NFSv4-Datastores werden nicht angezeigt.
+
++
+image:shift-toolkit-image33.png["Die Abbildung zeigt den Input/Output-Dialog oder die Darstellung des schriftlichen Inhalts"]
+
+. Aktualisieren Sie die Migrationsdetails, indem Sie „Ziel-Standort“, „Ziel-Hyper-V-Eintrag“ und „Datastore to qtree Mapping“ auswählen.
++
+image:shift-toolkit-image34.png["Die Abbildung zeigt den Input/Output-Dialog oder die Darstellung des schriftlichen Inhalts"]
+
++
+
+NOTE: Stellen Sie sicher, dass der Zielpfad (wo die konvertierten VMs gespeichert werden) auf einen qtree eingestellt ist, wenn Sie VMs von ESX zu Hyper-V konvertieren. Setzen Sie den Zielpfad auf den entsprechenden qtree.
+
++
+
+NOTE: Es können mehrere qtrees erstellt und entsprechend zum Speichern der konvertierten VM-Festplatten verwendet werden.
+
+. Wählen Sie die Startreihenfolge und Startverzögerung (Sek.) für alle ausgewählten VMs aus. Legen Sie die Reihenfolge der Einschaltsequenz fest, indem Sie jede virtuelle Maschine auswählen und die Priorität für sie festlegen. 3 ist der Standardwert für alle virtuellen Maschinen.
++
+Folgende Optionen stehen zur Verfügung:
+
++
+1 – die erste virtuelle Maschine, die 3 – Standard 5 – die letzte virtuelle Maschine, die eingeschaltet werden soll
+
++
+image:shift-toolkit-image35.png["Die Abbildung zeigt den Input/Output-Dialog oder die Darstellung des schriftlichen Inhalts"]
+
+. Klicken Sie auf „Create Resource Group“.
++
+image:shift-toolkit-image36.png["Die Abbildung zeigt den Input/Output-Dialog oder die Darstellung des schriftlichen Inhalts"]
+
++
+
+NOTE: Wenn Sie die Ressourcengruppe ändern müssen, um virtuelle Maschinen hinzuzufügen oder zu entfernen, verwenden Sie die 3 Punkte für den Namen der Ressourcengruppe und wählen Sie „Ressourcengruppe bearbeiten“.
+
+
+
+
+
+=== Blaupausen
+
+Für die Migration oder Konvertierung virtueller Maschinen ist ein Plan erforderlich. Wählen Sie die Quell- und Ziel-Hypervisor-Plattformen aus der Dropdown-Liste aus, und wählen Sie die Ressourcengruppen aus, die in diese Vorlage aufgenommen werden sollen. Wählen Sie dazu die Gruppierung der Art und Weise, wie Applikationen hochgefahren werden sollen (d. h. Domänen-Controller, dann Tier 1 und dann Tier 2 usw.). Diese werden oft auch als Migrationspläne bezeichnet. Um den Entwurf zu definieren, navigieren Sie zur Registerkarte „Blueprints“ und klicken Sie auf „Create New Blueprint“.
+
+Klicken Sie auf „Create New Blueprint“, um mit der Erstellung des Blueprints zu beginnen.
+
+. Öffnen Sie Blueprints, klicken Sie auf „Create New Blueprint“.
++
+image:shift-toolkit-image37.png["Die Abbildung zeigt den Input/Output-Dialog oder die Darstellung des schriftlichen Inhalts"]
+
+. Geben Sie auf dem „New Blueprint“ einen Namen für den Plan ein und fügen Sie die erforderlichen Host-Zuordnungen hinzu. Wählen Sie dazu Source Site > Associated vCenter, Destination Site und den zugehörigen Hyper-V Hypervisor.
+. Sobald Zuordnungen vorgenommen wurden, wählen Sie das Cluster und die Host-Zuordnung aus.
++
+image:shift-toolkit-image38.png["Die Abbildung zeigt den Input/Output-Dialog oder die Darstellung des schriftlichen Inhalts"]
+
+. Wählen Sie Details zur Ressourcengruppe aus, und klicken Sie auf „Weiter“.
++
+image:shift-toolkit-image39.png["Die Abbildung zeigt den Input/Output-Dialog oder die Darstellung des schriftlichen Inhalts"]
+
+. Legen Sie die Ausführungsreihenfolge für die Ressourcengruppe fest. Mit dieser Option können Sie die Reihenfolge der Vorgänge auswählen, wenn mehrere Ressourcengruppen vorhanden sind.
+. Wählen Sie anschließend Netzwerkzuordnung zum entsprechenden virtuellen Switch aus. Die virtuellen Switches sollten bereits innerhalb von Hyper-V bereitgestellt werden
++
+image:shift-toolkit-image40.png["Die Abbildung zeigt den Input/Output-Dialog oder die Darstellung des schriftlichen Inhalts"]
+
++
+
+NOTE: Auf Hyper-V-Seite ist der virtuelle Switch-Typ „Extern“ die einzige unterstützte Option für die Netzwerkauswahl.
+
++
+
+NOTE: Für die Testmigration ist „Do no configure Network“ die Standardauswahl, und das Shift Toolkit führt keine IP-Adresszuweisung durch. Sobald das Laufwerk konvertiert und die virtuelle Maschine auf Hyper-V-Seite gekauft wurde, weisen Sie die Bubble-Netzwerk-Switches manuell zu, um eine Kollision mit dem Produktionsnetzwerk zu vermeiden.
+
++
+image:shift-toolkit-image41.png["Die Abbildung zeigt den Input/Output-Dialog oder die Darstellung des schriftlichen Inhalts"]
+
+. Basierend auf der Auswahl der VMs werden automatisch Storage-Zuordnungen ausgewählt.
++
+
+NOTE: Vergewissern Sie sich, dass der qtree im Voraus bereitgestellt wird und die erforderlichen Berechtigungen zugewiesen sind, damit die Virtual Machine über die SMB-Freigabe erstellt und eingeschaltet werden kann.
+
+. Geben Sie unter VM-Details das Dienstkonto und die gültigen Benutzeranmeldeinformationen für jeden Betriebssystemtyp an. Damit wird eine Verbindung zur virtuellen Maschine hergestellt, um bestimmte Skripte zu erstellen und auszuführen, die zum Entfernen von VMware-Tools und zum Sichern von IP-Konfigurationsdetails erforderlich sind.
++
+.. Für Windows-basierte Betriebssysteme wird empfohlen, einen Benutzer mit dem lokalen Administrator-Privileges zu verwenden. Domänenberechtigungen können auch verwendet werden. Stellen Sie jedoch sicher, dass vor der Konvertierung ein Benutzerprofil auf der VM vorhanden ist, da andernfalls die Domänenanmeldeinformationen nicht funktionieren, da sie nach einer Domänenauthentifizierung suchen würden, wenn kein Netzwerk verbunden ist.
+.. Geben Sie bei Linux-basierten Gast-VMs einen Benutzer an, der sudo-Befehle ohne Passwort ausführen kann, d. h. der Benutzer sollte Teil der sudoers-Liste sein oder als neue Konfigurationsdatei zum Ordner /etc/sudoers.d/ hinzugefügt werden.
++
+image:shift-toolkit-image42.png["Die Abbildung zeigt den Input/Output-Dialog oder die Darstellung des schriftlichen Inhalts"]
+
+
+
+. Wählen Sie unter VM-Details erneut die entsprechende IP-Konfigurationsoption aus. Standardmäßig ist „nicht konfigurieren“ ausgewählt.
++
+.. Wählen Sie „IP beibehalten“, um VMs mit denselben IPs vom Quellsystem zu migrieren.
+.. Um VMs mithilfe statischer IPs im Quellsystem zu migrieren und DHCP auf den Ziel-VMs zuzuweisen, wählen Sie dann „DHCP“ aus.
++
+Stellen Sie sicher, dass die folgenden Anforderungen erfüllt sind, damit diese Funktion funktioniert:
+
++
+*** Stellen Sie sicher, dass die VMs während der vorbereitenden VM-Phase und bis zur geplanten Migrationszeit eingeschaltet sind.
+*** Stellen Sie für VMware-VMs sicher, dass VMware-Tools installiert sind.
+*** Stellen Sie sicher, dass das Vorbereitungsskript auf der Quell-VM von einem Konto mit Administrator Privileges auf Windows OS und mit sudo Privileges ohne Passwortoption auf Linux-basiertem Distribution OS ausgeführt wird, um Cron-Jobs zu erstellen.
+
+
+
+
+. Der nächste Schritt ist die VM-Konfiguration.
++
+.. Optional können Sie die Größe der CPU/RAM-Parameter der VMs ändern, was für die Größenänderung sehr hilfreich sein kann.
+.. Bootreihenfolge überschreiben: Ändern Sie auch die Startreihenfolge und die Startverzögerung (s) für alle ausgewählten VMs in den Ressourcengruppen. Dies ist eine zusätzliche Option, um die Startreihenfolge zu ändern, wenn Änderungen erforderlich sind, die bei der Auswahl der Startreihenfolge der Ressourcengruppe ausgewählt wurden. Standardmäßig wird die während der Auswahl der Ressourcengruppe ausgewählte Startreihenfolge verwendet. Änderungen können jedoch in dieser Phase vorgenommen werden.
+.. EINSCHALTEN: Deaktivieren Sie diese Option, wenn der Workflow die virtuelle Maschine nicht einschalten soll. Die Standardoption ist AKTIVIERT, d. h., die VM wird EINGESCHALTET.
+.. Entfernen Sie VMware Tools: Shift Toolkit entfernt VMware Tools nach der Konvertierung. Diese Option ist standardmäßig ausgewählt. Diese Option kann deaktiviert werden, wenn der Plan die benutzerdefinierten Skripte des Kunden ausführen soll.
+.. Generierung: Shift Toolkit verwendet die folgende Faustregel und setzt standardmäßig auf die entsprechende one- Gen1 > BIOS und Gen2 > EFI. Für diese Option ist keine Auswahl möglich.
+.. MAC beibehalten: Die MAC-Adresse der jeweiligen VMs kann beibehalten werden, um Lizenzierungsherausforderungen für Anwendungen zu überwinden, die sich auf MAC verlassen.
+.. Service-Konto überschreiben: Diese Option ermöglicht es, ein separates Service-Konto anzugeben, wenn das globale Konto nicht verwendet werden kann.
++
+image:shift-toolkit-image43.png["Die Abbildung zeigt den Input/Output-Dialog oder die Darstellung des schriftlichen Inhalts"]
+
+
+
+. Klicken Sie Auf „Weiter“.
+. Planen Sie im nächsten Schritt die Migration, indem Sie das Kontrollkästchen aktivieren, um Datum und Uhrzeit einzustellen. Stellen Sie sicher, dass alle virtuellen Maschinen (VMs) vor dem geplanten Datum vorbereitet und ausgeschaltet sind. Klicken Sie anschließend auf „Create Blueprint“.
++
+image:shift-toolkit-image44.png["Die Abbildung zeigt den Input/Output-Dialog oder die Darstellung des schriftlichen Inhalts"]
+
++
+
+NOTE: Wählen Sie während der Planung ein Datum aus, das mindestens 30 Minuten vor der aktuellen VM-Zeit der Schicht liegt. So wird sichergestellt, dass der Workflow genügend Zeit erhält, um die VMs innerhalb der Ressourcengruppe vorzubereiten.
+
+. Sobald der Blueprint erstellt wurde, wird ein vorbereiteter VM-Job initiiert, und er führt automatisch Skripte auf den Quell-VMs aus, um sie auf die Migration vorzubereiten
++
+image:shift-toolkit-image45.png["Die Abbildung zeigt den Input/Output-Dialog oder die Darstellung des schriftlichen Inhalts"]
+
++
+Dieser Job führt ein Skript mit Invoke-VMScript-Methode aus, um die erforderlichen Skripte zum Entfernen von VMware-Tools und zum Sichern von Netzwerkkonfigurationsdetails, einschließlich IP-Adresse, Routen und DNS-Informationen, zu kopieren, die verwendet werden, um die gleichen Einstellungen auf der Ziel-VM zu erhalten.
+
++
+** Für Windows-basierte Betriebssysteme ist der Standardordner, an dem die Vorbereitungsskripte gespeichert werden, der Ordner „C:\NetApp“.
++
+image:shift-toolkit-image46.png["Die Abbildung zeigt den Input/Output-Dialog oder die Darstellung des schriftlichen Inhalts"]
+
+** Bei Linux-basierten VMs sind die Vorbereitungsskripte standardmäßig im Verzeichnis /NetApp und im Verzeichnis /opt gespeichert.
++
+image:shift-toolkit-image47.png["Die Abbildung zeigt den Input/Output-Dialog oder die Darstellung des schriftlichen Inhalts"]
+
++
+
+NOTE: Für eine Linux-Quell-VM, auf der CentOS oder Red hat ausgeführt wird, ist das Shift Toolkit intelligent, um die erforderlichen Hyper-V-Treiber automatisch zu installieren. Diese Treiber müssen vor der Datenträgerkonvertierung in der Quell-VM vorhanden sein, um sicherzustellen, dass die VM nach der Konvertierung erfolgreich gestartet werden kann.
+
++
+
+NOTE: Weitere Informationen finden Sie unter link:https://access.redhat.com/solutions/3465011["System im Dracut nach der Migration eines RHEL VM zu Hyper-V stecken"].
+
++
+Sobald der vorbereitende VM-Job erfolgreich abgeschlossen ist (wie in der Abbildung unten gezeigt), sind die VMs bereit für die Migration, und der Blueprint-Status wird auf „aktiv“ aktualisiert.
+
++
+image:shift-toolkit-image48.png["Die Abbildung zeigt den Input/Output-Dialog oder die Darstellung des schriftlichen Inhalts"]
+
++
+image:shift-toolkit-image49.png["Die Abbildung zeigt den Input/Output-Dialog oder die Darstellung des schriftlichen Inhalts"]
+
++
+Die Migration erfolgt jetzt zum festgelegten Zeitpunkt oder kann manuell gestartet werden, indem Sie auf die Option Migrieren klicken.
+
+
+
+
+
+
+
+== Monitoring und Dashboard
+
+Überwachen Sie den Status der Jobs mithilfe der Jobüberwachung.
+
+image:shift-toolkit-image76.png["Die Abbildung zeigt den Input/Output-Dialog oder die Darstellung des schriftlichen Inhalts"]
+
+Bewerten Sie mit der intuitiven Benutzeroberfläche den Status der Migration, der Konvertierung und des Blueprints zuverlässig. So können Administratoren erfolgreiche, fehlgeschlagene oder teilweise fehlgeschlagene Pläne sowie die Anzahl der migrierten oder konvertierten VMs schnell identifizieren.
+
+image:shift-toolkit-image77.png["Die Abbildung zeigt den Input/Output-Dialog oder die Darstellung des schriftlichen Inhalts"]
+
+
+
+== Erweiterte Einstellungen
+
+Shift Toolkit bietet erweiterte Einstellungen, die durch Klicken auf das Symbol Einstellungen in der oberen Symbolleiste aufgerufen werden können.
+
+image:shift-toolkit-image78.png["Die Abbildung zeigt den Input/Output-Dialog oder die Darstellung des schriftlichen Inhalts"]
+
+
+
+=== CredSSP
+
+Shift nutzt Credential Security Service Provider (CredSSP) zur Verwaltung der Übertragung von Anmeldeinformationen. Während des Konvertierungsprozesses führt der Shift-Server eine Reihe von Skripten auf dem Gastbetriebssystem der zu konvertierenden VM aus. Die Anmeldeinformationen zum Ausführen dieser Skripte werden über einen „Double-Hop“ vom Shift-Server an das Gastbetriebssystem über den Hyper-V-Server weitergeleitet.
+
+image:shift-toolkit-image79.png["Die Abbildung zeigt den Input/Output-Dialog oder die Darstellung des schriftlichen Inhalts"]
+
+*Shift-Server als CredSSP-Client konfigurieren:*
+
+Der Assistent „Erweiterte Einstellungen“ konfiguriert den Shift-Server automatisch als CredSSP-Client. Dadurch kann der Shift-Server Anmeldeinformationen an die Hyper-V-Server delegieren.
+
+*Was passiert hinter den Kulissen:*
+
+Das Shift Toolkit führt eine Reihe von Befehlen aus, um sich als Client zu konfigurieren und damit Hyper-V Hosts zu verwalten. Bei diesem Vorgang werden die erforderlichen Konfigurationen eingerichtet.
+
+* Führt die folgenden Befehle aus:
++
+** Set-Item WSMan:\localhost\Client\TrustedHosts -Value "fqdn-of-Hyper-V-Host"
+** Enable-WSManCredSSP -Role Client -DelegateComputer „fqdn-of-Hyper-V-Host“
+
+
+* Konfiguriert die folgende Gruppenrichtlinie:
++
+** Computerkonfiguration > Administrative Vorlagen > System > Delegierung von Anmeldeinformationen > Delegieren neuer Anmeldeinformationen mit der reinen NTLM-Serverauthentifizierung zulassen
+
+
+
+
+Wählen Sie Aktivieren und fügen Sie wsman/fqdn-of-Hyper-V-Host hinzu.
+
+*Konfiguration des Hyper-V-Servers als CredSSP-Server*
+
+Verwenden Sie das Cmdlet "Enable-WSManCredSSP" auf dem Hyper-V-Server, um den Hyper-V-Server als CredSSP-Server zu konfigurieren, mit dem der Hyper-V-Server Anmeldeinformationen vom Shift-Server empfangen kann.
+
+Öffnen Sie auf dem Hyper-V-Host, auf dem die virtuellen Maschinen vom Shift Toolkit-Server bereitgestellt werden, eine Windows PowerShell-Sitzung als Administrator, und führen Sie die folgenden Befehle aus:
+
+. Aktiviere-PSRemoting
+. Enable-WSManCredSSP -Role Server
+
+
+
+
+=== Swagger
+
+Die Seite „Swagger“ in der Einstellung „Erweitert“ ermöglicht die Interaktion mit verfügbaren APIs. Die über die REST-API DES Shift-Toolkits verfügbaren Ressourcen sind in Kategorien organisiert, wie sie auf der Dokumentationsseite der swagger-API angezeigt werden. Nachfolgend finden Sie eine kurze Beschreibung der einzelnen Ressourcen mit den grundlegenden Ressourcenpfaden sowie weitere Nutzungsüberlegungen.
+
+image:shift-toolkit-image80.png["Die Abbildung zeigt den Input/Output-Dialog oder die Darstellung des schriftlichen Inhalts"]
+
+*Sitzung*
+
+Sie können diese API verwenden, um sich beim Shift Toolkit Server anzumelden. Diese API gibt ein Benutzerautorisierungs-Token zurück, das zur Authentifizierung weiterer Anforderungen verwendet wird.
+
+* Sitzung starten
+* Validieren einer Sitzung
+* Alle Session ID abrufen
+* Beenden Sie eine Sitzung
+
+
+*Anschluss*
+
+* Fügen Sie einen Anschluss hinzu
+* Detaillierte Informationen zu allen Steckverbindern
+* Aktualisieren Sie die Verbindungsdetails nach ID
+* Anschlussdetails nach ID abrufen
+
+
+*Mieter*
+
+Verwenden Sie APIs, um Add- und Get-Vorgänge durchzuführen
+
+* Mandanten hinzufügen
+* Alle Mandanten abrufen
+
+
+* Benutzer*
+
+Verwenden Sie APIs, um Vorgänge zum Hinzufügen, Abrufen, Ändern und Akzeptieren durchzuführen
+
+* Benutzer Hinzufügen
+* Alle Benutzer abrufen
+* Ändern Sie das Passwort des Benutzers
+* EULA akzeptieren
+
+
+*CredSSP*
+
+Verwenden Sie APIs zur Durchführung von Aktivierung und Abrufen von Vorgängen
+
+* Credssp aktivieren
+* Status von credssp abrufen
+
+
+*Standort*
+
+Verwenden Sie APIs, um Vorgänge zum Abrufen, Hinzufügen, Löschen und Aktualisieren durchzuführen
+
+* Anzahl der Standorte abrufen
+* Alle Site-Details abrufen
+* Fügen Sie eine Site hinzu
+* Site-Details nach ID abrufen
+* Löschen Sie eine Site anhand der ID
+* Hinzufügen einer virtuellen Umgebung zu einem Standort
+* Hinzufügen der Speicherumgebung zu einem Standort
+* Detaillierte Informationen zur virtuellen Umgebung für einen Standort abrufen
+* Aktualisieren Sie die Details der virtuellen Umgebung für einen Standort
+* Löschen Sie Details der virtuellen Umgebung für einen Standort
+* Detaillierte Informationen zur Storage-Umgebung für einen Standort
+* Details zur Speicherumgebung für einen Standort aktualisieren
+* Details zur Speicherumgebung für einen Standort löschen
+
+
+* Entdeckung*
+
+Verwenden Sie APIs, um Vorgänge beim Erkennen und Abrufen von Daten auszuführen
+
+* Quellstandort ermitteln
+* Rufen Sie alle Ermittlungsanforderungen für den Quellstandort ab
+* Entdecken Sie die Zielwebsite
+* Rufen Sie alle Ermittlungsanforderungen für den Zielstandort ab
+* Ermittlungsschritte für Quellstandort nach ID abrufen
+* Ermittlungsschritte für Zielstandort nach ID abrufen
+
+
+*VM*
+
+Verwenden Sie APIs zur Durchführung von get-Vorgängen
+
+* Beziehen Sie die VMs für einen Standort und eine virtuelle Umgebung in der Quelle
+* Holen Sie ungeschützte VMs für einen Standort und eine virtuelle Umgebung
+* Get VM Anzahl
+* Abrufen der geschützten VM-Anzahl
+
+
+* Ressource*
+
+Verwenden Sie APIs zur Durchführung von get-Vorgängen
+
+* Abrufen von Ressourcendetails für einen Standort und eine virtuelle Umgebung
+* Anzahl der Ressourcen des Quellstandorts abrufen
+
+
+*Ressourcengruppe*
+
+Verwenden Sie APIs zum Hinzufügen, Aktualisieren und Abrufen von Vorgängen
+
+* Abrufen der Anzahl der Schutzgruppen
+* Rufen Sie alle Details zu Schutzgruppen auf
+* Fügen Sie eine Schutzgruppe hinzu
+* Details zu Schutzgruppen nach ID abrufen
+* Schutzgruppe nach ID löschen
+* Details der Schutzgruppe nach ID aktualisieren
+* Abrufen von VMs einer Schutzgruppe nach ID
+* Holen Sie sich Blueprints mit der Schutzgruppe
+
+
+* Blueprint*
+
+Verwenden Sie APIs zum Hinzufügen, Aktualisieren und Abrufen von Vorgängen
+
+* Blueprint-Anzahl Abrufen
+* Alle Einzelheiten zum Modell anzeigen
+* Fügen Sie einen Blueprint hinzu
+* Entwurfsdetails nach ID abrufen
+* Blueprint nach ID löschen
+* Aktualisieren Sie die Blueprint-Details für die ID
+* Erhalten Sie VMs eines Entwurfs
+* Abrufen des Stromstatus der im Modell vorhandenen VMs
+* Blueprint-Anzahl abrufen
+* Hier finden Sie alle Einzelheiten zum Modell
+
+
+* Compliance*
+
+Verwenden Sie APIs, um Vorgänge zum Hinzufügen und Abrufen von Vorgängen durchzuführen
+
+* Ergebnis der Compliance-Prüfung für einen Entwurf abrufen
+* Holen Sie sich den endgültigen Status einer Compliance-Prüfung für einen Blueprint
+* Fügen Sie bei Bedarf eine neue Compliance-Prüfung für einen Entwurf hinzu
+
+
+*Ausführung*
+
+Verwenden Sie APIs zur Durchführung von get-Vorgängen
+
+* Alle Ausführungsdetails abrufen
+* Details zur laufenden Ausführung abrufen
+* Ausführungsanzahl abrufen
+* Anzahl der laufenden Testausführungen abrufen
+* Holen Sie sich die Schritte für die Ausführungs-ID
+
+
+*Erholung*
+
+Verwenden Sie APIs, um Vorgänge zum Hinzufügen und Abrufen von Vorgängen durchzuführen
+
+* Fügen Sie eine neue Testsuitelanforderung für einen Blueprint hinzu
+* Fügen Sie eine erneute Testanforderung für einen Blueprint hinzu
+* Ausführungsstatus aller Blueprints abrufen
+* Ausführungsstatus für Blueprint-ID abrufen
+
+
+*Skriptblock*
+
+Verwenden Sie APIs für get- und Update-Vorgänge
+
+* Rufen Sie alle Skripts Metadaten auf
+* Skriptmetadaten nach ID abrufen
+* Alle Aktualisierungsmetadaten abrufen
+* Skript ausführen
+
+
+
+
+=== Skriptblock
+
+Der Skriptblock in in in Shift Toolkit bietet Beispielcode, der die Automatisierung, Integration und Entwicklung von Funktionen über interne und externe APIs unterstützt. Im Abschnitt Codebeispiele im Skriptblock können Sie Muster durchsuchen und herunterladen, die vom Shift Toolkit Automation-Team und von den Community-Mitgliedern verfasst wurden. Nutzen Sie die Beispiele, um mit Automatisierungs-, Management- oder Integrationsaufgaben zu beginnen.
+
+image:shift-toolkit-image81.png["Die Abbildung zeigt den Input/Output-Dialog oder die Darstellung des schriftlichen Inhalts"]
+
+Hier ist ein Beispiel für ein powershell-Skript, das zum Löschen eines bestimmten Jobs in der Shift-Benutzeroberfläche verwendet werden kann. Die Funktion wird nicht über einen Workflow bereitgestellt, dies kann jedoch über den Skriptblock erreicht werden. Das gleiche Skript ist auch als bat-Skript verfügbar, das einfach durch Herunterladen und Aufrufen des gleichen ausgeführt werden kann.
+
+image:shift-toolkit-image82.png["Die Abbildung zeigt den Input/Output-Dialog oder die Darstellung des schriftlichen Inhalts"]
+
+Ziel ist es, Beispielskripte zur Durchführung von Tag-0- und Tag-N-Vorgängen für bestimmte Hypervisoren mithilfe der Shift Toolkit-APIs und der jeweiligen vom Hypervisor veröffentlichten APIs bereitzustellen.
+
+
+
+== San-Umgebungen
+
+Eine der Hauptanforderungen des Shift Toolkit ist, dass die zu konvertierenden VMs sich in einer NAS-Umgebung befinden müssen (NFS für ESX). Wenn sich die VMs in einer SAN-Umgebung befinden (iSCSI, FC, FCoE, NVMeFC), müssen sie vor der Konvertierung in eine NAS-Umgebung migriert werden.
+
+image:shift-toolkit-image83.png["Die Abbildung zeigt den Input/Output-Dialog oder die Darstellung des schriftlichen Inhalts"]
+
+Der obige Ansatz stellt eine typische SAN-Umgebung dar, in der VMs in einem SAN-Datenspeicher gespeichert werden. Die VMs, die zusammen mit ihren Festplatten von ESX zu Hyper-V konvertiert werden sollen, werden zunächst in einen NFS-Datenspeicher mit VMware vSphere Storage vMotion migriert. Shift Toolkit verwendet FlexClone zur Konvertierung der VMs von ESX in Hyper-V. die konvertierten VMs (zusammen mit ihren Festplatten) befinden sich in einer CIFS-Freigabe. Die konvertierten VMs (zusammen mit den zugehörigen Festplatten) werden mit der Hyper-V Storage Live Migration zurück auf die SAN-fähige CSV-Datei migriert.
+
+
+NOTE: Die Live-VM-Migration schlägt möglicherweise fehl, wenn Knoten unterschiedliche Prozessfähigkeitsgruppen haben. Dies kann durch die Einstellung „auf einen physischen Computer mit einem anderen Prozessor migrieren“ erledigt werden. Dieses Skript ist unter Skript-Block verfügbar.

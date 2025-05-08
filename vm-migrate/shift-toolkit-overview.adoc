@@ -1,0 +1,94 @@
+---
+sidebar: sidebar 
+permalink: vm-migrate/shift-toolkit-overview.html 
+keywords: netapp, vmware, esxi, vm, migration, openshift, virtualization, hyper-v, proxmox 
+summary:  
+---
+= Migration virtueller Maschinen (VMs) zwischen Virtualisierungsumgebungen (Shift Toolkit)
+:hardbreaks:
+:allow-uri-read: 
+:nofooter: 
+:icons: font
+:linkattrs: 
+:imagesdir: ../media/
+
+
+[role="lead"]
+Mit dem NetApp Shift Toolkit ist die Migration von Virtual Machines (VMs) kein Thema mehr. Dieses eigenständige Produkt ermöglicht eine schnelle und effiziente Migration von VMs von VMware ESXi zu Microsoft Hyper-V. Darüber hinaus unterstützt es Konvertierungen auf Festplattenebene zwischen verschiedenen virtuellen Laufwerkformaten.
+
+
+
+== Usecase
+
+Jedes Unternehmen sieht nun die Vorteile einer Multi-Hypervisor-Umgebung. Angesichts der jüngsten Marktveränderungen entscheidet jedes Unternehmen, welche Vorgehensweise am besten geeignet ist, indem es technische und kommerzielle Risiken abwägt. Dazu zählen die Migration von Workload-VMs auf alternative Hypervisoren, die Konzentration auf das Erreichen geschäftlicher Ziele und die Kontrolle der Anbieterbindung. So können Lizenzierungskosten optimiert und das IT-Budget auf die richtigen Bereiche ausgedehnt werden, als die Ausgaben für die ungenutzten Cores auf einem bestimmten Hypervisor. Die Herausforderung bestand jedoch immer darin, die Migrationszeit und die damit verbundenen Ausfallzeiten zu reduzieren.
+
+Mit dem NetApp Shift Toolkit ist die Migration von Virtual Machines (VMs) kein Thema mehr. Dieses eigenständige Produkt ermöglicht eine schnelle und effiziente Migration von VMs von VMware ESXi zu Microsoft Hyper-V. Darüber hinaus unterstützt es Konvertierungen auf Festplattenebene zwischen verschiedenen virtuellen Laufwerkformaten. Dank der Standardfunktionen von ONTAP können diese Migrationen extrem schnell und mit minimaler Ausfallzeit erfolgen. Die Konvertierung einer VMDK-Datei mit 1 TB dauert beispielsweise in der Regel ein paar Stunden, kann mit dem Shift Toolkit jedoch innerhalb von Sekunden abgeschlossen werden.
+
+
+
+== Toolkit-Übersicht
+
+Das NetApp Shift Toolkit ist eine benutzerfreundliche grafische Benutzeroberfläche (GUI), mit der Virtual Machines (VMs) zwischen verschiedenen Hypervisoren migriert und virtuelle Festplattenformate konvertiert werden können. Es verwendet NetApp FlexClone® Technologie, um schnell VM-Festplatten zu konvertieren. Außerdem verwaltet das Toolkit die Erstellung und Konfiguration von Ziel-VMs.
+
+Das Shift Toolkit bietet die Flexibilität einer Umgebung mit mehreren Hypervisoren durch bidirektionale Konvertierung der folgenden Hypervisoren:
+
+* VMware ESXi zu Microsoft Hyper-V
+* Microsoft Hyper-V zu VMware ESXi (demnächst verfügbar)
+
+
+Shift Toolkit unterstützt die Konvertierung virtueller Festplatten auf Festplattenebene zwischen Hypervisoren für die folgenden Festplattenformate:
+
+* VMware ESX zu Microsoft Hyper-V (Virtual Machine Disk [VMDK] in Virtual Hard Disk Format [VHDX])
+* Mit VMware ESX zu KVM kompatible Hypervisoren (VMDK zu QCOW2)
+
+
+image:shift-toolkit-image1.png["Die Abbildung zeigt den Input/Output-Dialog oder die Darstellung des schriftlichen Inhalts"]
+
+Das Shift Toolkit kann heruntergeladen werden link:https://mysupport.netapp.com/site/tools/tool-eula/netapp-shift-toolkit["Hier"]und ist nur für Windows-Systeme verfügbar.
+
+
+
+=== Vorteile der VM-Portabilität
+
+ONTAP ist ideal für jeden Hypervisor und in jedem Hyperscaler. Mit FlexClone Technologie. VM-Portabilität in Minuten ist eine Realität, als auf längere Ausfallzeiten zu warten oder Passthrough-Optionen zu verabschieden.
+
+Shift-Toolkit:
+
+* Minimierung von Ausfallzeiten und Verbesserung der geschäftlichen Produktivität
+* Bietet Wahlmöglichkeiten und Flexibilität durch geringere Lizenzkosten, Anbieterbindung und Verpflichtungen gegenüber einem einzigen Anbieter.
+* Unternehmen, die VM-Lizenzierungskosten optimieren und IT-Budgets erweitern möchten
+* Senkt die Virtualisierungskosten durch VM-Portabilität und wird kostenlos von NetApp angeboten.
+
+
+
+
+=== So funktioniert das Shift Toolkit
+
+Bei der Konvertierung stellt das Shift Toolkit eine Verbindung zu VMware ESXi und Microsoft Hyper-V Hosts sowie zu Shared NetApp Storage her. Shift Toolkit nutzt FlexClone, um VM-Festplatten mithilfe von drei NetApp Schlüsseltechnologien von einem Hypervisor in einen anderen zu konvertieren:
+
+* Einzelnes Volume und mehrere Protokolle
++
+Mit NetApp ONTAP können mehrere Protokolle problemlos verwendet werden, um auf ein einziges Volume zuzugreifen. VMware ESXi kann beispielsweise auf ein Volume zugreifen, das über das NFS-Protokoll (Network File System) aktiviert ist, und Microsoft Hyper-V kann über das CIFS/SMB-Protokoll auf dasselbe Volume zugreifen.
+
+* FlexClone Technologie
++
+FlexClone ermöglicht das schnelle Klonen ganzer Dateien oder Volumes ohne Datenkopie. Gemeinsame Blöcke auf dem Storage-System werden von mehreren Dateien oder Volumes gemeinsam genutzt. Dadurch können große VM-Festplatten sehr schnell geklont werden.
+
+* VM-Festplattenkonvertierung
++
+Das NetApp PowerShell Toolkit und das Shift Toolkit umfassen eine große Anzahl von Workflows, die für verschiedene Aktionen auf einem NetApp Storage Controller verwendet werden können. Enthalten sind PowerShell Cmdlets, die virtuelle Festplatten in verschiedene Formate konvertieren. VMware VMDK kann beispielsweise in Microsoft VHDX konvertiert werden und umgekehrt. Diese Konvertierungen werden mit FlexClone durchgeführt, das ein sehr schnelles Klonen und Konvertieren von Festplattenformaten in einem Schritt ermöglicht.
+
+
+
+image:shift-toolkit-image2.png["Die Abbildung zeigt den Input/Output-Dialog oder die Darstellung des schriftlichen Inhalts"]
+
+
+
+==== Protokolle und Kommunikationsmethoden
+
+Beim Shift Toolkit werden die folgenden Protokolle während der Konvertierungs- oder Migrationsvorgänge verwendet.
+
+* HTTPS – wird vom Shift-Toolkit zur Kommunikation mit dem Data ONTAP-Cluster verwendet.
+* VI Java (OpenJDK), VMware PowerCLI - zur Kommunikation mit VMware ESXi verwendet.
+* Windows PowerShell-Modul – zur Kommunikation mit Microsoft Hyper-V verwendet
+
