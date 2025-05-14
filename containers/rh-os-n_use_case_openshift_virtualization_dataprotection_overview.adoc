@@ -28,11 +28,11 @@ Wir führen dann bei Bedarf ein Restore aus dem Backup durch.
 
 OADP ermöglicht Backup, Wiederherstellung und Disaster Recovery von Applikationen auf einem OpenShift-Cluster. Zu den mit OADP gesicherten Daten gehören Kubernetes-Ressourcenobjekte, persistente Volumes und interne Images.
 
-image:redhat_openshift_OADP_image1.jpg["OpenShift-API für Data Protection"]
+image:redhat_openshift_OADP_image1.png["OpenShift-API für Data Protection"]
 
 Red hat OpenShift nutzt die von den OpenSource Communities entwickelten Lösungen für den Datenschutz. link:https://velero.io/["Velero"] Ist ein Open-Source-Tool für sicheres Backup und Restore, Disaster Recovery und die Migration von Kubernetes-Cluster-Ressourcen und persistenten Volumes. Um Velero einfach nutzen zu können, hat OpenShift den OADP-Operator und das Velero-Plugin für die Integration in die CSI-Speichertreiber entwickelt. Die Kernelemente der OADP-APIs, die offengelegt werden, basieren auf den Velero-APIs. Nach der Installation und Konfiguration des OADP-Bedieners basieren die durchzuführenden Backup-/Wiederherstellungsvorgänge auf den von der Velero-API offengelegten Vorgängen.
 
-image:redhat_openshift_OADP_image2.jpg["OpenShift-API für Data Protection"]
+image:redhat_openshift_OADP_image2.png["OpenShift-API für Data Protection"]
 
 OADP 1.3 ist über den Operator Hub von OpenShift Cluster 4.12 und höher verfügbar. Es verfügt über einen integrierten Data Mover, der CSI-Volume-Snapshots in einen Remote-Objektspeicher verschieben kann. Dies sorgt für Portabilität und Langlebigkeit, indem Snapshots während des Backups an einen Speicherort für Objekte verschoben werden. Die Snapshots stehen dann für die Wiederherstellung nach Katastrophen zur Verfügung.
 

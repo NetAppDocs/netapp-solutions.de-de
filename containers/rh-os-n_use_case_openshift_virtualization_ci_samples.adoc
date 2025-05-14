@@ -22,7 +22,7 @@ In diesem Abschnitt wird die Überwachung mit Cloud Insights für VMs in Red hat
 
 Hier ist ein Beispiel, bei dem der Namespace, der eine VM in OpenShift Virtualization enthält, anhand von Ereignissen überwacht wird. In diesem Beispiel wird ein Monitor basierend auf **logs.kubernetes**.Event für den angegebenen Namespace im Cluster erstellt.
 
-image:redhat_openshift_ci_samples_image1.jpg["Cloud Insights-Beispiele"]
+image:redhat_openshift_ci_samples_image1.png["Cloud Insights-Beispiele"]
 
 Diese Abfrage enthält alle Ereignisse für die virtuelle Maschine im Namespace. (Im Namespace befindet sich nur eine virtuelle Maschine). Eine erweiterte Abfrage kann auch so konstruiert werden, dass sie auf der Grundlage des Ereignisses gefiltert wird, bei dem der Grund „Fehlgeschlagen“ oder „FailedMount“ lautet. Diese Ereignisse werden normalerweise erstellt, wenn beim Erstellen eines PV ein Problem auftritt oder das PV in einen Pod gemountet wird, der Probleme im dynamischen provisionierer anzeigt, um persistente Daten zu erstellen Volumes für die VM.
 Beim Erstellen des Alarmmonitors wie oben gezeigt können Sie auch Benachrichtigungen an Empfänger konfigurieren. Sie können auch Korrekturmaßnahmen oder zusätzliche Informationen bereitstellen, die zur Behebung des Fehlers hilfreich sein können. Im obigen Beispiel könnten Sie weitere Informationen darüber finden, wie die Trident Back-End-Konfiguration und die Storage-Klassendefinitionen zur Behebung des Problems aussehen könnten.
@@ -33,13 +33,13 @@ Beim Erstellen des Alarmmonitors wie oben gezeigt können Sie auch Benachrichtig
 
 Mit Change Analytics erhalten Sie einen Überblick darüber, was sich im Zustand Ihres Clusters geändert hat, einschließlich der Person, die diese Änderung vorgenommen hat, um Probleme zu beheben.
 
-image:redhat_openshift_ci_samples_image2.jpg["Cloud Insights-Beispiele"]
+image:redhat_openshift_ci_samples_image2.png["Cloud Insights-Beispiele"]
 
 Im obigen Beispiel wird die Änderungsanalyse auf dem OpenShift-Cluster für den Namespace konfiguriert, der eine OpenShift-Virtualisierungs-VM enthält. Das Dashboard zeigt Änderungen gegenüber der Zeitachse an. Sie können nach unten gehen, um zu sehen, was sich geändert hat, und klicken Sie auf Alle Änderungen Diff, um den Unterschied der Manifeste zu sehen. Aus dem Manifest können Sie sehen, dass eine neue Sicherung der persistenten Laufwerke erstellt wurde.
 
-image:redhat_openshift_ci_samples_image3.jpg["Cloud Insights-Beispiele"]
+image:redhat_openshift_ci_samples_image3.png["Cloud Insights-Beispiele"]
 
-image:redhat_openshift_ci_samples_image4.jpg["Cloud Insights-Beispiele"]
+image:redhat_openshift_ci_samples_image4.png["Cloud Insights-Beispiele"]
 
 
 
@@ -47,18 +47,18 @@ image:redhat_openshift_ci_samples_image4.jpg["Cloud Insights-Beispiele"]
 
 Mit Cloud Insights können Sie den Back-End Storage der VM-Festplatten und verschiedene Statistiken zu den VES problemlos einsehen.
 
-image:redhat_openshift_ci_samples_image5.jpg["Cloud Insights-Beispiele"]
+image:redhat_openshift_ci_samples_image5.png["Cloud Insights-Beispiele"]
 
 Sie können auf die Links unter der Backend-Spalte klicken, die Daten direkt aus dem Back-End-ONTAP-Speicher ziehen.
 
-image:redhat_openshift_ci_samples_image6.jpg["Cloud Insights-Beispiele"]
+image:redhat_openshift_ci_samples_image6.png["Cloud Insights-Beispiele"]
 
 Eine weitere Möglichkeit, sich das gesamte Pod-zu-Storage-Mapping anzusehen, ist das Erstellen einer Abfrage „Alle Metriken“ aus dem Observability Menü unter Explore.
 
-image:redhat_openshift_ci_samples_image7.jpg["Cloud Insights-Beispiele"]
+image:redhat_openshift_ci_samples_image7.png["Cloud Insights-Beispiele"]
 
 Wenn Sie auf einen der Links klicken, erhalten Sie die entsprechenden Informationen zum ONTP Storage. Wenn Sie beispielsweise in der Spalte storageVirtualMachine auf einen SVM-Namen klicken, werden Details zur SVM von ONTAP übertragen. Wenn Sie auf einen Namen für ein internes Volume klicken, werden Details zum Volume in ONTAP angezeigt.
 
-image:redhat_openshift_ci_samples_image8.jpg["Cloud Insights-Beispiele"]
+image:redhat_openshift_ci_samples_image8.png["Cloud Insights-Beispiele"]
 
-image:redhat_openshift_ci_samples_image9.jpg["Cloud Insights-Beispiele"]
+image:redhat_openshift_ci_samples_image9.png["Cloud Insights-Beispiele"]

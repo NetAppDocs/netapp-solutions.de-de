@@ -42,11 +42,11 @@ NOTE: Wenn Sie eine Sicherung einer VM erstellen möchten, wenn sie sich im lauf
 . Gehen Sie zum Operator Hub des Clusters, und wählen Sie Red hat OADP Operator aus. Verwenden Sie auf der Seite Installieren alle Standardauswahlen, und klicken Sie auf Installieren. Verwenden Sie auf der nächsten Seite erneut alle Standardeinstellungen, und klicken Sie auf Installieren. Der OADP-Operator wird im Namespace openshift-adp installiert.
 
 
-image:redhat_openshift_OADP_install_image1.jpg["OpenShift-API für den Datenschutz im Operator Hub"]
+image:redhat_openshift_OADP_install_image1.png["OpenShift-API für den Datenschutz im Operator Hub"]
 
-image:redhat_openshift_OADP_install_image2.jpg["OpenShift-API für Data Protection Operator-Installation"]
+image:redhat_openshift_OADP_install_image2.png["OpenShift-API für Data Protection Operator-Installation"]
 
-image:redhat_openshift_OADP_install_image3.jpg["OpenShift API for Data Protection Operator installiert"]
+image:redhat_openshift_OADP_install_image3.png["OpenShift API for Data Protection Operator installiert"]
 
 
 
@@ -92,11 +92,11 @@ image:redhat_openshift_OADP_install_image6.png["Erstellen Sie mithilfe von CLI S
 * Um Velero zu konfigurieren, wählen Sie im Menüpunkt unter Operatoren die Option Installed Operators aus, klicken Sie auf OADP Operator und wählen Sie dann die Registerkarte DataProtectionApplication aus.
 
 
-image:redhat_openshift_OADP_install_image7.jpg["DataProtectionApplication"]
+image:redhat_openshift_OADP_install_image7.png["DataProtectionApplication"]
 
 Klicken Sie auf Create DataProtectionApplication. Geben Sie in der Formularansicht einen Namen für die Datenschutzanwendung ein, oder verwenden Sie den Standardnamen.
 
-image:redhat_openshift_OADP_install_image8.jpg["DataProtectionApplication erstellen"]
+image:redhat_openshift_OADP_install_image8.png["DataProtectionApplication erstellen"]
 
 Wechseln Sie nun zur YAML-Ansicht, und ersetzen Sie die Spezifikationsinformationen, wie in den nachfolgenden Beispielen für yaml-Dateien gezeigt.
 
@@ -179,7 +179,7 @@ Die Velero CSI Plugins, um CSI-gestützte VES zu sichern, wählen die VolumeSnap
 **velero.io/csi-Volumesnapshot-class=true** wie unten gezeigt.
 
 
-image:redhat_openshift_OADP_install_image9.jpg["Trident Snapshot Class Label"]
+image:redhat_openshift_OADP_install_image9.png["Trident Snapshot Class Label"]
 
 Stellen Sie sicher, dass die Snapshots auch dann bestehen können, wenn die VolumeSnapshot-Objekte gelöscht werden. Dies kann durch Setzen der *deletionPolicy* auf behalten erfolgen. Wenn nicht, geht durch das Löschen eines Namespace sämtliche darin gesicherten PVCs verloren.
 
@@ -191,12 +191,12 @@ metadata:
 driver: csi.trident.netapp.io
 deletionPolicy: Retain
 ....
-image:redhat_openshift_OADP_install_image10.jpg["VolumeSnapshotClass-Löschrichtlinie sollte auf „beibehalten“ gesetzt werden"]
+image:redhat_openshift_OADP_install_image10.png["VolumeSnapshotClass-Löschrichtlinie sollte auf „beibehalten“ gesetzt werden"]
 
 Stellen Sie sicher, dass die DataProtectionApplication erstellt wurde und sich in der Bedingung:abgestimmt befindet.
 
-image:redhat_openshift_OADP_install_image11.jpg["DataProtectionApplication Object wird erstellt"]
+image:redhat_openshift_OADP_install_image11.png["DataProtectionApplication Object wird erstellt"]
 
 Der OADP-Operator erstellt einen entsprechenden BackupStorageLocation, der beim Erstellen eines Backups verwendet wird.
 
-image:redhat_openshift_OADP_install_image12.jpg["BackupStorageLocation wird erstellt"]
+image:redhat_openshift_OADP_install_image12.png["BackupStorageLocation wird erstellt"]
