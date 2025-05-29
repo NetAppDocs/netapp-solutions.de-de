@@ -32,7 +32,7 @@ image:dr-vmc-aws-image1.png["Die Abbildung zeigt den Input/Output-Dialog oder di
 
 Lesen Sie sich vor der Bereitstellung dieser Lösung die Übersicht über die Komponenten durch, welche Voraussetzungen für die Implementierung der Lösung und die Annahmen erfüllt sind, die bei der Dokumentation dieser Lösung zu beachten sind.
 
-link:aws-guest-dr-solution-prereqs.html["Anforderungen FÜR DR-Lösung, Anforderungen und Planung"]
+link:aws-guest-dr-solution-prereqs.html["Anforderungen, Voraussetzungen und Planung der DR-Lösung"]
 
 
 
@@ -222,7 +222,7 @@ FSx-Dest::> snapmirror initialize -destination-path DestSVM:DestVol
 ====
 Diese Lösung verwendet NetApp SnapCenter zur Erstellung applikationskonsistenter Backups von SQL Server und Oracle Datenbanken. Zusammen mit Veeam Backup & Replication zum Backup von VMDKs für Virtual Machines stellt dies eine umfassende Disaster-Recovery-Lösung für lokale und Cloud-basierte Datacenter bereit.
 
-SnapCenter Software ist über die NetApp Support Site erhältlich und kann auf Microsoft Windows Systemen installiert werden, die sich entweder in einer Domäne oder Arbeitsgruppe befinden. Ein detaillierter Planungsleitfaden und Installationsanweisungen finden Sie unter https://docs.netapp.com/us-en/snapcenter/install/install_workflow.html["NetApp Documentation Center"^].
+SnapCenter Software ist über die NetApp Support Site erhältlich und kann auf Microsoft Windows Systemen installiert werden, die sich entweder in einer Domäne oder Arbeitsgruppe befinden. Eine ausführliche Planungshilfe und Installationsanleitung finden Sie auf der  https://docs.netapp.com/us-en/snapcenter/install/requirements-to-install-snapcenter-server.html["NetApp Documentation Center"^] .
 
 Die SnapCenter-Software ist erhältlich unter https://mysupport.netapp.com["Dieser Link"^].
 
@@ -430,7 +430,7 @@ Um ein Failover von Applikations-VMs und Datenbank-Volumes auf VMware Cloud Volu
 ====
 SnapCenter Server wird im VMware Cloud SDDC implementiert oder auf einer EC2 Instanz in einer VPC mit Netzwerkkonnektivität für die VMware Cloud-Umgebung installiert.
 
-SnapCenter Software ist über die NetApp Support Site erhältlich und kann auf Microsoft Windows Systemen installiert werden, die sich entweder in einer Domäne oder Arbeitsgruppe befinden. Ein detaillierter Planungsleitfaden und Installationsanweisungen finden Sie unter https://docs.netapp.com/us-en/snapcenter/install/install_workflow.html["NetApp Dokumentationszentrum"^].
+SnapCenter Software ist über die NetApp Support Site erhältlich und kann auf Microsoft Windows Systemen installiert werden, die sich entweder in einer Domäne oder Arbeitsgruppe befinden. Eine ausführliche Planungshilfe und Installationsanleitung finden Sie auf der  https://docs.netapp.com/us-en/snapcenter/install/requirements-to-install-snapcenter-server.html["NetApp Dokumentationszentrum"^] .
 
 Die Software von SnapCenter finden Sie unter https://mysupport.netapp.com["Dieser Link"^].
 
@@ -476,7 +476,7 @@ Weitere Informationen zum Wiederherstellen von VMs mit Veeam finden Sie im Absch
 
 === Backup von SnapCenter Datenbanken für Disaster Recovery
 
-SnapCenter ermöglicht das Backup und Recovery seiner zugrunde liegenden MySQL Datenbank und Konfigurationsdaten, um bei einem Ausfall den SnapCenter Server wiederherzustellen. Für unsere Lösung haben wir die SnapCenter-Datenbank und die Konfiguration auf einer AWS EC2 Instanz in unserer VPC wiederhergestellt. Weitere Informationen zur Disaster Recovery von SnapCenter finden Sie unter https://docs.netapp.com/us-en/snapcenter/concept/concept_disaster_recovery.html["Dieser Link"^].
+SnapCenter ermöglicht das Backup und Recovery seiner zugrunde liegenden MySQL Datenbank und Konfigurationsdaten, um bei einem Ausfall den SnapCenter Server wiederherzustellen. Für unsere Lösung haben wir die SnapCenter-Datenbank und die Konfiguration auf einer AWS EC2 Instanz in unserer VPC wiederhergestellt. Weitere Informationen zur Disaster Recovery von SnapCenter finden Sie unter https://docs.netapp.com/us-en/snapcenter/index.html["Dieser Link"^].
 
 .Voraussetzungen für SnapCenter-Backup
 [%collapsible%open]
@@ -509,7 +509,7 @@ Für die SnapCenter-Sicherung sind folgende Voraussetzungen erforderlich:
 .Backup der SnapCenter-Datenbank und -Konfiguration
 [%collapsible%open]
 ====
-SnapCenter stellt eine Web-Client-Schnittstelle zum Ausführen VON REST-API-Befehlen bereit. Informationen zum Zugriff auf die REST-APIs über Swagger finden Sie in der SnapCenter-Dokumentation unter https://docs.netapp.com/us-en/snapcenter/concept/concept_snapcenter_rest_apis.html["Dieser Link"^].
+SnapCenter stellt eine Web-Client-Schnittstelle zum Ausführen VON REST-API-Befehlen bereit. Informationen zum Zugriff auf die REST-APIs über Swagger finden Sie in der SnapCenter-Dokumentation unter https://docs.netapp.com/us-en/snapcenter/sc-automation/overview_rest_apis.html["Dieser Link"^].
 
 .Melden Sie sich bei Swagger an und erhalten Sie ein Autorisierungs-Token
 [%collapsible%open]
