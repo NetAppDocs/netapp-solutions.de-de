@@ -1,0 +1,254 @@
+---
+sidebar: sidebar 
+permalink: ehc/evs-mount-fsxn-nfs.html 
+keywords: Amazon, AWS, EVS, Elastic VMware Service, ONTAP, FSx, nfs 
+summary: Dieser Abschnitt beschreibt die Schritte zur Bereitstellung von FSx für ONTAP als NFS-Datenspeicher. Die Schritte zur Bereitstellung eines iSCSI-Datenspeichers werden im nächsten Abschnitt beschrieben. 
+---
+= Bereitstellungsverfahren für die Verwendung von FSx for ONTAP als NFS-Datenspeicher
+:hardbreaks:
+:allow-uri-read: 
+:nofooter: 
+:icons: font
+:linkattrs: 
+:imagesdir: ../media/
+
+
+[role="lead"]
+Dieser Abschnitt beschreibt die Schritte zur Bereitstellung von FSx für ONTAP als NFS-Datenspeicher. Die Schritte zur Bereitstellung eines iSCSI-Datenspeichers werden im nächsten Abschnitt beschrieben.
+
+
+
+== Allgemeine Bereitstellungsschritte
+
+Die Bereitstellung des FSx for ONTAP-Dateisystems zur Verwendung als NFS-Datenspeicher für Amazon EVS und die Herstellung der Konnektivität zwischen den beiden Diensten umfasst die folgenden Schritte:
+
+* Einrichten eines FSx für ONTAP-Dateisystems in derselben VPC, in der sich die Amazon EVS VCF-Umgebung befindet.
+* Validieren der Sicherheitsgruppen und der Routingtabelle.
+* Anschließen eines FSx für ONTAP-Speichervolumes zur Verwendung als NFS-Datenspeicher für Amazon EVS.
+
+
+
+
+== Voraussetzungen
+
+Die folgenden Voraussetzungen sollten erfüllt sein, bevor Sie mit dem Einrichten eines FSx für ONTAP als NFS-Datenspeicher für Amazon EVS beginnen:
+
+* Eine Amazon EVS-Virtualisierungsumgebung. Weitere Informationen hierzu finden Sie in der Dokumentation unter link:https://docs.aws.amazon.com/evs/latest/userguide/what-is-evs.html["Erste Schritte mit Amazon EVS"] .
+* Erstellen Sie eine Single-Availability Zone (AZ) FSx für ONTAP mit entsprechender SSD-Speicherkapazität, bereitgestellten IOPS und Durchsatz.
+* Für optimale Leistung platzieren Sie das FSx for ONTAP-Dateisystem in derselben VPC wie die Amazon EVS-Instance. Beachten Sie, dass VPC-Peering auch unterstützt wird, wenn FSx for ONTAP in einer anderen VPC bereitgestellt wird.
+* Wählen Sie basierend auf den Leistungsanforderungen die richtigen IOPS und den erforderlichen Durchsatz für ein Single-AZ FSx for ONTAP-Dateisystem aus. Siehe link:https://docs.aws.amazon.com/fsx/latest/ONTAPGuide/performance.html["Leistungsspezifikationsdetails für FSx für ONTAP"] um den Durchsatz und die IOPS zu verstehen, die jede verfügbare Option bietet.
+
+
+
+NOTE: Für diese Anleitung stellen wir das FSx for ONTAP-Dateisystem im selben Subnetz wie das Servicezugriffssubnetz bereit.
+
+Sobald die Amazon EVS-Virtualisierungsumgebung im VPC bereitgestellt wurde, können Sie mit der Einrichtung des Single-AZ FSx für ONTAP-Dateisystems fortfahren, das als NFS-Datenspeicher verwendet wird.
+
+
+NOTE: Ihr FSx für ONTAP-Dateisystem sollte in derselben AZ wie das Amazon EVS SDDC bereitgestellt werden.
+
+
+
+== Erstellen Sie ein FSX für ONTAP-Dateisystem
+
+Die folgenden Schritte zeigen Ihnen, wie Sie ein FSx für ONTAP-Dateisystem bereitstellen und mounten:
+
+. Gehen Sie zur Amazon FSx-Konsole unter  `https://console.aws.amazon.com/fsx/` Verwenden Sie Ihren Internetbrowser und melden Sie sich mit Ihren Anmeldeinformationen an.
+. Wählen Sie in der Konsole „Dateisystem erstellen“ aus. Dadurch wird der Setup-Assistent zum Erstellen eines FSx for ONTAP-Dateisystems gestartet.
+. Wählen Sie zunächst den Dateisystemtyp aus. Wählen Sie aus den verfügbaren Dateisystemoptionen „Amazon FSx für NetApp ONTAP“ aus und klicken Sie auf „Weiter“.
++
+image:evs-mount-fsxn-02.png["Abbildung, die den Dialog zur Auswahl des Dateisystemtyps darstellt"]
+
+. Sie haben die Wahl zwischen den Optionen „Schnell erstellen“ und „Standard erstellen“. „Schnell erstellen“ bietet vordefinierte Konfigurationen, „Standard erstellen“ ermöglicht Ihnen die Definition eigener Konfigurationen.
++
+Wählen Sie die Option „Standard erstellen“.
+
++
+image:evs-mount-fsxn-03.png["Abbildung zur Darstellung der Auswahl des Dateisystemtyps im Standarddialogfeld „Erstellen“"]
+
++
+Sie befinden sich nun im Standard-Setup-Assistenten zum Erstellen eines Dateisystems. Wählen Sie auf der Detailseite des Dateisystems die gleichen Informationen aus und geben Sie sie ein wie im Bild unten:
+
++
+image:evs-mount-fsxn-04.png["Abbildung zur Darstellung des ausgewählten Dateisystemtyps, Standard-Erstellungsassistent"]
+
+. Scrollen Sie nach unten zum Abschnitt „Netzwerk & Sicherheit“. Hier legen Sie die Details für das Subnetz und die VPC fest. Für diese Anleitung haben wir „EVS-VPC“ aus dem Dropdown-Menü ausgewählt und das Servicezugriffssubnetz (untagged VLAN) als Subnetz für die virtuelle EVS-Umgebung ausgewählt.
++
+
+NOTE: Das Subnetz kann ein beliebiges, nicht markiertes privates Subnetz in der VPC sein. Es kann sich auch in einer anderen VPC/einem anderen Subnetz befinden, das über VPC-Peering verbunden ist, sofern das entsprechende Routing konfiguriert wurde.
+
++
+image:evs-mount-fsxn-05.png["Abbildung, die den Netzwerksicherheitsdialog darstellt"]
+
+. Wenn Sie nach unten scrollen, finden Sie den Abschnitt „Sicherheit & Verschlüsselung“. Wählen Sie hier den Verschlüsselungsschlüssel aus dem Dropdown-Menü aus. Diese Schlüssel werden vom AWS Key Management Service (AWS KMS) bereitgestellt und schützen die ruhenden Daten in Ihrem FSx for ONTAP-Dateisystem.
++
+Geben Sie als Nächstes in der Einstellung „Administratorkennwort für das Dateisystem“ ein eindeutiges Kennwort für den Benutzer fsxadmin an, der das Dateisystem verwalten wird.
+
++
+image:evs-mount-fsxn-06.png["Abbildung, die den Sicherheits- und Verschlüsselungsdialog darstellt"]
+
+. Als Nächstes scrollen Sie nach unten zu einem Abschnitt mit dem Titel „Standardkonfiguration der virtuellen Speichermaschine“. Hier müssen Sie einen Namen für die virtuelle Speichermaschine (SVM) angeben.
++
+image:evs-mount-fsxn-07.png["Abbildung, die den Konfigurationsdialog für die virtuelle Standardspeichermaschine darstellt"]
+
+. Scrollen Sie anschließend nach unten zum Abschnitt „Standardvolume-Konfiguration“. Geben Sie hier dem Volume einen Namen und legen Sie die Volumegröße fest. Das Volume-Protokoll sollte NFS v3 sein (standardmäßig aktiviert). Aktivieren Sie die Speichereffizienzfunktionen (Komprimierung, Deduplizierung und Komprimierung), um Ihren Gesamtspeicherverbrauch und die Kosten zu senken.
++
+image:evs-mount-fsxn-08.png["Abbildung, die den Dialog zur Konfiguration des Standardvolumens darstellt"]
+
+. Wählen Sie für die Speicher-Tiering-Option „Nur Snapshot“ aus dem Dropdown-Menü und legen Sie eine Kühlperiode für die Tiering-Richtlinie fest. Die Standardeinstellung beträgt 31 Tage, für dieses Beispiel haben wir jedoch eine Kühlperiode von zwei Tagen festgelegt.
++
+image:evs-mount-fsxn-09.png["Abbildung, die den Dialog „Storage Tiering“ darstellt"]
+
+. Nachdem Sie das Volume erstellt haben, ändern Sie die folgenden Parameter mithilfe der ONTAP-Befehlszeilenschnittstelle (ONTAP CLI):
++
+[cols="50%, 50%"]
+|===
+| *Einstellung* | *Konfiguration* 
+
+
+| Volume-Garantie | Keine (Thin Provisioning) 
+
+
+| Fraktionale_Reserve | 0 % 
+
+
+| Snap_Reserve | 0 % 
+
+
+| Autosize | Vergrößern_verkleinern 
+
+
+| Storage-Effizienz | Aktiviert 
+
+
+| Volume Tiering Policy | Nur Snapshot 
+
+
+| Aktualisierung der Zugriffszeit (-atime-Update) | Falsch 
+
+
+| Minimales Vorauslesen (-min-readahead) | Falsch 
+
+
+| Snapshot-Richtlinie | Keine 
+|===
+. Deaktivieren Sie im optionalen Schritt „Sicherung und Wartung“ die täglichen automatischen Sicherungen und wählen Sie „Keine Präferenz“ für das wöchentliche Wartungsfenster.
++
+Klicken Sie auf „Weiter“, wenn Sie fertig sind.
+
++
+image:evs-mount-fsxn-10.png["Abbildung, die den Abschluss des Dialogfelds zur Dateisystemerstellung darstellt"]
+
+. Sie erhalten nun eine Übersicht über die gesamte Dateisystemkonfiguration, die Sie in den vorherigen Schritten eingerichtet haben. Überprüfen Sie, ob alle Parameter korrekt sind, und klicken Sie anschließend auf „Dateisystem erstellen“, um die Einrichtung abzuschließen.
++
+image:evs-mount-fsxn-11.png["Abbildung, die den Dialog zum Erstellen von Dateisystemen darstellt"]
+
++
+image:evs-mount-fsxn-12.png["Abbildung, die den Dialog zum Erstellen von Dateisystemen darstellt"]
+
++
+
+NOTE: Um zusätzliche FSx for ONTAP-Dateisysteme zu erstellen, können Sie die oben beschriebenen Schritte ausführen und die Werte, die sich auf Leistung und Festplattenkapazität auswirken, nach Bedarf anpassen. Weitere Informationen zu den Leistungsoptionen für FSx for ONTAP finden Sie unter link:https://docs.aws.amazon.com/fsx/latest/ONTAPGuide/performance.html["diese Dokumentationsseite"] .
+
+
+
+
+
+== Validieren von Routing- und Sicherheitsgruppen in VPC- und Virtualisierungsumgebungen
+
+Die Validierung der VPC- und SDDC-Routing- und Sicherheitsgruppen ist wichtig, um sicherzustellen, dass die Amazon EVS-Virtualisierungsumgebung und die FSx for ONTAP-Dateisystemkomponenten ordnungsgemäß zusammenarbeiten können.
+
+. Navigieren Sie zu Elastic VMware Service > Virtualization Environments > [Ihre Amazon EVS-Umgebung] und wählen Sie das Service-Zugriffssubnetz aus, wie unten durch den grünen Pfeil angezeigt:
++
+image:evs-mount-fsxn-13.png["Abbildung, die den Dialog für den obigen Schritt darstellt"]
+
+. Dadurch wird das Subnetzfenster geöffnet. Suchen Sie dort die Tabelle „Routen“ und klicken Sie darauf.
++
+In diesem Beispiel befindet sich das FSxN ONTAP-Dateisystem im selben VPC wie die Amazon EVS VCF-Umgebung, daher sind die Standardrouten ausreichend.
+
++
+image:evs-mount-fsxn-14.png["Abbildung, die den Dialog für den obigen Schritt darstellt"]
+
++
+Wenn sich das FSx for ONTAP-Dateisystem in einer anderen VPC befindet, überprüfen Sie, ob die Routen zu dieser VPC hinzugefügt wurden. In diesem Beispiel wurden Routen für das VPC-Peering zur VPC hinzugefügt, in der sich das FSx for ONTAP-System befindet.
+
++
+image:evs-mount-fsxn-15.png["Abbildung, die den Dialog für den obigen Schritt darstellt"]
+
+. Als Nächstes müssen Sie überprüfen, ob die mit dem FSx for ONTAP-Dateisystem verbundene Sicherheitsgruppe (d. h. die mit der Elastic Network Interface (ENI) verbundene) den Zugriff auf NFS-Ports ermöglicht.
++
+Eine vollständige Liste der NFS- und iSCSI-Protokollports finden Sie unter folgendem Link: https://docs.aws.amazon.com/fsx/latest/ONTAPGuide/limit-access-security-groups.html]Dateisystem-Zugriffskontrolle mit Amazon VPC-Dokumentation].
+
++
+So überprüfen Sie, ob Ihr FSx for ONTAP-Dateisystem der Sicherheitsgruppe zugeordnet ist:
+
++
+.. Navigieren Sie in der AWS-Konsole zu FSx > Dateisysteme > [Ihr FSx for ONTAP-Dateisystem].
+.. Klicken Sie auf der Registerkarte „Netzwerk und Sicherheit“ auf die ENI.
+.. Suchen Sie unter den Netzwerkschnittstellendetails nach der Sicherheitsgruppe, die mit der ENI verknüpft ist (im Bild unten durch den grünen Pfeil gekennzeichnet).
++
+image:evs-mount-fsxn-16.png["Abbildung, die den Dialog für den obigen Schritt darstellt"]
+
+.. Überprüfen Sie die Ports. Im folgenden Beispiel ist der gesamte Datenverkehr zulässig. Sie können den Datenverkehr jedoch auf NFS-Ports beschränken. Hier ist die Liste der Ports:
++
+*** Port 111 TCP: Portmapper, wird verwendet, um auszuhandeln, welche Ports in NFS-Anfragen verwendet werden.
+*** Port 635 TCP: Mountd, der zum Empfangen eingehender Mount-Anfragen dient.
+*** Port 2049 TCP: NFS, der den NFS-Verkehr abwickelt.
+*** Port 4045 TCP: Network Lock Manager (NLM), der sich um Sperranforderungen kümmert.
+*** Port 4046 TCP: Network Status Monitor (NSM), der NFS-Clients Benachrichtigungen sendet, wenn der Server zur Sperrverwaltung neu gestartet wird.
++
+image:evs-mount-fsxn-17.png["Abbildung, die den Dialog für den obigen Schritt darstellt"]
+
+
+
+
+
+
+
+
+
+== Anfügen eines FSx for ONTAP NFS-Volumes an Amazon EVS zur Verwendung als Datenspeicher
+
+Nachdem Ihr FSx for ONTAP-Dateisystem bereitgestellt und alle erforderlichen Konnektivitätsparameter validiert wurden, können Sie nun ein FSx for ONTAP-Speichervolume an Amazon EVS anschließen. Die folgenden Schritte zeigen, wie Sie auf vCenter zugreifen und das FSx for ONTAP-Volume als NFS-Datenspeicher bereitstellen:
+
+. Wechseln Sie im vSphere-Client zur Registerkarte „Datastore“. Suchen Sie das Datacenter und navigieren Sie zu „Speicher > Neuer Datastore“, wie unten gezeigt:
++
+image:evs-mount-fsxn-18.png["Abbildung, die den Dialog für den obigen Schritt darstellt"]
+
+. Sie befinden sich nun im Assistenten „Neuer Datastore“. Wählen Sie im Schritt „Typ“ einen Datastore-Typ aus. Wählen Sie „NFS“ und klicken Sie auf „WEITER“, um fortzufahren.
++
+image:evs-mount-fsxn-19.png["Abbildung, die den Dialog für den obigen Schritt darstellt"]
+
+. Im Schritt „NFS-Version“ wählen Sie eine NFS-Version aus.
++
+Für dieses Beispiel wählen wir „NFS 3“, beachten Sie jedoch, dass auch NFS v4.1 verwendet werden kann.
+
++
+image:evs-mount-fsxn-20.png["Abbildung, die den Dialog für den obigen Schritt darstellt"]
+
+. Im Schritt „Name und Konfiguration“ werden Sie:
++
+.. Geben Sie dem Datenspeicher einen Namen.
+.. Benennen Sie den Ordner. Verwenden Sie den Verbindungspfad zu Ihrem NFS-Volume.
+.. Benennen Sie den Server. Verwenden Sie entweder den NFS-DNS-Namen Ihrer SVM oder die IP-Adresse des NFS.
++
+Klicken Sie auf „WEITER“, um fortzufahren.
+
++
+image:evs-mount-fsxn-21.png["Abbildung, die den Dialog für den obigen Schritt darstellt"]
+
+
+
+. Wählen Sie im Schritt „Host-Zugriff“ alle Hosts aus, die Zugriff auf den Datenspeicher benötigen, und klicken Sie dann auf „WEITER“, um fortzufahren.
++
+image:evs-mount-fsxn-22.png["Abbildung, die den Dialog für den obigen Schritt darstellt"]
+
+. Überprüfen Sie im Schritt „Bereit zum Abschließen“ die Daten und klicken Sie auf „FERTIGSTELLEN“, um die Einrichtung abzuschließen.
++
+image:evs-mount-fsxn-23.png["Abbildung, die den Dialog für den obigen Schritt darstellt"]
+
+. Überprüfen Sie, ob der NFS-Datenspeicher verbunden wurde, indem Sie wie unten gezeigt auf vCenter zugreifen:
++
+image:evs-mount-fsxn-24.png["Abbildung, die den Dialog für den obigen Schritt darstellt"]
+
+

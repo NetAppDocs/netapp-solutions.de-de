@@ -1,0 +1,232 @@
+---
+sidebar: sidebar 
+permalink: ehc/evs-mount-fsxn-iscsi.html 
+keywords: Amazon, AWS, EVS, Elastic VMware Service, ONTAP, FSx, iscsi 
+summary: Dieser Abschnitt behandelt die Schritte zum Konfigurieren eines iSCSI-Datenspeichers mit FSx für ONTAP. 
+---
+= Bereitstellungsverfahren für die Verwendung von FSx for ONTAP als iSCSI-Datenspeicher
+:hardbreaks:
+:allow-uri-read: 
+:nofooter: 
+:icons: font
+:linkattrs: 
+:imagesdir: ../media/
+
+
+[role="lead"]
+Dieser Abschnitt behandelt die Schritte zum Konfigurieren eines iSCSI-Datenspeichers mit FSx für ONTAP.
+
+
+
+== Voraussetzungen
+
+Bevor Sie FSx for ONTAP als iSCSI-Datenspeicher bereitstellen und anbinden, müssen Sie zunächst eine Amazon EVS-Virtualisierungsumgebung einrichten. Weitere Informationen finden Sie in der Dokumentation „Erste Schritte mit Amazon EVS“. Dieser Abschnitt setzt außerdem voraus, dass Sie ein FSx for ONTAP-Dateisystem bereitgestellt haben. Die entsprechenden Schritte finden Sie im Abschnitt „Detaillierte Vorgehensweise“ oben.
+
+
+
+== Allgemeine Bereitstellungsschritte
+
+Die Bereitstellung des FSx for ONTAP-Dateisystems zur Verwendung als iSCSI-Datenspeicher für Amazon EVS und die Herstellung der Konnektivität zwischen den beiden Diensten umfasst die folgenden Schritte:
+
+* Einrichten eines iSCSI-Netzwerkadapters für jeden ESXi-Host.
+* Erstellen und Konfigurieren des FSx für ONTAP-Dateisystem, Volume, LUN usw.
+* Verbinden der ESXi-Hosts mit dem FSx für ONTAP-Dateisystemserver.
+* Erstellen eines virtuellen Maschinendateisystems (VMFS) für einen iSCSI-Datenspeicher.
+
+
+
+
+== iSCSI-Netzwerkadapter hinzufügen
+
+Die folgenden Schritte müssen auf jedem ESXi-Host in Ihrer Umgebung ausgeführt werden.
+
+. Rufen Sie den vSphere-Client auf und wählen Sie den ESXi-Host aus. Wählen Sie unter „Konfigurieren“ die Option „Softwareadapter hinzufügen“ und anschließend im Dropdown-Menü „iSCSI-Adapter hinzufügen“ aus, wie hier gezeigt:
++
+image:evs-mount-fsxn-25.png["Abbildung, die den Dialog für den obigen Schritt darstellt"]
+
+. Nach Abschluss der Installation wird der Bildschirm „Speicheradapter “ angezeigt. Wählen Sie in der Menüleiste „Adapter erneut scannen“. Notieren Sie sich den IQN des iSCSI-Adapters: iqn.xxxx. Dieser Wert wird später im LUN-Mapping-Schritt verwendet.
++
+image:evs-mount-fsxn-26.png["Abbildung, die den Dialog für den obigen Schritt darstellt"]
+
+
+
+
+
+== Erstellen eines FSX für ONTAP-Volumes
+
+. Gehen Sie zur AWS-Konsole, rufen Sie die Seite für Ihr FSx for ONTAP-Dateisystem auf und klicken Sie auf „Volume erstellen“.
++
+image:evs-mount-fsxn-27.png["Abbildung, die den Dialog für den obigen Schritt darstellt"]
+
+. Wählen Sie die SVM aus, auf der Sie das Volume erstellen möchten.
++
+image:evs-mount-fsxn-28.png["Abbildung, die den Dialog für den obigen Schritt darstellt"]
+
+. Geben Sie auf der Seite „Volumedetails“ die Details wie im Screenshot unten gezeigt ein. Klicken Sie anschließend auf „Erstellen“, um das Volume einzurichten. Wählen Sie „Aktiviert“, um die ONTAP-Speichereffizienzfunktionen (Komprimierung, Deduplizierung und Komprimierung) zu aktivieren.
++
+image:evs-mount-fsxn-29.png["Abbildung, die den Dialog für den obigen Schritt darstellt"]
+
+. Wählen Sie für die Speicher-Tiering-Option „Nur Snapshot“ aus dem Dropdown-Menü und legen Sie eine Kühlperiode für die Tiering-Richtlinie fest. Die Standardeinstellung beträgt 31 Tage, für dieses Beispiel haben wir jedoch eine Kühlperiode von zwei Tagen festgelegt.
++
+image:evs-mount-fsxn-30.png["Abbildung, die den Dialog für den obigen Schritt darstellt"]
+
+. Nachdem das Volume erstellt wurde, legen Sie mit der ONTAP CLI die folgenden Werte fest:
++
+[cols="50%, 50%"]
+|===
+| *Einstellung* | *Konfiguration* 
+
+
+| Volume-Garantie | Keine (Thin Provisioning) 
+
+
+| Fraktionale_Reserve | 0 % 
+
+
+| Snap_Reserve | 0 % 
+
+
+| Autosize | Vergrößern_verkleinern 
+
+
+| Storage-Effizienz | Aktiviert 
+
+
+| Volume Tiering Policy | Nur Snapshot 
+
+
+| Aktualisierung der Zugriffszeit (-atime-Update) | Falsch 
+
+
+| Minimales Vorauslesen (-min-readahead) | Falsch 
+
+
+| Snapshot-Richtlinie | Keine 
+
+
+| LUN-Speicherplatzreservierung | Deaktiviert 
+
+
+| Zuweisung von LUN-Speicherplatz | Aktiviert 
+|===
+
+
+
+
+== Erstellen Sie eine LUN, eine igroup und ordnen Sie die LUN zu
+
+In diesem Abschnitt zeigen wir, wie Sie die LUN erstellen, die in vSphere als Datenträger angezeigt wird. Außerdem zeigen wir, wie Sie eine Initiatorgruppe (igroup) erstellen, die die Liste der Initiatoren mit Zugriff auf die LUN enthält. Die igroup ermöglicht den Zugriff auf die LUN von den vSphere ESXi-Hosts aus. Abschließend zeigen wir, wie Sie die igroup der LUN zuordnen.
+
+. Um auf die ONTAP-CLI zuzugreifen, richten Sie eine SSH-Sitzung auf dem Verwaltungsport des FSx für ONTAP-Dateisystems oder SVM ein, indem Sie den folgenden Befehl ausführen:
++
+....
+[~]$ ssh fsxadmin@management_endpoint_ip
+....
+. Erstellen Sie das LUN. Stellen Sie sicher, dass die Speicherzuweisung und die Speicherreservierung aktiviert sind. Die Größe sollte bis zu 90 % der Volumegröße betragen:
++
+....
+Fsxid::> lun create -vserver fsx -path /vol/DemoDS02/lun_name -size 1.8T -ostype vmware -space-allocation enabled -space-reservation disabled
+....
+. Erstellen Sie die Igroup und fügen Sie den IQN aller ESXi-Hosts innerhalb des Clusters hinzu.
++
+....
+Fsxid::> lun igroup create -vserver fsx -igroup evs1 -protocol iscsi -ostype vmware -initiator iqn.1998-01.com.vmware:esxi01.evs.local:1060882244:64,iqn.1998-01.com.vmware:esxi02.evs.local:1911302492:64,iqn.1998-01.com.vmware:esxi03.evs.local:2069609753:64,iqn.1998-01.com.vmware:esxi04.evs.local:1165297648:64
+....
+. Ordnen Sie die LUN mit dem folgenden Code zu:
++
+....
+Fsxid::> lun mapping create -vserver fsx -path /vol/DemoDS02/lun1 -igroup evs1 -lun-id 2
+....
+. Überprüfen Sie die LUN-Zuordnung und stellen Sie sicher, dass der Status auf „Zugeordnet“ geändert wurde. Dies ist eine notwendige doppelte Überprüfung, um sicherzustellen, dass sich die LUN im zugeordneten Zustand befindet:
++
+....
+Fsxid::> lun show
+Vserver   Path                            State   Mapped   Type        Size
+--------- ------------------------------- ------- -------- -------- --------
+fsx       /vol/DemoDS02/lun1              online  mapped   vmware     1.80TB
+....
+
+
+
+
+== Abrufen von iSCSI-Konfigurationsinformationen vom SVM
+
+. Führen Sie „iSCSI show“ aus und notieren Sie den Zielnamen. Dieser wird bei der vSphere-Erkennung der FSx for ONTAP-Festplatten verwendet (Hinweis: Dieser Zielname ist für Ihre SVM eindeutig):
++
+....
+Fsxid::> iscsi show -vserver fsx
+                 Vserver: fsx
+             Target Name: iqn.1992-08.com.netapp:sn.c083e374f1b711ef9d9f8123a3ebcf46:vs.3
+            Target Alias: fsx
+   Administrative Status: up
+....
+. Notieren Sie die iSCSI-IP-Adressen:
++
+....
+Fsxid::> network interface show -vserver fsx -data-protocol iscsi -fields address
+vserver lif       address
+------- -------   -----------
+fsx     iscsi_1   10.0.10.134
+fsx     iscsi_2   10.0.10.227
+....
+
+
+
+
+== Entdecken Sie den FSx für ONTAP iSCSI-Server
+
+Nachdem wir die LUN zugeordnet haben, können wir den FSx for ONTAP iSCSI-Server für die SVM ermitteln. Beachten Sie, dass Sie für jeden ESXi-Host in Ihrem SDDC die hier aufgeführten Schritte wiederholen müssen.
+
+. Stellen Sie zunächst sicher, dass die mit dem FSx for ONTAP-Dateisystem verknüpfte Sicherheitsgruppe (also die mit dem ENI verbundene) iSCSI-Ports zulässt.
++
+Eine vollständige Liste der iSCSI-Protokollports und ihrer Anwendung finden Sie unter link:https://docs.aws.amazon.com/fsx/latest/ONTAPGuide/limit-access-security-groups.html["File System Access Control mit Amazon VPC"] .
+
+. Gehen Sie im vSphere-Client zu ESXi-Host > Speicheradapter > Statische Erkennung und klicken Sie auf „Hinzufügen“.
+. Geben Sie die IP-Adresse des iSCSI-Servers von oben ein (Port 3260). Der iSCSI-Zielname ist der IQN aus dem iSCSI-Show-Befehl. Klicken Sie auf „OK“, um fortzufahren.
++
+image:evs-mount-fsxn-31.png["Abbildung, die den Dialog für den obigen Schritt darstellt"]
+
+. Der Assistent wird geschlossen und Sie gelangen zum Bildschirm „Statische Datenspeichererkennung“. In der Tabelle auf dieser Seite können Sie überprüfen, ob das Ziel erkannt wurde.
++
+image:evs-mount-fsxn-32.png["Abbildung, die den Dialog für den obigen Schritt darstellt"]
+
+
+
+
+
+== Erstellen eines iSCSI-Datenspeichers
+
+Nachdem wir den iSCSI-Server entdeckt haben, können wir einen iSCSI-Datenspeicher erstellen.
+
+. Wechseln Sie im vSphere-Client zur Registerkarte „Datastore“ und wählen Sie das SDDC aus, in dem Sie den Datastore bereitstellen möchten. Klicken Sie mit der rechten Maustaste auf das Storage-Symbol (im Screenshot unten durch den grünen Pfeil gekennzeichnet) und wählen Sie anschließend „New Datastore“ aus dem Dropdown-Menü:
++
+image:evs-mount-fsxn-33.png["Abbildung, die den Dialog für den obigen Schritt darstellt"]
+
+. Sie befinden sich nun im Assistenten „Neuer Datenspeicher“. Wählen Sie im Schritt „Typ“ die Option VMFS aus.
+. Im Schritt „Namens- und Geräteauswahl“:
++
+.. Geben Sie einen Namen für Ihren Datenspeicher ein.
+.. Wählen Sie aus, welchen ESXi-Host Sie mit dem Datenspeicher verbinden möchten.
+.. Wählen Sie die erkannte Festplatte (LUN) aus und klicken Sie auf „Weiter“.
++
+image:evs-mount-fsxn-34.png["Abbildung, die den Dialog für den obigen Schritt darstellt"]
+
+
+
+. Wählen Sie im Schritt „VMFS-Version“ „VMFS 6“ aus.
++
+image:evs-mount-fsxn-35.png["Abbildung, die den Dialog für den obigen Schritt darstellt"]
+
+. Belassen Sie im Schritt „Partitionskonfiguration“ die Standardeinstellungen, einschließlich der Option „Alle verfügbaren Partitionen verwenden“. Klicken Sie auf „Weiter“, um fortzufahren.
++
+image:evs-mount-fsxn-36.png["Abbildung, die den Dialog für den obigen Schritt darstellt"]
+
+. Überprüfen Sie im Schritt „Bereit zum Abschließen“, ob die Einstellungen korrekt sind. Klicken Sie anschließend auf „FERTIGSTELLEN“, um die Einrichtung abzuschließen.
++
+image:evs-mount-fsxn-37.png["Abbildung, die den Dialog für den obigen Schritt darstellt"]
+
+. Kehren Sie zur Seite „Geräte“ zurück und überprüfen Sie, ob der Datenspeicher angeschlossen wurde.
++
+image:evs-mount-fsxn-38.png["Abbildung, die den Dialog für den obigen Schritt darstellt"]
+
+

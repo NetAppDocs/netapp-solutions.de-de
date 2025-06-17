@@ -1,0 +1,57 @@
+---
+sidebar: sidebar 
+permalink: ehc/evs-mount-fsxn-intro.html 
+keywords: Amazon, AWS, EVS, Elastic VMware Service, ONTAP, FSx 
+summary: 'In diesem Dokument werden detaillierte Schritte zum Erstellen eines FSx für ONTAP-Dateisystems und zum Anhängen zur Verwendung als Internet Small Computer System Interface (iSCSI)- oder Network File System (NFS)-Datenspeicher zur Verwendung mit Amazon EVS vorgestellt.' 
+---
+= So mounten Sie Amazon FSx für NetApp ONTAP als externen Datenspeicher für Amazon Elastic VMware Service
+:hardbreaks:
+:allow-uri-read: 
+:nofooter: 
+:icons: font
+:linkattrs: 
+:imagesdir: ../media/
+
+
+[role="lead"]
+In diesem Dokument werden detaillierte Schritte zum Erstellen eines FSx für ONTAP-Dateisystems und zum Anhängen zur Verwendung als Internet Small Computer System Interface (iSCSI)- oder Network File System (NFS)-Datenspeicher zur Verwendung mit Amazon EVS vorgestellt.
+
+
+
+== Einführung
+
+Unternehmen mit bestehenden VMware-Investitionen vor Ort, die nach effizienten und kostengünstigen Möglichkeiten zur Modernisierung ihrer Bereitstellungen durch Migration, Bursting, Erweiterung oder Sicherung (Backup, Disaster Recovery) von Kopien auf AWS suchen, stehen vor zahlreichen Herausforderungen. Mit der Veröffentlichung von Amazon Elastic VMware Service (Amazon EVS) gibt es nun einen nativen AWS-Service, der die Ausführung von VMware Cloud Foundation (VCF) direkt in einer Amazon Virtual Private Cloud (VPC) ermöglicht.
+
+Amazon EVS ermöglicht die Erweiterung vorhandener VCF-Bereitstellungen auf AWS, den Wechsel in AWS zur Leistungssteigerung bei Spitzenauslastung und die vollständige Ausführung von VCF-Workloads auf AWS, um Modernisierungen, Rechenzentrumsausstiege, Konsolidierungen und andere Anwendungsfälle zu erleichtern.
+
+Obwohl Amazon EVS erhebliche Vorteile bietet, koppelt die standardmäßige hyperkonvergente Architektur Rechenleistung und Speicher und verhindert so eine unabhängige Skalierung des einen oder anderen Bereichs je nach Geschäftsbedarf. In der heutigen datenzentrierten Welt ist der Speicherbedarf vieler Unternehmen höher als der Rechenbedarf. Mit der hyperkonvergenten Architektur von VMware sind Speicherressourcen jedoch mit Rechenleistung gekoppelt. Das bedeutet, dass eine Skalierung des Speichers nur durch das Hinzufügen von Rechenhosts möglich ist, die nie genutzt werden. Dies kann die Kosten erheblich erhöhen, insbesondere bei speicherintensiven Workloads.
+
+Um dieses Problem zu lösen, bieten AWS und NetApp Amazon FSx für NetApp ONTAP (FSx für ONTAP) als externen Speicherdienst für Amazon EVS an. FSx für ONTAP ist ein AWS-nativer Speicherdienst, der die hohe Leistung, Datenstabilität und Kosteneffizienz der NetApp® ONTAP®-Software bietet. Durch die Nutzung von FSx für ONTAP als externen Speicher können Amazon EVS-Benutzer Rechen- und Speicherressourcen unabhängig voneinander skalieren und so die Gesamtbetriebskosten (TCO) optimieren.
+
+
+
+== Überblick
+
+In diesem Dokument werden detaillierte Schritte zum Erstellen eines FSx für ONTAP-Dateisystems und zum Anhängen zur Verwendung als Internet Small Computer System Interface (iSCSI)- oder Network File System (NFS)-Datenspeicher zur Verwendung mit Amazon EVS vorgestellt.
+
+
+
+== Zweck dieses Handbuchs
+
+Dieses Handbuch enthält Anweisungen zum Einrichten eines FSx for ONTAP-Datenspeichers für Amazon EVS sowie Best Practices, Supportanforderungen, Größenüberlegungen und andere Informationen, die Ihnen bei der Planung, Gestaltung und Implementierung der Integration helfen.
+
+
+
+== Zielgruppe
+
+Dieses Tutorial richtet sich an Cloud-Architekten und Cloud-Administratoren, die mit VMware vSphere, Amazon EVS, der AWS-Konsole und FSx für ONTAP vertraut sind.
+
+
+
+== Architektur auf hoher Ebene
+
+In diesem Abschnitt geben wir einen Überblick über die Lösungsarchitektur für die Verwendung von FSx für ONTAP als Datenspeicher für Amazon EVS.
+
+Unten sehen Sie eine Übersicht über die Architektur des FSx für ONTAP-Datenspeichers mit einer Amazon EVS-Umgebung innerhalb einer AWS VPC.
+
+image:evs-mount-fsxn-01.png["Abbildung, die die High-Level-Architektur für diese Lösung darstellt"]
