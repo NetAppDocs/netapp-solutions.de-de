@@ -14,22 +14,28 @@ summary: In diesem Dokument wird beschrieben, wie Sie NetApp SMI-S Provider inst
 
 
 [role="lead"]
-In diesem Dokument wird beschrieben, wie Sie NetApp SMI-S Provider installieren und verwalten und Speicher mit Microsoft SCVMM bereitstellen.
+In diesem Dokument wird die Installation und Verwaltung des NetApp SMI-S Provider sowie die Bereitstellung von Speicher mit Microsoft System Center Virtual Machine Manager (SCVMM) dokumentiert.
 
 
 
 == Einführung
 
-SMI-S (Storage Management Initiative Specification) von NetApp ist ein leistungsstarkes Tool für das Management und die Überwachung von Storage-Systemen. NetApp SMI-S nutzt die WBEM-Protokolle (Web-based Enterprise Management), um eine einheitliche Schnittstelle für verschiedene Verwaltungsaufgaben bereitzustellen, einschließlich der Handhabung von LUNs, Volumes, CIMOM-Konfigurationseinstellungen und CIM-Serverbenutzern. Weitere Details, überprüfen link:https://docs.netapp.com/us-en/smis-provider["NetApp SMI-S Provider-Produktdokument."]
+SMI-S (Storage Management Initiative Specification) von NetApp ist ein leistungsstarkes Tool für das Management und die Überwachung von Storage-Systemen. NetApp SMI-S nutzt die WBEM-Protokolle (Web-based Enterprise Management), um eine einheitliche Schnittstelle für verschiedene Verwaltungsaufgaben bereitzustellen, einschließlich der Handhabung von LUNs, Volumes, CIMOM-Konfigurationseinstellungen und CIM-Serverbenutzern.
+
+SCVMM ist eine umfassende Verwaltungslösung für virtualisierte Rechenzentren. Dank der Storage Management Initiative – Specification (SMI-S) kann SCVMM in verschiedene Speichersysteme integriert werden.
 
 
 
-==== Die wichtigsten Funktionen und Vorteile
+=== Vorteile der Verwendung von NetApp SMI-S Provider mit SCVMM
+
+Durch die Integration von NetApp SMI-S Provider mit SCVMM können Unternehmen Speicherressourcen in einem virtualisierten Rechenzentrum effektiver verwalten, indem sie eine standardisierte Schnittstelle für die Speicherverwaltung bereitstellen.
 
 * Erkennung und Management von Storage-Systemen: Erkennt Storage-Systeme mit ONTAP Software und stellt Tools für ein effektives Management bereit
 * Vereinfachte Administration: Vereinfachtes Management der Storage-Systeme über eine einheitliche Befehlszeilenschnittstelle
 * Monitoring und Reporting: Bietet robuste Monitoring- und Berichtsfunktionen, mit denen Storage-Elemente und ihre Performance verfolgt werden können.
 
+
+Weitere Details, überprüfen link:https://docs.netapp.com/us-en/smis-provider["NetApp SMI-S Provider-Produktdokument."]
 
 image:hyperv-smis-image1.png["NetApp SMI-S mit Hyper-V Architektur"]
 
@@ -37,11 +43,12 @@ image:hyperv-smis-image1.png["NetApp SMI-S mit Hyper-V Architektur"]
 
 == Machen Sie sich bereit für die Implementierung von SMI-S Provider
 
-Für eine nahtlose Integration in vorhandene Speichersysteme ist die ordnungsgemäße Installation und Konfiguration des SMI-S Providers erforderlich.
+Eine nahtlose Integration mit vorhandenen Speichersystemen erfordert die ordnungsgemäße Installation und Konfiguration des NetApp SMI-S Provider.
 
-* SMI-S Provider 5.2.7 unterstützt Windows Server SCVMM 2025, 2022, 2019 und 2016 und Windows Server 2025,2022,2019 und 2016. Diese Version ist nicht kompatibel mit Windows Server 2012 oder System Center Virtual Machine Manager (SCVMM) 2012.
-* Der NetApp SMI-S-Provider unterstützt FAS- und AFF-Systeme ab ONTAP 9.7.
-* Die NetApp ONTAP ONE-Lizenz deckt alle Lizenzanforderungen für den SMI-S-Provider ab.
+* NetApp SMI-S Provider 5.2.7 unterstützt Windows Server SCVMM 2025, 2022, 2019 und 2016 sowie Windows Server 2025, 2022, 2019 und 2016. Diese Version ist nicht kompatibel mit Windows Server 2012 oder System Center Virtual Machine Manager (SCVMM) 2012.
+* Für NetApp SMI-S Provider 5.2.7 ist kein Upgrade-Pfad verfügbar. Sie müssen NetApp SMI-S Provider 5.2.7 als Neuinstallation bereitstellen.
+* Der NetApp SMI-S-Provider unterstützt FAS- und AFF-Systeme ab ONTAP 9.
+* Die NetApp ONTAP ONE-Lizenz deckt alle Lizenzanforderungen für den SMI-S-Provider ab. Ohne diese Lizenz benötigen Sie die folgenden Lizenzen:
 +
 ** Zum Erstellen von LUNs auf den Storage-Systemen sind FCP-, iSCSI- oder FCP- und iSCSI-Lizenzen erforderlich.
 ** Zum Erstellen von Dateifreigaben auf unterstützten ONTAP Storage-Systemen ist eine CIFS-Lizenz erforderlich.
@@ -54,7 +61,7 @@ Für eine nahtlose Integration in vorhandene Speichersysteme ist die ordnungsgem
 
 === Hardwareanforderungen für die virtuelle SMI-S-Maschine
 
-Die folgende Tabelle zeigt die Hardwareanforderungen für die VM des SMI-S-Providers.
+Die folgende Tabelle zeigt die Hardwareanforderungen der NetApp SMI-S-Provider-VM.
 
 image:hyperv-smis-image2.png["Hardwareanforderungen für den SMI-S-Provider"]
 
@@ -62,35 +69,50 @@ image:hyperv-smis-image2.png["Hardwareanforderungen für den SMI-S-Provider"]
 
 === Installieren Sie SMI-S Provider
 
-Bevor Sie mit der Bereitstellung des SMI-S-Providers beginnen, müssen Sie sie bereitstellen
+Bevor Sie mit der Bereitstellung des SMI-S-Providers beginnen, müssen Sie Microsoft Hyper-V mit SCVMM und NetApp 9 über einem FAS oder AFF Speichersystem bereitstellen. Es ist wichtig, die befehlsbasierte Schnittstelle zu verstehen, um verschiedene Verwaltungsaufgaben durchzuführen, überprüfen link:https://docs.netapp.com/us-en/smis-provider/concept-smi-s-provider-commands-overview.html["NetApp SMI-S-Provider-Befehle."]
 
-* Microsoft Hyper-V mit SCVMM
-* NetApp FAS oder AFF Storage-System
-* Die Firewall-Ports 5988 und 5989 sollten für SMI-S-http- und https-Verbindungen offen sein, um die Kommunikation zwischen dem SMI-S-Provider und SCVMM zu ermöglichen
+[]
+====
+Best Practice: NetApp empfiehlt die Verwendung eines dedizierten Windows-Servers zur Installation von NetApp SMI-S Provider. Installieren Sie den Provider nicht auf dem SCVMM-Server, um Störungen zu vermeiden, die Leistung zu optimieren und die Fehlerbehebung zu vereinfachen.
 
-
-Es ist wichtig, die befehlsbasierte Schnittstelle zu verstehen, um verschiedene Verwaltungsaufgaben durchzuführen, überprüfen link:https://docs.netapp.com/us-en/smis-provider/concept-smi-s-provider-commands-overview.html["NetApp SMI-S-Provider-Befehle."]
-
-. Laden Sie SMI-S von der NetApp-Download-Site herunter und installieren Sie sie auf einer unterstützten Version des Windows-Servers.
-. Überprüfen Sie, ob der SMI-S-Server ausgeführt wird. image:hyperv-smis-image3.png["Überprüfen Sie, ob der SMI-S-Server ausgeführt wird"]
-. Fügen Sie einen CIM-Serverbenutzer hinzu. Dieser SIM-Benutzer sollte über Administratorrechte im Windows SMIS-Server verfügen und Sie müssen diesen Benutzer verwenden, um sich bei SCVMM zu registrieren. image:hyperv-smis-image13.png["CIM-Benutzer hinzufügen"]
-. Um ein NetApp-Speichersystem hinzuzufügen, stellen Sie sicher, dass Sie den Hostnamen der Verwaltungs-IP-Adresse der Storage Virtual Machine (SVM) und die Anmeldeinformationen des vsadmin-Benutzers kennen. Hinweis: SMI-S unterstützt nicht die Verwaltungs-IP-Adresse der SVM, sondern nur den Hostnamen. image:hyperv-smis-image4.png["SVM registrieren"]
+====
+. Laden Sie in einer SMI-S-unterstützten virtuellen Windows-Servermaschine NetApp SMI-S Provider Version 5.2.7 herunter von link:https://mysupport.netapp.com/site/global/dashboard["NetApp Software-Download-Site"] und speichern Sie die Datei als smisprovider-5-2-7.msi.
+. Navigieren Sie zu dem Verzeichnis, das das NetApp SMI-S Provider -Softwarepaket enthält, und doppelklicken Sie auf das Paket smisprovider-5-2-7.msi. Folgen Sie den Schritten des Setup-Assistenten, um die Installation abzuschließen.
+. Navigieren Sie im Startmenü zu NetApp SMI-S Provider, klicken Sie mit der rechten Maustaste und wählen Sie „Als Administrator ausführen“. Wenn eine Eingabeaufforderung geöffnet wird, führen Sie den Befehl „smis cimserver status“ aus, um zu überprüfen, ob der NetApp SMI-S Provider ausgeführt wird. image:hyperv-smis-image3.png["Überprüfen Sie, ob der SMI-S-Server ausgeführt wird"]
+. Fügen Sie einen CIM-Serverbenutzer hinzu. Dieser SMI-S-Benutzer sollte über Administratorrechte auf dem Windows SMI-S-Server verfügen. Sie benötigen diesen Benutzer für die Registrierung bei SCVMM. Dieser SMI-S-Benutzer kann ein lokaler Benutzer oder ein Domänenbenutzer sein. image:hyperv-smis-image13.png["Einen CIMuser hinzufügen"]
+. Um ein NetApp Speichersystem hinzuzufügen, können Sie die Verwaltungs-IP-Adresse oder einen per DNS auflösbaren Hostnamen der Storage Virtual Machine (SVM) und die Anmeldeinformationen für den vsadmin-Benutzer verwenden. image:hyperv-smis-image4.png["SVM registrieren"]
 
 
 
 
 === Verbinden Sie SMI-S Provider mit SCVMM
 
-. Erweitern Sie im Navigator Struktur > Speicher. Klicken Sie mit der rechten Maustaste auf *Provider* und dann auf *Add Storage Devices*. Wählen Sie *SAN- und NAS-Geräte, die von einem SMI-S-Provider erkannt und verwaltet werden*. image:hyperv-smis-image5.png["Fügen Sie Speichergeräte hinzu"]
-. Wählen Sie SMI-S CIMXML als Protokoll. Geben Sie die IP-Adresse oder den FQDN des Servers ein, auf dem Sie den SMI-S Agent installiert haben, und geben Sie das von Ihnen erstellte SMI-S-Konto ein. image:hyperv-smis-image6.png["Installieren Sie SMI-S Agent"]
-. Klicken Sie auf *Weiter* und erhalten Sie eine Liste der Volumes von Ihrem NetApp-Speichersystem
-. Wählen Sie Speichergeräte, eine Klassifizierung und Host-Gruppen aus, überprüfen Sie die Zusammenfassung und klicken Sie auf *Fertig stellen*. image:hyperv-smis-image7.png["Klassifizierung auswählen"]
-. Um die SMI-S-Verbindung zu überprüfen, klicken Sie auf *Struktur* > *Übersicht*, überprüfen Sie die Speicherzusammenfassung, die Verwendung von Klassifikationen, logische Einheiten pro Array und den Speicher der Hostgruppe. image:hyperv-smis-image11.png["SVM-Kapazität prüfen"]
+Um ein Remote-Speichergerät in SCVMM hinzuzufügen und eine Verbindung zu einem SMI-S-Anbieter herzustellen, müssen Sie sicherstellen, dass die folgenden Voraussetzungen und Schritte erfüllt sind:
+
+* Netzwerkzugriff: Stellen Sie sicher, dass der SCVMM-Server über seine IP-Adresse oder seinen vollqualifizierten Domänennamen (FQDN) Netzwerkzugriff auf den SMI-S-Anbieter hat.
+* Kommunikationsports: Überprüfen Sie, ob SCVMM und der SMI-S-Anbieter über die entsprechenden Ports über das Netzwerk kommunizieren können:
++
+** HTTPS an Port 5989
+** HTTP an Port 5988
 
 
 
 
-=== Bereitstellung mit SCVMM mit SMI-S Provider
+[]
+====
+Bei der Installation des SMI-S-Providers wird ein veraltetes Zertifikat verwendet. Dadurch schlägt die SSL-Verbindung zum SMI-S-Provider über „Speichergeräte hinzufügen“ im System Center Virtual Machine Manager (SCVMM) fehl. Die Lösung besteht darin, link:https://kb.netapp.com/data-mgmt/SMI-S/SMI-S_Issues/CSMIS-3["Generieren Sie ein selbstsigniertes Zertifikat für den CIM-Server"] und starten Sie den SMI-S-Dienst anschließend neu. Weitere Informationen finden Sie im KB-Artikel link:https://kb.netapp.com/data-mgmt/SMI-S/SMI-S_Issues/CSMIS-3["CSMIS-3: cimom.cert im NetApp SMI-S Provider 5.2.7 ist zum Zeitpunkt der Installation abgelaufen."]
+
+====
+. Klicken Sie in SCVMM auf Fabric > Speicher > Anbieter > Speichergeräte hinzufügen. Wählen Sie „Von einem SMI-S-Anbieter erkannte und verwaltete SAN- und NAS-Geräte“ aus. image:hyperv-smis-image5.png["Fügen Sie Speichergeräte hinzu"]
+. Wählen Sie unter „Erkennungsumfang angeben“ SMI-S CIMXML als Protokoll aus, geben Sie die IP-Adresse oder den FQDN des Servers ein, auf dem Sie den SMI-S-Agenten installiert haben, wählen Sie bei Bedarf die SSL-Verbindungsoption und geben Sie das auf dem SMI-S-Server erstellte SMI-S-Konto ein. image:hyperv-smis-image6.png["Installieren Sie SMI-S Agent"]
+. Unter „Informationen erfassen“ erkennt und importiert SCVMM automatisch die Speichergeräteinformationen. Sie müssen das Sicherheitszertifikat importieren, wenn im vorherigen Schritt die SSL-Verbindung ausgewählt wurde. image:hyperv-smis-image15.png["Importzertifikat"]
+. Wählen Sie Speichergeräte, eine Klassifizierung und Hostgruppen aus, überprüfen Sie die Zusammenfassung und klicken Sie auf „Fertig stellen“. image:hyperv-smis-image7.png["Klassifizierung auswählen"]
+. Um die SMI-S-Verbindung zu überprüfen, klicken Sie auf Fabric > Übersicht und prüfen Sie die Speicherzusammenfassung, die Klassifizierungsnutzung, die logischen Einheiten pro Array und den Hostgruppenspeicher. image:hyperv-smis-image11.png["SVM-Kapazität prüfen"]
+
+
+
+
+=== Bereitstellen von Speicher mit SCVMM unter Verwendung eines SMI-S-Anbieters
 
 SCVMM verwendet den SMI-S Provider zur Interaktion mit Speichersystemen, sodass Sie Speicherressourcen direkt von SCVMM erstellen und verwalten können.
 
@@ -98,14 +120,15 @@ SCVMM verwendet den SMI-S Provider zur Interaktion mit Speichersystemen, sodass 
 
 ==== ISCSI-Storage
 
-. Wählen Sie in der SCVMM-Konsole Struktur > Speicher , klicken Sie mit der rechten Maustaste auf *Klassifizierungen und Pools* und wählen Sie *logische Einheit erstellen*. Wählen Sie den Speicherpool und die Klassifizierung aus, und geben Sie den Namen, die Beschreibung, die Größe und die Hostgruppe für die Logikeinheit ein. image:hyperv-smis-image9.png["Logikeinheit-Speicher erstellen"]
+. Wählen Sie in der SCVMM-Konsole Fabric > Storage aus, klicken Sie mit der rechten Maustaste auf Classifications and Pools und wählen Sie Create Logical Unit aus. Wählen Sie den Speicherpool und die Klassifizierung aus, und geben Sie den Namen, die Beschreibung, die Größe und die Hostgruppe für die Logikeinheit ein. image:hyperv-smis-image9.png["Logikeinheit-Speicher erstellen"]
 
 
 
 
 ==== SMB-Lagerung
 
-. Wählen Sie *Struktur* > *Speicher* > Rechtsklick *Dateiserver* und wählen Sie *Dateifreigabe erstellen*, wählen Sie *Dateiserver*, geben Sie den Namen, den Speichertyp, den Speicherpool und die Klassifizierung ein. image:hyperv-smis-image10.png["Erstellen Sie Dateifreigaben"]
+. Wählen Sie Fabric > Speicher, klicken Sie mit der rechten Maustaste auf Dateiserver und wählen Sie Dateifreigabe erstellen, wählen Sie Dateiserver, geben Sie Name, Speichertyp, Speicherpool und Klassifizierung ein. image:hyperv-smis-image10.png["Erstellen Sie Dateifreigaben"]
+. Um die SMB-Dateifreigabe für Hyper-V zu nutzen, müssen Sie die SMB-Dateifreigabe zu den Hyper-V-Hostclustern hinzufügen. Klicken Sie in SCVMM auf „Server“ > „Alle Hosts“ > „[Hostgruppe]“. Klicken Sie mit der rechten Maustaste auf den Clusternamen und wählen Sie „Eigenschaften“. Klicken Sie im Reiter „Dateifreigabespeicher“ auf „Hinzufügen“ und geben Sie den SMB-Pfad ein. image:hyperv-smis-image14.png["Fügen Sie den Hyper-V-Hostclustern eine SMB-Dateifreigabe hinzu"]
 
 
 
